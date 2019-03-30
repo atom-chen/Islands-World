@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: cf64d8fbd64dc4d30ab6bbe0f7d601ac
+labels:
+- water
+- ocean
+- mobile
+- mirror
+- reflect
+- reflection
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

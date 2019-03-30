@@ -1,0 +1,15 @@
+Flag = Flag-CNF
+Language = Chinese
+English = English
+Chinese = 中文
+ChineseF = 繁体
+
+Loading = 死命加载中...
+Version = 版本：
+EnterGame = 点击屏幕开始游戏
+Click4Select = 点击切换
+LastServer = 上次登陆
+Okay = 确定
+Cancel = 取消
+
+MsgExitGame= 确定要退出游戏？

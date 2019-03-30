@@ -1,0 +1,8 @@
+<linker>
+       <assembly fullname="Assembly-CSharp">
+        <namespace fullname="Coolape" preserve="all"/>  
+       </assembly>
+       <assembly fullname="UnityEngine">
+      <type fullname="UnityEngine.Animation" preserve="all"/>
+       </assembly>
+</linker>

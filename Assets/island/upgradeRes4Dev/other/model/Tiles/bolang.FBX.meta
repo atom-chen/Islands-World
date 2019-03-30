@@ -1,0 +1,229 @@
+fileFormatVersion: 2
+guid: d32c768ee468045c187c7038e4dec9cd
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: dk265
+    100004: dk266
+    100006: dk267
+    100008: dk272
+    100010: dk277
+    100012: dk288
+    100014: dk294
+    100016: dk295
+    100018: dk296
+    100020: dk297
+    100022: dk298
+    100024: dk299
+    100026: dk300
+    100028: dk301
+    100030: dk302
+    100032: dk303
+    100034: dk304
+    100036: dk305
+    100038: dk307
+    100040: dk308
+    100042: dk309
+    100044: dk312
+    100046: dk321
+    100048: dk322
+    100050: dk323
+    100052: dk324
+    400000: //RootNode
+    400002: dk265
+    400004: dk266
+    400006: dk267
+    400008: dk272
+    400010: dk277
+    400012: dk288
+    400014: dk294
+    400016: dk295
+    400018: dk296
+    400020: dk297
+    400022: dk298
+    400024: dk299
+    400026: dk300
+    400028: dk301
+    400030: dk302
+    400032: dk303
+    400034: dk304
+    400036: dk305
+    400038: dk307
+    400040: dk308
+    400042: dk309
+    400044: dk312
+    400046: dk321
+    400048: dk322
+    400050: dk323
+    400052: dk324
+    2100000: 'Material #213'
+    2300000: dk265
+    2300002: dk266
+    2300004: dk267
+    2300006: dk272
+    2300008: dk277
+    2300010: dk288
+    2300012: dk294
+    2300014: dk295
+    2300016: dk296
+    2300018: dk297
+    2300020: dk298
+    2300022: dk299
+    2300024: dk300
+    2300026: dk301
+    2300028: dk302
+    2300030: dk303
+    2300032: dk304
+    2300034: dk305
+    2300036: dk307
+    2300038: dk308
+    2300040: dk309
+    2300042: dk312
+    2300044: dk321
+    2300046: dk322
+    2300048: dk323
+    2300050: dk324
+    3300000: dk265
+    3300002: dk266
+    3300004: dk267
+    3300006: dk272
+    3300008: dk277
+    3300010: dk288
+    3300012: dk294
+    3300014: dk295
+    3300016: dk296
+    3300018: dk297
+    3300020: dk298
+    3300022: dk299
+    3300024: dk300
+    3300026: dk301
+    3300028: dk302
+    3300030: dk303
+    3300032: dk304
+    3300034: dk305
+    3300036: dk307
+    3300038: dk308
+    3300040: dk309
+    3300042: dk312
+    3300044: dk321
+    3300046: dk322
+    3300048: dk323
+    3300050: dk324
+    4300000: dk265
+    4300002: dk266
+    4300004: dk267
+    4300006: dk272
+    4300008: dk277
+    4300010: dk288
+    4300012: dk294
+    4300014: dk295
+    4300016: dk296
+    4300018: dk297
+    4300020: dk298
+    4300022: dk299
+    4300024: dk300
+    4300026: dk301
+    4300028: dk302
+    4300030: dk303
+    4300032: dk304
+    4300034: dk305
+    4300036: dk307
+    4300038: dk308
+    4300040: dk309
+    4300042: dk312
+    4300044: dk321
+    4300046: dk322
+    4300048: dk323
+    4300050: dk324
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #213'
+    second: {fileID: 2100000, guid: 291944c5971c44a53a09c58e958dfdd2, type: 2}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,1 @@
+如果要使用android的推送功能，请把AndroidManifest.xml移到Assets/Plugin/Android/目录下
