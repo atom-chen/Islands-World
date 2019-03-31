@@ -1,90 +1,99 @@
 ---@class Coolape.WWWEx : UnityEngine.MonoBehaviour
+---@field public self Coolape.WWWEx
 ---@field public wwwMapUrl System.Collections.Hashtable
 ---@field public wwwMap4Check System.Collections.Hashtable
 ---@field public wwwMap4Get System.Collections.Hashtable
+---@field public checkTimeOutSec System.Int32
+---@field public isCheckWWWTimeOut System.Boolean
 
 local m = { }
 ---public WWWEx .ctor()
 ---@return WWWEx
 function m.New() end
----public Void newWWW(MonoBehaviour go, String url, CLAssetType t, Single checkProgressSec, Single timeOutSec, Object finishCallback, Object exceptionCallback, Object timeOutCallback, Object orgs)
----public Void newWWW(MonoBehaviour go, String url, String jsonMap, CLAssetType t, Single checkProgressSec, Single timeOutSec, Object finishCallback, Object exceptionCallback, Object timeOutCallback, Object orgs)
----public Void newWWW(MonoBehaviour go, String url, Object mapData, CLAssetType t, Single checkProgressSec, Single timeOutSec, Object finishCallback, Object exceptionCallback, Object timeOutCallback, Object orgs)
----@param MonoBehaviour go
+---public UnityWebRequest get(String url, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---@return UnityWebRequest
 ---@param optional String url
----@param optional Object mapData
 ---@param optional CLAssetType t
----@param optional Single checkProgressSec
----@param optional Single timeOutSec
----@param optional Object finishCallback
----@param optional Object exceptionCallback
----@param optional Object timeOutCallback
+---@param optional Object successCallback
+---@param optional Object failedCallback
 ---@param optional Object orgs
-function m.newWWW(go, url, mapData, type, checkProgressSec, timeOutSec, finishCallback, exceptionCallback, timeOutCallback, orgs) end
----public Void newWWWPostBytes(MonoBehaviour go, String url, Byte[] mapData, CLAssetType t, Single checkProgressSec, Single timeOutSec, Object finishCallback, Object exceptionCallback, Object timeOutCallback, Object orgs)
----@param optional MonoBehaviour go
+---@param optional Boolean isCheckTimeout
+function m.get(url, type, successCallback, failedCallback, orgs, isCheckTimeout) end
+---public UnityWebRequest post(String url, String jsonMap, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---public UnityWebRequest post(String url, Hashtable map, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---public UnityWebRequest post(String url, WWWForm data, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---@return UnityWebRequest
 ---@param optional String url
----@param optional Byte[] mapData
+---@param optional WWWForm data
 ---@param optional CLAssetType t
----@param optional Single checkProgressSec
----@param optional Single timeOutSec
----@param optional Object finishCallback
----@param optional Object exceptionCallback
----@param optional Object timeOutCallback
+---@param optional Object successCallback
+---@param optional Object failedCallback
 ---@param optional Object orgs
-function m.newWWWPostBytes(go, url, mapData, type, checkProgressSec, timeOutSec, finishCallback, exceptionCallback, timeOutCallback, orgs) end
----public IEnumerator doNewWWW(MonoBehaviour go, String url, Object mapData, CLAssetType t, Single checkProgressSec, Single timeOutSec, Object finishCallback, Object exceptionCallback, Object timeOutCallback, Object orgs)
----@return IEnumerator
----@param optional MonoBehaviour go
+---@param optional Boolean isCheckTimeout
+function m.post(url, data, type, successCallback, failedCallback, orgs, isCheckTimeout) end
+---public UnityWebRequest postString(String url, String strData, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---@return UnityWebRequest
 ---@param optional String url
----@param optional Object mapData
+---@param optional String strData
 ---@param optional CLAssetType t
----@param optional Single checkProgressSec
----@param optional Single timeOutSec
----@param optional Object finishCallback
----@param optional Object exceptionCallback
----@param optional Object timeOutCallback
+---@param optional Object successCallback
+---@param optional Object failedCallback
 ---@param optional Object orgs
-function m.doNewWWW(go, url, mapData, type, checkProgressSec, timeOutSec, finishCallback, exceptionCallback, timeOutCallback, orgs) end
----public Void checkWWWTimeout(MonoBehaviour go, WWW www, Single checkProgressSec, Single timeOutSec, Object timeoutCallback, Object orgs)
----@param optional MonoBehaviour go
----@param optional WWW www
+---@param optional Boolean isCheckTimeout
+function m.postString(url, strData, type, successCallback, failedCallback, orgs, isCheckTimeout) end
+---public UnityWebRequest postBytes(String url, Byte[] bytes, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---@return UnityWebRequest
+---@param optional String url
+---@param optional Byte[] bytes
+---@param optional CLAssetType t
+---@param optional Object successCallback
+---@param optional Object failedCallback
+---@param optional Object orgs
+---@param optional Boolean isCheckTimeout
+function m.postBytes(url, bytes, type, successCallback, failedCallback, orgs, isCheckTimeout) end
+---public UnityWebRequest put(String url, String data, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---public UnityWebRequest put(String url, Byte[] data, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---@return UnityWebRequest
+---@param optional String url
+---@param optional Byte[] data
+---@param optional CLAssetType t
+---@param optional Object successCallback
+---@param optional Object failedCallback
+---@param optional Object orgs
+---@param optional Boolean isCheckTimeout
+function m.put(url, data, type, successCallback, failedCallback, orgs, isCheckTimeout) end
+---public UnityWebRequest uploadFile(String url, String sectionName, String fileName, Byte[] fileContent, CLAssetType t, Object successCallback, Object failedCallback, Object orgs, Boolean isCheckTimeout)
+---@return UnityWebRequest
+---@param optional String url
+---@param optional String sectionName
+---@param optional String fileName
+---@param optional Byte[] fileContent
+---@param optional CLAssetType t
+---@param optional Object successCallback
+---@param optional Object failedCallback
+---@param optional Object orgs
+---@param optional Boolean isCheckTimeout
+function m.uploadFile(url, sectionName, fileName, fileContent, type, successCallback, failedCallback, orgs, isCheckTimeout) end
+---public Void addCheckWWWTimeout(UnityWebRequest www, String url, Single checkProgressSec, Object timeoutCallback, Object orgs)
+---@param optional UnityWebRequest www
+---@param optional String url
 ---@param optional Single checkProgressSec
----@param optional Single timeOutSec
 ---@param optional Object timeoutCallback
 ---@param optional Object orgs
-function m.checkWWWTimeout(go, www, checkProgressSec, timeOutSec, timeoutCallback, orgs) end
----public IEnumerator doCheckWWWTimeout(MonoBehaviour go, WWW www, Single checkProgressSec, Single timeOutSec, Object timeoutCallback, Single oldProgress, Single totalCostSec, Object orgs)
----@return IEnumerator
----@param optional MonoBehaviour go
----@param optional WWW www
----@param optional Single checkProgressSec
----@param optional Single timeOutSec
----@param optional Object timeoutCallback
----@param optional Single oldProgress
----@param optional Single totalCostSec
----@param optional Object orgs
-function m.doCheckWWWTimeout(go, www, checkProgressSec, timeOutSec, timeoutCallback, oldProgress, totalCostSec, orgs) end
----public Void uncheckWWWTimeout(MonoBehaviour go, WWW www)
----@param optional MonoBehaviour go
----@param optional WWW www
-function m.uncheckWWWTimeout(go, www) end
----public Void doCallback(Object callback, Object obj, Object orgs)
----@param optional Object callback
----@param optional Object obj
----@param optional Object orgs
-function m.doCallback(callback, obj, orgs) end
----public WWW getWwwByUrl(String Url)
----@return WWW
+function m.addCheckWWWTimeout(www, url, checkProgressSec, timeoutCallback, orgs) end
+---public Void checkWWWTimeout()
+function m.checkWWWTimeout() end
+---public Void doCheckWWWTimeout(UnityWebRequest www, NewList list)
+---@param optional UnityWebRequest www
+---@param optional NewList list
+function m.doCheckWWWTimeout(www, list) end
+---public Void uncheckWWWTimeout(UnityWebRequest www, String url)
+---@param optional UnityWebRequest www
+---@param optional String url
+function m.uncheckWWWTimeout(www, url) end
+---public UnityWebRequest getWwwByUrl(String Url)
+---@return UnityWebRequest
 ---@param optional String Url
 function m.getWwwByUrl(Url) end
----public Int32 getResponseCode(WWW request)
----@return number
----@param optional WWW request
-function m.getResponseCode(request) end
----public Int32 parseResponseCode(String statusLine)
----@return number
----@param optional String statusLine
-function m.parseResponseCode(statusLine) end
 Coolape.WWWEx = m
 return m

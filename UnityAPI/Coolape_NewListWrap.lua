@@ -5,16 +5,16 @@ local m = { }
 ---@return NewList
 function m.New() end
 ---public NewList create()
----public NewList create(ArrayList list)
 ---public NewList create(Object[] args)
+---public NewList create(ArrayList list)
 ---@return NewList
----@param Object[] args
-function m.create(args) end
----public NewList add(Object[] args)
+---@param ArrayList list
+function m.create(list) end
 ---public NewList add(Object val)
+---public NewList add(Object[] args)
 ---@return NewList
----@param optional Object val
-function m:add(val) end
+---@param optional Object[] args
+function m:add(args) end
 ---public Boolean Contains(Object o)
 ---@return bool
 ---@param optional Object o

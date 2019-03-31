@@ -157,9 +157,11 @@ function m.ReadAllText(path, encoding) end
 ---@param optional Byte[] bytes
 function m.WriteAllBytes(path, bytes) end
 ---public Void WriteAllLines(String path, String[] contents)
+---public Void WriteAllLines(String path, IEnumerable`1 contents)
 ---public Void WriteAllLines(String path, String[] contents, Encoding encoding)
+---public Void WriteAllLines(String path, IEnumerable`1 contents, Encoding encoding)
 ---@param String path
----@param optional String[] contents
+---@param optional IEnumerable`1 contents
 ---@param optional Encoding encoding
 function m.WriteAllLines(path, contents, encoding) end
 ---public Void WriteAllText(String path, String contents)
@@ -174,5 +176,17 @@ function m.Encrypt(path) end
 ---public Void Decrypt(String path)
 ---@param optional String path
 function m.Decrypt(path) end
+---public IEnumerable`1 ReadLines(String path)
+---public IEnumerable`1 ReadLines(String path, Encoding encoding)
+---@return IEnumerable`1
+---@param String path
+---@param optional Encoding encoding
+function m.ReadLines(path, encoding) end
+---public Void AppendAllLines(String path, IEnumerable`1 contents)
+---public Void AppendAllLines(String path, IEnumerable`1 contents, Encoding encoding)
+---@param String path
+---@param optional IEnumerable`1 contents
+---@param optional Encoding encoding
+function m.AppendAllLines(path, contents, encoding) end
 System.IO.File = m
 return m

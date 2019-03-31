@@ -99,10 +99,10 @@ function m.Cross(lhs, rhs) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Vector3 other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Vector3 other)
 ---@return bool
----@param optional Object other
+---@param optional Vector3 other
 function m:Equals(other) end
 ---public Vector3 Reflect(Vector3 inDirection, Vector3 inNormal)
 ---@return Vector3
@@ -181,12 +181,12 @@ function m.op_Subtraction(a, b) end
 ---@return Vector3
 ---@param optional Vector3 a
 function m.op_UnaryNegation(a) end
----public Vector3 op_Multiply(Single d, Vector3 a)
 ---public Vector3 op_Multiply(Vector3 a, Single d)
+---public Vector3 op_Multiply(Single d, Vector3 a)
 ---@return Vector3
----@param optional Vector3 a
 ---@param optional Single d
-function m.op_Multiply(a, d) end
+---@param optional Vector3 a
+function m.op_Multiply(d, a) end
 ---public Vector3 op_Division(Vector3 a, Single d)
 ---@return Vector3
 ---@param optional Vector3 a

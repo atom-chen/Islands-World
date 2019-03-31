@@ -67,12 +67,12 @@ function m.LookRotation(forward, upwards) end
 ---@param optional Single newZ
 ---@param optional Single newW
 function m:Set(newX, newY, newZ, newW) end
----public Vector3 op_Multiply(Quaternion rotation, Vector3 point)
 ---public Quaternion op_Multiply(Quaternion lhs, Quaternion rhs)
----@return Vector3
----@param optional Quaternion lhs
----@param optional Quaternion rhs
-function m.op_Multiply(lhs, rhs) end
+---public Vector3 op_Multiply(Quaternion rotation, Vector3 point)
+---@return Quaternion
+---@param optional Quaternion rotation
+---@param optional Vector3 point
+function m.op_Multiply(rotation, point) end
 ---public Boolean op_Equality(Quaternion lhs, Quaternion rhs)
 ---@return bool
 ---@param optional Quaternion lhs
@@ -126,10 +126,10 @@ function m:Normalize(q) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Quaternion other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Quaternion other)
 ---@return bool
----@param optional Object other
+---@param optional Quaternion other
 function m:Equals(other) end
 ---public String ToString()
 ---public String ToString(String format)

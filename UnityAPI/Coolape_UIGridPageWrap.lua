@@ -21,10 +21,10 @@ function m:Start() end
 ---@param optional Object onRefreshCurrentPage
 ---@param optional Int32 defaltPage
 function m:init(pageList, onRefreshCurrentPage, defaltPage) end
----public Void moveTo(Int32 index)
 ---public Void moveTo(Boolean force)
----@param optional Boolean force
-function m:moveTo(force) end
+---public Void moveTo(Int32 index)
+---@param optional Int32 index
+function m:moveTo(index) end
 ---public Void onPress(Boolean isPressed)
 ---@param optional Boolean isPressed
 function m:onPress(isPressed) end

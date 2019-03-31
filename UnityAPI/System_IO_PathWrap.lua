@@ -10,11 +10,16 @@ local m = { }
 ---@param optional String path
 ---@param optional String extension
 function m.ChangeExtension(path, extension) end
+---public String Combine(String[] paths)
 ---public String Combine(String path1, String path2)
+---public String Combine(String path1, String path2, String path3)
+---public String Combine(String path1, String path2, String path3, String path4)
 ---@return String
----@param optional String path1
----@param optional String path2
-function m.Combine(path1, path2) end
+---@param String path1
+---@param String path2
+---@param String path3
+---@param optional String path4
+function m.Combine(path1, path2, path3, path4) end
 ---public String GetDirectoryName(String path)
 ---@return String
 ---@param optional String path

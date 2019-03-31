@@ -2,11 +2,11 @@
 ---@field public value System.Int32
 
 local m = { }
----public LayerMask op_Implicit(Int32 intVal)
 ---public Int32 op_Implicit(LayerMask mask)
----@return LayerMask
----@param optional LayerMask mask
-function m.op_Implicit(mask) end
+---public LayerMask op_Implicit(Int32 intVal)
+---@return number
+---@param optional Int32 intVal
+function m.op_Implicit(intVal) end
 ---public String LayerToName(Int32 layer)
 ---@return String
 ---@param optional Int32 layer

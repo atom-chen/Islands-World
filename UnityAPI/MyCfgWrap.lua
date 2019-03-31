@@ -5,8 +5,11 @@
 ---@field public directionalLight UnityEngine.Light
 ---@field public mainCamera UnityEngine.Camera
 ---@field public uiCamera UnityEngine.Camera
----@field public buildingSize UnityEngine.GameObject
 ---@field public hud3dRoot UnityEngine.Transform
+---@field public shadowRoot UnityEngine.Transform
+---@field public fogOfWar SimpleFogOfWar.FogOfWarSystem
+---@field public _isEditScene System.Boolean
+---@field public isEditScene System.Boolean
 
 local m = { }
 ---public MyCfg .ctor()

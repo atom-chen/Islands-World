@@ -11,16 +11,16 @@ function m.New(sb) end
 ---public StrEx builder()
 ---@return StrEx
 function m.builder() end
----public StrEx Append(Double v)
----public StrEx Append(Int64 v)
----public StrEx Append(StringBuilder v)
----public StrEx Append(String v)
----public StrEx Append(Byte v)
 ---public StrEx Append(Boolean v)
----public StrEx Append(Int32 v)
+---public StrEx Append(Byte v)
 ---public StrEx Append(Int16 v)
+---public StrEx Append(Int32 v)
+---public StrEx Append(Int64 v)
+---public StrEx Append(Double v)
+---public StrEx Append(String v)
+---public StrEx Append(StringBuilder v)
 ---@return StrEx
----@param optional Int16 v
+---@param optional StringBuilder v
 function m:Append(v) end
 ---public StrEx AppendLine()
 ---public StrEx AppendLine(String v)
@@ -53,14 +53,14 @@ function m:Left(s, len) end
 ---@param String s
 ---@param optional Int32 len
 function m:Right(s, len) end
----public String Mid(Int32 begin, Int32 len)
 ---public String Mid(String s, Int32 start)
+---public String Mid(Int32 begin, Int32 len)
 ---public String Mid(String s, Int32 start, Int32 len)
 ---@return String
 ---@param String s
 ---@param optional Int32 start
 ---@param optional Int32 len
-function m:Mid(s, start, len) end
+function m.Mid(s, start, len) end
 ---public String mapToString(Hashtable map)
 ---@return String
 ---@param optional Hashtable map

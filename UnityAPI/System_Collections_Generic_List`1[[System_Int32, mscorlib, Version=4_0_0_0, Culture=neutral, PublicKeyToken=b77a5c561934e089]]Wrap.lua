@@ -1,4 +1,4 @@
----@class System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
+---@class System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
 ---@field public Capacity System.Int32
 ---@field public Count System.Int32
 ---@field public Item System.Int32
@@ -130,8 +130,8 @@ function m:RemoveRange(index, count) end
 ---@param Int32 count
 function m:Reverse(index, count) end
 ---public Void Sort()
----public Void Sort(Comparison`1 comparison)
 ---public Void Sort(IComparer`1 comparer)
+---public Void Sort(Comparison`1 comparison)
 ---public Void Sort(Int32 index, Int32 count, IComparer`1 comparer)
 ---@param Int32 index
 ---@param Int32 count
@@ -146,5 +146,5 @@ function m:TrimExcess() end
 ---@return bool
 ---@param optional Predicate`1 match
 function m:TrueForAll(match) end
-System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] = m
+System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] = m
 return m

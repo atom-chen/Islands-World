@@ -20,13 +20,13 @@
 local m = { }
 ---public Void Reset()
 function m:Reset() end
----public Void SetOnFinished(EventDelegate del)
 ---public Void SetOnFinished(Callback del)
----@param optional Callback del
+---public Void SetOnFinished(EventDelegate del)
+---@param optional EventDelegate del
 function m:SetOnFinished(del) end
----public Void AddOnFinished(EventDelegate del)
 ---public Void AddOnFinished(Callback del)
----@param optional Callback del
+---public Void AddOnFinished(EventDelegate del)
+---@param optional EventDelegate del
 function m:AddOnFinished(del) end
 ---public Void RemoveOnFinished(EventDelegate del)
 ---@param optional EventDelegate del

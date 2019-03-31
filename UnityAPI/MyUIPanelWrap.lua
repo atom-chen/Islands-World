@@ -16,5 +16,7 @@ function m:releaseFrame() end
 function m:show() end
 ---public Void hide()
 function m:hide() end
+---public Void finishMoveOut()
+function m:finishMoveOut() end
 MyUIPanel = m
 return m

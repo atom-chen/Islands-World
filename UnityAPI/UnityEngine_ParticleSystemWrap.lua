@@ -3,11 +3,11 @@
 ---@field public isEmitting System.Boolean
 ---@field public isStopped System.Boolean
 ---@field public isPaused System.Boolean
----@field public time System.Single
 ---@field public particleCount System.Int32
+---@field public time System.Single
 ---@field public randomSeed System.UInt32
 ---@field public useAutoRandomSeed System.Boolean
----@field public automaticCullingEnabled System.Boolean
+---@field public proceduralSimulationSupported System.Boolean
 ---@field public main UnityEngine.ParticleSystem.MainModule
 ---@field public emission UnityEngine.ParticleSystem.EmissionModule
 ---@field public shape UnityEngine.ParticleSystem.ShapeModule
@@ -35,14 +35,6 @@ local m = { }
 ---public ParticleSystem .ctor()
 ---@return ParticleSystem
 function m.New() end
----public Void SetParticles(Particle[] particles, Int32 size)
----@param optional Particle[] particles
----@param optional Int32 size
-function m:SetParticles(particles, size) end
----public Int32 GetParticles(Particle[] particles)
----@return number
----@param optional Particle[] particles
-function m:GetParticles(particles) end
 ---public Void SetCustomParticleData(List`1 customData, ParticleSystemCustomData streamIndex)
 ---@param optional List`1 customData
 ---@param optional ParticleSystemCustomData streamIndex
@@ -52,6 +44,27 @@ function m:SetCustomParticleData(customData, streamIndex) end
 ---@param optional List`1 customData
 ---@param optional ParticleSystemCustomData streamIndex
 function m:GetCustomParticleData(customData, streamIndex) end
+---public Void TriggerSubEmitter(Int32 subEmitterIndex)
+---public Void TriggerSubEmitter(Int32 subEmitterIndex, Particle& particle)
+---public Void TriggerSubEmitter(Int32 subEmitterIndex, List`1 particles)
+---@param Int32 subEmitterIndex
+---@param optional List`1 particles
+function m:TriggerSubEmitter(subEmitterIndex, particles) end
+---public Void SetParticles(Particle[] particles)
+---public Void SetParticles(Particle[] particles, Int32 size)
+---public Void SetParticles(Particle[] particles, Int32 size, Int32 offset)
+---@param Particle[] particles
+---@param Int32 size
+---@param optional Int32 offset
+function m:SetParticles(particles, size, offset) end
+---public Int32 GetParticles(Particle[] particles)
+---public Int32 GetParticles(Particle[] particles, Int32 size)
+---public Int32 GetParticles(Particle[] particles, Int32 size, Int32 offset)
+---@return number
+---@param Particle[] particles
+---@param Int32 size
+---@param optional Int32 offset
+function m:GetParticles(particles, size, offset) end
 ---public Void Simulate(Single t)
 ---public Void Simulate(Single t, Boolean withChildren)
 ---public Void Simulate(Single t, Boolean withChildren, Boolean restart)
@@ -89,11 +102,7 @@ function m:IsAlive(withChildren) end
 ---@param EmitParams emitParams
 ---@param optional Int32 count
 function m:Emit(emitParams, count) end
----public Void TriggerSubEmitter(Int32 subEmitterIndex)
----public Void TriggerSubEmitter(Int32 subEmitterIndex, List`1 particles)
----public Void TriggerSubEmitter(Int32 subEmitterIndex, Particle& particle)
----@param Int32 subEmitterIndex
----@param optional Particle& particle
-function m:TriggerSubEmitter(subEmitterIndex, particle) end
+---public Void ResetPreMappedBufferMemory()
+function m.ResetPreMappedBufferMemory() end
 UnityEngine.ParticleSystem = m
 return m

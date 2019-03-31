@@ -44,46 +44,46 @@ function m.stringToDouble(s) end
 function m.NextInt(min, max) end
 ---public Boolean NextBool()
 ---public Boolean NextBool(Double probability)
----public Boolean NextBool(Double v, Int32 max)
 ---public Boolean NextBool(Int32 v, Int32 max)
+---public Boolean NextBool(Double v, Int32 max)
 ---@return bool
----@param Int32 v
+---@param Double v
 ---@param Int32 max
 function m.NextBool(v, max) end
----public String Next(String[] arrays)
----public Int32 Next(Int32[] arrays)
 ---public Object Next(ArrayList list)
----@return String
----@param optional ArrayList list
-function m.Next(list) end
+---public Int32 Next(Int32[] arrays)
+---public String Next(String[] arrays)
+---@return Object
+---@param optional String[] arrays
+function m.Next(arrays) end
 ---public Int32 percent(Double v, Double max)
 ---@return number
 ---@param optional Double v
 ---@param optional Double max
 function m.percent(v, max) end
----public Double Min(Double[] arrays)
----public Int32 Min(ArrayList arrays)
 ---public Int32 Min(Int32[] arrays)
+---public Int32 Min(ArrayList arrays)
+---public Double Min(Double[] arrays)
 ---@return number
----@param optional Int32[] arrays
+---@param optional Double[] arrays
 function m.Min(arrays) end
----public Double Max(Double[] arrays)
----public Int32 Max(ArrayList arrays)
 ---public Int32 Max(Int32[] arrays)
+---public Int32 Max(ArrayList arrays)
+---public Double Max(Double[] arrays)
 ---@return number
----@param optional Int32[] arrays
+---@param optional Double[] arrays
 function m.Max(arrays) end
 ---public String nStr(Int64 n, Int64 lMax)
 ---@return String
 ---@param optional Int64 n
 ---@param optional Int64 lMax
 function m.nStr(n, lMax) end
----public String nStrForLen(String str, Int32 len)
 ---public String nStrForLen(Int32 n, Int32 len)
+---public String nStrForLen(String str, Int32 len)
 ---@return String
----@param optional Int32 n
+---@param optional String str
 ---@param optional Int32 len
-function m.nStrForLen(n, len) end
+function m.nStrForLen(str, len) end
 ---public Int32 readByte(Stream input)
 ---@return number
 ---@param optional Stream input
@@ -116,30 +116,30 @@ function m.Int64BitsToDouble(v) end
 ---@return long
 ---@param optional Double v
 function m.DoubleToInt64Bits(v) end
----public Int32 kb(Int64 nb)
 ---public Int32 kb(Int32 nb)
+---public Int32 kb(Int64 nb)
 ---@return number
----@param optional Int32 nb
+---@param optional Int64 nb
 function m.kb(nb) end
----public Int32 mb(Int64 nb)
 ---public Int32 mb(Int32 nb)
+---public Int32 mb(Int64 nb)
 ---@return number
----@param optional Int32 nb
+---@param optional Int64 nb
 function m.mb(nb) end
----public Int32 gb(Int64 nb)
 ---public Int32 gb(Int32 nb)
+---public Int32 gb(Int64 nb)
 ---@return number
----@param optional Int32 nb
+---@param optional Int64 nb
 function m.gb(nb) end
----public Int32 tb(Int64 nb)
 ---public Int32 tb(Int32 nb)
+---public Int32 tb(Int64 nb)
 ---@return number
----@param optional Int32 nb
+---@param optional Int64 nb
 function m.tb(nb) end
----public Int32 pb(Int64 nb)
 ---public Int32 pb(Int32 nb)
+---public Int32 pb(Int64 nb)
 ---@return number
----@param optional Int32 nb
+---@param optional Int64 nb
 function m.pb(nb) end
 ---public Int32 toInt(Object v)
 ---@return number

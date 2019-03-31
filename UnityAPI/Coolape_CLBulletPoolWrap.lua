@@ -1,5 +1,6 @@
 ---@class Coolape.CLBulletPool : Coolape.CLAssetsPoolBase`1[[Coolape.CLBulletBase, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLBulletPool
+---@field public isAutoReleaseAssetBundle System.Boolean
 
 local m = { }
 ---public CLBulletPool .ctor()

@@ -1,5 +1,6 @@
 ---@class Coolape.CLTexturePool : Coolape.CLAssetsPoolBase`1[[UnityEngine.Texture, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLTexturePool
+---@field public isAutoReleaseAssetBundle System.Boolean
 
 local m = { }
 ---public CLTexturePool .ctor()

@@ -59,10 +59,10 @@ function m:ToString(format) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Vector2 other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Vector2 other)
 ---@return bool
----@param optional Object other
+---@param optional Vector2 other
 function m:Equals(other) end
 ---public Vector2 Reflect(Vector2 inDirection, Vector2 inNormal)
 ---@return Vector2
@@ -134,19 +134,19 @@ function m.op_Addition(a, b) end
 ---@param optional Vector2 a
 ---@param optional Vector2 b
 function m.op_Subtraction(a, b) end
----public Vector2 op_Multiply(Single d, Vector2 a)
----public Vector2 op_Multiply(Vector2 a, Single d)
 ---public Vector2 op_Multiply(Vector2 a, Vector2 b)
+---public Vector2 op_Multiply(Vector2 a, Single d)
+---public Vector2 op_Multiply(Single d, Vector2 a)
 ---@return Vector2
+---@param optional Single d
 ---@param optional Vector2 a
----@param optional Vector2 b
-function m.op_Multiply(a, b) end
----public Vector2 op_Division(Vector2 a, Single d)
+function m.op_Multiply(d, a) end
 ---public Vector2 op_Division(Vector2 a, Vector2 b)
+---public Vector2 op_Division(Vector2 a, Single d)
 ---@return Vector2
 ---@param optional Vector2 a
----@param optional Vector2 b
-function m.op_Division(a, b) end
+---@param optional Single d
+function m.op_Division(a, d) end
 ---public Vector2 op_UnaryNegation(Vector2 a)
 ---@return Vector2
 ---@param optional Vector2 a
@@ -161,10 +161,10 @@ function m.op_Equality(lhs, rhs) end
 ---@param optional Vector2 lhs
 ---@param optional Vector2 rhs
 function m.op_Inequality(lhs, rhs) end
----public Vector3 op_Implicit(Vector2 v)
 ---public Vector2 op_Implicit(Vector3 v)
----@return Vector3
----@param optional Vector3 v
+---public Vector3 op_Implicit(Vector2 v)
+---@return Vector2
+---@param optional Vector2 v
 function m.op_Implicit(v) end
 UnityEngine.Vector2 = m
 return m

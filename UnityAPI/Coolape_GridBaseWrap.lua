@@ -66,8 +66,8 @@ function m:GetRow(index) end
 ---@return number
 ---@param optional Int32 index
 function m:GetColumn(index) end
----public Boolean IsInBounds(Vector3 pos)
 ---public Boolean IsInBounds(Int32 index)
+---public Boolean IsInBounds(Vector3 pos)
 ---public Boolean IsInBounds(Int32 col, Int32 row)
 ---@return bool
 ---@param Int32 col

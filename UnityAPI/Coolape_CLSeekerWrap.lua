@@ -1,6 +1,7 @@
----@class Coolape.CLSeeker : Coolape.CLBehaviourWithUpdate4Lua
+---@class Coolape.CLSeeker : UnityEngine.MonoBehaviour
 ---@field public mAStarPathSearch Coolape.CLAStarPathSearch
 ---@field public target UnityEngine.Transform
+---@field public targetPos UnityEngine.Vector3
 ---@field public speed System.Single
 ---@field public turningSpeed System.Single
 ---@field public endReachedDistance System.Single
@@ -14,6 +15,9 @@
 ---@field public onFinishSeekCallback System.Object
 ---@field public onMovingCallback System.Object
 ---@field public onArrivedCallback System.Object
+---@field public isSeekTargetLoop System.Boolean
+---@field public seekTargetLoopIntvalSec System.Single
+---@field public nextSeekTargetTime System.Single
 ---@field public mTransform UnityEngine.Transform
 ---@field public cellSize System.Single
 
@@ -36,10 +40,15 @@ function m:init(onFinishSeekCallback, onMovingCallback, onArrivedCallback) end
 function m:seekTarget(target, searchIntvalSec) end
 ---public Void cancelSeekTarget()
 function m:cancelSeekTarget() end
----public List`1 seek(Vector3 toPos)
----@return List`1
+---public Void seekAsyn(Vector3 toPos)
 ---@param optional Vector3 toPos
-function m:seek(toPos) end
+function m:seekAsyn(toPos) end
+---public List`1 seek(Vector3 toPos)
+---public List`1 seek(Vector3 toPos, Single endReachDis)
+---@return List`1
+---@param Vector3 toPos
+---@param optional Single endReachDis
+function m:seek(toPos, endReachDis) end
 ---public Void Update()
 function m:Update() end
 ---public Void FixedUpdate()

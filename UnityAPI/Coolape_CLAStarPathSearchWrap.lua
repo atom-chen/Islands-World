@@ -17,7 +17,9 @@
 ---@field public grid Coolape.GridBase
 ---@field public nodesMap System.Collections.Generic.Dictionary2System.Int32Coolape.CLAStarNode
 ---@field public showGrid System.Boolean
+---@field public showObstruct System.Boolean
 ---@field public isIninted System.Boolean
+---@field public OnGridStateChgCallbacks System.Collections.ArrayList
 
 local m = { }
 ---public CLAStarPathSearch .ctor()
@@ -30,15 +32,31 @@ function m:init() end
 ---public Void scan()
 function m:scan() end
 ---public Void scanRange(Vector3 center, Int32 r)
----@param optional Vector3 center
+---public Void scanRange(Int32 centerIndex, Int32 r)
+---@param optional Int32 centerIndex
 ---@param optional Int32 r
-function m:scanRange(center, r) end
----public Boolean searchPath(Vector3 from, Vector3 to, List`1& vectorList)
+function m:scanRange(centerIndex, r) end
+---public Void addGridStateChgCallback(Object callback)
+---@param optional Object callback
+function m:addGridStateChgCallback(callback) end
+---public Void removeGridStateChgCallback(Object callback)
+---@param optional Object callback
+function m:removeGridStateChgCallback(callback) end
+---public Void searchPathAsyn(Vector3 from, Vector3 to, Object finishSearchCallback)
+---@param optional Vector3 from
+---@param optional Vector3 to
+---@param optional Object finishSearchCallback
+function m:searchPathAsyn(from, to, finishSearchCallback) end
+---public Boolean searchPath(Vector3 from, Vector3 to, List`1& vectorList, Boolean notPocSoftenPath)
 ---@return bool
 ---@param optional Vector3 from
 ---@param optional Vector3 to
 ---@param optional List`1& vectorList
-function m:searchPath(from, to, vectorList) end
+---@param optional Boolean notPocSoftenPath
+function m:searchPath(from, to, vectorList, notPocSoftenPath) end
+---public Void softenPath(List`1& vectorList)
+---@param optional List`1& vectorList
+function m:softenPath(vectorList) end
 ---public Void filterPath(List`1& list)
 ---@param optional List`1& list
 function m:filterPath(list) end
@@ -47,5 +65,7 @@ function m:filterPath(list) end
 ---@param optional CLAStarNode node1
 ---@param optional CLAStarNode node2
 function m:distance(node1, node2) end
+---public Void Update()
+function m:Update() end
 Coolape.CLAStarPathSearch = m
 return m

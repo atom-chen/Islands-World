@@ -24,18 +24,18 @@ function m:Invoke(methodName, time) end
 ---@param optional Single time
 ---@param optional Single repeatRate
 function m:InvokeRepeating(methodName, time, repeatRate) end
----public Coroutine StartCoroutine(IEnumerator routine)
 ---public Coroutine StartCoroutine(String methodName)
+---public Coroutine StartCoroutine(IEnumerator routine)
 ---public Coroutine StartCoroutine(String methodName, Object value)
 ---@return Coroutine
 ---@param String methodName
 ---@param optional Object value
 function m:StartCoroutine(methodName, value) end
----public Void StopCoroutine(String methodName)
----public Void StopCoroutine(Coroutine routine)
 ---public Void StopCoroutine(IEnumerator routine)
----@param optional IEnumerator routine
-function m:StopCoroutine(routine) end
+---public Void StopCoroutine(Coroutine routine)
+---public Void StopCoroutine(String methodName)
+---@param optional String methodName
+function m:StopCoroutine(methodName) end
 ---public Void StopAllCoroutines()
 function m:StopAllCoroutines() end
 ---public Void print(Object message)

@@ -5,11 +5,11 @@ local m = { }
 ---@return NewMap
 function m.New() end
 ---public NewMap create()
----public NewMap create(Object[] args)
 ---public NewMap create(Hashtable map)
+---public NewMap create(Object[] args)
 ---@return NewMap
----@param Hashtable map
-function m.create(map) end
+---@param Object[] args
+function m.create(args) end
 ---public NewMap put(Object[] args)
 ---public NewMap put(Object key, Object val)
 ---@return NewMap

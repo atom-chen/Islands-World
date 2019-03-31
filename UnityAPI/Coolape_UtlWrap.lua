@@ -51,12 +51,12 @@ function m.getAnimationCurve(list, postWrapMode, preWrapMode) end
 ---@param optional Single forecastDis
 function m.rotateTowardsForecast(trsf, target, forecastDis) end
 ---public Void RotateTowards(Transform trsf, Vector3 dir)
----public Void RotateTowards(Transform transform, Vector3 dir, Single turningSpeed)
 ---public Void RotateTowards(Transform trsf, Vector3 from, Vector3 to)
----@param Transform trsf
----@param optional Vector3 from
----@param optional Vector3 to
-function m.RotateTowards(trsf, from, to) end
+---public Void RotateTowards(Transform transform, Vector3 dir, Single turningSpeed)
+---@param Transform transform
+---@param optional Vector3 dir
+---@param optional Single turningSpeed
+function m.RotateTowards(transform, dir, turningSpeed) end
 ---public Vector3 getAngle(Vector3 dir)
 ---public Vector3 getAngle(Vector3 pos1, Vector3 pos2)
 ---public Vector3 getAngle(Transform tr, Vector3 pos2)
@@ -69,13 +69,13 @@ function m.getAngle(tr, pos2) end
 ---@param Transform tr
 ---@param optional Shader defaultShader
 function m.setBodyMatEdit(tr, defaultShader) end
----public Single distance(Vector3 v1, Vector3 v2)
----public Single distance(Vector2 v1, Vector2 v2)
 ---public Single distance(Transform tr1, Transform tr2)
+---public Single distance(Vector2 v1, Vector2 v2)
+---public Single distance(Vector3 v1, Vector3 v2)
 ---@return number
----@param optional Transform tr1
----@param optional Transform tr2
-function m.distance(tr1, tr2) end
+---@param optional Vector3 v1
+---@param optional Vector3 v2
+function m.distance(v1, v2) end
 ---public Single distance4Loc(Transform tr1, Transform tr2)
 ---@return number
 ---@param optional Transform tr1
@@ -122,11 +122,11 @@ function m.drawGrid(prefab, origin, numRows, numCols, cellSize, color, gridRoot,
 ---@param optional Vector3 endPos
 ---@param optional Color color
 function m.drawLine(prefab, startPos, endPos, color) end
----public GameObject cloneRes(GameObject prefab)
 ---public GameObject cloneRes(String path)
+---public GameObject cloneRes(GameObject prefab)
 ---@return GameObject
----@param optional String path
-function m.cloneRes(path) end
+---@param optional GameObject prefab
+function m.cloneRes(prefab) end
 ---public Object loadRes(String path)
 ---@return Object
 ---@param optional String path
@@ -167,11 +167,11 @@ function m.getSDCard() end
 ---@return String
 ---@param optional String path
 function m.chgToSDCard(path) end
----public String MD5Encrypt(Byte[] bytes)
 ---public String MD5Encrypt(String strText)
+---public String MD5Encrypt(Byte[] bytes)
 ---@return String
----@param optional String strText
-function m.MD5Encrypt(strText) end
+---@param optional Byte[] bytes
+function m.MD5Encrypt(bytes) end
 ---public Byte[] getUtf8bytes(String str)
 ---@return table
 ---@param optional String str
@@ -200,7 +200,7 @@ function m.getLayer(layerName) end
 ---@param optional LayerMask layer
 function m.getRaycastHitInfor(camera, inPos, layer) end
 ---public Object[] doCallback(Object callback)
----public Object[] doCallback(Object callback, Object paras)
+---public Object[] doCallback(Object callback, Object paras1)
 ---public Object[] doCallback(Object callback, Object paras1, Object paras2)
 ---public Object[] doCallback(Object callback, Object paras1, Object paras2, Object paras3)
 ---public Object[] doCallback(Object callback, Object paras1, Object paras2, Object paras3, Object paras4)

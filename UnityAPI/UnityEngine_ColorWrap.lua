@@ -37,10 +37,10 @@ function m:ToString(format) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Color other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Color other)
 ---@return bool
----@param optional Object other
+---@param optional Color other
 function m:Equals(other) end
 ---public Color op_Addition(Color a, Color b)
 ---@return Color
@@ -52,13 +52,13 @@ function m.op_Addition(a, b) end
 ---@param optional Color a
 ---@param optional Color b
 function m.op_Subtraction(a, b) end
----public Color op_Multiply(Single b, Color a)
----public Color op_Multiply(Color a, Single b)
 ---public Color op_Multiply(Color a, Color b)
+---public Color op_Multiply(Color a, Single b)
+---public Color op_Multiply(Single b, Color a)
 ---@return Color
+---@param optional Single b
 ---@param optional Color a
----@param optional Color b
-function m.op_Multiply(a, b) end
+function m.op_Multiply(b, a) end
 ---public Color op_Division(Color a, Single b)
 ---@return Color
 ---@param optional Color a
@@ -86,11 +86,11 @@ function m.Lerp(a, b, t) end
 ---@param optional Color b
 ---@param optional Single t
 function m.LerpUnclamped(a, b, t) end
----public Color op_Implicit(Vector4 v)
 ---public Vector4 op_Implicit(Color c)
----@return Color
----@param optional Color c
-function m.op_Implicit(c) end
+---public Color op_Implicit(Vector4 v)
+---@return Vector4
+---@param optional Vector4 v
+function m.op_Implicit(v) end
 ---public Void RGBToHSV(Color rgbColor, Single& H, Single& S, Single& V)
 ---@param optional Color rgbColor
 ---@param optional Single& H

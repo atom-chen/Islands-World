@@ -34,12 +34,12 @@ function m.FindCameraForLayer(layer) end
 ---@param optional Boolean considerInactive
 function m.AddWidgetCollider(go, considerInactive) end
 ---public Void UpdateWidgetCollider(GameObject go)
----public Void UpdateWidgetCollider(BoxCollider2D box, Boolean considerInactive)
----public Void UpdateWidgetCollider(BoxCollider box, Boolean considerInactive)
 ---public Void UpdateWidgetCollider(GameObject go, Boolean considerInactive)
----@param GameObject go
+---public Void UpdateWidgetCollider(BoxCollider box, Boolean considerInactive)
+---public Void UpdateWidgetCollider(BoxCollider2D box, Boolean considerInactive)
+---@param BoxCollider2D box
 ---@param optional Boolean considerInactive
-function m.UpdateWidgetCollider(go, considerInactive) end
+function m.UpdateWidgetCollider(box, considerInactive) end
 ---public String GetTypeName(Object obj)
 ---@return String
 ---@param optional Object obj
@@ -52,12 +52,12 @@ function m.RegisterUndo(obj, name) end
 ---@param optional Object obj
 function m.SetDirty(obj) end
 ---public GameObject AddChild(GameObject parent)
----public GameObject AddChild(GameObject parent, GameObject prefab)
 ---public GameObject AddChild(GameObject parent, Boolean undo)
+---public GameObject AddChild(GameObject parent, GameObject prefab)
 ---@return GameObject
 ---@param GameObject parent
----@param optional Boolean undo
-function m.AddChild(parent, undo) end
+---@param optional GameObject prefab
+function m.AddChild(parent, prefab) end
 ---public Int32 CalculateRaycastDepth(GameObject go)
 ---@return number
 ---@param optional GameObject go
@@ -82,10 +82,10 @@ function m.PushBack(go) end
 ---public Void NormalizeDepths()
 function m.NormalizeDepths() end
 ---public Void NormalizeWidgetDepths()
----public Void NormalizeWidgetDepths(UIWidget[] list)
 ---public Void NormalizeWidgetDepths(GameObject go)
----@param GameObject go
-function m.NormalizeWidgetDepths(go) end
+---public Void NormalizeWidgetDepths(UIWidget[] list)
+---@param UIWidget[] list
+function m.NormalizeWidgetDepths(list) end
 ---public Void NormalizePanelDepths()
 function m.NormalizePanelDepths() end
 ---public UIPanel CreateUI(Boolean advanced3D)
@@ -136,11 +136,11 @@ function m.SetActive(go, state, compatibilityMode) end
 ---@param optional GameObject go
 ---@param optional Boolean state
 function m.SetActiveChildren(go, state) end
----public Boolean GetActive(GameObject go)
 ---public Boolean GetActive(Behaviour mb)
+---public Boolean GetActive(GameObject go)
 ---@return bool
----@param optional Behaviour mb
-function m.GetActive(mb) end
+---@param optional GameObject go
+function m.GetActive(go) end
 ---public Void SetActiveSelf(GameObject go, Boolean state)
 ---@param optional GameObject go
 ---@param optional Boolean state
@@ -173,8 +173,8 @@ function m.ApplyPMA(c) end
 ---@param optional GameObject go
 function m.MarkParentAsChanged(go) end
 ---public Vector3[] GetSides(Camera cam)
----public Vector3[] GetSides(Camera cam, Transform relativeTo)
 ---public Vector3[] GetSides(Camera cam, Single depth)
+---public Vector3[] GetSides(Camera cam, Transform relativeTo)
 ---public Vector3[] GetSides(Camera cam, Single depth, Transform relativeTo)
 ---@return table
 ---@param Camera cam
@@ -182,8 +182,8 @@ function m.MarkParentAsChanged(go) end
 ---@param optional Transform relativeTo
 function m.GetSides(cam, depth, relativeTo) end
 ---public Vector3[] GetWorldCorners(Camera cam)
----public Vector3[] GetWorldCorners(Camera cam, Transform relativeTo)
 ---public Vector3[] GetWorldCorners(Camera cam, Single depth)
+---public Vector3[] GetWorldCorners(Camera cam, Transform relativeTo)
 ---public Vector3[] GetWorldCorners(Camera cam, Single depth, Transform relativeTo)
 ---@return table
 ---@param Camera cam

@@ -12,6 +12,7 @@
 ---@field public isActive System.Boolean
 ---@field public panel UIPanel
 ---@field public destoryDelaySec System.Int32
+---@field public mask4Hide UnityEngine.GameObject
 ---@field public isFinishLoad System.Boolean
 ---@field public isFinishInit System.Boolean
 ---@field public depth System.Int32
@@ -33,6 +34,8 @@ function m:showWithEffect(finishShowingCallback) end
 ---public Void hideWithEffect(Boolean moveOut)
 ---@param optional Boolean moveOut
 function m:hideWithEffect(moveOut) end
+---public Void finishMoveOut()
+function m:finishMoveOut() end
 ---public Void procNetwork(String fname, Int32 succ, String msg, Object pars)
 ---@param optional String fname
 ---@param optional Int32 succ

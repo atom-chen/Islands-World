@@ -16,17 +16,17 @@ function m.encodeStr(Data, Key) end
 ---@param optional Byte[] Data
 ---@param optional String Key
 function m.decodeStr(Data, Key) end
----public UInt32[] Encrypt(UInt32[] v, UInt32[] k)
 ---public Byte[] Encrypt(Byte[] Data, Byte[] Key)
+---public UInt32[] Encrypt(UInt32[] v, UInt32[] k)
 ---@return table
----@param optional Byte[] Data
----@param optional Byte[] Key
-function m.Encrypt(Data, Key) end
----public UInt32[] Decrypt(UInt32[] v, UInt32[] k)
+---@param optional UInt32[] v
+---@param optional UInt32[] k
+function m.Encrypt(v, k) end
 ---public Byte[] Decrypt(Byte[] Data, Byte[] Key)
+---public UInt32[] Decrypt(UInt32[] v, UInt32[] k)
 ---@return table
----@param optional Byte[] Data
----@param optional Byte[] Key
-function m.Decrypt(Data, Key) end
+---@param optional UInt32[] v
+---@param optional UInt32[] k
+function m.Decrypt(v, k) end
 Coolape.XXTEA = m
 return m

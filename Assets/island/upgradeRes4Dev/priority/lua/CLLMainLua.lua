@@ -54,7 +54,7 @@ do
     -- 设置是否测试环境
     if (Prefs.getTestMode()) then
         local url = Prefs.getTestModeUrl()
-        if (not isNilOrEmpty(url )) then
+        if (not isNilOrEmpty(url)) then
             CLAlert.add("Test...", Color.red, -1, 1, false)
             CLVerManager.self.baseUrl = url
         end
@@ -69,7 +69,7 @@ do
 
     -- 当离线调用
     function CLLMainLua.onOffline()
-        local ok,result = pcall(procOffLine)
+        local ok, result = pcall(procOffLine)
         if not ok then
             printe(result)
         end
@@ -81,19 +81,22 @@ do
             return
         end
         -- 退出确认
-        if (CLPanelManager.topPanel == nil or
-        (not CLPanelManager.topPanel:hideSelfOnKeyBack())) then
+        if (CLPanelManager.topPanel == nil or (not CLPanelManager.topPanel:hideSelfOnKeyBack())) then
             CLUIUtl.showConfirm(Localization.Get("MsgExitGame"), CLLMainLua.doExitGmae, nil)
         end
     end
 
     -- 退出游戏
     function CLLMainLua.doExitGmae(...)
+        __ApplicationQuit__ = true
         Application.Quit()
     end
 
     -- 暂停游戏或恢复游戏
     function CLLMainLua.OnApplicationPause(isPause)
+        if __ApplicationQuit__ then
+            return
+        end
         if (isPause) then
             --设置帧率
             Application.targetFrameRate = 1
@@ -103,17 +106,17 @@ do
             -- 设置帧率
             Application.targetFrameRate = 30
         end
-        for k,v in pairs(mApplicationPauseDelegate) do
+        for k, v in pairs(mApplicationPauseDelegate) do
             Utl.doCallback(v, isPause)
         end
     end
 
-    -- 设置应用暂停代理
+    ---@public 设置应用暂停代理
     function CLLMainLua.addApplicationPauseCallback(callback)
         mApplicationPauseDelegate[callback] = callback
     end
 
-    -- 移除应用暂停代理
+    ---@public 移除应用暂停代理
     function CLLMainLua.removeApplicationPauseCallback(callback)
         mApplicationPauseDelegate[callback] = nil
     end
@@ -127,8 +130,7 @@ do
     end
     --=========================================
     function CLLMainLua.showPanelStart()
-        if (CLPanelManager.topPanel ~= nil and
-        CLPanelManager.topPanel.name == "PanelStart") then
+        if (CLPanelManager.topPanel ~= nil and CLPanelManager.topPanel.name == "PanelStart") then
             CLPanelManager.topPanel:show()
         else
             --异步方式打开页面
@@ -156,12 +158,15 @@ do
                 CLMainBase.self:invoke4Lua(CLLMainLua.showPanelStart, 0.2)
             else
                 -- 先执行一次热更新，注意isdoUpgrade=False,因为如果更新splash的atalse资源时，会用到
-                CLLVerManager.init(nil,
-                function()
-                    --主初始化完后，打开下一个页面
-                    CLMainBase.self:invoke4Lua(CLLMainLua.showPanelStart, 0.1)
-                end,
-                false, "")
+                CLLVerManager.init(
+                    nil,
+                    function()
+                        --主初始化完后，打开下一个页面
+                        CLMainBase.self:invoke4Lua(CLLMainLua.showPanelStart, 0.1)
+                    end,
+                    false,
+                    ""
+                )
             end
         end
     end

@@ -4,7 +4,7 @@ IDLGridTileSide.StateEnum = {
     none = 0,
     showing = 1,
     hidden = 2,
-    procing = 3,
+    procing = 3
 }
 IDLGridTileSide.state = IDLGridTileSide.StateEnum.none
 local cache = {}
@@ -13,33 +13,34 @@ local tileSides = {}
 local tileAngleSides = {}
 local selectedTileState = {}
 
-local SidesName = { TileSideDown1 = "Tiles.TileSideDown1",
-                    TileSideDown2 = "Tiles.TileSideDown2",
-                    TileSideDown3 = "Tiles.TileSideDown3",
-                    TileSideDown4 = "Tiles.TileSideDown4",
-                    TileSideLeft1 = "Tiles.TileSideLeft1",
-                    TileSideLeft2 = "Tiles.TileSideLeft2",
-                    TileSideLeft3 = "Tiles.TileSideLeft3",
-                    TileSideLeft4 = "Tiles.TileSideLeft4",
-                    TileSideLeftDown = "Tiles.TileSideLeftDown",
-                    TileSideLeftDownAngle = "Tiles.TileSideLeftDownAngle",
-                    TileSideLeftUp = "Tiles.TileSideLeftUp",
-                    TileSideLeftUpAngle = "Tiles.TileSideLeftUpAngle",
-                    TileSideRight1 = "Tiles.TileSideRight1",
-                    TileSideRight2 = "Tiles.TileSideRight2",
-                    TileSideRight3 = "Tiles.TileSideRight3",
-                    TileSideRight4 = "Tiles.TileSideRight4",
-                    TileSideRightDown = "Tiles.TileSideRightDown",
-                    TileSideRightDownAngle = "Tiles.TileSideRightDownAngle",
-                    TileSideRightUp = "Tiles.TileSideRightUp",
-                    TileSideRightUpAngle = "Tiles.TileSideRightUpAngle",
-                    TileSideUp1 = "Tiles.TileSideUp1",
-                    TileSideUp2 = "Tiles.TileSideUp2",
-                    TileSideUp3 = "Tiles.TileSideUp3",
-                    TileSideUp4 = "Tiles.TileSideUp4",
-                    TileSideFour = "Tiles.TileSideFour",
-                    TileSideConnectLeft = "Tiles.TileSideConnectLeft",
-                    TileSideConnectRight = "Tiles.TileSideConnectRight",
+local SidesName = {
+    TileSideDown1 = "Tiles.TileSideDown1",
+    TileSideDown2 = "Tiles.TileSideDown2",
+    TileSideDown3 = "Tiles.TileSideDown3",
+    TileSideDown4 = "Tiles.TileSideDown4",
+    TileSideLeft1 = "Tiles.TileSideLeft1",
+    TileSideLeft2 = "Tiles.TileSideLeft2",
+    TileSideLeft3 = "Tiles.TileSideLeft3",
+    TileSideLeft4 = "Tiles.TileSideLeft4",
+    TileSideLeftDown = "Tiles.TileSideLeftDown",
+    TileSideLeftDownAngle = "Tiles.TileSideLeftDownAngle",
+    TileSideLeftUp = "Tiles.TileSideLeftUp",
+    TileSideLeftUpAngle = "Tiles.TileSideLeftUpAngle",
+    TileSideRight1 = "Tiles.TileSideRight1",
+    TileSideRight2 = "Tiles.TileSideRight2",
+    TileSideRight3 = "Tiles.TileSideRight3",
+    TileSideRight4 = "Tiles.TileSideRight4",
+    TileSideRightDown = "Tiles.TileSideRightDown",
+    TileSideRightDownAngle = "Tiles.TileSideRightDownAngle",
+    TileSideRightUp = "Tiles.TileSideRightUp",
+    TileSideRightUpAngle = "Tiles.TileSideRightUpAngle",
+    TileSideUp1 = "Tiles.TileSideUp1",
+    TileSideUp2 = "Tiles.TileSideUp2",
+    TileSideUp3 = "Tiles.TileSideUp3",
+    TileSideUp4 = "Tiles.TileSideUp4",
+    TileSideFour = "Tiles.TileSideFour",
+    TileSideConnectLeft = "Tiles.TileSideConnectLeft",
+    TileSideConnectRight = "Tiles.TileSideConnectRight"
 }
 
 local WaveName = {
@@ -68,7 +69,7 @@ local WaveName = {
     [SidesName.TileSideUp3] = "Tiles.TileSideUpWave3",
     [SidesName.TileSideUp4] = "Tiles.TileSideUpWave4",
     [SidesName.TileSideConnectLeft] = "Tiles.TileSideConnectLeftWave",
-    [SidesName.TileSideConnectRight] = "Tiles.TileSideConnectRightWave",
+    [SidesName.TileSideConnectRight] = "Tiles.TileSideConnectRightWave"
 }
 local prefabSides = {}
 
@@ -90,6 +91,7 @@ function IDLGridTileSide.init(grid, waveUvAn)
     cache.waveUvAn.singleY = 1
 end
 
+---@public 隐藏边（只隐藏，不释放）
 function IDLGridTileSide.hide()
     if IDLGridTileSide.state == IDLGridTileSide.StateEnum.showing then
         for k, v in pairs(tileSides) do
@@ -100,6 +102,7 @@ function IDLGridTileSide.hide()
     end
 end
 
+---@public 显示边，如果还没有加载过则调用refreshAndShow方法把边加载了显示出来
 function IDLGridTileSide.show()
     if IDLGridTileSide.state == IDLGridTileSide.StateEnum.none then
         IDLGridTileSide.refreshAndShow()
@@ -114,13 +117,15 @@ function IDLGridTileSide.show()
     end
 end
 
----@public 显示地块的边缘
+---@public 根据地块加载地块的四周的边缘
 function IDLGridTileSide.refreshAndShow(callback)
     IDLGridTileSide.clean()
     IDLGridTileSide.state = IDLGridTileSide.StateEnum.procing
 
     CLMaterialPool.setPrefab("Tiles.bolang", IDLGridTileSide.onSetMaterial, callback)
 end
+
+---@public 加载海浪的material
 function IDLGridTileSide.onSetMaterial(material, orgs)
     cache.waveUvAn.material = material
     cache.waveUvAn.isStop = false
@@ -160,7 +165,7 @@ function IDLGridTileSide.dorefreshAndShow(callback)
 end
 
 function IDLGridTileSide.loadSidePrefab(callback, orgs)
-    IDLGridTileSide.doLoadSidePrefab({ i = 1, callback = callback, orgs = orgs })
+    IDLGridTileSide.doLoadSidePrefab({i = 1, callback = callback, orgs = orgs})
 end
 
 function IDLGridTileSide.doLoadSidePrefab(param)
@@ -171,10 +176,14 @@ function IDLGridTileSide.doLoadSidePrefab(param)
         end
         return
     end
-    CLThingsPool.setPrefab(prefabSides[i], function()
-        param.i = i + 1
-        IDLGridTileSide.doLoadSidePrefab(param)
-    end, nil)
+    CLThingsPool.setPrefab(
+        prefabSides[i],
+        function()
+            param.i = i + 1
+            IDLGridTileSide.doLoadSidePrefab(param)
+        end,
+        nil
+    )
 end
 
 function IDLGridTileSide.getLeftSide(index)
@@ -208,7 +217,8 @@ function IDLGridTileSide.procOneCellSilde(tile)
             return
         end
     end
-    local left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown = tile.getSidesIndex()
+    local left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown =
+        tile.getSidesIndex()
     IDLGridTileSide.setLeftSilde(left1)
     IDLGridTileSide.setLeftSilde(left2)
     IDLGridTileSide.setRightSilde(right1)
@@ -298,7 +308,8 @@ function IDLGridTileSide.setUpSilde(index)
         local leftIsempty = IDLGridTileSide.isEmpty(grid:LeftIndex(_index))
         local rightIsempty = IDLGridTileSide.isEmpty(grid:RightIndex(_index))
         if upIsempty and leftIsempty and rightIsempty then
-            sideName = IDLGridTileSide.getUpSide(_index)--SidesName.TileSideUp
+            --SidesName.TileSideUp
+            sideName = IDLGridTileSide.getUpSide(_index)
         elseif (not upIsempty) and leftIsempty and rightIsempty then
             sideName = SidesName.TileSideFour
         elseif upIsempty and (not leftIsempty) and rightIsempty then
@@ -331,7 +342,8 @@ function IDLGridTileSide.setDownSilde(index)
         local leftIsempty = IDLGridTileSide.isEmpty(grid:LeftIndex(_index))
         local rightIsempty = IDLGridTileSide.isEmpty(grid:RightIndex(_index))
         if downIsempty and leftIsempty and rightIsempty then
-            sideName = IDLGridTileSide.getDownSide(_index)--SidesName.TileSideDown
+            --SidesName.TileSideDown
+            sideName = IDLGridTileSide.getDownSide(_index)
         elseif (not downIsempty) and leftIsempty and rightIsempty then
             sideName = SidesName.TileSideFour
         elseif downIsempty and (not leftIsempty) and rightIsempty then
@@ -406,7 +418,8 @@ function IDLGridTileSide.setLeftUpAngle(index)
         elseif (not upIsFourSide) and (not downIsFourSide) and leftIsFourSide and (not rightIsFourSide) then
             sideName = SidesName.TileSideRightDown
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and rightIsFourSide then
-            sideName = IDLGridTileSide.getLeftSide(_index)--SidesName.TileSideUp
+            --SidesName.TileSideUp
+            sideName = IDLGridTileSide.getLeftSide(_index)
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
             local _leftUpIsEmpty = IDLGridTileSide.isEmpty(grid:LeftUpIndex(_index))
             if _leftUpIsEmpty then
@@ -436,7 +449,8 @@ function IDLGridTileSide.setLeftUpAngle(index)
         elseif (not upIsFourSide) and leftIsFourSide and (not rightIsFourSide) then
             sideName = SidesName.TileSideRightUp
         elseif (not upIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
-            sideName = IDLGridTileSide.getUpSide(_index)-- SidesName.TileSideUp
+            -- SidesName.TileSideUp
+            sideName = IDLGridTileSide.getUpSide(_index)
         else
             sideName = SidesName.TileSideFour
         end
@@ -682,7 +696,8 @@ function IDLGridTileSide.setRightUpAngle(index)
         elseif upIsFourSide and (not downIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
             sideName = SidesName.TileSideRightDown
         elseif (not upIsFourSide) and downIsFourSide and (not leftIsFourSide) and (not rightIsFourSide) then
-            sideName = IDLGridTileSide.getUpSide(_index)--SidesName.TileSideUp
+            --SidesName.TileSideUp
+            sideName = IDLGridTileSide.getUpSide(_index)
         elseif (not upIsFourSide) and (not downIsFourSide) and leftIsFourSide and (not rightIsFourSide) then
             sideName = IDLGridTileSide.getRightSide(_index)
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and rightIsFourSide then
@@ -716,7 +731,8 @@ function IDLGridTileSide.setRightUpAngle(index)
         elseif (not upIsFourSide) and leftIsFourSide and (not rightIsFourSide) then
             sideName = SidesName.TileSideRightUp
         elseif (not upIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
-            sideName = IDLGridTileSide.getUpSide(_index)-- SidesName.TileSideUp
+            -- SidesName.TileSideUp
+            sideName = IDLGridTileSide.getUpSide(_index)
         else
             sideName = SidesName.TileSideFour
         end
@@ -951,15 +967,18 @@ function IDLGridTileSide.isFourSide(index)
     return false
 end
 
-function IDLGridTileSide.isNeedSet (index)
+function IDLGridTileSide.isNeedSet(index)
     if (not cache.grid:IsInBounds(index)) or cache.gridState4Tile[index] or selectedTileState[index] or tileSides[index] then
         return false
     end
     return true
 end
 
-function IDLGridTileSide.isNeedSetAngel (index)
-    if (not cache.grid:IsInBounds(index)) or cache.gridState4Tile[index] or selectedTileState[index] or tileAngleSides[index] then
+function IDLGridTileSide.isNeedSetAngel(index)
+    if
+        (not cache.grid:IsInBounds(index)) or cache.gridState4Tile[index] or selectedTileState[index] or
+            tileAngleSides[index]
+     then
         return false
     end
     return true
@@ -972,7 +991,7 @@ function IDLGridTileSide.isEmpty(index)
     return false
 end
 
----@public inddex是否在沙滩上
+---@public index是否在沙滩上
 function IDLGridTileSide.isOnTheBeach(index)
     if tileSides[index] then
         return true

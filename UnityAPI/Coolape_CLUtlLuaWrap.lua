@@ -1,5 +1,4 @@
----@class Coolape.CLUtlLua : UnityEngine.MonoBehaviour
----@field public isFinishAddLoader System.Boolean
+---@class Coolape.CLUtlLua
 ---@field public FileBytesCacheMap System.Collections.Hashtable
 
 local m = { }

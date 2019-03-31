@@ -16,14 +16,14 @@
 
 local m = { }
 ---public WWW .ctor(String url)
----public WWW .ctor(String url, Byte[] postData)
 ---public WWW .ctor(String url, WWWForm form)
----public WWW .ctor(String url, Byte[] postData, Dictionary`2 headers)
+---public WWW .ctor(String url, Byte[] postData)
 ---public WWW .ctor(String url, Byte[] postData, Hashtable headers)
+---public WWW .ctor(String url, Byte[] postData, Dictionary`2 headers)
 ---@return WWW
 ---@param String url
 ---@param Byte[] postData
----@param optional Hashtable headers
+---@param optional Dictionary`2 headers
 function m.New(url, postData, headers) end
 ---public String EscapeURL(String s)
 ---public String EscapeURL(String s, Encoding e)
@@ -37,16 +37,16 @@ function m.EscapeURL(s, e) end
 ---@param String s
 ---@param optional Encoding e
 function m.UnEscapeURL(s, e) end
----public WWW LoadFromCacheOrDownload(String url, Hash128 hash)
 ---public WWW LoadFromCacheOrDownload(String url, Int32 version)
----public WWW LoadFromCacheOrDownload(String url, CachedAssetBundle cachedBundle, UInt32 crc)
----public WWW LoadFromCacheOrDownload(String url, Hash128 hash, UInt32 crc)
+---public WWW LoadFromCacheOrDownload(String url, Hash128 hash)
 ---public WWW LoadFromCacheOrDownload(String url, Int32 version, UInt32 crc)
+---public WWW LoadFromCacheOrDownload(String url, Hash128 hash, UInt32 crc)
+---public WWW LoadFromCacheOrDownload(String url, CachedAssetBundle cachedBundle, UInt32 crc)
 ---@return WWW
 ---@param String url
----@param optional Int32 version
+---@param optional CachedAssetBundle cachedBundle
 ---@param optional UInt32 crc
-function m.LoadFromCacheOrDownload(url, version, crc) end
+function m.LoadFromCacheOrDownload(url, cachedBundle, crc) end
 ---public Void LoadImageIntoTexture(Texture2D texture)
 ---@param optional Texture2D texture
 function m:LoadImageIntoTexture(texture) end

@@ -1,5 +1,6 @@
 ---@class Coolape.CLMaterialPool : Coolape.CLAssetsPoolBase`1[[UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLMaterialPool
+---@field public isAutoReleaseAssetBundle System.Boolean
 ---@field public materialTexRefCfgPath System.String
 ---@field public materialTexRefCfg System.Collections.Hashtable
 
@@ -60,6 +61,9 @@ function m:sepcProc4Assets(mat, cb, args, progressCB) end
 ---@param optional Object cb
 ---@param optional Object args
 function m.resetTexRef(matName, mat, cb, args) end
+---public Void doresetTexRef(NewList inputs)
+---@param optional NewList inputs
+function m.doresetTexRef(inputs) end
 ---public Void onGetTexture(Object[] paras)
 ---@param optional Object[] paras
 function m.onGetTexture(paras) end

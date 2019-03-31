@@ -18,11 +18,11 @@ function m:regain() end
 ---public Void setSpeedAdd(Single addSpeed)
 ---@param optional Single addSpeed
 function m:setSpeedAdd(addSpeed) end
----public Void setAction(Int32 actionValue, Object onCompleteMotion)
 ---public Void setAction(Action action, Object onCompleteMotion)
----@param optional Action action
+---public Void setAction(Int32 actionValue, Object onCompleteMotion)
+---@param optional Int32 actionValue
 ---@param optional Object onCompleteMotion
-function m:setAction(action, onCompleteMotion) end
+function m:setAction(actionValue, onCompleteMotion) end
 ---public Void doSetActionWithCallback(Int32 actionValue, ArrayList progressCallbackInfor)
 ---@param optional Int32 actionValue
 ---@param optional ArrayList progressCallbackInfor

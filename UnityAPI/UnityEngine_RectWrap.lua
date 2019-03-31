@@ -37,8 +37,8 @@ function m.MinMaxRect(xmin, ymin, xmax, ymax) end
 ---@param optional Single width
 ---@param optional Single height
 function m:Set(x, y, width, height) end
----public Boolean Contains(Vector3 point)
 ---public Boolean Contains(Vector2 point)
+---public Boolean Contains(Vector3 point)
 ---public Boolean Contains(Vector3 point, Boolean allowInverse)
 ---@return bool
 ---@param Vector3 point
@@ -73,10 +73,10 @@ function m.op_Equality(lhs, rhs) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Rect other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Rect other)
 ---@return bool
----@param optional Object other
+---@param optional Rect other
 function m:Equals(other) end
 ---public String ToString()
 ---public String ToString(String format)

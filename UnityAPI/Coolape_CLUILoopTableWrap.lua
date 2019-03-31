@@ -18,8 +18,10 @@ function m:setOldClip(oldClipOffset, oldScrollViewPos, oldGridPosition) end
 function m:resetClip() end
 ---public Void refreshContentOnly()
 ---public Void refreshContentOnly(Object data)
+---public Void refreshContentOnly(Object data, Boolean isRePositionTable)
 ---@param Object data
-function m:refreshContentOnly(data) end
+---@param Boolean isRePositionTable
+function m:refreshContentOnly(data, isRePositionTable) end
 ---public Void setList(Object data, Object initCellCallback)
 ---public Void setList(Object data, Object initCellCallback, Object onEndListCallback)
 ---public Void setList(Object data, Object initCellCallback, Object onEndListCallback, Boolean isNeedRePosition)

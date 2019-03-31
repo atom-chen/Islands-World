@@ -2,6 +2,7 @@
 ---@field public self Coolape.SoundEx
 ---@field public mainAudio UnityEngine.AudioSource
 ---@field public singletonAudio UnityEngine.AudioSource
+---@field public OnSwitchChangeCallbacks Coolape.CLDelegate
 ---@field public mainClip UnityEngine.AudioClip
 ---@field public soundEffectSwitch System.Boolean
 ---@field public musicBgSwitch System.Boolean
@@ -15,12 +16,13 @@ function m.New() end
 ---@param optional Single volume
 ---@param optional Object callback
 function m.PlaySoundWithCallback(clip, volume, callback) end
----public Void playSound(AudioClip clip, Single volume, Int32 maxTimes)
+---public Void playSound(String name)
 ---public Void playSound(String name, Single volume, Int32 maxTimes)
----@param optional String name
----@param optional Single volume
+---public Void playSound(AudioClip clip, Single volume, Int32 maxTimes)
+---@param AudioClip clip
+---@param Single volume
 ---@param optional Int32 maxTimes
-function m.playSound(name, volume, maxTimes) end
+function m.playSound(clip, volume, maxTimes) end
 ---public Void doPlaySound(AudioClip clip, Single volume, Int32 maxTimes)
 ---@param optional AudioClip clip
 ---@param optional Single volume
@@ -33,9 +35,20 @@ function m.onFinishSetAudio(args) end
 ---@param optional String name
 ---@param optional Single volume
 function m.playSoundSingleton(name, volume) end
----public Void onFinishSetAudio4Singleton(Object[] args)
----@param optional Object[] args
-function m.onFinishSetAudio4Singleton(args) end
+---public Void addCallbackOnSoundEffectSwitch(Object callback)
+---@param optional Object callback
+function m.addCallbackOnSoundEffectSwitch(callback) end
+---public Void removeCallbackOnSoundEffectSwitch(Object callback)
+---@param optional Object callback
+function m.removeCallbackOnSoundEffectSwitch(callback) end
+---public Void addCallbackOnMusicBgSwitch(Object callback)
+---@param optional Object callback
+function m.addCallbackOnMusicBgSwitch(callback) end
+---public Void removeCallbackOnMusicBgSwitch(Object callback)
+---@param optional Object callback
+function m.removeCallbackOnMusicBgSwitch(callback) end
+---public Void clean()
+function m.clean() end
 ---public Void playSound2(String clipName, Single volume)
 ---@param optional String clipName
 ---@param optional Single volume

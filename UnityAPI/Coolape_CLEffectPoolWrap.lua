@@ -1,5 +1,6 @@
 ---@class Coolape.CLEffectPool : Coolape.CLAssetsPoolBase`1[[Coolape.CLEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLEffectPool
+---@field public isAutoReleaseAssetBundle System.Boolean
 
 local m = { }
 ---public CLEffectPool .ctor()

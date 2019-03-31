@@ -12,18 +12,18 @@ local m = { }
 ---@param String name
 ---@param optional Byte[] asset
 function m.Load(name, asset) end
----public Void Set(String key, String value)
----public Void Set(String languageName, Dictionary`2 dictionary)
 ---public Void Set(String languageName, Byte[] bytes)
----@param optional String languageName
----@param optional Byte[] bytes
-function m.Set(languageName, bytes) end
----public Boolean LoadCSV(Byte[] bytes, Boolean merge)
+---public Void Set(String languageName, Dictionary`2 dictionary)
+---public Void Set(String key, String value)
+---@param optional String key
+---@param optional String value
+function m.Set(key, value) end
 ---public Boolean LoadCSV(TextAsset asset, Boolean merge)
+---public Boolean LoadCSV(Byte[] bytes, Boolean merge)
 ---@return bool
----@param optional TextAsset asset
+---@param optional Byte[] bytes
 ---@param optional Boolean merge
-function m.LoadCSV(asset, merge) end
+function m.LoadCSV(bytes, merge) end
 ---public Void append(String languageName, Byte[] asset)
 ---@param optional String languageName
 ---@param optional Byte[] asset

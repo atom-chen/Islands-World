@@ -96,18 +96,18 @@ function m.newList() end
 ---@param optional ArrayList list
 ---@param optional Int32 v
 function m.containsIntVal(list, v) end
----public Boolean withIn(Int32[] list, Int32 v)
 ---public Boolean withIn(ArrayList list, Object v)
+---public Boolean withIn(Int32[] list, Int32 v)
 ---@return bool
----@param optional ArrayList list
----@param optional Object v
+---@param optional Int32[] list
+---@param optional Int32 v
 function m.withIn(list, v) end
----public String Next(String[] arrays)
----public Int32 Next(Int32[] arrays)
 ---public Object Next(ArrayList list)
----@return String
----@param optional ArrayList list
-function m.Next(list) end
+---public Int32 Next(Int32[] arrays)
+---public String Next(String[] arrays)
+---@return Object
+---@param optional String[] arrays
+function m.Next(arrays) end
 ---public ArrayList Next2(ArrayList list)
 ---@return ArrayList
 ---@param optional ArrayList list

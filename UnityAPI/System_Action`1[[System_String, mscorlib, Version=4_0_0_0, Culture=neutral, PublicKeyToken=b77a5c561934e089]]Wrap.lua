@@ -1,4 +1,4 @@
----@class System.Action`1[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] : System.MulticastDelegate
+---@class System.Action`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] : System.MulticastDelegate
 
 local m = { }
 ---public Action`1 .ctor(Object object, IntPtr method)
@@ -18,5 +18,5 @@ function m:BeginInvoke(obj, callback, object) end
 ---public Void EndInvoke(IAsyncResult result)
 ---@param optional IAsyncResult result
 function m:EndInvoke(result) end
-System.Action`1[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] = m
+System.Action`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] = m
 return m

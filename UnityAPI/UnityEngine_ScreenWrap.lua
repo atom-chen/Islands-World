@@ -18,8 +18,8 @@ local m = { }
 ---public Screen .ctor()
 ---@return Screen
 function m.New() end
----public Void SetResolution(Int32 width, Int32 height, Boolean fullscreen)
 ---public Void SetResolution(Int32 width, Int32 height, FullScreenMode fullscreenMode)
+---public Void SetResolution(Int32 width, Int32 height, Boolean fullscreen)
 ---public Void SetResolution(Int32 width, Int32 height, FullScreenMode fullscreenMode, Int32 preferredRefreshRate)
 ---public Void SetResolution(Int32 width, Int32 height, Boolean fullscreen, Int32 preferredRefreshRate)
 ---@param Int32 width

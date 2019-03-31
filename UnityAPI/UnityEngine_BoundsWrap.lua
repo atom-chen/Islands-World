@@ -14,10 +14,10 @@ function m.New(center, size) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Bounds other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Bounds other)
 ---@return bool
----@param optional Object other
+---@param optional Bounds other
 function m:Equals(other) end
 ---public Boolean op_Equality(Bounds lhs, Bounds rhs)
 ---@return bool
@@ -33,13 +33,13 @@ function m.op_Inequality(lhs, rhs) end
 ---@param optional Vector3 min
 ---@param optional Vector3 max
 function m:SetMinMax(min, max) end
----public Void Encapsulate(Bounds bounds)
 ---public Void Encapsulate(Vector3 point)
----@param optional Vector3 point
-function m:Encapsulate(point) end
----public Void Expand(Vector3 amount)
+---public Void Encapsulate(Bounds bounds)
+---@param optional Bounds bounds
+function m:Encapsulate(bounds) end
 ---public Void Expand(Single amount)
----@param optional Single amount
+---public Void Expand(Vector3 amount)
+---@param optional Vector3 amount
 function m:Expand(amount) end
 ---public Boolean Intersects(Bounds bounds)
 ---@return bool

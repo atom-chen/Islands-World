@@ -106,9 +106,6 @@ function m.setSpriteFit(sprite, sprName, maxSize) end
 ---public Void onGetSprite(Object[] paras)
 ---@param optional Object[] paras
 function m.onGetSprite(paras) end
----public Void onGetSprite2(Object[] paras)
----@param optional Object[] paras
-function m.onGetSprite2(paras) end
 ---public Void setAllSpriteGray(GameObject gobj, Boolean isGray)
 ---@param optional GameObject gobj
 ---@param optional Boolean isGray

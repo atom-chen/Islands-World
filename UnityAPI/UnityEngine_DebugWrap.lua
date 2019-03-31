@@ -72,13 +72,13 @@ function m.LogWarning(message, context) end
 ---@param optional Object[] args
 function m.LogWarningFormat(context, format, args) end
 ---public Void Assert(Boolean condition)
----public Void Assert(Boolean condition, String message)
----public Void Assert(Boolean condition, Object message)
 ---public Void Assert(Boolean condition, Object context)
----public Void Assert(Boolean condition, String message, Object context)
+---public Void Assert(Boolean condition, Object message)
+---public Void Assert(Boolean condition, String message)
 ---public Void Assert(Boolean condition, Object message, Object context)
+---public Void Assert(Boolean condition, String message, Object context)
 ---@param Boolean condition
----@param Object message
+---@param String message
 ---@param optional Object context
 function m.Assert(condition, message, context) end
 ---public Void AssertFormat(Boolean condition, String format, Object[] args)

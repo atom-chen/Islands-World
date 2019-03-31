@@ -3,6 +3,7 @@
 ---@field public depth System.Int32
 ---@field public currRenderQueue System.Int32
 ---@field public isSharedMaterial System.Boolean
+---@field public isForceUpdateSetRenderQueue System.Boolean
 ---@field public panel UIPanel
 ---@field public mDepth System.Int32
 ---@field public mWidget UIWidget
@@ -13,6 +14,10 @@ local m = { }
 function m.New() end
 ---public Void Start()
 function m:Start() end
+---public Void reset()
+---public Void reset(Boolean forceUpdate)
+---@param Boolean forceUpdate
+function m:reset(forceUpdate) end
 ---public Void setRenderQueueExe()
 function m:setRenderQueueExe() end
 ---public Void setRenderQueue(Boolean isForce)

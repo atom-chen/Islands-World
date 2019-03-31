@@ -1,6 +1,7 @@
 ---@class UnityEngine.SkinnedMeshRenderer : UnityEngine.Renderer
 ---@field public quality UnityEngine.SkinQuality
 ---@field public updateWhenOffscreen System.Boolean
+---@field public forceMatrixRecalculationPerRender System.Boolean
 ---@field public rootBone UnityEngine.Transform
 ---@field public bones UnityEngine.Transform
 ---@field public sharedMesh UnityEngine.Mesh

@@ -55,10 +55,10 @@ function m:Scale(a, b) end
 ---public Int32 GetHashCode()
 ---@return number
 function m:GetHashCode() end
----public Boolean Equals(Vector4 other)
 ---public Boolean Equals(Object other)
+---public Boolean Equals(Vector4 other)
 ---@return bool
----@param optional Object other
+---@param optional Vector4 other
 function m:Equals(other) end
 ---public Void Normalize()
 ---public Vector4 Normalize(Vector4 a)
@@ -107,12 +107,12 @@ function m.op_Subtraction(a, b) end
 ---@return Vector4
 ---@param optional Vector4 a
 function m.op_UnaryNegation(a) end
----public Vector4 op_Multiply(Single d, Vector4 a)
 ---public Vector4 op_Multiply(Vector4 a, Single d)
+---public Vector4 op_Multiply(Single d, Vector4 a)
 ---@return Vector4
----@param optional Vector4 a
 ---@param optional Single d
-function m.op_Multiply(a, d) end
+---@param optional Vector4 a
+function m.op_Multiply(d, a) end
 ---public Vector4 op_Division(Vector4 a, Single d)
 ---@return Vector4
 ---@param optional Vector4 a
@@ -128,10 +128,10 @@ function m.op_Equality(lhs, rhs) end
 ---@param optional Vector4 lhs
 ---@param optional Vector4 rhs
 function m.op_Inequality(lhs, rhs) end
----public Vector4 op_Implicit(Vector2 v)
----public Vector2 op_Implicit(Vector4 v)
 ---public Vector4 op_Implicit(Vector3 v)
 ---public Vector3 op_Implicit(Vector4 v)
+---public Vector4 op_Implicit(Vector2 v)
+---public Vector2 op_Implicit(Vector4 v)
 ---@return Vector4
 ---@param optional Vector4 v
 function m.op_Implicit(v) end

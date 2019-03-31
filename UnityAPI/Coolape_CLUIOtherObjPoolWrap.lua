@@ -1,5 +1,6 @@
 ---@class Coolape.CLUIOtherObjPool : Coolape.CLAssetsPoolBase`1[[UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLUIOtherObjPool
+---@field public isAutoReleaseAssetBundle System.Boolean
 
 local m = { }
 ---public CLUIOtherObjPool .ctor()

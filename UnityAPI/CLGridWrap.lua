@@ -8,6 +8,7 @@
 ---@field public OffsetY System.Single
 ---@field public RowOffsetX System.Single
 ---@field public OffsetZ System.Single
+---@field public gridLineHight System.Single
 ---@field public showGrid System.Boolean
 ---@field public showGridRange System.Boolean
 ---@field public grid Coolape.GridBase

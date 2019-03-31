@@ -9,6 +9,7 @@
 ---@field public hotUpgrade4EachServer System.Boolean
 ---@field public isDirectEntry System.Boolean
 ---@field public isEditMode System.Boolean
+---@field public isUnityEditor System.Boolean
 
 local m = { }
 ---public CLCfgBase .ctor()

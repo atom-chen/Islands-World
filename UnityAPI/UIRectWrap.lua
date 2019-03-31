@@ -35,8 +35,8 @@ function m:GetSides(relativeTo) end
 function m:Update() end
 ---public Void UpdateAnchors()
 function m:UpdateAnchors() end
----public Void SetAnchor(GameObject go)
 ---public Void SetAnchor(Transform t)
+---public Void SetAnchor(GameObject go)
 ---public Void SetAnchor(GameObject go, Int32 left, Int32 bottom, Int32 right, Int32 top)
 ---@param GameObject go
 ---@param Int32 left

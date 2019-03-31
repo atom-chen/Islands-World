@@ -8,8 +8,8 @@
 
 local m = { }
 ---public MemoryStream .ctor()
----public MemoryStream .ctor(Byte[] buffer)
 ---public MemoryStream .ctor(Int32 capacity)
+---public MemoryStream .ctor(Byte[] buffer)
 ---public MemoryStream .ctor(Byte[] buffer, Boolean writable)
 ---public MemoryStream .ctor(Byte[] buffer, Int32 index, Int32 count)
 ---public MemoryStream .ctor(Byte[] buffer, Int32 index, Int32 count, Boolean writable)
@@ -23,18 +23,39 @@ local m = { }
 function m.New(buffer, index, count, writable, publiclyVisible) end
 ---public Void Flush()
 function m:Flush() end
+---public Task FlushAsync(CancellationToken cancellationToken)
+---@return Task
+---@param optional CancellationToken cancellationToken
+function m:FlushAsync(cancellationToken) end
 ---public Byte[] GetBuffer()
 ---@return table
 function m:GetBuffer() end
+---public Boolean TryGetBuffer(ArraySegment`1& buffer)
+---@return bool
+---@param optional ArraySegment`1& buffer
+function m:TryGetBuffer(buffer) end
 ---public Int32 Read(Byte[] buffer, Int32 offset, Int32 count)
 ---@return number
 ---@param optional Byte[] buffer
 ---@param optional Int32 offset
 ---@param optional Int32 count
 function m:Read(buffer, offset, count) end
+---public Task`1 ReadAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
+---@return Task`1
+---@param optional Byte[] buffer
+---@param optional Int32 offset
+---@param optional Int32 count
+---@param optional CancellationToken cancellationToken
+function m:ReadAsync(buffer, offset, count, cancellationToken) end
 ---public Int32 ReadByte()
 ---@return number
 function m:ReadByte() end
+---public Task CopyToAsync(Stream destination, Int32 bufferSize, CancellationToken cancellationToken)
+---@return Task
+---@param optional Stream destination
+---@param optional Int32 bufferSize
+---@param optional CancellationToken cancellationToken
+function m:CopyToAsync(destination, bufferSize, cancellationToken) end
 ---public Int64 Seek(Int64 offset, SeekOrigin loc)
 ---@return long
 ---@param optional Int64 offset
@@ -51,6 +72,13 @@ function m:ToArray() end
 ---@param optional Int32 offset
 ---@param optional Int32 count
 function m:Write(buffer, offset, count) end
+---public Task WriteAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
+---@return Task
+---@param optional Byte[] buffer
+---@param optional Int32 offset
+---@param optional Int32 count
+---@param optional CancellationToken cancellationToken
+function m:WriteAsync(buffer, offset, count, cancellationToken) end
 ---public Void WriteByte(Byte value)
 ---@param optional Byte value
 function m:WriteByte(value) end

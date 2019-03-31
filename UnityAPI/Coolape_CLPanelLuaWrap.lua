@@ -8,6 +8,9 @@ function m.New() end
 function m:reLoadLua() end
 ---public Void setLua()
 function m:setLua() end
+---public Void OnApplicationPause(Boolean isPause)
+---@param optional Boolean isPause
+function m:OnApplicationPause(isPause) end
 ---public Void OnDestroy()
 function m:OnDestroy() end
 ---public Void onTopPanelChange(CLPanelBase p)

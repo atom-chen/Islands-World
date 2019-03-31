@@ -23,6 +23,7 @@
 ---@field public cloudProjectId System.String
 ---@field public targetFrameRate System.Int32
 ---@field public systemLanguage UnityEngine.SystemLanguage
+---@field public consoleLogPath System.String
 ---@field public backgroundLoadingPriority UnityEngine.ThreadPriority
 ---@field public internetReachability UnityEngine.NetworkReachability
 ---@field public genuine System.Boolean
@@ -34,14 +35,20 @@ local m = { }
 ---@return Application
 function m.New() end
 ---public Void Quit()
-function m.Quit() end
+---public Void Quit(Int32 exitCode)
+---@param Int32 exitCode
+function m.Quit(exitCode) end
 ---public Void Unload()
 function m.Unload() end
----public Boolean CanStreamedLevelBeLoaded(String levelName)
 ---public Boolean CanStreamedLevelBeLoaded(Int32 levelIndex)
+---public Boolean CanStreamedLevelBeLoaded(String levelName)
 ---@return bool
----@param optional Int32 levelIndex
-function m.CanStreamedLevelBeLoaded(levelIndex) end
+---@param optional String levelName
+function m.CanStreamedLevelBeLoaded(levelName) end
+---public Boolean IsPlaying(Object obj)
+---@return bool
+---@param optional Object obj
+function m.IsPlaying(obj) end
 ---public String[] GetBuildTags()
 ---@return table
 function m.GetBuildTags() end
@@ -98,6 +105,12 @@ function m.add_onBeforeRender(value) end
 ---public Void remove_onBeforeRender(UnityAction value)
 ---@param optional UnityAction value
 function m.remove_onBeforeRender(value) end
+---public Void add_focusChanged(Action`1 value)
+---@param optional Action`1 value
+function m.add_focusChanged(value) end
+---public Void remove_focusChanged(Action`1 value)
+---@param optional Action`1 value
+function m.remove_focusChanged(value) end
 ---public Void add_wantsToQuit(Func`1 value)
 ---@param optional Func`1 value
 function m.add_wantsToQuit(value) end

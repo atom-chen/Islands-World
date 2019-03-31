@@ -15,8 +15,8 @@ local m = { }
 function m.New() end
 ---public Void add(Object msg)
 ---public Void add(Object msg, Color color, Single delayTime)
----public Void add(Object msg, Color color, Single scaleOffset, Vector3 posOffset)
 ---public Void add(Object msg, Color color, Single delayTime, Single scaleOffset)
+---public Void add(Object msg, Color color, Single scaleOffset, Vector3 posOffset)
 ---public Void add(Object msg, Color color, Single delayTime, Single scaleOffset, Boolean needBackGround, Vector3 posOffset)
 ---@param Object msg
 ---@param Color color

@@ -5,6 +5,7 @@
 ---@field public poolMap System.Collections.Hashtable
 ---@field public prefabMap System.Collections.Hashtable
 ---@field public isSettingPrefabMap System.Collections.Hashtable
+---@field public isAutoReleaseAssetBundle System.Boolean
 
 local m = { }
 ---public Void _clean()

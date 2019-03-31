@@ -10,10 +10,6 @@ local m = { }
 ---@return Stack
 ---@param ICollection col
 function m.New(col) end
----public Stack Synchronized(Stack stack)
----@return Stack
----@param optional Stack stack
-function m.Synchronized(stack) end
 ---public Void Clear()
 function m:Clear() end
 ---public Object Clone()
@@ -39,6 +35,10 @@ function m:Pop() end
 ---public Void Push(Object obj)
 ---@param optional Object obj
 function m:Push(obj) end
+---public Stack Synchronized(Stack stack)
+---@return Stack
+---@param optional Stack stack
+function m.Synchronized(stack) end
 ---public Object[] ToArray()
 ---@return table
 function m:ToArray() end

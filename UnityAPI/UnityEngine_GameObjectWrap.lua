@@ -20,10 +20,10 @@ function m.New(name, components) end
 ---@return GameObject
 ---@param optional PrimitiveType t
 function m.CreatePrimitive(type) end
----public Component GetComponent(String t)
 ---public Component GetComponent(Type t)
+---public Component GetComponent(String t)
 ---@return Component
----@param optional Type t
+---@param optional String t
 function m:GetComponent(type) end
 ---public Component GetComponentInChildren(Type t)
 ---public Component GetComponentInChildren(Type t, Boolean includeInactive)
@@ -58,24 +58,24 @@ function m:GetComponentsInParent(type, includeInactive) end
 ---@param optional String tag
 function m.FindWithTag(tag) end
 ---public Void SendMessageUpwards(String methodName)
----public Void SendMessageUpwards(String methodName, Object value)
 ---public Void SendMessageUpwards(String methodName, SendMessageOptions options)
+---public Void SendMessageUpwards(String methodName, Object value)
 ---public Void SendMessageUpwards(String methodName, Object value, SendMessageOptions options)
 ---@param String methodName
 ---@param Object value
 ---@param optional SendMessageOptions options
 function m:SendMessageUpwards(methodName, value, options) end
 ---public Void SendMessage(String methodName)
----public Void SendMessage(String methodName, Object value)
 ---public Void SendMessage(String methodName, SendMessageOptions options)
+---public Void SendMessage(String methodName, Object value)
 ---public Void SendMessage(String methodName, Object value, SendMessageOptions options)
 ---@param String methodName
 ---@param Object value
 ---@param optional SendMessageOptions options
 function m:SendMessage(methodName, value, options) end
 ---public Void BroadcastMessage(String methodName)
----public Void BroadcastMessage(String methodName, Object parameter)
 ---public Void BroadcastMessage(String methodName, SendMessageOptions options)
+---public Void BroadcastMessage(String methodName, Object parameter)
 ---public Void BroadcastMessage(String methodName, Object parameter, SendMessageOptions options)
 ---@param String methodName
 ---@param Object parameter

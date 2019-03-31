@@ -5,6 +5,8 @@ do
     require("public.CLLPool")
 
     BioUtl = {}
+
+    ---@type LuaB2InputStream
     local inputStreemPool
     local outputStreemPool
 

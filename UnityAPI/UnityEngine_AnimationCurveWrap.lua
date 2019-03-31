@@ -53,5 +53,13 @@ function m.Linear(timeStart, valueStart, timeEnd, valueEnd) end
 ---@param optional Single timeEnd
 ---@param optional Single valueEnd
 function m.EaseInOut(timeStart, valueStart, timeEnd, valueEnd) end
+---public Boolean Equals(Object o)
+---public Boolean Equals(AnimationCurve other)
+---@return bool
+---@param optional AnimationCurve other
+function m:Equals(other) end
+---public Int32 GetHashCode()
+---@return number
+function m:GetHashCode() end
 UnityEngine.AnimationCurve = m
 return m

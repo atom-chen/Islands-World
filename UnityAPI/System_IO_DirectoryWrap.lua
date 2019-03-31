@@ -1,6 +1,58 @@
 ---@class System.IO.Directory
 
 local m = { }
+---public String[] GetFiles(String path)
+---public String[] GetFiles(String path, String searchPattern)
+---public String[] GetFiles(String path, String searchPattern, SearchOption searchOption)
+---@return table
+---@param String path
+---@param String searchPattern
+---@param optional SearchOption searchOption
+function m.GetFiles(path, searchPattern, searchOption) end
+---public String[] GetDirectories(String path)
+---public String[] GetDirectories(String path, String searchPattern)
+---public String[] GetDirectories(String path, String searchPattern, SearchOption searchOption)
+---@return table
+---@param String path
+---@param String searchPattern
+---@param optional SearchOption searchOption
+function m.GetDirectories(path, searchPattern, searchOption) end
+---public String[] GetFileSystemEntries(String path)
+---public String[] GetFileSystemEntries(String path, String searchPattern)
+---public String[] GetFileSystemEntries(String path, String searchPattern, SearchOption searchOption)
+---@return table
+---@param String path
+---@param String searchPattern
+---@param optional SearchOption searchOption
+function m.GetFileSystemEntries(path, searchPattern, searchOption) end
+---public IEnumerable`1 EnumerateDirectories(String path)
+---public IEnumerable`1 EnumerateDirectories(String path, String searchPattern)
+---public IEnumerable`1 EnumerateDirectories(String path, String searchPattern, SearchOption searchOption)
+---@return IEnumerable`1
+---@param String path
+---@param String searchPattern
+---@param optional SearchOption searchOption
+function m.EnumerateDirectories(path, searchPattern, searchOption) end
+---public IEnumerable`1 EnumerateFiles(String path)
+---public IEnumerable`1 EnumerateFiles(String path, String searchPattern)
+---public IEnumerable`1 EnumerateFiles(String path, String searchPattern, SearchOption searchOption)
+---@return IEnumerable`1
+---@param String path
+---@param String searchPattern
+---@param optional SearchOption searchOption
+function m.EnumerateFiles(path, searchPattern, searchOption) end
+---public IEnumerable`1 EnumerateFileSystemEntries(String path)
+---public IEnumerable`1 EnumerateFileSystemEntries(String path, String searchPattern)
+---public IEnumerable`1 EnumerateFileSystemEntries(String path, String searchPattern, SearchOption searchOption)
+---@return IEnumerable`1
+---@param String path
+---@param String searchPattern
+---@param optional SearchOption searchOption
+function m.EnumerateFileSystemEntries(path, searchPattern, searchOption) end
+---public String GetDirectoryRoot(String path)
+---@return String
+---@param optional String path
+function m.GetDirectoryRoot(path) end
 ---public DirectoryInfo CreateDirectory(String path)
 ---public DirectoryInfo CreateDirectory(String path, DirectorySecurity directorySecurity)
 ---@return DirectoryInfo
@@ -43,32 +95,6 @@ function m.GetCreationTimeUtc(path) end
 ---public String GetCurrentDirectory()
 ---@return String
 function m.GetCurrentDirectory() end
----public String[] GetDirectories(String path)
----public String[] GetDirectories(String path, String searchPattern)
----public String[] GetDirectories(String path, String searchPattern, SearchOption searchOption)
----@return table
----@param String path
----@param String searchPattern
----@param optional SearchOption searchOption
-function m.GetDirectories(path, searchPattern, searchOption) end
----public String GetDirectoryRoot(String path)
----@return String
----@param optional String path
-function m.GetDirectoryRoot(path) end
----public String[] GetFiles(String path)
----public String[] GetFiles(String path, String searchPattern)
----public String[] GetFiles(String path, String searchPattern, SearchOption searchOption)
----@return table
----@param String path
----@param String searchPattern
----@param optional SearchOption searchOption
-function m.GetFiles(path, searchPattern, searchOption) end
----public String[] GetFileSystemEntries(String path)
----public String[] GetFileSystemEntries(String path, String searchPattern)
----@return table
----@param String path
----@param optional String searchPattern
-function m.GetFileSystemEntries(path, searchPattern) end
 ---public String[] GetLogicalDrives()
 ---@return table
 function m.GetLogicalDrives() end

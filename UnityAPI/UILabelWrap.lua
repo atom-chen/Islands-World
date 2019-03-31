@@ -55,26 +55,26 @@ function m:ProcessText() end
 function m:MakePixelPerfect() end
 ---public Void AssumeNaturalSize()
 function m:AssumeNaturalSize() end
----public Int32 GetCharacterIndexAtPosition(Vector2 localPos, Boolean precise)
 ---public Int32 GetCharacterIndexAtPosition(Vector3 worldPos, Boolean precise)
+---public Int32 GetCharacterIndexAtPosition(Vector2 localPos, Boolean precise)
 ---@return number
----@param optional Vector3 worldPos
+---@param optional Vector2 localPos
 ---@param optional Boolean precise
-function m:GetCharacterIndexAtPosition(worldPos, precise) end
----public String GetWordAtPosition(Vector2 localPos)
+function m:GetCharacterIndexAtPosition(localPos, precise) end
 ---public String GetWordAtPosition(Vector3 worldPos)
+---public String GetWordAtPosition(Vector2 localPos)
 ---@return String
----@param optional Vector3 worldPos
-function m:GetWordAtPosition(worldPos) end
+---@param optional Vector2 localPos
+function m:GetWordAtPosition(localPos) end
 ---public String GetWordAtCharacterIndex(Int32 characterIndex)
 ---@return String
 ---@param optional Int32 characterIndex
 function m:GetWordAtCharacterIndex(characterIndex) end
----public String GetUrlAtPosition(Vector2 localPos)
 ---public String GetUrlAtPosition(Vector3 worldPos)
+---public String GetUrlAtPosition(Vector2 localPos)
 ---@return String
----@param optional Vector3 worldPos
-function m:GetUrlAtPosition(worldPos) end
+---@param optional Vector2 localPos
+function m:GetUrlAtPosition(localPos) end
 ---public String GetUrlAtCharacterIndex(Int32 characterIndex)
 ---@return String
 ---@param optional Int32 characterIndex

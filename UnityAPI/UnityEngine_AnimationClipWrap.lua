@@ -7,6 +7,10 @@
 ---@field public legacy System.Boolean
 ---@field public humanMotion System.Boolean
 ---@field public empty System.Boolean
+---@field public hasGenericRootTransform System.Boolean
+---@field public hasMotionFloatCurves System.Boolean
+---@field public hasMotionCurves System.Boolean
+---@field public hasRootCurves System.Boolean
 
 local m = { }
 ---public AnimationClip .ctor()

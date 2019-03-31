@@ -147,10 +147,10 @@ function m.newMap() end
 ---@return Hashtable
 ---@param optional Object[] kv
 function m.createKvs(kv) end
----public NewMap putKvs(NewMap map, Object[] kv)
 ---public Hashtable putKvs(Hashtable map, Object[] kv)
----@return NewMap
----@param optional Hashtable map
+---public NewMap putKvs(NewMap map, Object[] kv)
+---@return Hashtable
+---@param optional NewMap map
 ---@param optional Object[] kv
 function m.putKvs(map, kv) end
 ---public Boolean isNull(Hashtable map)

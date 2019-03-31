@@ -8,10 +8,10 @@ function m.New() end
 ---@return table
 ---@param optional Int32 v
 function m.toBytes(v) end
----public Void WriteByte(Stream os, Byte v)
 ---public Void WriteByte(Stream os, Int32 v)
+---public Void WriteByte(Stream os, Byte v)
 ---@param optional Stream os
----@param optional Int32 v
+---@param optional Byte v
 function m.WriteByte(os, v) end
 ---public Void writeNull(Stream os)
 ---@param optional Stream os
@@ -28,10 +28,10 @@ function m.writeByte(os, v) end
 ---@param optional Stream os
 ---@param optional Int32 v
 function m.writeShort(os, v) end
----public Void writeB2Int(Stream os, Int32 v)
 ---public Void writeB2Int(Stream os, B2Int v)
+---public Void writeB2Int(Stream os, Int32 v)
 ---@param optional Stream os
----@param optional B2Int v
+---@param optional Int32 v
 function m.writeB2Int(os, v) end
 ---public Void writeInt(Stream os, Int32 v)
 ---@param optional Stream os

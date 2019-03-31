@@ -34,52 +34,43 @@ function m:initStreamingAssetsPackge(onFinisInitStreaming) end
 ---@return Hashtable
 ---@param optional Byte[] buffer
 function m:toMap(buffer) end
----public Void getNewestRes4Lua(String path, CLAssetType t, Object onGetAsset, Object originals)
+---public Void getNewestRes4Lua(String path, CLAssetType t, Object onGetAsset, Boolean autoRealseAB, Object originals)
 ---@param optional String path
 ---@param optional CLAssetType t
 ---@param optional Object onGetAsset
+---@param optional Boolean autoRealseAB
 ---@param optional Object originals
-function m:getNewestRes4Lua(path, type, onGetAsset, originals) end
----public Void getNewestRes(String path, CLAssetType t, Object onGetAsset, Object[] originals)
+function m:getNewestRes4Lua(path, type, onGetAsset, autoRealseAB, originals) end
+---public Void getNewestRes(String path, CLAssetType t, Object onGetAsset, Boolean autoRealseAB, Object[] originals)
 ---@param optional String path
 ---@param optional CLAssetType t
 ---@param optional Object onGetAsset
+---@param optional Boolean autoRealseAB
 ---@param optional Object[] originals
-function m:getNewestRes(path, type, onGetAsset, originals) end
----public Void setWWWListner(Object addWWWcb, Object rmWWWcb)
----@param optional Object addWWWcb
----@param optional Object rmWWWcb
-function m:setWWWListner(addWWWcb, rmWWWcb) end
----public Void addWWW(WWW www, String path, String url)
----@param optional WWW www
----@param optional String path
----@param optional String url
-function m:addWWW(www, path, url) end
----public Void rmWWW(String url)
----@param optional String url
-function m:rmWWW(url) end
----public IEnumerator doGetContent(String path, String url, Boolean needSave, CLAssetType t, Object onGetAsset, Object[] originals)
----@return IEnumerator
----@param optional String path
----@param optional String url
----@param optional Boolean needSave
----@param optional CLAssetType t
----@param optional Object onGetAsset
----@param optional Object[] originals
-function m:doGetContent(path, url, needSave, type, onGetAsset, originals) end
----public Void onGetNewstRes(WWW www, String url, String path, CLAssetType t, Object content, Boolean needSave, Object onGetAsset, Object[] originals)
----@param optional WWW www
+function m:getNewestRes(path, type, onGetAsset, autoRealseAB, originals) end
+---public Void onGetNewstRes(UnityWebRequest www, String url, String path, CLAssetType t, Object content, Boolean needSave, Object onGetAsset, Boolean autoRealseAB, Object[] originals)
+---@param optional UnityWebRequest www
 ---@param optional String url
 ---@param optional String path
 ---@param optional CLAssetType t
 ---@param optional Object content
 ---@param optional Boolean needSave
 ---@param optional Object onGetAsset
+---@param optional Boolean autoRealseAB
 ---@param optional Object[] originals
-function m:onGetNewstRes(www, url, path, type, content, needSave, onGetAsset, originals) end
----public Void onGetNewstResTimeOut(Object[] args)
----@param optional Object[] args
-function m:onGetNewstResTimeOut(args) end
+function m:onGetNewstRes(www, url, path, type, content, needSave, onGetAsset, autoRealseAB, originals) end
+---public Void setWWWListner(Object addWWWcb, Object rmWWWcb)
+---@param optional Object addWWWcb
+---@param optional Object rmWWWcb
+function m:setWWWListner(addWWWcb, rmWWWcb) end
+---public Void addWWW(UnityWebRequest www, String path, String url)
+---@param optional UnityWebRequest www
+---@param optional String path
+---@param optional String url
+function m:addWWW(www, path, url) end
+---public Void rmWWW(String url)
+---@param optional String url
+function m:rmWWW(url) end
 ---public Texture getAtalsTexture4Edit(String path)
 ---@return Texture
 ---@param optional String path

@@ -26,115 +26,115 @@ function m.WarmupAllShaders() end
 ---@return number
 ---@param optional String name
 function m.PropertyToID(name) end
----public Void SetGlobalFloat(Int32 nameID, Single value)
 ---public Void SetGlobalFloat(String name, Single value)
----@param optional String name
+---public Void SetGlobalFloat(Int32 nameID, Single value)
+---@param optional Int32 nameID
 ---@param optional Single value
-function m.SetGlobalFloat(name, value) end
----public Void SetGlobalInt(Int32 nameID, Int32 value)
+function m.SetGlobalFloat(nameID, value) end
 ---public Void SetGlobalInt(String name, Int32 value)
----@param optional String name
+---public Void SetGlobalInt(Int32 nameID, Int32 value)
+---@param optional Int32 nameID
 ---@param optional Int32 value
-function m.SetGlobalInt(name, value) end
----public Void SetGlobalVector(Int32 nameID, Vector4 value)
+function m.SetGlobalInt(nameID, value) end
 ---public Void SetGlobalVector(String name, Vector4 value)
----@param optional String name
+---public Void SetGlobalVector(Int32 nameID, Vector4 value)
+---@param optional Int32 nameID
 ---@param optional Vector4 value
-function m.SetGlobalVector(name, value) end
----public Void SetGlobalColor(Int32 nameID, Color value)
+function m.SetGlobalVector(nameID, value) end
 ---public Void SetGlobalColor(String name, Color value)
----@param optional String name
+---public Void SetGlobalColor(Int32 nameID, Color value)
+---@param optional Int32 nameID
 ---@param optional Color value
-function m.SetGlobalColor(name, value) end
----public Void SetGlobalMatrix(Int32 nameID, Matrix4x4 value)
+function m.SetGlobalColor(nameID, value) end
 ---public Void SetGlobalMatrix(String name, Matrix4x4 value)
----@param optional String name
+---public Void SetGlobalMatrix(Int32 nameID, Matrix4x4 value)
+---@param optional Int32 nameID
 ---@param optional Matrix4x4 value
-function m.SetGlobalMatrix(name, value) end
----public Void SetGlobalTexture(Int32 nameID, Texture value)
+function m.SetGlobalMatrix(nameID, value) end
 ---public Void SetGlobalTexture(String name, Texture value)
----@param optional String name
+---public Void SetGlobalTexture(Int32 nameID, Texture value)
+---@param optional Int32 nameID
 ---@param optional Texture value
-function m.SetGlobalTexture(name, value) end
----public Void SetGlobalBuffer(Int32 nameID, ComputeBuffer value)
+function m.SetGlobalTexture(nameID, value) end
 ---public Void SetGlobalBuffer(String name, ComputeBuffer value)
----@param optional String name
+---public Void SetGlobalBuffer(Int32 nameID, ComputeBuffer value)
+---@param optional Int32 nameID
 ---@param optional ComputeBuffer value
-function m.SetGlobalBuffer(name, value) end
----public Void SetGlobalFloatArray(String name, Single[] values)
----public Void SetGlobalFloatArray(Int32 nameID, Single[] values)
+function m.SetGlobalBuffer(nameID, value) end
 ---public Void SetGlobalFloatArray(String name, List`1 values)
 ---public Void SetGlobalFloatArray(Int32 nameID, List`1 values)
+---public Void SetGlobalFloatArray(String name, Single[] values)
+---public Void SetGlobalFloatArray(Int32 nameID, Single[] values)
 ---@param optional Int32 nameID
----@param optional List`1 values
+---@param optional Single[] values
 function m.SetGlobalFloatArray(nameID, values) end
----public Void SetGlobalVectorArray(String name, Vector4[] values)
----public Void SetGlobalVectorArray(Int32 nameID, Vector4[] values)
 ---public Void SetGlobalVectorArray(String name, List`1 values)
 ---public Void SetGlobalVectorArray(Int32 nameID, List`1 values)
+---public Void SetGlobalVectorArray(String name, Vector4[] values)
+---public Void SetGlobalVectorArray(Int32 nameID, Vector4[] values)
 ---@param optional Int32 nameID
----@param optional List`1 values
+---@param optional Vector4[] values
 function m.SetGlobalVectorArray(nameID, values) end
----public Void SetGlobalMatrixArray(String name, Matrix4x4[] values)
----public Void SetGlobalMatrixArray(Int32 nameID, Matrix4x4[] values)
 ---public Void SetGlobalMatrixArray(String name, List`1 values)
 ---public Void SetGlobalMatrixArray(Int32 nameID, List`1 values)
+---public Void SetGlobalMatrixArray(String name, Matrix4x4[] values)
+---public Void SetGlobalMatrixArray(Int32 nameID, Matrix4x4[] values)
 ---@param optional Int32 nameID
----@param optional List`1 values
+---@param optional Matrix4x4[] values
 function m.SetGlobalMatrixArray(nameID, values) end
----public Single GetGlobalFloat(Int32 nameID)
 ---public Single GetGlobalFloat(String name)
+---public Single GetGlobalFloat(Int32 nameID)
 ---@return number
----@param optional String name
-function m.GetGlobalFloat(name) end
----public Int32 GetGlobalInt(Int32 nameID)
+---@param optional Int32 nameID
+function m.GetGlobalFloat(nameID) end
 ---public Int32 GetGlobalInt(String name)
+---public Int32 GetGlobalInt(Int32 nameID)
 ---@return number
----@param optional String name
-function m.GetGlobalInt(name) end
----public Vector4 GetGlobalVector(Int32 nameID)
+---@param optional Int32 nameID
+function m.GetGlobalInt(nameID) end
 ---public Vector4 GetGlobalVector(String name)
+---public Vector4 GetGlobalVector(Int32 nameID)
 ---@return Vector4
----@param optional String name
-function m.GetGlobalVector(name) end
----public Color GetGlobalColor(Int32 nameID)
+---@param optional Int32 nameID
+function m.GetGlobalVector(nameID) end
 ---public Color GetGlobalColor(String name)
+---public Color GetGlobalColor(Int32 nameID)
 ---@return Color
----@param optional String name
-function m.GetGlobalColor(name) end
----public Matrix4x4 GetGlobalMatrix(Int32 nameID)
+---@param optional Int32 nameID
+function m.GetGlobalColor(nameID) end
 ---public Matrix4x4 GetGlobalMatrix(String name)
+---public Matrix4x4 GetGlobalMatrix(Int32 nameID)
 ---@return Matrix4x4
----@param optional String name
-function m.GetGlobalMatrix(name) end
----public Texture GetGlobalTexture(Int32 nameID)
+---@param optional Int32 nameID
+function m.GetGlobalMatrix(nameID) end
 ---public Texture GetGlobalTexture(String name)
+---public Texture GetGlobalTexture(Int32 nameID)
 ---@return Texture
----@param optional String name
-function m.GetGlobalTexture(name) end
----public Single[] GetGlobalFloatArray(Int32 nameID)
+---@param optional Int32 nameID
+function m.GetGlobalTexture(nameID) end
 ---public Single[] GetGlobalFloatArray(String name)
----public Void GetGlobalFloatArray(Int32 nameID, List`1 values)
+---public Single[] GetGlobalFloatArray(Int32 nameID)
 ---public Void GetGlobalFloatArray(String name, List`1 values)
+---public Void GetGlobalFloatArray(Int32 nameID, List`1 values)
 ---@return table
----@param String name
+---@param Int32 nameID
 ---@param optional List`1 values
-function m.GetGlobalFloatArray(name, values) end
----public Vector4[] GetGlobalVectorArray(Int32 nameID)
+function m.GetGlobalFloatArray(nameID, values) end
 ---public Vector4[] GetGlobalVectorArray(String name)
----public Void GetGlobalVectorArray(Int32 nameID, List`1 values)
+---public Vector4[] GetGlobalVectorArray(Int32 nameID)
 ---public Void GetGlobalVectorArray(String name, List`1 values)
+---public Void GetGlobalVectorArray(Int32 nameID, List`1 values)
 ---@return table
----@param String name
+---@param Int32 nameID
 ---@param optional List`1 values
-function m.GetGlobalVectorArray(name, values) end
----public Matrix4x4[] GetGlobalMatrixArray(Int32 nameID)
+function m.GetGlobalVectorArray(nameID, values) end
 ---public Matrix4x4[] GetGlobalMatrixArray(String name)
----public Void GetGlobalMatrixArray(Int32 nameID, List`1 values)
+---public Matrix4x4[] GetGlobalMatrixArray(Int32 nameID)
 ---public Void GetGlobalMatrixArray(String name, List`1 values)
+---public Void GetGlobalMatrixArray(Int32 nameID, List`1 values)
 ---@return table
----@param String name
+---@param Int32 nameID
 ---@param optional List`1 values
-function m.GetGlobalMatrixArray(name, values) end
+function m.GetGlobalMatrixArray(nameID, values) end
 UnityEngine.Shader = m
 return m

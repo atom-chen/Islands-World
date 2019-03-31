@@ -22,8 +22,8 @@ function m:Equals(other) end
 function m.op_Implicit(exists) end
 ---public Object Instantiate(Object original)
 ---public Object Instantiate(Object original, Transform parent)
----public Object Instantiate(Object original, Transform parent, Boolean instantiateInWorldSpace)
 ---public Object Instantiate(Object original, Vector3 position, Quaternion rotation)
+---public Object Instantiate(Object original, Transform parent, Boolean instantiateInWorldSpace)
 ---public Object Instantiate(Object original, Vector3 position, Quaternion rotation, Transform parent)
 ---@return Object
 ---@param Object original

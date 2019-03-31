@@ -8,6 +8,7 @@
 ---@field public lightProbeUsage UnityEngine.Rendering.LightProbeUsage
 ---@field public reflectionProbeUsage UnityEngine.Rendering.ReflectionProbeUsage
 ---@field public renderingLayerMask System.UInt32
+---@field public rendererPriority System.Int32
 ---@field public sortingLayerName System.String
 ---@field public sortingLayerID System.Int32
 ---@field public sortingOrder System.Int32

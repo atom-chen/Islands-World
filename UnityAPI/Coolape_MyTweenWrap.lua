@@ -23,8 +23,8 @@ local m = { }
 function m.New() end
 ---public Void flyout(Vector3 toPos, Single speed, Single ihight, Object onMovingCallback, Object finishCallback, Boolean isWoldPos)
 ---public Void flyout(Vector3 toPos, Single speed, Single ihight, Single angleOffset, Object onMovingCallback, Object finishCallback, Boolean isWoldPos)
----public Void flyout(Vector3 toPos, Single speed, Single ihight, Single angleOffset, Object onMovingCallback, Object finishCallback, Object orgs, Boolean isWoldPos)
 ---public Void flyout(Vector3 dir, Single distance, Single speed, Single hight, Single angleOffset, Object onMovingCallback, Object finishCallback, Boolean isWoldPos)
+---public Void flyout(Vector3 toPos, Single speed, Single ihight, Single angleOffset, Object onMovingCallback, Object finishCallback, Object orgs, Boolean isWoldPos)
 ---public Void flyout(Vector3 dirFrom, Vector3 dirTo, Single distance, Single speed, Single hight, Single angleOffset, Object onMovingCallback, Object finishCallback, Boolean isWoldPos)
 ---@param Vector3 dirFrom
 ---@param Vector3 dirTo

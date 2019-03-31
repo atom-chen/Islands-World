@@ -1,6 +1,7 @@
 ---@class Coolape.CLJoystick : UIEventListener
 ---@field public joystickUI UnityEngine.Transform
 ---@field public joystickMoveDis System.Single
+---@field public mainCamera Coolape.MyMainCamera
 
 local m = { }
 ---public CLJoystick .ctor()

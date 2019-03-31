@@ -30,21 +30,21 @@ function m:SetParent(parent, worldPositionStays) end
 ---@param optional Quaternion rotation
 function m:SetPositionAndRotation(position, rotation) end
 ---public Void Translate(Vector3 translation)
----public Void Translate(Vector3 translation, Transform relativeTo)
 ---public Void Translate(Vector3 translation, Space relativeTo)
+---public Void Translate(Vector3 translation, Transform relativeTo)
 ---public Void Translate(Single x, Single y, Single z)
----public Void Translate(Single x, Single y, Single z, Transform relativeTo)
 ---public Void Translate(Single x, Single y, Single z, Space relativeTo)
+---public Void Translate(Single x, Single y, Single z, Transform relativeTo)
 ---@param Single x
 ---@param Single y
 ---@param Single z
----@param optional Space relativeTo
+---@param optional Transform relativeTo
 function m:Translate(x, y, z, relativeTo) end
 ---public Void Rotate(Vector3 eulers)
----public Void Rotate(Vector3 axis, Single angle)
 ---public Void Rotate(Vector3 eulers, Space relativeTo)
----public Void Rotate(Vector3 axis, Single angle, Space relativeTo)
+---public Void Rotate(Vector3 axis, Single angle)
 ---public Void Rotate(Single xAngle, Single yAngle, Single zAngle)
+---public Void Rotate(Vector3 axis, Single angle, Space relativeTo)
 ---public Void Rotate(Single xAngle, Single yAngle, Single zAngle, Space relativeTo)
 ---@param Single xAngle
 ---@param Single yAngle
@@ -56,8 +56,8 @@ function m:Rotate(xAngle, yAngle, zAngle, relativeTo) end
 ---@param optional Vector3 axis
 ---@param optional Single angle
 function m:RotateAround(point, axis, angle) end
----public Void LookAt(Vector3 worldPosition)
 ---public Void LookAt(Transform target)
+---public Void LookAt(Vector3 worldPosition)
 ---public Void LookAt(Transform target, Vector3 worldUp)
 ---public Void LookAt(Vector3 worldPosition, Vector3 worldUp)
 ---@param Vector3 worldPosition
