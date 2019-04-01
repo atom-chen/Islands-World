@@ -118,18 +118,17 @@ function IDLGridTileSide.show()
 end
 
 ---@public 根据地块加载地块的四周的边缘
-function IDLGridTileSide.refreshAndShow(callback)
+function IDLGridTileSide.refreshAndShow(callback, progressCB)
     IDLGridTileSide.clean()
     IDLGridTileSide.state = IDLGridTileSide.StateEnum.procing
 
-    CLMaterialPool.setPrefab("Tiles.bolang", IDLGridTileSide.onSetMaterial, callback)
+    CLMaterialPool.setPrefab("Tiles.bolang", IDLGridTileSide.onSetMaterial, {callback, progressCB})
 end
 
 ---@public 加载海浪的material
 function IDLGridTileSide.onSetMaterial(material, orgs)
     cache.waveUvAn.material = material
     cache.waveUvAn.isStop = false
-    local callback = orgs
 
     selectedTileState = {}
     if IDMainCity.selectedUnit and IDMainCity.selectedUnit.isTile then
@@ -146,10 +145,14 @@ function IDLGridTileSide.onSetMaterial(material, orgs)
     end
 
     cache.gridState4Tile = IDMainCity.getState4Tile()
-    IDLGridTileSide.loadSidePrefab(IDLGridTileSide.dorefreshAndShow, callback)
+    IDLGridTileSide.loadSidePrefab(IDLGridTileSide.dorefreshAndShow, orgs)
 end
 
-function IDLGridTileSide.dorefreshAndShow(callback)
+---@orgs table 第一个是回调函数，第二个进度回调函数
+function IDLGridTileSide.dorefreshAndShow(orgs)
+    local callback = orgs[1]
+    local progressCB = orgs[2]
+
     local tiles = IDMainCity.getTiles()
     for k, tile in pairs(tiles) do
         IDLGridTileSide.procOneCellSilde(tile)
@@ -158,6 +161,7 @@ function IDLGridTileSide.dorefreshAndShow(callback)
     for k, tile in pairs(tiles) do
         IDLGridTileSide.procOneCellSildeAngle(tile)
     end
+    
     IDLGridTileSide.state = IDLGridTileSide.StateEnum.showing
     if callback then
         callback()
