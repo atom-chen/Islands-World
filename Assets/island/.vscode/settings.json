@@ -1,6 +1,14 @@
 {
     "files.exclude": {
-        "**/.meta": true
+        "**/.meta": true,
+        "**/.png": true,
+        "**/.prefab": true
     },
-    "editor.fontSize": 14
+    "editor.fontSize": 14,
+    "files.watcherExclude": {
+        "**/upgradeRes4Publish/**": true
+    },
+    "search.exclude": {
+        "**/upgradeRes4Publish": true
+    }
 }

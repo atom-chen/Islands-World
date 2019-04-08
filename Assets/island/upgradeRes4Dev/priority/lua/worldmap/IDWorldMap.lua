@@ -99,6 +99,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
         IDWorldMap.loadPagesData()
 
         IDMainCity.init(
+                nil,
                 function()
                     onFinishCallback()
                     smoothFollow:tween(Vector2(20, 100), Vector2(10, 15), 2.5, nil, IDWorldMap.onScaleGround)

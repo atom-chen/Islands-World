@@ -39,7 +39,7 @@ function IDWorldMapPage:releaseCellWithNoData()
     local data = IDDBWorldMap.getDataByPageIdx(self.pageIdx)
     if data and data.map then
         for k,v in pairs(self.mapCells) do
-            -- todo:如果不是系统配置的地块，那如果在data.map里没有找到数据，说明该地块已经为空闲了，可以移除改地块上的对象
+            -- todo:如果不是系统配置的地块，那如果在data.map里没有找到数据，说明该地块已经为空闲了，可以移除该地块上的对象
         end
     end
 end
@@ -59,7 +59,7 @@ function IDWorldMapPage:loadEachCell(orgs)
         return
     end
     ---@type IDWorldTile
-    local cellLua = mapCells[idx]
+    local cellLua = self.mapCells[idx]
     local type = bio2number(d.type)
     if cellLua and cellLua.type ~= type then
         -- 不是同一个类型
@@ -70,6 +70,7 @@ function IDWorldMapPage:loadEachCell(orgs)
         cellLua = nil
     end
     if cellLua then
+        -- 说明该地块正好有对象
         cellLua:init(cellLua.csSelf, idx, type, d)
         InvokeEx.invoke(self:wrapFunction4CS(self.loadEachCell), { i = i + 1, cells = cells }, 0)
     else

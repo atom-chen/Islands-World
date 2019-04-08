@@ -16,6 +16,7 @@ local tiles = {}
 local buildings = {}
 local gridState4Tile = {}
 local gridState4Building = {}
+IDMainCity.cityData = nil -- 城的数据
 IDMainCity.selectedUnit = nil
 IDMainCity.newBuildUnit = nil
 IDMainCity.buildingProc = nil
@@ -83,9 +84,14 @@ local function _init()
     IDMainCity.astar4Worker.transform.parent = transform
 end
 
-function IDMainCity.init(onFinishCallback, onProgress)
+function IDMainCity.init(cityData, onFinishCallback, onProgress)
     _init()
 
+    if cityData then
+        IDMainCity.cityData = cityData
+    else
+        IDMainCity.cityData = IDDBCity.curCity
+    end
     finishCallback = onFinishCallback
     progressCallback = onProgress
 
@@ -96,7 +102,7 @@ function IDMainCity.init(onFinishCallback, onProgress)
     ocean = IDWorldMap.ocean
     oceanTransform = IDWorldMap.oceanTransform
 
-    local gridIndex = bio2number(IDDBCity.curCity.pos)
+    local gridIndex = bio2number(IDMainCity.cityData.pos)
     transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
 
     -- 屏幕拖动代理
@@ -278,7 +284,7 @@ end
 ---@public 加载地块
 function IDMainCity.loadTiles(cb)
     local list = {}
-    local tiles = IDDBCity.curCity.tiles
+    local tiles = IDMainCity.cityData.tiles
     for idx, v in pairs(tiles) do
         table.insert(list, v)
     end
@@ -324,7 +330,7 @@ function IDMainCity.onLoadTile(name, obj, orgs)
 end
 
 function IDMainCity.loadBuildings(cb)
-    local bs = IDDBCity.curCity.buildings
+    local bs = IDMainCity.cityData.buildings
     ---@type IDDBBuilding
     local dbBuilding
     local list = {}
@@ -509,6 +515,7 @@ function IDMainCity.clean()
     gridState4Building = {}
     gridState4Tile = {}
     buildingsCount = {}
+    IDMainCity.cityData = nil
 end
 
 function IDMainCity.destory()
