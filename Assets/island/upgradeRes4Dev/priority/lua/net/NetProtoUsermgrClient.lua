@@ -4,8 +4,30 @@ do
     local table = table
     require("bio.BioUtl")
 
-    NetProtoUsermgr.__sessionID = 0; -- 会话ID
+    NetProtoUsermgr.__sessionID = 0 -- 会话ID
     NetProtoUsermgr.dispatch = {}
+    local __callbackInfor = {} -- 回调信息
+    local __callTimes = 1
+    ---@public 设计回调信息
+    local setCallback = function (callback, orgs, ret)
+       if callback then
+           local callbackKey = os.time() + __callTimes
+           __callTimes = __callTimes + 1
+           __callbackInfor[callbackKey] = {callback, orgs}
+           ret[3] = callbackKey
+        end
+    end
+    ---@public 处理回调
+    local doCallback = function(map, result)
+        local callbackKey = map[3]
+        if callbackKey then
+            local cbinfor = __callbackInfor[callbackKey]
+            if cbinfor then
+                pcall(cbinfor[1], cbinfor[2], result)
+            end
+            __callbackInfor[callbackKey] = nil
+        end
+    end
     --==============================
     -- public toMap
     NetProtoUsermgr._toMap = function(stuctobj, m)
@@ -67,27 +89,27 @@ do
         toMap = function(m)
             local r = {}
             if m == nil then return r end
-            r[13] = m.idx  -- id int
-            r[41] = m.port  -- 端口 int
+            r[12] = m.idx  -- id int
+            r[15] = m.port  -- 端口 int
             r[14] = m.name  -- 名称 string
-            r[42] = m.host  -- ip地址 string
-            r[38] = m.iosVer  -- 客户端ios版本 string
-            r[15] = m.status  -- 状态 1:正常; 2:爆满; 3:维护 int
-            r[39] = m.androidVer  -- 客户端android版本 string
-            r[34] = m.isnew  -- 新服 boolean
+            r[16] = m.host  -- ip地址 string
+            r[17] = m.iosVer  -- 客户端ios版本 string
+            r[18] = m.androidVer  -- 客户端android版本 string
+            r[19] = m.isnew  -- 新服 boolean
+            r[13] = m.status  -- 状态 1:正常; 2:爆满; 3:维护 int
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.idx = m[13] --  int
-            r.port = m[41] --  int
+            r.idx = m[12] --  int
+            r.port = m[15] --  int
             r.name = m[14] --  string
-            r.host = m[42] --  string
-            r.iosVer = m[38] --  string
-            r.status = m[15] --  int
-            r.androidVer = m[39] --  string
-            r.isnew = m[34] --  boolean
+            r.host = m[16] --  string
+            r.iosVer = m[17] --  string
+            r.androidVer = m[18] --  string
+            r.isnew = m[19] --  boolean
+            r.status = m[13] --  int
             return r;
         end,
     }
@@ -96,80 +118,86 @@ do
         toMap = function(m)
             local r = {}
             if m == nil then return r end
-            r[13] = m.idx  -- 唯一标识 int
+            r[12] = m.idx  -- 唯一标识 int
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.idx = m[13] --  int
+            r.idx = m[12] --  int
             return r;
         end,
     }
     --==============================
     NetProtoUsermgr.send = {
     -- 注册
-    registAccount = function(userId, password, email, appid, channel, deviceID, deviceInfor)
+    registAccount = function(userId, password, email, appid, channel, deviceID, deviceInfor, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 36
+        ret[0] = 20
         ret[1] = NetProtoUsermgr.__sessionID
         ret[21] = userId; -- 用户名
         ret[22] = password; -- 密码
-        ret[43] = email; -- 邮箱
-        ret[17] = appid; -- 应用id
+        ret[23] = email; -- 邮箱
+        ret[24] = appid; -- 应用id
         ret[25] = channel; -- 渠道号
         ret[26] = deviceID; -- 机器码
         ret[27] = deviceInfor; -- 机器信息
+        setCallback(__callback, __orgs, ret)
         return ret
     end,
     -- 取得服务器列表
-    getServers = function(appid, channel)
+    getServers = function(appid, channel, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 16
+        ret[0] = 31
         ret[1] = NetProtoUsermgr.__sessionID
-        ret[17] = appid; -- 应用id
+        ret[24] = appid; -- 应用id
         ret[25] = channel; -- 渠道号
+        setCallback(__callback, __orgs, ret)
         return ret
     end,
     -- 取得服务器信息
-    getServerInfor = function(idx)
+    getServerInfor = function(idx, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 32
+        ret[0] = 33
         ret[1] = NetProtoUsermgr.__sessionID
-        ret[13] = idx; -- 服务器id
+        ret[12] = idx; -- 服务器id
+        setCallback(__callback, __orgs, ret)
         return ret
     end,
     -- 保存所选服务器
-    setEnterServer = function(sidx, uidx, appid)
+    setEnterServer = function(sidx, uidx, appid, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 29
+        ret[0] = 35
         ret[1] = NetProtoUsermgr.__sessionID
-        ret[30] = sidx; -- 服务器id
-        ret[31] = uidx; -- 用户id
-        ret[17] = appid; -- 应用id
+        ret[36] = sidx; -- 服务器id
+        ret[37] = uidx; -- 用户id
+        ret[24] = appid; -- 应用id
+        setCallback(__callback, __orgs, ret)
         return ret
     end,
     -- 登陆
-    loginAccount = function(userId, password, appid, channel)
+    loginAccount = function(userId, password, appid, channel, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 37
+        ret[0] = 38
         ret[1] = NetProtoUsermgr.__sessionID
         ret[21] = userId; -- 用户名
         ret[22] = password; -- 密码
-        ret[17] = appid; -- 应用id int
+        ret[24] = appid; -- 应用id int
         ret[25] = channel; -- 渠道号 string
+        setCallback(__callback, __orgs, ret)
         return ret
     end,
     -- 渠道登陆
-    loginAccountChannel = function(userId, appid, channel, deviceID, deviceInfor)
+    loginAccountChannel = function(userId, appid, channel, deviceID, deviceInfor, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 40
+        ret[0] = 39
         ret[1] = NetProtoUsermgr.__sessionID
         ret[21] = userId; -- 用户名
-        ret[17] = appid; -- 应用id int
+        ret[24] = appid; -- 应用id int
         ret[25] = channel; -- 渠道号 string
         ret[26] = deviceID; -- 
         ret[27] = deviceInfor; -- 
+        setCallback(__callback, __orgs, ret)
         return ret
     end,
     }
@@ -179,65 +207,71 @@ do
         local ret = {}
         ret.cmd = "registAccount"
         ret.retInfor = NetProtoUsermgr.ST_retInfor.parse(map[2]) -- 返回信息
-        ret.userInfor = NetProtoUsermgr.ST_userInfor.parse(map[23]) -- 用户信息
-        ret.serverid = map[28]-- 服务器id int
-        ret.systime = map[35]-- 系统时间 long
+        ret.userInfor = NetProtoUsermgr.ST_userInfor.parse(map[28]) -- 用户信息
+        ret.serverid = map[29]-- 服务器id int
+        ret.systime = map[30]-- 系统时间 long
+        doCallback(map, ret)
         return ret
     end,
     getServers = function(map)
         local ret = {}
         ret.cmd = "getServers"
         ret.retInfor = NetProtoUsermgr.ST_retInfor.parse(map[2]) -- 返回信息
-        ret.servers = NetProtoUsermgr._parseList(NetProtoUsermgr.ST_server, map[19]) -- 服务器列表
+        ret.servers = NetProtoUsermgr._parseList(NetProtoUsermgr.ST_server, map[32]) -- 服务器列表
+        doCallback(map, ret)
         return ret
     end,
     getServerInfor = function(map)
         local ret = {}
         ret.cmd = "getServerInfor"
         ret.retInfor = NetProtoUsermgr.ST_retInfor.parse(map[2]) -- 返回信息
-        ret.server = NetProtoUsermgr.ST_server.parse(map[33]) -- 服务器信息
+        ret.server = NetProtoUsermgr.ST_server.parse(map[34]) -- 服务器信息
+        doCallback(map, ret)
         return ret
     end,
     setEnterServer = function(map)
         local ret = {}
         ret.cmd = "setEnterServer"
         ret.retInfor = NetProtoUsermgr.ST_retInfor.parse(map[2]) -- 返回信息
+        doCallback(map, ret)
         return ret
     end,
     loginAccount = function(map)
         local ret = {}
         ret.cmd = "loginAccount"
         ret.retInfor = NetProtoUsermgr.ST_retInfor.parse(map[2]) -- 返回信息
-        ret.userInfor = NetProtoUsermgr.ST_userInfor.parse(map[23]) -- 用户信息
-        ret.serverid = map[28]-- 服务器id int
-        ret.systime = map[35]-- 系统时间 long
+        ret.userInfor = NetProtoUsermgr.ST_userInfor.parse(map[28]) -- 用户信息
+        ret.serverid = map[29]-- 服务器id int
+        ret.systime = map[30]-- 系统时间 long
+        doCallback(map, ret)
         return ret
     end,
     loginAccountChannel = function(map)
         local ret = {}
         ret.cmd = "loginAccountChannel"
         ret.retInfor = NetProtoUsermgr.ST_retInfor.parse(map[2]) -- 返回信息
-        ret.userInfor = NetProtoUsermgr.ST_userInfor.parse(map[23]) -- 用户信息
-        ret.serverid = map[28]-- 服务器id int
-        ret.systime = map[35]-- 系统时间 long
+        ret.userInfor = NetProtoUsermgr.ST_userInfor.parse(map[28]) -- 用户信息
+        ret.serverid = map[29]-- 服务器id int
+        ret.systime = map[30]-- 系统时间 long
+        doCallback(map, ret)
         return ret
     end,
     }
     --==============================
-    NetProtoUsermgr.dispatch[36]={onReceive = NetProtoUsermgr.recive.registAccount, send = NetProtoUsermgr.send.registAccount}
-    NetProtoUsermgr.dispatch[16]={onReceive = NetProtoUsermgr.recive.getServers, send = NetProtoUsermgr.send.getServers}
-    NetProtoUsermgr.dispatch[32]={onReceive = NetProtoUsermgr.recive.getServerInfor, send = NetProtoUsermgr.send.getServerInfor}
-    NetProtoUsermgr.dispatch[29]={onReceive = NetProtoUsermgr.recive.setEnterServer, send = NetProtoUsermgr.send.setEnterServer}
-    NetProtoUsermgr.dispatch[37]={onReceive = NetProtoUsermgr.recive.loginAccount, send = NetProtoUsermgr.send.loginAccount}
-    NetProtoUsermgr.dispatch[40]={onReceive = NetProtoUsermgr.recive.loginAccountChannel, send = NetProtoUsermgr.send.loginAccountChannel}
+    NetProtoUsermgr.dispatch[20]={onReceive = NetProtoUsermgr.recive.registAccount, send = NetProtoUsermgr.send.registAccount}
+    NetProtoUsermgr.dispatch[31]={onReceive = NetProtoUsermgr.recive.getServers, send = NetProtoUsermgr.send.getServers}
+    NetProtoUsermgr.dispatch[33]={onReceive = NetProtoUsermgr.recive.getServerInfor, send = NetProtoUsermgr.send.getServerInfor}
+    NetProtoUsermgr.dispatch[35]={onReceive = NetProtoUsermgr.recive.setEnterServer, send = NetProtoUsermgr.send.setEnterServer}
+    NetProtoUsermgr.dispatch[38]={onReceive = NetProtoUsermgr.recive.loginAccount, send = NetProtoUsermgr.send.loginAccount}
+    NetProtoUsermgr.dispatch[39]={onReceive = NetProtoUsermgr.recive.loginAccountChannel, send = NetProtoUsermgr.send.loginAccountChannel}
     --==============================
     NetProtoUsermgr.cmds = {
-        registAccount = "registAccount",
-        getServers = "getServers",
-        getServerInfor = "getServerInfor",
-        setEnterServer = "setEnterServer",
-        loginAccount = "loginAccount",
-        loginAccountChannel = "loginAccountChannel"
+        registAccount = "registAccount", -- 注册,
+        getServers = "getServers", -- 取得服务器列表,
+        getServerInfor = "getServerInfor", -- 取得服务器信息,
+        setEnterServer = "setEnterServer", -- 保存所选服务器,
+        loginAccount = "loginAccount", -- 登陆,
+        loginAccountChannel = "loginAccountChannel", -- 渠道登陆
     }
     --==============================
     return NetProtoUsermgr
