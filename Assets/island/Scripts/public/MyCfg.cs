@@ -6,7 +6,6 @@ public class MyCfg : CLCfgBase
 {
 	public static int mode = 0;
 	public string default_UID = "";
-	//TODO:
 	public Transform lookAtTarget;
 	public Light directionalLight;
 	public Camera mainCamera;

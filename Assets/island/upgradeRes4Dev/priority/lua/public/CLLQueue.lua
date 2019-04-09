@@ -3,6 +3,7 @@
 --
 
 require("public.class")
+---@class CLLQueue
 CLLQueue = class("CLLQueue")
 
 local insert = table.insert;
@@ -50,6 +51,18 @@ function CLLQueue:deQueue()
     --self.head = (self.head + 1) % self.capacity
     --local value = self.queue[self.head]
     --return value
+end
+
+function CLLQueue:contain(obj)
+    if self:isEmpty() then
+        return false
+    end
+    for i, v in ipairs(self.queue) do
+        if v == obj then
+            return true
+        end
+    end
+    return false
 end
 
 function CLLQueue:clear()

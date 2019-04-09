@@ -24,7 +24,7 @@ end
 
 -- 加载基础资源
 function IDWorldMapPage:loadBaseData()
-    --todo:
+    --//TODO:
 end
 
 function IDWorldMapPage:loadServerData()
@@ -39,7 +39,7 @@ function IDWorldMapPage:releaseCellWithNoData()
     local data = IDDBWorldMap.getDataByPageIdx(self.pageIdx)
     if data and data.map then
         for k,v in pairs(self.mapCells) do
-            -- todo:如果不是系统配置的地块，那如果在data.map里没有找到数据，说明该地块已经为空闲了，可以移除该地块上的对象
+            --//TODO:如果不是系统配置的地块，那如果在data.map里没有找到数据，说明该地块已经为空闲了，可以移除该地块上的对象
         end
     end
 end

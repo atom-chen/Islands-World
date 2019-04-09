@@ -127,7 +127,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
 end
 
 function IDWorldMap.setGameMode()
-    --todo:判断当前中心点离自己的主城的距离来处理是否可以进入城里面
+    -- 判断当前中心点离自己的主城的距离来处理是否可以进入城里面
     if MyCfg.mode == GameMode.map then
         local lastHit = Utl.getRaycastHitInfor(MyCfg.self.mainCamera, Vector3(Screen.width / 2, Screen.height / 2, 0), Utl.getLayer("Water"));
         if lastHit then
