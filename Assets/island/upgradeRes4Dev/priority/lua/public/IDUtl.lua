@@ -186,7 +186,10 @@ end
 
 ---@public 取得角色的预制件名
 function IDUtl.getRolePrefabName(id)
-    return joinStr("ship", id)
+    local attr = DBCfg.getRoleByID(id)
+    if attr then
+        return attr.PrefabName
+    end
 end
 
 function IDUtl.newMapTileLua(type)

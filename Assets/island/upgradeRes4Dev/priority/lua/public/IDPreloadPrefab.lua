@@ -36,7 +36,7 @@ end
 
 ---@param queue CLLQueue
 function IDPreloadPrefab.enQueue(queue, prefabName)
-    if queue:contains(prefabName) then
+    if isNilOrEmpty(prefabName) or queue:contains(prefabName) then
         return
     end
     queue:enQueue(prefabName)
@@ -46,7 +46,7 @@ end
 ---@public 提取了角色相关的需要预加载的资源
 function IDPreloadPrefab.extractRole(id)
     local cfg = DBCfg.getRoleByID(id)
-    IDPreloadPrefab.enQueue(IDPreloadPrefab.roleQueue, joinStr("ship", id))
+    IDPreloadPrefab.enQueue(IDPreloadPrefab.roleQueue, IDUtl.getRolePrefabName(id))
     IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, cfg.AttackSound)
     IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
     IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
@@ -54,9 +54,12 @@ end
 
 ---@public 子弹
 function IDPreloadPrefab.extractBullet(id)
-    --//TODO:
-    local attr = DBCfg.getBulletByID(id)
-    IDPreloadPrefab.enQueue(IDPreloadPrefab.bulletQueue, attr.PrefabName)
+    if id > 0 then
+        local attr = DBCfg.getBulletByID(id)
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.bulletQueue, attr.PrefabName)
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, attr.OnHitEffect)
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, attr.OnHitSoundEff)
+    end
 end
 
 --//////////////////////////////////////////////////////////////////
@@ -99,7 +102,7 @@ end
 
 function IDPreloadPrefab.loadUIThing()
     if IDPreloadPrefab.uiThingQueue:size() > 0 then
-        CLThings4LuaPool.setPrefab(IDPreloadPrefab.uiThingQueue:deQueue(), IDPreloadPrefab.loadUIThing)
+        CLUIOtherObjPool.setPrefab(IDPreloadPrefab.uiThingQueue:deQueue(), IDPreloadPrefab.loadUIThing)
     else
         -- finish
         if IDPreloadPrefab.onFinishCallback then
@@ -108,7 +111,7 @@ function IDPreloadPrefab.loadUIThing()
     end
 end
 
-function IDPreloadPrefab.onFinishOne(...)
+function IDPreloadPrefab.onFinishOne()
     IDPreloadPrefab.currCount = IDPreloadPrefab.currCount + 1;
     if (IDPreloadPrefab.onProgressCB ~= nil) then
         IDPreloadPrefab.onProgressCB(IDPreloadPrefab.totalAssets, IDPreloadPrefab.currCount);

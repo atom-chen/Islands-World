@@ -21,6 +21,7 @@ local cfgCfgPath = joinStr(cfgBasePath, "DBCFCfgData.cfg")
 local cfgBuildingPath = joinStr(cfgBasePath, "DBCFBuildingData.cfg")
 local cfgHeadquartersLevsDataPath = joinStr(cfgBasePath, "DBCFHeadquartersLevsData.cfg")
 local cfgRolePath = joinStr(cfgBasePath, "DBCFRoleData.cfg")
+local cfgBulletPath = joinStr(cfgBasePath, "DBCFBulletData.cfg")
 
 ---@public 取得数据列表
 function DBCfg.getData(path)
@@ -151,6 +152,15 @@ end
 ---@public 取得兵种
 function DBCfg.getRoleByID(id)
     local datas = DBCfg.getData(cfgRolePath)
+    if (datas == nil) then
+        return nil
+    end
+    return datas[id]
+end
+
+---@public 取得子弹
+function DBCfg.getBulletByID(id)
+    local datas = DBCfg.getData(cfgBulletPath)
     if (datas == nil) then
         return nil
     end
