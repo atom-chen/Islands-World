@@ -34,6 +34,18 @@ function CLLStack:top()
     return self.stack_table[size]
 end
 
+function CLLStack:contains(obj)
+    if self:isEmpty() then
+        return false
+    end
+    for i, v in pairs(self.stack_table) do
+        if v == obj then
+            return true
+        end
+    end
+    return false
+end
+
 function CLLStack:isEmpty()
     local size = self:size()
     if size == 0 then

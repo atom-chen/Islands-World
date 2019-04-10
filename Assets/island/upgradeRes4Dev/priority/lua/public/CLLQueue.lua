@@ -53,7 +53,7 @@ function CLLQueue:deQueue()
     --return value
 end
 
-function CLLQueue:contain(obj)
+function CLLQueue:contains(obj)
     if self:isEmpty() then
         return false
     end
