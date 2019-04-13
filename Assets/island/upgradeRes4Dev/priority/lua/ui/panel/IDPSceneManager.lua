@@ -95,7 +95,6 @@ function IDPSceneManager.procNetwork(cmd, succ, msg, paras)
     --[[
         if(succ == NetSuccess) then
           if(cmd == "xxx") then
-            -- TODO:
           end
         end
         --]]
@@ -106,7 +105,6 @@ function IDPSceneManager.uiEventDelegate(go)
     local goName = go.name
     --[[
         if(goName == "xxx") then
-          --TODO:
         end
         --]]
 end

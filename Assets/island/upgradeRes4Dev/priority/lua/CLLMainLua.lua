@@ -150,9 +150,6 @@ do
             -- 说明热更新器有更新，需要重新加载lua
             CLMainBase.self:reStart()
         else
-            -- init sdk
-            -- TODO: CLGboChn.getInstance():StartInit()
-
             if (CLCfgBase.self.isEditMode) then
                 --主初始化完后，打开下一个页面
                 CLMainBase.self:invoke4Lua(CLLMainLua.showPanelStart, 0.2)

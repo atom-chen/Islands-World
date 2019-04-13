@@ -45,7 +45,6 @@ do
         --[[
         if(succ == NetSuccess) then
           if(cmd == "xxx") then
-            -- TODO:
           end
         end
         --]]

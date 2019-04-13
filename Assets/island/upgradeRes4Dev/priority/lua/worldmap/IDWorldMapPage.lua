@@ -24,7 +24,7 @@ end
 
 -- 加载基础资源
 function IDWorldMapPage:loadBaseData()
-    --//TODO:
+    --//TODO:加载地图配置的基础数据
 end
 
 function IDWorldMapPage:loadServerData()

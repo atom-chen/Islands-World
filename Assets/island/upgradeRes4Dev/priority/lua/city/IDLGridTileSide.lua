@@ -145,49 +145,55 @@ function IDLGridTileSide.onSetMaterial(material, orgs)
     end
 
     cache.gridState4Tile = IDMainCity.getState4Tile()
-    IDLGridTileSide.loadSidePrefab(IDLGridTileSide.dorefreshAndShow, orgs)
+    -- IDLGridTileSide.loadSidePrefab(IDLGridTileSide.dorefreshAndShow, orgs)
+    IDLGridTileSide.dorefreshAndShow(orgs)
 end
+
+-- function IDLGridTileSide.loadSidePrefab(callback, orgs)
+--     IDLGridTileSide.doLoadSidePrefab({i = 1, callback = callback, orgs = orgs})
+-- end
+
+-- function IDLGridTileSide.doLoadSidePrefab(param)
+--     local i = param.i
+--     if i > #prefabSides then
+--         if param.callback then
+--             param.callback(param.orgs)
+--         end
+--         return
+--     end
+--     CLThingsPool.setPrefab(
+--         prefabSides[i],
+--         function()
+--             param.i = i + 1
+--             IDLGridTileSide.doLoadSidePrefab(param)
+--         end,
+--         nil
+--     )
+-- end
 
 ---@orgs table 第一个是回调函数，第二个进度回调函数
 function IDLGridTileSide.dorefreshAndShow(orgs)
+    IDLGridTileSide.state = IDLGridTileSide.StateEnum.showing
     local callback = orgs[1]
     local progressCB = orgs[2]
-
+    cache.tileList = {}
     local tiles = IDMainCity.getTiles()
     for k, tile in pairs(tiles) do
-        IDLGridTileSide.procOneCellSilde(tile)
+        table.insert(cache.tileList, tile)
     end
 
-    for k, tile in pairs(tiles) do
-        IDLGridTileSide.procOneCellSildeAngle(tile)
-    end
+    -- local tiles = IDMainCity.getTiles()
+    -- for k, tile in pairs(tiles) do
+    --     IDLGridTileSide.procOneCellSilde(tile)
+    -- end
+
+    -- for k, tile in pairs(tiles) do
+    --     IDLGridTileSide.procOneCellSildeAngle(tile)
+    -- end
     
-    IDLGridTileSide.state = IDLGridTileSide.StateEnum.showing
-    if callback then
-        callback()
-    end
-end
-
-function IDLGridTileSide.loadSidePrefab(callback, orgs)
-    IDLGridTileSide.doLoadSidePrefab({i = 1, callback = callback, orgs = orgs})
-end
-
-function IDLGridTileSide.doLoadSidePrefab(param)
-    local i = param.i
-    if i > #prefabSides then
-        if param.callback then
-            param.callback(param.orgs)
-        end
-        return
-    end
-    CLThingsPool.setPrefab(
-        prefabSides[i],
-        function()
-            param.i = i + 1
-            IDLGridTileSide.doLoadSidePrefab(param)
-        end,
-        nil
-    )
+    -- if callback then
+    --     callback()
+    -- end
 end
 
 function IDLGridTileSide.getLeftSide(index)
@@ -233,7 +239,7 @@ function IDLGridTileSide.procOneCellSilde(tile)
     IDLGridTileSide.setDownSilde(down2)
 end
 
-function IDLGridTileSide.setLeftSilde(index)
+function IDLGridTileSide.setLeftSilde(index, callback)
     -- logic of Left Side
     if IDLGridTileSide.isNeedSet(index) then
         local grid = cache.grid
@@ -945,12 +951,14 @@ function IDLGridTileSide.setRightDownAngle(index)
     end
 end
 
-function IDLGridTileSide.loadSide2Show(name, index, pos)
-    local obj = CLThingsPool.borrowObj(name)
+function IDLGridTileSide.onLoadSide(name, obj, orgs)
     if obj == nil then
         printe("get tile side is nil. ==" .. name)
         return
     end
+    local index = orgs[1]
+    local pos = orgs[2]
+    local callback= orgs[3]
     obj.transform.parent = IDMainCity.transform
     obj.transform.localScale = Vector3.one
     obj.transform.localEulerAngles = Vector3.zero
@@ -960,7 +968,13 @@ function IDLGridTileSide.loadSide2Show(name, index, pos)
     obj.transform.position = pos
     SetActive(obj, true)
     tileSides[index] = obj
-    return obj
+    if callback then
+        callback()
+    end
+end
+
+function IDLGridTileSide.loadSide2Show(name, index, pos, callback)
+    CLThingsPool.borrowObjAsyn(name, IDLGridTileSide.onLoadSide, {index, pos, callback})
 end
 
 function IDLGridTileSide.isFourSide(index)

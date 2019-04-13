@@ -763,7 +763,7 @@ function IDMainCity.setSelected(unit, selected)
             end
         end
     else
-        -- todo:释放技能范围的圈
+        -- //TODO:释放技能范围的圈
         IDMainCity.setOtherUnitsColiderState(nil, true)
         SFourWayArrow.hide()
         IDLBuildingSize.hide()

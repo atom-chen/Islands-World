@@ -99,4 +99,8 @@ function IDWorldTile:clean()
     self:releaseShadow()
 end
 
+function IDWorldTile:onNotifyLua(go)
+    printe("IDWorldTile:OnClick")
+end
+
 return IDWorldTile

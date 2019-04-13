@@ -47,7 +47,7 @@ do
         -- 添加屏蔽字
         --MyMain.self:invoke4Lua(CLLPStart.addShieldWords, 1)
 
-        --TODO:other lua scripts
+        --//TODO:other lua scripts
         require("net.NetProtoIslandClient")
         require("public.IDLCameraMgr")
         IDLCameraMgr.init()

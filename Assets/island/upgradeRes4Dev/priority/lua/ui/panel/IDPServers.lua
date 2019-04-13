@@ -78,7 +78,6 @@ do
         local goName = go.name;
         --[[
         if(goName == "xxx") then
-          --TODO:
         end
         --]]
     end

@@ -72,7 +72,7 @@ function IDWorldMap.__init()
     IDWorldMap.grid.numGroundRows = worldsize
     IDWorldMap.grid.numGroundCols = worldsize
     IDWorldMap.grid.cellSize = cellSize
-    IDWorldMap.grid.transform.localPosition = Vector3.zero
+    IDWorldMap.grid.transform.localPosition = Vector3(-worldsize/2, 0, -worldsize/2)
     IDWorldMap.grid:Start()
     --IDWorldMap.grid.transform.localPosition = Vector3(-worldsize * cellSize / 2, 0, -worldsize * cellSize / 2)
 
@@ -237,10 +237,10 @@ function IDWorldMap.showFogwar()
     local fogOfWar = MyCfg.self.fogOfWar
     local worldsize = bio2number(DBCfg.getConstCfg().GridWorld)
     local citysize = bio2number(DBCfg.getConstCfg().GridCity)
-    worldsize = (worldsize + 100) * cellSize
+    worldsize = (worldsize + 200) * cellSize
     fogOfWar.color = Color.black -- ColorEx.getColor(34, 34, 34);
     fogOfWar.Size = worldsize
-    --fogOfWar.transform.position = Vector3(-worldsize / 2, 0, -worldsize / 2);
+    fogOfWar.transform.position = Vector3(-worldsize / 2, 0, -worldsize / 2);
     SetActive(fogOfWar.gameObject, true)
 
     -- 设置可视范围
@@ -358,7 +358,7 @@ function IDWorldMap.hideOnClickShow()
     if isDragOcean then
         SetActive(IDWorldMap.mapTileSize, false)
     end
-    --todo：隐藏UI
+    --//TODO：隐藏UI
 end
 
 function IDWorldMap.onClickOcean()

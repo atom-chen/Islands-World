@@ -28,17 +28,6 @@ do
         end
     end
 
-    -- 注意，c#侧不会在调用show时，调用refresh
-    function _cell.refresh(paras)
-        --[[
-        if(paras == 1) then   -- 刷新血
-          -- TODO:
-        elseif(paras == 2) then -- 刷新状态
-          -- TODO:
-        end
-        --]]
-    end
-
     -- 取得数据
     function _cell.getData ()
         return mData;
