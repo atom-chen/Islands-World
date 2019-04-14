@@ -312,7 +312,7 @@ namespace Coolape
 			Hashtable cfg = MapEx.getMap (materialTexRefCfg, matName);
 			bool ret = true;
 			if (cfg == null) {
-                Debug.LogError("Get MaterialTexCfg is null!");
+                Debug.LogError("Get MaterialTexCfg is null!" + matName);
 				ret = false;
 			} else {
 				propNames = cfg ["pp"] as ArrayList;

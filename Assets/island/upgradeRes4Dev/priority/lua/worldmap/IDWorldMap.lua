@@ -72,9 +72,8 @@ function IDWorldMap.__init()
     IDWorldMap.grid.numGroundRows = worldsize
     IDWorldMap.grid.numGroundCols = worldsize
     IDWorldMap.grid.cellSize = cellSize
-    IDWorldMap.grid.transform.localPosition = Vector3(-worldsize/2, 0, -worldsize/2)
+    IDWorldMap.grid.transform.localPosition = Vector3(-worldsize*cellSize/2, 0, -worldsize*cellSize/2)
     IDWorldMap.grid:Start()
-    --IDWorldMap.grid.transform.localPosition = Vector3(-worldsize * cellSize / 2, 0, -worldsize * cellSize / 2)
 
     IDWorldMap.fogOfWarInfluence = GameObject("fogOfWarInfluence"):AddComponent(typeof(FogOfWarInfluence))
     IDWorldMap.fogOfWarInfluence.transform.parent = transform
@@ -375,6 +374,13 @@ function IDWorldMap.onClickOcean()
     end
 end
 
+---@public 点击了自己的城
+function IDWorldMap.onClickSelfCity()
+    IDWorldMap.onClickOcean()
+    --//TODO:
+end
+
+---@public 清除所有页的元素
 function IDWorldMap.cleanPages()
     for pageIdx, page in pairs(pages) do
         page:clean()
@@ -383,6 +389,7 @@ function IDWorldMap.cleanPages()
     end
 end
 
+---@public 离开世界后的清理
 function IDWorldMap.clean()
     if IDWorldMap.ocean then
         IDWorldMap.ocean.luaTable.clean()

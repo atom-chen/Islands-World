@@ -1,5 +1,6 @@
 ﻿-- 公共处理
 require("city.IDLBuilding")
+require("city.IDLBuildingHeadquarters")
 require("city.IDLBuildingRes")
 require("city.IDLBuildingStore")
 require("city.IDLBuildingDefense")
@@ -139,7 +140,9 @@ function IDUtl.newBuildingLua(bAttr)
     local buildingLua
     local id = bio2number(bAttr.ID)
     local gid = bio2number(bAttr.GID)
-    if gid == IDConst.BuildingGID.com or gid == IDConst.BuildingGID.spec then
+    if id == IDConst.headquartersBuildingID then
+        buildingLua = IDLBuildingHeadquarters.new()
+    elseif gid == IDConst.BuildingGID.com or gid == IDConst.BuildingGID.spec then
         if id == IDConst.dockyardBuildingID then
             buildingLua = IDLBuildingDockyard.new()
         else

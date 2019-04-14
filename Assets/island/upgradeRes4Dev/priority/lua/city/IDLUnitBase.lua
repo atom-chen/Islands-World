@@ -135,7 +135,7 @@ function IDLUnitBase:_OnClick(...)
 
     if (MyCfg.mode == GameMode.battle) then
         -- 通知战场，玩家点击了我
-        CLLBattle.onClickSomeObj(self.csSelf, self.transform.position)
+        IDLBattle.onClickSomeObj(self.csSelf, self.transform.position)
     else
         SoundEx.playSound(self.attr.SelectSound, 1, 1)
         self:jump()

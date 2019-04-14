@@ -69,6 +69,11 @@ end
 function IDLBattle.prepareSoliders(data, callback, progressCB)
 end
 
+---@public 通知战场，玩家点击了我
+function IDLBattle.onClickSomeObj(obg, pos)
+    
+end
+
 function IDLBattle.clean()
     -- 恢复资源释放
     CLAssetsManager.self:regain()

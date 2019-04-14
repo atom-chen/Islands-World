@@ -33,6 +33,7 @@ IDMainCity.astar4Tile = nil     -- A星寻路->地面
 IDMainCity.astar4Worker = nil     -- A星寻路->地面
 IDMainCity.totalTile = 0
 IDMainCity.totalBuilding = 0
+---@type IDLBuildingHeadquarters
 IDMainCity.Headquarters = nil -- 主基地
 --IDMainCity.shadowRoot = nil
 --IDMainCity.tileShadowRoot = nil
@@ -209,6 +210,8 @@ function IDMainCity.onChgMode(oldMode, curMode)
         isShowTile = false
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
+        -- 主基地还可以点击
+        IDMainCity.Headquarters:setCollider(true)
     end
     for k, v in pairs(tiles) do
         SetActive(v.gameObject, isShowTile)
@@ -323,7 +326,7 @@ function IDMainCity.onLoadTile(name, obj, orgs)
 
     Utl.doCallback(progressCallback, IDMainCity.totalBuilding + IDMainCity.totalTile, i)
     if i == #list then
-        IDLGridTileSide.refreshAndShow(cb)
+        IDLGridTileSide.refreshAndShow(cb, progressCallback)
     else
         InvokeEx.invokeByUpdate(IDMainCity.doLoadTile, { i + 1, list, cb }, 0.01)
     end

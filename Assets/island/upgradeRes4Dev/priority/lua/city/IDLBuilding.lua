@@ -129,15 +129,6 @@ function IDLBuilding:fireWorker(immd)
     end
 end
 
----@public 当屏幕缩放时的逻辑处理
-function IDLBuilding:onScaleScreen(scaleVal)
-    local pos = self.transform.position
-    if self.shadow then
-        self.shadow.position = pos + Vector3.up * 0.02
-        self.shadow.localScale = (Vector3.one * scaleVal) * (bio2number(self.attr.ShadowSize) / 10)
-    end
-end
-
 ---@public 显示隐藏（可能为连带做一些其它的处理）
 function IDLBuilding:SetActive(active)
     self:getBase(IDLBuilding).SetActive(self, active)
