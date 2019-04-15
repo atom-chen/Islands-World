@@ -37,7 +37,7 @@ namespace Coolape
 				result = bignumbersubduct (nu2, nu1.Substring (1));
 //    'nu1为负、nu2为负
 			} else if (nu1 [0] == '-' && nu2 [0] == '-') {
-				result = "-" + bignumberadditive (nu1.Substring (1), nu2.Substring (1));
+				result = PStr.b().a("-").a(bignumberadditive (nu1.Substring (1), nu2.Substring (1))).e();
 //    'nu1为正、nu2为正
 			} else if (nu1 [0] != '-' && nu2 [0] != '-') {
 				result = bignumberadditive (nu1, nu2); 
@@ -66,7 +66,7 @@ namespace Coolape
 			string result = "";
 //    'nu1为负、nu2为正
 			if (nu1 [0] == '-' && nu2 [0] != '-') {
-				result = "-" + bignumberadditive (nu1.Substring (1), nu2);
+				result = PStr.b().a("-").a(bignumberadditive (nu1.Substring (1), nu2)).e();
 //    'nu1为负、nu2为负
 			} else if (nu1 [0] == '-' && nu2 [0] == '-') {
 				result = bignumbersubduct (nu2.Substring (1), nu1.Substring (1));
@@ -160,9 +160,9 @@ namespace Coolape
 					} else {
 						tmpN = NumEx.stringToInt (tmpresult [i]);
 					} 
-					result = NumEx.nStrForLen (tmpN, 4) + result;
+					result = PStr.b().a(NumEx.nStrForLen (tmpN, 4), result).e();
 				} else {
-					result = tmpresult [i] + result;
+					result = PStr.b().a(tmpresult [i], result).e();
 				}
 			}
 			return result;
@@ -248,7 +248,7 @@ namespace Coolape
 					}
 				} else {
 					if (i != sizea - 1) {
-						tmpresult [i] = "1" + lista [i];
+						tmpresult [i] = PStr.b().a("1" , lista [i]).e();
 					} else {
 						tmpresult [i] = lista [i];
 					}
@@ -266,12 +266,12 @@ namespace Coolape
 						tempN = NumEx.stringToInt (tmpresult [i]);
 					} 
 				
-					result = NumEx.nStrForLen (tempN, 4) + result;
+					result = PStr.b().a(NumEx.nStrForLen (tempN, 4), result).e();
 				} else {
-					result = tmpresult [i] + result;
+					result = PStr.b().a(tmpresult [i]).a(result).e();
 				}
 			}
-			result = flag + result;
+			result = PStr.b().a(flag).a(result).e();
 			return result;
 		}
 
@@ -296,16 +296,16 @@ namespace Coolape
 			int i;
 			int[] poslist = new int[str.Length];
 			for (i = 0; i < str.Length; i++) {
-				unicodestr = unicodestr + (int)(str [i]); 
+				unicodestr = PStr.b().a(unicodestr, (int)(str [i])).e(); 
 				poslist [i] = unicodestr.Length;
 			}
 			for (i = 0; i < str.Length; i++) {
 				tmpstr = StrEx.Mid (unicodestr, poslist [i] - 1, 1);
-				unicodestr = tmpstr + StrEx.Left (unicodestr, poslist [i] - 1) + StrEx.Mid (unicodestr, poslist [i]);
-				posstr = posstr + NumEx.nStrForLen (poslist [i], 4); //每4位表示一个位置
+				unicodestr = PStr.b().a(tmpstr, StrEx.Left (unicodestr, poslist [i] - 1), StrEx.Mid (unicodestr, poslist [i])).e();
+				posstr = PStr.b().a(posstr, NumEx.nStrForLen (poslist [i], 4)).e(); //每4位表示一个位置
 			}
 			for (i = 0; i < scrtkey.Length; i++) {
-				uniscrtkey = uniscrtkey + (int)(scrtkey [i]);
+				uniscrtkey = PStr.b().a(uniscrtkey, (int)(scrtkey [i])).e();
 			}
 			string flag = "+";
 			posstr = trimIntZero (posstr);
@@ -319,14 +319,14 @@ namespace Coolape
 			int tmpN = 0;
 			for (i = sub.Length - 4; i >= 0; i = i - 4) {
 				tmpN = NumEx.stringToInt (StrEx.Mid (sub, i, 4));
-				enSub = (tmpN.ToString ().Length < 4 ? "+" : "") + tmpN + enSub;
+				enSub = PStr.b().a((tmpN.ToString ().Length < 4 ? "+" : ""), tmpN, enSub).e();
 			}
 			if (i != -4) {
 				tmpN = NumEx.stringToInt (StrEx.Left (sub, i + 4));
-				enSub = (tmpN.ToString ().Length < 4 ? "+" : "") + tmpN + enSub;
+				enSub = PStr.b().a((tmpN.ToString ().Length < 4 ? "+" : ""), tmpN, enSub).e();
 			}
 		
-			ret = unicodestr + flag + enSub;
+			ret = PStr.b().a(unicodestr).a(flag).a(enSub).e();
 			return ret;
 		}
 
@@ -367,22 +367,22 @@ namespace Coolape
 				int j = 0;
 				tmpstr = "";
 				for (j = ss [i].Length - 4; j >= 0; j = j - 4) {
-					tmpstr = StrEx.Mid (ss [i], j, 4) + tmpstr;
+					tmpstr = PStr.b().a(StrEx.Mid (ss [i], j, 4), tmpstr).e();
 				}
 				if (j != -4) {
 					int tmpN = NumEx.stringToInt (StrEx.Mid (ss [i], 0, j + 4));
-					tmpstr = NumEx.nStrForLen (tmpN, 4) + tmpstr;
+					tmpstr = PStr.b().a(NumEx.nStrForLen (tmpN, 4), tmpstr).e();
 				}
-				posstr += tmpstr;
+				posstr = PStr.b().a( posstr).a(  tmpstr).e();
 			}
 			//去掉面前的0
 			posstr = trimIntZero (posstr);
 		
 			if (splitChar == '-') {
-				posstr = "-" + posstr; 
+				posstr = PStr.b().a("-").a(posstr).e(); 
 			}
 			for (i = 0; i < scrtkey.Length; i++) {
-				uniscrtkey = uniscrtkey + (int)(scrtkey [i]);
+				uniscrtkey = PStr.b().a(uniscrtkey, (int)(scrtkey [i])).e();
 			}
 			posstr = bgnusub (uniscrtkey, posstr);
 			if (posstr.Length % 4 == 0) {
@@ -407,14 +407,14 @@ namespace Coolape
 			}
 			sizepos = i;
 			for (i = 0; i < sizepos; i++) {
-				unicodestr = StrEx.Left (unicodestr, poslist [i]) + StrEx.Mid (unicodestr, 0, 1) + StrEx.Mid (unicodestr, poslist [i]);
+				unicodestr = PStr.b().a(StrEx.Left (unicodestr, poslist [i]), StrEx.Mid (unicodestr, 0, 1), StrEx.Mid (unicodestr, poslist [i])).e();
 				unicodestr = StrEx.Mid (unicodestr, 1);
 			}
 			for (i = 0; i < sizepos; i++) {
 				if (i != sizepos - 1) {
-					result = (char)(NumEx.stringToInt (StrEx.Mid (unicodestr, poslist [i + 1], poslist [i] - poslist [i + 1]))) + result;
+					result = PStr.b().a((char)(NumEx.stringToInt (StrEx.Mid (unicodestr, poslist [i + 1], poslist [i] - poslist [i + 1]))) , result).e();
 				} else {
-					result = (char)(NumEx.stringToInt (StrEx.Mid (unicodestr, 0, poslist [i]))) + result;
+					result = PStr.b().a((char)(NumEx.stringToInt (StrEx.Mid (unicodestr, 0, poslist [i]))), result).e();
 				}
 			}
 			return result;
@@ -440,7 +440,7 @@ namespace Coolape
 				index++;
 			}
 		
-			return flag + StrEx.Mid (tmpStr, index);
+			return PStr.b().a(flag, StrEx.Mid (tmpStr, index)).e();
 		}
 	}
 }
