@@ -74,7 +74,7 @@ end
 ---@public 显示边，如果还没有加载过则调用refreshAndShow方法把边加载了显示出来
 function IDLGridTileSide.show()
     if IDLGridTileSide.state == IDLGridTileSide.StateEnum.none then
-        IDLGridTileSide.refreshAndShow()
+        IDLGridTileSide.refreshAndShow(nil, nil, true)
     else
         if IDLGridTileSide.state == IDLGridTileSide.StateEnum.hidden then
             for k, v in pairs(tileSides) do
@@ -87,18 +87,52 @@ function IDLGridTileSide.show()
 end
 
 ---@public 根据地块加载地块的四周的边缘
-function IDLGridTileSide.refreshAndShow(callback, progressCB)
+---@param callback function 完成回调
+---@param progressCB function 进度回调
+---@param imm bool 是否立即处理
+function IDLGridTileSide.refreshAndShow(callback, progressCB, imm)
     IDLGridTileSide.clean()
     IDLGridTileSide.state = IDLGridTileSide.StateEnum.procing
 
-    CLMaterialPool.borrowObjAsyn("Tiles.bolang", IDLGridTileSide.onSetMaterial, {callback, progressCB})
+    CLMaterialPool.borrowObjAsyn("Tiles.bolang", IDLGridTileSide.onSetMaterial, {callback, progressCB, imm})
 end
 
 ---@public 加载海浪的material
 function IDLGridTileSide.onSetMaterial(name, material, orgs)
     cache.waveUvAn.material = material
     cache.waveUvAn.isStop = false
+    local imm = orgs[3]
+    if imm then
+        IDLGridTileSide.setSidesPrefab(orgs)
+    else
+        IDLGridTileSide.startSetSides(orgs)
+    end
+end
 
+function IDLGridTileSide.setSidesPrefab(orgs)
+    --先把资源释放暂停，不然可能出现正在加载的时候被释放掉
+    CLAssetsManager.self:pause()
+    IDLGridTileSide.getOneSidePrefab(0, orgs)
+end
+
+function IDLGridTileSide.getOneSidePrefab(i, orgs)
+    i = i + 1
+    if i > #SidesName then
+        -- finish
+        IDLGridTileSide.startSetSides(orgs)
+        CLAssetsManager.self:regain()
+    else
+        CLThingsPool.setPrefab(SidesName[i], IDLGridTileSide.onGetOneSidePrefab, {i, orgs})
+    end
+end
+
+function IDLGridTileSide.onGetOneSidePrefab(name, obj, param)
+    local i = param[1]
+    local orgs = param[2]
+    IDLGridTileSide.getOneSidePrefab(i, orgs)
+end
+
+function IDLGridTileSide.startSetSides(orgs)
     selectedTileState = {}
     if IDMainCity.selectedUnit and IDMainCity.selectedUnit.isTile then
         -- 选中状态的地块是没有记录地块状态的，所以临时记录一下
@@ -116,6 +150,7 @@ function IDLGridTileSide.onSetMaterial(name, material, orgs)
     cache.gridState4Tile = IDMainCity.getState4Tile()
     local callback = orgs[1]
     local progressCB = orgs[2]
+    local imm = orgs[3]
     cache.onFinishCallback = callback
     cache.onProgressCB = progressCB
 
@@ -125,7 +160,19 @@ function IDLGridTileSide.onSetMaterial(name, material, orgs)
     for k, tile in pairs(tiles) do
         table.insert(cache.tileList, tile)
     end
-    IDLGridTileSide.set4Sides(0)
+    if imm then
+        for i, v in ipairs(cache.tileList) do
+            IDLGridTileSide.procOneCellSide(v, nil, nil, true)
+        end
+        for i, v in ipairs(cache.tileList) do
+            IDLGridTileSide.procOneCellSideAngle(v, nil, nil, true)
+        end
+        if callback then
+            callback()
+        end
+    else
+        IDLGridTileSide.set4Sides(0)
+    end
 end
 
 function IDLGridTileSide.getLeftSide(index)
@@ -163,12 +210,12 @@ function IDLGridTileSide.set4Sides(i)
         end
         i = i + 1
         local tile = cache.tileList[i]
-        IDLGridTileSide.procOneCellSilde(tile, IDLGridTileSide.set4Sides, i)
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, i)
     end
 end
 
 ---@public 处理一个地块的四边，left,right,up,down
-function IDLGridTileSide.procOneCellSilde(tile, callback, orgs)
+function IDLGridTileSide.procOneCellSide(tile, callback, orgs, imm)
     if tile == IDMainCity.selectedUnit then
         if (not IDMainCity.isSizeInFreeCell(tile.getPosIndex(), tile.size, false, true)) then
             if callback then
@@ -179,45 +226,59 @@ function IDLGridTileSide.procOneCellSilde(tile, callback, orgs)
     end
     local left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown =
         tile.getSidesIndex()
-    IDLGridTileSide.setLeftSilde(
-        left1,
-        function()
-            IDLGridTileSide.setLeftSilde(
-                left2,
-                function()
-                    IDLGridTileSide.setRightSilde(
-                        right1,
-                        function()
-                            IDLGridTileSide.setRightSilde(
-                                right2,
-                                function()
-                                    IDLGridTileSide.setUpSilde(
-                                        up1,
-                                        function()
-                                            IDLGridTileSide.setUpSilde(
-                                                up2,
-                                                function()
-                                                    IDLGridTileSide.setDownSilde(
-                                                        down1,
-                                                        function()
-                                                            IDLGridTileSide.setDownSilde(down2, callback, orgs)
-                                                        end
-                                                    )
-                                                end
-                                            )
-                                        end
-                                    )
-                                end
-                            )
-                        end
-                    )
-                end
-            )
+    if imm then
+        IDLGridTileSide.setLeftSide(left1, nil, nil, imm)
+        IDLGridTileSide.setLeftSide(left2, nil, nil, imm)
+        IDLGridTileSide.setRightSide(right1, nil, nil, imm)
+        IDLGridTileSide.setRightSide(right2, nil, nil, imm)
+        IDLGridTileSide.setUpSide(up1, nil, nil, imm)
+        IDLGridTileSide.setUpSide(up2, nil, nil, imm)
+        IDLGridTileSide.setDownSide(down1, nil, nil, imm)
+        IDLGridTileSide.setDownSide(down2, nil, nil, imm)
+        if callback then
+            callback(orgs)
         end
-    )
+    else
+        IDLGridTileSide.setLeftSide(
+            left1,
+            function()
+                IDLGridTileSide.setLeftSide(
+                    left2,
+                    function()
+                        IDLGridTileSide.setRightSide(
+                            right1,
+                            function()
+                                IDLGridTileSide.setRightSide(
+                                    right2,
+                                    function()
+                                        IDLGridTileSide.setUpSide(
+                                            up1,
+                                            function()
+                                                IDLGridTileSide.setUpSide(
+                                                    up2,
+                                                    function()
+                                                        IDLGridTileSide.setDownSide(
+                                                            down1,
+                                                            function()
+                                                                IDLGridTileSide.setDownSide(down2, callback, orgs)
+                                                            end
+                                                        )
+                                                    end
+                                                )
+                                            end
+                                        )
+                                    end
+                                )
+                            end
+                        )
+                    end
+                )
+            end
+        )
+    end
 end
 
-function IDLGridTileSide.setLeftSilde(index, callback, orgs)
+function IDLGridTileSide.setLeftSide(index, callback, orgs, imm)
     -- logic of Left Side
     if IDLGridTileSide.isNeedSet(index) then
         local grid = cache.grid
@@ -246,7 +307,7 @@ function IDLGridTileSide.setLeftSilde(index, callback, orgs)
             sideName = SidesName.TileSideFour
         end
         if not isNilOrEmpty(sideName) then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -259,7 +320,7 @@ function IDLGridTileSide.setLeftSilde(index, callback, orgs)
     end
 end
 
-function IDLGridTileSide.setRightSilde(index, callback, orgs)
+function IDLGridTileSide.setRightSide(index, callback, orgs, imm)
     -- logic of Right Side
     if IDLGridTileSide.isNeedSet(index) then
         local grid = cache.grid
@@ -288,7 +349,7 @@ function IDLGridTileSide.setRightSilde(index, callback, orgs)
             sideName = SidesName.TileSideFour
         end
         if not isNilOrEmpty(sideName) then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -301,7 +362,7 @@ function IDLGridTileSide.setRightSilde(index, callback, orgs)
     end
 end
 
-function IDLGridTileSide.setUpSilde(index, callback, orgs)
+function IDLGridTileSide.setUpSide(index, callback, orgs, imm)
     -- logic of Up Side
     if IDLGridTileSide.isNeedSet(index) then
         local grid = cache.grid
@@ -330,7 +391,7 @@ function IDLGridTileSide.setUpSilde(index, callback, orgs)
             sideName = SidesName.TileSideFour
         end
         if not isNilOrEmpty(sideName) then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -343,7 +404,7 @@ function IDLGridTileSide.setUpSilde(index, callback, orgs)
     end
 end
 
-function IDLGridTileSide.setDownSilde(index, callback, orgs)
+function IDLGridTileSide.setDownSide(index, callback, orgs, imm)
     -- logic of down Side
     if IDLGridTileSide.isNeedSet(index) then
         local grid = cache.grid
@@ -372,7 +433,7 @@ function IDLGridTileSide.setDownSilde(index, callback, orgs)
             sideName = SidesName.TileSideFour
         end
         if not isNilOrEmpty(sideName) then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -399,12 +460,12 @@ function IDLGridTileSide.set4SidesAngle(i)
         end
         i = i + 1
         local tile = cache.tileList[i]
-        IDLGridTileSide.procOneCellSildeAngle(tile, IDLGridTileSide.set4SidesAngle, i)
+        IDLGridTileSide.procOneCellSideAngle(tile, IDLGridTileSide.set4SidesAngle, i)
     end
 end
 
 ---@public 处理一个地块的四个角，leftUp, leftDown, rightUp, rightDown
-function IDLGridTileSide.procOneCellSildeAngle(tile, callback, orgs)
+function IDLGridTileSide.procOneCellSideAngle(tile, callback, orgs, imm)
     if tile == IDMainCity.selectedUnit then
         if (not IDMainCity.isSizeInFreeCell(tile.getPosIndex(), tile.size, false, true)) then
             if callback then
@@ -414,26 +475,36 @@ function IDLGridTileSide.procOneCellSildeAngle(tile, callback, orgs)
         end
     end
     local leftUp, leftDown, rightUp, rightDown = tile.getSidesAngleIndex()
-    IDLGridTileSide.setLeftUpAngle(
-        leftUp,
-        function()
-            IDLGridTileSide.setLeftDownAngle(
-                leftDown,
-                function()
-                    IDLGridTileSide.setRightUpAngle(
-                        rightUp,
-                        function()
-                            IDLGridTileSide.setRightDownAngle(rightDown, callback, orgs)
-                        end
-                    )
-                end
-            )
+    if imm then
+        IDLGridTileSide.setLeftUpAngle(leftUp, nil, nil, imm)
+        IDLGridTileSide.setLeftDownAngle(leftDown, nil, nil, imm)
+        IDLGridTileSide.setRightUpAngle(rightUp, nil, nil, imm)
+        IDLGridTileSide.setRightDownAngle(rightDown, nil, nil, imm)
+        if callback then
+            callback(orgs)
         end
-    )
+    else
+        IDLGridTileSide.setLeftUpAngle(
+            leftUp,
+            function()
+                IDLGridTileSide.setLeftDownAngle(
+                    leftDown,
+                    function()
+                        IDLGridTileSide.setRightUpAngle(
+                            rightUp,
+                            function()
+                                IDLGridTileSide.setRightDownAngle(rightDown, callback, orgs)
+                            end
+                        )
+                    end
+                )
+            end
+        )
+    end
 end
 
 ---@public 处理左上角
-function IDLGridTileSide.setLeftUpAngle(index, callback, orgs)
+function IDLGridTileSide.setLeftUpAngle(index, callback, orgs, imm)
     if not IDLGridTileSide.isNeedSetAngel(index) then
         if callback then
             callback(orgs)
@@ -571,7 +642,7 @@ function IDLGridTileSide.setLeftUpAngle(index, callback, orgs)
 
         tileAngleSides[_index] = true
         if tileSides[_index] == nil then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -585,7 +656,7 @@ function IDLGridTileSide.setLeftUpAngle(index, callback, orgs)
 end
 
 ---@public 处理左下角
-function IDLGridTileSide.setLeftDownAngle(index, callback, orgs)
+function IDLGridTileSide.setLeftDownAngle(index, callback, orgs, imm)
     if not IDLGridTileSide.isNeedSetAngel(index) then
         if callback then
             callback(orgs)
@@ -723,7 +794,7 @@ function IDLGridTileSide.setLeftDownAngle(index, callback, orgs)
 
         tileAngleSides[_index] = true
         if tileSides[_index] == nil then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -737,7 +808,7 @@ function IDLGridTileSide.setLeftDownAngle(index, callback, orgs)
 end
 
 ---@public 处理右上角
-function IDLGridTileSide.setRightUpAngle(index, callback, orgs)
+function IDLGridTileSide.setRightUpAngle(index, callback, orgs, imm)
     if not IDLGridTileSide.isNeedSetAngel(index) then
         if callback then
             callback(orgs)
@@ -875,7 +946,7 @@ function IDLGridTileSide.setRightUpAngle(index, callback, orgs)
 
         tileAngleSides[_index] = true
         if tileSides[_index] == nil then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -889,7 +960,7 @@ function IDLGridTileSide.setRightUpAngle(index, callback, orgs)
 end
 
 ---@public 处理右下角
-function IDLGridTileSide.setRightDownAngle(index, callback, orgs)
+function IDLGridTileSide.setRightDownAngle(index, callback, orgs, imm)
     if not IDLGridTileSide.isNeedSetAngel(index) then
         if callback then
             callback(orgs)
@@ -1025,7 +1096,7 @@ function IDLGridTileSide.setRightDownAngle(index, callback, orgs)
 
         tileAngleSides[_index] = true
         if tileSides[_index] == nil then
-            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs)
+            IDLGridTileSide.loadSide2Show(sideName, _index, pos, callback, orgs, imm)
         else
             if callback then
                 callback(orgs)
@@ -1064,8 +1135,13 @@ function IDLGridTileSide.onLoadSide(name, obj, orgs)
     end
 end
 
-function IDLGridTileSide.loadSide2Show(name, index, pos, callback, rogs)
-    CLThingsPool.borrowObjAsyn(name, IDLGridTileSide.onLoadSide, {index, pos, callback, rogs})
+function IDLGridTileSide.loadSide2Show(name, index, pos, callback, rogs, imm)
+    if imm then
+        local obj = CLThingsPool.borrowObj(name)
+        IDLGridTileSide.onLoadSide(name, obj, {index, pos, callback, rogs})
+    else
+        CLThingsPool.borrowObjAsyn(name, IDLGridTileSide.onLoadSide, {index, pos, callback, rogs})
+    end
 end
 
 function IDLGridTileSide.isFourSide(index)

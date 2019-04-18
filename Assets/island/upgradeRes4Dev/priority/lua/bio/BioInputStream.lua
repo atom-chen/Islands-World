@@ -216,8 +216,25 @@
             end
             return int;
         elseif tag == B2Type.LONG_64B then
-            local str = BioInputStream.readString(s)
-            return tonumber(str);
+            local int = 0
+            local int0 = BioInputStream.ReadByte(s)
+            local int1 = BioInputStream.ReadByte(s)
+            local int2 = BioInputStream.ReadByte(s)
+            local int3 = BioInputStream.ReadByte(s)
+            local int4 = BioInputStream.ReadByte(s)
+            local int5 = BioInputStream.ReadByte(s)
+            local int6 = BioInputStream.ReadByte(s)
+            local int7 = BioInputStream.ReadByte(s)
+            --字节是负数,里面存放的4字节是负数的补码
+            if int0 >= 128 then
+                --? 1 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 = (9223372036854775807 * 4 + 3) ，
+                --lua里表示不出来了，只能这样写。
+                --实际上 大于9007199254740991（52bit) 的 long long 64在lua这边已经不是精确值了
+                int = (int0 * 72057594037927936 + int1 * 281474976710656 + int2 * 1099511627776 + int3 * 4294967296 + int4 * 16777216 + int5 * 65536 + int6 * 256 + int7) - (9223372036854775807 * 4 + 3);
+            else
+                int = (int0 * 72057594037927936 + int1 * 281474976710656 + int2 * 1099511627776 + int3 * 4294967296 + int4 * 16777216 + int5 * 65536 + int6 * 256 + int7)
+            end
+            return int
         elseif tag == B2Type.DOUBLE_0 then
             return 0;
         elseif tag == B2Type.DOUBLE_64B then

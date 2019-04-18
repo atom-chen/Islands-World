@@ -326,7 +326,7 @@ function IDMainCity.onLoadTile(name, obj, orgs)
 
     Utl.doCallback(progressCallback, IDMainCity.totalBuilding + IDMainCity.totalTile, i)
     if i == #list then
-        IDLGridTileSide.refreshAndShow(cb, progressCallback)
+        IDLGridTileSide.refreshAndShow(cb, progressCallback, false)
     else
         InvokeEx.invokeByUpdate(IDMainCity.doLoadTile, { i + 1, list, cb }, 0.01)
     end
@@ -722,7 +722,7 @@ end
 function IDMainCity.onReleaseTile(tile, hadMoved)
     if IDMainCity.newBuildUnit == tile then
     elseif IDMainCity.selectedUnit == tile then
-        IDLGridTileSide.refreshAndShow(nil)
+        IDLGridTileSide.refreshAndShow(nil, nil, true)
         if hadMoved then
             -- 通知服务器
             local blua = tile
@@ -1092,7 +1092,7 @@ function IDMainCity.removeTile(idx)
         tile.csSelf:clean()
         CLThingsPool.returnObj(tile.gameObject)
         SetActive(tile.gameObject, false)
-        IDLGridTileSide.refreshAndShow(nil)
+        IDLGridTileSide.refreshAndShow(nil, nil, true)
         IDMainCity.astar4Tile:scanRange(tile.transform.position, 5)
         IDMainCity.astar4Ocean:scanRange(tile.transform.position, 5)
         tiles[idx] = nil

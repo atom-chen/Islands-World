@@ -69,7 +69,7 @@
         INT32B = "int32b",
     }
 
-    -- 取得数据的类型，主要是对number做了处理
+    ---@public 取得数据的类型，主要是对number做了处理
     function BioOutputStream.getDataType(obj)
         --nil, boolean, number, string, userdata, function, thread, table
         local val = nil;
@@ -104,7 +104,7 @@
         return val;
     end
 
-    -- 返回table是否为一个array， 第二返回值是table的count
+    ---@public 返回table是否为一个array， 第二返回值：如查是array的时候是table的count
     function BioOutputStream.isArray(t)
         if t == nil then
             return false, 0;
@@ -146,7 +146,7 @@
             BioOutputStream.writeBoolean(os, obj);
         else
             --//throw new IOException("unsupported obj then" + obj);
-            print("B2IO unsupported error then type=[" .. tostring(objType) .. "] val=[" + obj .. "]");
+            print("B2IO unsupported error then type=[" .. tostring(objType) .. "] val=[" .. obj .. "]");
         end
     end
 
@@ -215,7 +215,24 @@
 
     function BioOutputStream.writeLong(os, v)
         BioOutputStream.WriteByte(os, B2Type.LONG_64B);
-        BioOutputStream.writeString(os, tostring(v));
+        local v2 = v;
+        --if v < 0 then
+        --    v2 = v + 4294967296
+        --end
+        BioOutputStream.WriteByte(os, math.floor(v2 / 72057594037927936));
+        v2 = v2 % 72057594037927936
+        BioOutputStream.WriteByte(os, math.floor(v2 / 281474976710656));
+        v2 = v2 % 281474976710656
+        BioOutputStream.WriteByte(os, math.floor(v2 / 1099511627776));
+        v2 = v2 % 1099511627776
+        BioOutputStream.WriteByte(os, math.floor(v2 / 4294967296));
+        v2 = v2 % 4294967296
+        BioOutputStream.WriteByte(os, math.floor(v2 / 16777216));
+        v2 = v2 % 16777216
+        BioOutputStream.WriteByte(os, math.floor(v2 / 65536));
+        v2 = v2 % 65536
+        BioOutputStream.WriteByte(os, math.floor(v2 / 256));
+        BioOutputStream.WriteByte(os, v2 % 256);
         return os;
     end
 
