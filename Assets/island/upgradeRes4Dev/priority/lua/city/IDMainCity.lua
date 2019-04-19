@@ -1,5 +1,6 @@
 -- 基地
 IDMainCity = {}
+local tbInsert = table.insert
 require("public.class")
 ---@type IDLGridTileSide
 local IDLGridTileSide = require("city.IDLGridTileSide")
@@ -29,8 +30,8 @@ local lookAtTarget = MyCfg.self.lookAtTarget
 IDMainCity.offset4Tile = 0.25 * Vector3.up
 IDMainCity.offset4Building = 0.3 * Vector3.up
 IDMainCity.astar4Ocean = nil -- A星寻路->海面
-IDMainCity.astar4Tile = nil     -- A星寻路->地面
-IDMainCity.astar4Worker = nil     -- A星寻路->地面
+IDMainCity.astar4Tile = nil -- A星寻路->地面
+IDMainCity.astar4Worker = nil -- A星寻路->地面
 IDMainCity.totalTile = 0
 IDMainCity.totalBuilding = 0
 ---@type IDLBuildingHeadquarters
@@ -40,8 +41,8 @@ IDMainCity.Headquarters = nil -- 主基地
 IDMainCity.fogOfWarInfluence = nil
 local seabed
 local buildingsCount = {} -- 每种建筑的数量统计
-local idelWorkers = CLLQueue.new()  -- 空闲工人
-local buildingsWithWorkers = {}  -- 工人与建筑的关系
+local idelWorkers = CLLQueue.new() -- 空闲工人
+local buildingsWithWorkers = {} -- 工人与建筑的关系
 local drag4World = CLUIDrag4World.self
 local smoothFollow = IDLCameraMgr.smoothFollow
 local preGameMode = GameMode.city
@@ -67,15 +68,16 @@ local function _init()
     IDMainCity.grid.gridLineHight = IDMainCity.offset4Tile.y
     grid = IDMainCity.grid.grid
 
-
     local uvWave = csSelf.gameObject:AddComponent(typeof(CS.Wave))
     IDMainCity.gridTileSidePorc = IDLGridTileSide
     IDLGridTileSide.init(grid, uvWave)
 
-    CLThingsPool.borrowObjAsyn("FourWayArrow",
-            function(name, obj, orgs)
-                obj.transform.parent = transform
-            end)
+    CLThingsPool.borrowObjAsyn(
+        "FourWayArrow",
+        function(name, obj, orgs)
+            obj.transform.parent = transform
+        end
+    )
 
     IDMainCity.astar4Ocean = getCC(MyMain.self.transform, "AStar1", "CLAStarPathSearch")
     IDMainCity.astar4Ocean.transform.parent = transform
@@ -144,39 +146,44 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     --end
 
     if IDMainCity.buildingProc == nil then
-        CLUIOtherObjPool.borrowObjAsyn("BuildingProc",
-                function(name, obj, orgs)
-                    IDMainCity.buildingProc = obj:GetComponent("CLCellLua")
-                    obj.transform.parent = MyCfg.self.hud3dRoot
-                    obj.transform.localScale = Vector3.one
-                    SetActive(obj, false)
-                end)
+        CLUIOtherObjPool.borrowObjAsyn(
+            "PopupMenu",
+            function(name, obj, orgs)
+                IDMainCity.buildingProc = obj:GetComponent("CLCellLua")
+                obj.transform.parent = MyCfg.self.hud3dRoot
+                obj.transform.localScale = Vector3.one
+                SetActive(obj, false)
+            end
+        )
     end
 
     if seabed == nil then
-        CLThingsPool.borrowObjAsyn("seabed",
-                function(name, obj, orgs)
-                    seabed = obj
-                    seabed.transform.parent = transform
-                    seabed.transform.localEulerAngles = Vector3(90, 0, 0)
-                    seabed.transform.localScale = Vector3.one
-                    seabed.transform.localPosition = Vector3.up * -6
-                    SetActive(seabed, true)
-                end)
+        CLThingsPool.borrowObjAsyn(
+            "seabed",
+            function(name, obj, orgs)
+                seabed = obj
+                seabed.transform.parent = transform
+                seabed.transform.localEulerAngles = Vector3(90, 0, 0)
+                seabed.transform.localScale = Vector3.one
+                seabed.transform.localPosition = Vector3.up * -6
+                SetActive(seabed, true)
+            end
+        )
     else
         SetActive(seabed, true)
     end
 
     IDMainCity.loadTiles(
-            function()
-                IDMainCity.loadBuildings(
-                        function()
-                            IDMainCity.onChgMode(GameMode.city, GameMode.map)
-                            IDMainCity.onScaleScreen()
-                            finishCallback()
-                        end
-                )
-            end)
+        function()
+            IDMainCity.loadBuildings(
+                function()
+                    IDMainCity.onChgMode(GameMode.city, GameMode.map)
+                    IDMainCity.onScaleScreen()
+                    finishCallback()
+                end
+            )
+        end
+    )
 end
 
 function IDMainCity.onDragMove(delta)
@@ -228,7 +235,6 @@ function IDMainCity.onChgMode(oldMode, curMode)
             v:SetActive(isShowBuilding)
         end
     end
-
 end
 
 function IDMainCity.scaleCity()
@@ -249,7 +255,8 @@ function IDMainCity.scaleCity()
     local persent = currDiff / diffVal
     transform.localScale = Vector3.one * (1 + cityRootDiff * persent)
     if preGameMode == GameMode.map and MyCfg.mode == GameMode.mapBtwncity then
-        lookAtTarget.position = lookAtTarget.position + (transform.position - lookAtTarget.position) * (1 + cityRootDiff * persent)
+        lookAtTarget.position =
+            lookAtTarget.position + (transform.position - lookAtTarget.position) * (1 + cityRootDiff * persent)
     end
 end
 
@@ -297,7 +304,7 @@ function IDMainCity.loadTiles(cb)
             cb()
         end
     else
-        IDMainCity.doLoadTile({ 1, list, cb })
+        IDMainCity.doLoadTile({1, list, cb})
     end
 end
 
@@ -328,7 +335,7 @@ function IDMainCity.onLoadTile(name, obj, orgs)
     if i == #list then
         IDLGridTileSide.refreshAndShow(cb, progressCallback, false)
     else
-        InvokeEx.invokeByUpdate(IDMainCity.doLoadTile, { i + 1, list, cb }, 0.01)
+        InvokeEx.invokeByUpdate(IDMainCity.doLoadTile, {i + 1, list, cb}, 0.01)
     end
 end
 
@@ -349,7 +356,7 @@ function IDMainCity.loadBuildings(cb)
     end
 
     IDMainCity.totalBuilding = #list
-    IDMainCity.loadbuilding({ list, 1, cb })
+    IDMainCity.loadbuilding({list, 1, cb})
 end
 
 function IDMainCity.loadbuilding(param)
@@ -402,15 +409,14 @@ function IDMainCity.onLoadBuilding(name, obj, param)
             buildingLua = unit.luaTable
         end
 
-        buildingLua:init(unit, bio2number(d.attrid), 0,
-                bio2number(d.lev), true,
-                { index = index, serverData = d })
+        buildingLua:init(unit, bio2number(d.attrid), 0, bio2number(d.lev), true, {index = index, serverData = d})
 
         local attr = DBCfg.getBuildingByID(bio2number(d.attrid))
         IDMainCity.refreshGridState(index, bio2number(attr.Size), true, gridState4Building)
         buildings[bio2number(d.idx)] = buildingLua
         -- 统计每种建筑的数据
-        buildingsCount[bio2number(d.attrid)] = buildingsCount[bio2number(d.attrid)] and (buildingsCount[bio2number(d.attrid)] + 1) or 1
+        buildingsCount[bio2number(d.attrid)] =
+            buildingsCount[bio2number(d.attrid)] and (buildingsCount[bio2number(d.attrid)] + 1) or 1
 
         if bio2number(d.attrid) == IDConst.headquartersBuildingID then
             -- 说明是主基地
@@ -427,7 +433,7 @@ function IDMainCity.onLoadBuilding(name, obj, param)
         --IDMainCity.astar4Worker:scan()
         Utl.doCallback(cb)
     else
-        InvokeEx.invokeByUpdate(IDMainCity.loadbuilding, { list, i + 1, cb }, 0.01)
+        InvokeEx.invokeByUpdate(IDMainCity.loadbuilding, {list, i + 1, cb}, 0.01)
     end
 end
 
@@ -435,7 +441,7 @@ end
 function IDMainCity.createBuilding(data)
     showHotWheel()
     IDMainCity.onClickOcean()
-    CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(data.ID)), IDMainCity.onGetBuilding4New, data);
+    CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(data.ID)), IDMainCity.onGetBuilding4New, data)
 end
 
 function IDMainCity.onGetBuilding4New(name, obj, orgs)
@@ -456,9 +462,7 @@ function IDMainCity.onGetBuilding4New(name, obj, orgs)
     else
         buildingLua = unit.luaTable
     end
-    buildingLua:init(unit, bio2number(attr.ID), 0,
-            0, true,
-            { index = index })
+    buildingLua:init(unit, bio2number(attr.ID), 0, 0, true, {index = index})
     IDMainCity.newBuildUnit = buildingLua
     IDMainCity.onClickBuilding(buildingLua)
     hideHotWheel()
@@ -536,7 +540,6 @@ function IDMainCity.destory()
 end
 
 function IDMainCity.onPress(isPressed)
-
 end
 
 ---@public 点击了海
@@ -641,7 +644,6 @@ function IDMainCity.onClickTile(tile)
 end
 
 function IDMainCity.onDragOcean()
-
 end
 
 ---@public 显示建筑操作hud
@@ -649,15 +651,208 @@ function IDMainCity.showhhideBuildingProc(building)
     if building == nil then
         SetActive(IDMainCity.buildingProc.gameObject, false)
     else
-        local d = { target = building, offset = Vector3.zero }
+        local d = {target = building, buttonList = IDMainCity.prepareData4PopupMenu(building), offset = Vector3.zero}
         SetActive(IDMainCity.buildingProc.gameObject, true)
         IDMainCity.buildingProc:init(d, nil)
     end
 end
 
-function IDMainCity.doCreateBuilding(d)
-    ---@type IDLBuilding
-    local building = d.target
+---@public 准备点击了建筑后的显示按键数据
+function IDMainCity.prepareData4PopupMenu(building)
+    local buttonList = {}
+    local isTile = building.isTile
+    local serverData = building.serverData
+    local attr = building.attr
+    if IDMainCity.newBuildUnit == building then
+        -- 说明是新建
+        -- 取消
+        tbInsert(
+            buttonList,
+            {
+                nameKey = "Cancel",
+                callback = IDMainCity.cancelCreateBuilding,
+                icon = "public_guest_bt_delete",
+                bg = "public_edit_circle_bt_shipshop_n"
+            }
+        )
+        -- 建造
+        tbInsert(
+            buttonList,
+            {
+                nameKey = "Okay",
+                callback = IDMainCity.doCreateBuilding,
+                icon = "public_guest_checkbox_check",
+                bg = "public_edit_circle_bt_management"
+            }
+        )
+    else
+        if isTile then
+            -- 扩建
+            tbInsert(
+                buttonList,
+                {
+                    nameKey = "Extend",
+                    callback = IDMainCity.showExtendTile,
+                    icon = "icon_build",
+                    bg = "public_edit_circle_bt_management"
+                }
+            )
+            -- 移除
+            tbInsert(
+                buttonList,
+                {
+                    nameKey = "Remove",
+                    callback = IDMainCity.removeTile,
+                    icon = "public_guest_bt_delete",
+                    bg = "public_edit_circle_bt_shipshop_n"
+                }
+            )
+        else
+            local attrid = bio2number(attr.ID)
+            local attrgid = bio2number(attr.GID)
+            -- 详情
+            tbInsert(
+                buttonList,
+                {
+                    nameKey = "Detail",
+                    callback = IDMainCity.showBuildingDetail,
+                    icon = "icon_detail",
+                    bg = "public_edit_circle_bt_management"
+                }
+            )
+
+            -- 升级加速
+            if
+                attrid ~= IDConst.activityCenterBuildingID and attrid ~= IDConst.MailBoxBuildingID and
+                    attrgid ~= IDConst.BuildingGID.tree
+             then
+                -- 活动中心、邮箱 不需要升级
+                if bio2number(serverData.state) == IDConst.BuildingState.normal then
+                    if bio2number(serverData.lev) < bio2number(attr.MaxLev) then
+                        -- 升级
+                        tbInsert(
+                            buttonList,
+                            {
+                                nameKey = "Upgrade",
+                                callback = IDMainCity.showBuildingUpgrade,
+                                icon = "icon_build",
+                                bg = "public_edit_circle_bt_management"
+                            }
+                        )
+                    end
+                elseif bio2number(serverData.state) == IDConst.BuildingState.upgrade then
+                    -- 立即
+                    tbInsert(
+                        buttonList,
+                        {
+                            nameKey = "SpeedUp",
+                            callback = IDMainCity.speedUpBuild,
+                            icon = "icon_arrow",
+                            bg = "public_edit_circle_bt_management"
+                        }
+                    )
+                elseif bio2number(serverData.state) == IDConst.BuildingState.renew then
+                    -- 修复
+                    tbInsert(
+                        buttonList,
+                        {
+                            nameKey = "Renew",
+                            callback = nil,
+                            icon = "icon_build",
+                            bg = "public_edit_circle_bt_management"
+                        }
+                    )
+                end
+            end
+
+            if building == IDMainCity.Headquarters then
+            -- 说明是主基地
+            --//TODO:
+            end
+            if attrid == 6 or attrid == 8 or attrid == 10 then
+            -- 收集
+            --table.insert(mData.buttonList, { nameKey = "Renew", callback = nil, icon = "icon_build", bg = "public_edit_circle_bt_management" })
+            end
+            if attrid == 2 then
+                -- 造船厂
+                if bio2number(serverData.lev) > 0 then
+                    tbInsert(
+                        buttonList,
+                        {
+                            nameKey = "BuildShip",
+                            callback = IDMainCity.buildShip,
+                            icon = "icon_ship",
+                            bg = "public_edit_circle_bt_management"
+                        }
+                    )
+                end
+            end
+
+            if attrgid == IDConst.BuildingGID.tree or MyCfg.self.isEditScene or __EditorMode__ then
+                -- 移除
+                tbInsert(
+                    buttonList,
+                    {
+                        nameKey = "Remove",
+                        callback = IDMainCity.removeBuilding,
+                        icon = "public_guest_bt_delete",
+                        bg = "public_edit_circle_bt_shipshop_n"
+                    }
+                )
+            end
+        end
+    end
+    return buttonList
+end
+
+function IDMainCity.removeTile(tile)
+    local idx = bio2number(tile.mData.idx)
+    showHotWheel()
+    net:send(NetProtoIsland.send.rmTile(idx))
+end
+
+function IDMainCity.showBuildingDetail(data)
+    getPanelAsy("PanelBuildingInfor", onLoadedPanelTT, data)
+end
+
+function IDMainCity.showBuildingUpgrade(data)
+    getPanelAsy("PanelBuildingUpgrade", onLoadedPanelTT, data)
+end
+
+function IDMainCity.removeBuilding(data)
+    local idx = bio2number(data.serverData.idx)
+    showHotWheel()
+    net:send(NetProtoIsland.send.rmBuilding(idx))
+end
+
+-- 加速
+function IDMainCity.speedUpBuild(data)
+    local diam = 0
+    local state = bio2number(data.serverData.state)
+    if state == IDConst.BuildingState.upgrade then
+        -- 正在升级
+        local leftMinutes = (bio2number(data.serverData.endtime) - DateEx.nowMS) / 60000
+        leftMinutes = math.ceil(leftMinutes)
+        diam = IDUtl.minutes2Diam(leftMinutes)
+    end
+
+    CLUIUtl.showConfirm(
+            string.format(LGet("MsgUseDiamSpeedUp"), diam),
+            function()
+                showHotWheel()
+                net:send(NetProtoIsland.send.upLevBuildingImm(bio2number(data.serverData.idx)))
+            end,
+            nil
+    )
+end
+
+-- 造船
+function IDMainCity.buildShip(building)
+    getPanelAsy("PanelBuildShip", onLoadedPanelTT, building)
+end
+
+---@param building IDLBuilding
+function IDMainCity.doCreateBuilding(building)
     showHotWheel()
     net:send(NetProtoIsland.send.newBuilding(building.id, building.gridIndex))
 end
@@ -666,13 +861,19 @@ function IDMainCity.onfinsihCreateBuilding(d)
     ---@type IDDBBuilding
     local b = IDDBCity.curCity.buildings[bio2number(d.idx)]
     if IDMainCity.newBuildUnit.id == bio2number(b.attrid) then
-        IDMainCity.newBuildUnit:init(IDMainCity.newBuildUnit,
-                bio2number(b.attrid), 0, bio2number(b.lev), true,
-                { index = bio2number(b.pos), serverData = b })
+        IDMainCity.newBuildUnit:init(
+            IDMainCity.newBuildUnit,
+            bio2number(b.attrid),
+            0,
+            bio2number(b.lev),
+            true,
+            {index = bio2number(b.pos), serverData = b}
+        )
         SetActive(IDMainCity.buildingProc.gameObject, false)
         buildings[bio2number(b.idx)] = IDMainCity.newBuildUnit
         -- 统计每种建筑的数据
-        buildingsCount[bio2number(b.attrid)] = buildingsCount[bio2number(b.attrid)] and (buildingsCount[bio2number(b.attrid)] + 1) or 1
+        buildingsCount[bio2number(b.attrid)] =
+            buildingsCount[bio2number(b.attrid)] and (buildingsCount[bio2number(b.attrid)] + 1) or 1
         IDMainCity.refreshGridState(bio2number(b.pos), IDMainCity.newBuildUnit.size, true, gridState4Building)
         IDMainCity.newBuildUnit = nil
         IDMainCity.onClickOcean()
@@ -756,7 +957,7 @@ function IDMainCity.setSelected(unit, selected)
     local cell = unit
     local isTile = cell.isTile
     if (selected) then
-        SFourWayArrow.show(unit.csSelf, cell.size)  --设置箭头
+        SFourWayArrow.show(unit.csSelf, cell.size) --设置箭头
         SFourWayArrow.setMatToon()
         if unit ~= IDMainCity.newBuildUnit then
             if isTile then
@@ -966,9 +1167,14 @@ function IDMainCity.onBuildingChg(data)
     end
 
     ---@type IDLBuilding
-    building:init(building.csSelf, bio2number(serverData.attrid), 0,
-            bio2number(serverData.lev), true,
-            { index = bio2number(serverData.pos), serverData = serverData })
+    building:init(
+        building.csSelf,
+        bio2number(serverData.attrid),
+        0,
+        bio2number(serverData.lev),
+        true,
+        {index = bio2number(serverData.pos), serverData = serverData}
+    )
 end
 
 ---@public 扩建地块
@@ -979,23 +1185,25 @@ function IDMainCity.showExtendTile(data)
         return
     end
     if IDMainCity.ExtendTile == nil then
-        CLUIOtherObjPool.borrowObjAsyn("ExtendTile",
-                function(name, go, orgs)
-                    if orgs ~= IDMainCity.selectedUnit then
-                        CLUIOtherObjPool.returnObj(go)
-                        SetActive(go, false)
-                        return
-                    end
-                    IDMainCity.ExtendTile = go:GetComponent("CLCellLua")
-                    IDMainCity.ExtendTile.transform.parent = csSelf.transform
-                    IDMainCity.ExtendTile.transform.localScale = Vector3.one
-                    IDMainCity.ExtendTile.transform.localEulerAngles = Vector3.zero
-                    IDMainCity.ExtendTile.transform.position = IDMainCity.selectedUnit.transform.position
-                    --SetActive(go, true)
-                    IDLGridTileSide.clean()
-                    IDMainCity.ExtendTile:init(IDMainCity.selectedUnit, nil)
-                end,
-                IDMainCity.selectedUnit)
+        CLUIOtherObjPool.borrowObjAsyn(
+            "ExtendTile",
+            function(name, go, orgs)
+                if orgs ~= IDMainCity.selectedUnit then
+                    CLUIOtherObjPool.returnObj(go)
+                    SetActive(go, false)
+                    return
+                end
+                IDMainCity.ExtendTile = go:GetComponent("CLCellLua")
+                IDMainCity.ExtendTile.transform.parent = csSelf.transform
+                IDMainCity.ExtendTile.transform.localScale = Vector3.one
+                IDMainCity.ExtendTile.transform.localEulerAngles = Vector3.zero
+                IDMainCity.ExtendTile.transform.position = IDMainCity.selectedUnit.transform.position
+                --SetActive(go, true)
+                IDLGridTileSide.clean()
+                IDMainCity.ExtendTile:init(IDMainCity.selectedUnit, nil)
+            end,
+            IDMainCity.selectedUnit
+        )
     else
         --SetActive(IDMainCity.ExtendTile.gameObject, true)
         IDLGridTileSide.clean()
@@ -1006,7 +1214,7 @@ end
 ---@public 能否放在一个地块
 ---@param ...、 可以是index或x、y
 function IDMainCity.canPlaceTile(...)
-    local param = { ... }
+    local param = {...}
     local index
     if #param > 1 then
         local x = param[1]
@@ -1059,29 +1267,31 @@ function IDMainCity.addTile(d)
     local idx = bio2number(d.idx)
     local data = IDDBCity.curCity.tiles[idx]
     if data then
-        CLThingsPool.borrowObjAsyn("Tiles.Tile_1",
-                function(naem, obj, orgs)
-                    local index = bio2number(d.pos)
-                    obj.transform.parent = transform
-                    obj.transform.position = grid:GetCellPosition(index) + IDMainCity.offset4Tile
-                    SetActive(obj, true)
-                    local index2 = grid:GetCellIndex(obj.transform.position)
-                    IDMainCity.refreshGridState(index2, 2, true, gridState4Tile)
+        CLThingsPool.borrowObjAsyn(
+            "Tiles.Tile_1",
+            function(naem, obj, orgs)
+                local index = bio2number(d.pos)
+                obj.transform.parent = transform
+                obj.transform.position = grid:GetCellPosition(index) + IDMainCity.offset4Tile
+                SetActive(obj, true)
+                local index2 = grid:GetCellIndex(obj.transform.position)
+                IDMainCity.refreshGridState(index2, 2, true, gridState4Tile)
 
-                    local tile = obj:GetComponent("CLCellLua")
-                    tile:init(d, nil)
-                    local tileLua = tile.luaTable
-                    tiles[idx] = tileLua
-                    IDMainCity.onClickTile(tileLua)
-                    IDMainCity.showExtendTile(tileLua)
-                end)
+                local tile = obj:GetComponent("CLCellLua")
+                tile:init(d, nil)
+                local tileLua = tile.luaTable
+                tiles[idx] = tileLua
+                IDMainCity.onClickTile(tileLua)
+                IDMainCity.showExtendTile(tileLua)
+            end
+        )
     else
         printe("tile data is nil")
     end
 end
 
 ---@public 移除地块
-function IDMainCity.removeTile(idx)
+function IDMainCity.doRemoveTile(idx)
     SetActive(IDMainCity.buildingProc.gameObject, false)
     SFourWayArrow.hide()
     IDMainCity.selectedUnit = nil
@@ -1100,7 +1310,7 @@ function IDMainCity.removeTile(idx)
     IDDBCity.curCity.tiles[idx] = nil
 end
 
-function IDMainCity.removeBuilding(idx)
+function IDMainCity.doRemoveBuilding(idx)
     SetActive(IDMainCity.buildingProc.gameObject, false)
     SFourWayArrow.hide()
     IDMainCity.selectedUnit = nil
@@ -1158,33 +1368,37 @@ function IDMainCity.employWorker(building, callback)
                 callback(worker)
             end
         else
-            CLRolePool.borrowObjAsyn("worker",
-                    function(name, role, orgs)
-                        local _building = orgs
-                        local _idx = bio2number(_building.serverData.idx)
-                        local state = bio2number(_building.serverData.state)
-                        if (not building.gameObject.activeInHierarchy)
-                                or buildingsWithWorkers[_idx]
-                                or state ~= IDConst.BuildingState.upgrade then
-                            CLRolePool.returnObj(role)
-                            SetActive(role.gameObject, false)
-                            return
-                        end
-                        role.transform.parent = IDMainCity.csSelf.transform
-                        role.transform.localScale = Vector3.one
-                        role.transform.position = IDMainCity.Headquarters.door.position
-                        SetActive(role.gameObject, true)
+            CLRolePool.borrowObjAsyn(
+                "worker",
+                function(name, role, orgs)
+                    local _building = orgs
+                    local _idx = bio2number(_building.serverData.idx)
+                    local state = bio2number(_building.serverData.state)
+                    if
+                        (not building.gameObject.activeInHierarchy) or buildingsWithWorkers[_idx] or
+                            state ~= IDConst.BuildingState.upgrade
+                     then
+                        CLRolePool.returnObj(role)
+                        SetActive(role.gameObject, false)
+                        return
+                    end
+                    role.transform.parent = IDMainCity.csSelf.transform
+                    role.transform.localScale = Vector3.one
+                    role.transform.position = IDMainCity.Headquarters.door.position
+                    SetActive(role.gameObject, true)
 
-                        if role.luaTable == nil then
-                            role.luaTable = IDUtl.newRoleLua(1)
-                        end
-                        role.luaTable:init(role, 1, 0, 0, true, { building = _building })
-                        role.luaTable:gotoWork(_building)
-                        buildingsWithWorkers[idx] = role.luaTable
-                        if callback then
-                            callback(role.luaTable)
-                        end
-                    end, building)
+                    if role.luaTable == nil then
+                        role.luaTable = IDUtl.newRoleLua(1)
+                    end
+                    role.luaTable:init(role, 1, 0, 0, true, {building = _building})
+                    role.luaTable:gotoWork(_building)
+                    buildingsWithWorkers[idx] = role.luaTable
+                    if callback then
+                        callback(role.luaTable)
+                    end
+                end,
+                building
+            )
         end
     else
         SetActive(worker.gameObject, true)

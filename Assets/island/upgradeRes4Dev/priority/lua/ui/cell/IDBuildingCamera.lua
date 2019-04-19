@@ -24,8 +24,8 @@ do
     function _cell.show (go, data)
         mData = data -- mData.target
         uiobjs.TextureBuilding.mainTexture = uiobjs.Camera.targetTexture
-        uiobjs.cameraTarget.position = mData.target.transform.position
-        uiobjs.Camera.transform.position = mData.target.transform.position
+        uiobjs.cameraTarget.position = mData.transform.position
+        uiobjs.Camera.transform.position = mData.transform.position
         --IDLCameraMgr.getProfile("normal4UI", function(profile)
         --    uiobjs.Camerapostproc.profile = profile
         --end)

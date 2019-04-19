@@ -105,10 +105,10 @@ function IDPMain.procNetwork(cmd, succ, msg, paras)
             IDMainCity.addTile(paras.tile)
         elseif cmd == NetProtoIsland.cmds.rmTile then
             hideHotWheel()
-            IDMainCity.removeTile(bio2number(paras.idx))
+            IDMainCity.doRemoveTile(bio2number(paras.idx))
         elseif cmd == NetProtoIsland.cmds.rmBuilding then
             hideHotWheel()
-            IDMainCity.removeBuilding(bio2number(paras.idx))
+            IDMainCity.doRemoveBuilding(bio2number(paras.idx))
         elseif cmd == NetProtoIsland.cmds.onFinishBuildingUpgrade then
             IDMainCity.onFinishBuildingUpgrade(paras.building)
         elseif cmd == NetProtoIsland.cmds.collectRes then

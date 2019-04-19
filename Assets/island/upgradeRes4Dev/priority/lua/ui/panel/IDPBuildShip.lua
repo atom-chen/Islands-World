@@ -42,8 +42,8 @@ do
 
     -- 显示，在c#中。show为调用refresh，show和refresh的区别在于，当页面已经显示了的情况，当页面再次出现在最上层时，只会调用refresh
     function IDPBuildShip.show()
-        dockyardAttr = mData.target.attr
-        dockyardServerData = mData.target.serverData
+        dockyardAttr = mData.attr
+        dockyardServerData = mData.serverData
 
         SetActive(uiobjs.ButtonBuild.gameObject, false)
         SetActive(uiobjs.ButtonImm.gameObject, false)
