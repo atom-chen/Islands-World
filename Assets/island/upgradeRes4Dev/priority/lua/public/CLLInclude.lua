@@ -377,6 +377,7 @@ do
     require("public.CLLPrefs")
     require("toolkit.CLLUpdateUpgrader")
     require("toolkit.CLLVerManager")
+    require("toolkit.BitUtl")
     -------------------------------------------------------
     -- 全局变量
     __version__ = Application.version -- "1.0"

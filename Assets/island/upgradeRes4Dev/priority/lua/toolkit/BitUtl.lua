@@ -35,17 +35,17 @@ end
 
 ---@public 与
 function BitUtl.andOp(left, right)
-    return BitUtl.__base(left, right, __andBit)
+    return __base(left, right, __andBit)
 end
 
 ---@public 或
 function BitUtl.orOp(left, right)
-    return BitUtl.__base(left, right, __orBit)
+    return __base(left, right, __orBit)
 end
 
 ---@public 异或
 function BitUtl.xorOp(left, right)
-    return BitUtl.__base(left, right, __xorBit)
+    return __base(left, right, __xorBit)
 end
 
 ---@public 非

@@ -2,15 +2,21 @@
 require("public.CLLInclude")
 require("bio.BioUtl")
 require("toolkit.CLLPrintEx")
+require("toolkit.BitUtl")
 
 local CLLNetSerialize = {}
 
 local strLen = string.len
 local strSub = string.sub
 local strPack = string.pack
+local strbyte = string.byte
+local strchar = string.char
+local insert = table.insert
 local maxPackSize = 64 * 1024 - 1
 local subPackSize = 64 * 1024 - 1 - 50
 local __maxLen = 1024 * 1024
+
+local currPack = {}
 --============================================================
 function CLLNetSerialize.packMsg(data, tcp)
     local bytes = BioUtl.writeObject(data)
@@ -46,11 +52,13 @@ function CLLNetSerialize.packMsg(data, tcp)
             tcp.socket:SendAsync(package)
         end
     else
+        print(bytes)
         local package = strPack(">s2", bytes)
         tcp.socket:SendAsync(package)
     end
 end
 
+--============================================================
 -- 完整的接口都是table，当有分包的时候会收到list。list[1]=共有几个分包，list[2]＝第几个分包，list[3]＝ 内容
 local function isSubPackage(m)
     if m.__isSubPack then
@@ -60,7 +68,6 @@ local function isSubPackage(m)
     return false
 end
 
-local currPack = {}
 local function unPackSubMsg(m)
     -- 是分包
     local count = m.count
@@ -79,7 +86,8 @@ local function unPackSubMsg(m)
     return nil
 end
 
--- 解包
+--============================================================
+---@public 解包
 function CLLNetSerialize.unpackMsg(buffer, tcp)
     local ret = nil
     local oldPos = buffer.Position
@@ -107,5 +115,32 @@ function CLLNetSerialize.unpackMsg(buffer, tcp)
     end
 end
 
+--============================================================
+local secretKey = "coolape99"
+---@public 加密
+function CLLNetSerialize.encrypt(bytes, key)
+    return CLLNetSerialize.xor(bytes, key)
+end
+
+---@public 解密
+function CLLNetSerialize.decrypt(bytes, key)
+    return CLLNetSerialize.xor(bytes, key)
+end
+
+function CLLNetSerialize.xor(bytes, key)
+    key = key or secretKey
+    local len = #bytes
+    local keyLen = #key
+    local byte, byte2
+    local keyIdx = 0
+    local result = {}
+    for i = 1, len do
+        byte = strbyte(bytes, i)
+        keyIdx = i % keyLen + 1
+        byte2 = BitUtl.xorOp(byte, strbyte(key, keyIdx))
+        insert(result, strchar(byte2))
+    end
+    return table.concat(result)
+end
 --------------------------------------------
 return CLLNetSerialize
