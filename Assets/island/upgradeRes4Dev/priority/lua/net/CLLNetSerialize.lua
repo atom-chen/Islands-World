@@ -16,7 +16,23 @@ local maxPackSize = 64 * 1024 - 1
 local subPackSize = 64 * 1024 - 1 - 50
 local __maxLen = 1024 * 1024
 
-local currPack = {}
+local currPack = {} --处理分包用
+local netCfg = {}   --配置数据
+--============================================================
+local EncryptType = {
+    clientEncrypt=1,
+    serverEncrypt=2,
+    both=3,
+    none=0,
+    }
+function CLLNetSerialize.setCfg(cfg)
+    --[[
+        cfg.encryptType:加密类别，1：只加密客户端，2：只加密服务器，3：前后端都加密，0及其它情况：不加密
+        cfg.secretKey:密钥
+        cfg.checkTimeStamp:检测时间戳
+    ]]
+    netCfg = cfg
+end
 --============================================================
 function CLLNetSerialize.packMsg(data, tcp)
     local bytes = BioUtl.writeObject(data)
@@ -40,6 +56,9 @@ function CLLNetSerialize.packMsg(data, tcp)
             subPackg.i = i
             subPackg.content = strSub(bytes, ((i - 1) * subPackSize) + 1, i * subPackSize)
             local package = strPack(">s2", BioUtl.writeObject(subPackg))
+            if netCfg.encryptType == EncryptType.serverEncrypt then
+                package = CLLNetSerialize.decrypt(package, netCfg.secretKey)
+            end
             tcp.socket:SendAsync(package)
         end
         if left > 0 then
@@ -49,11 +68,17 @@ function CLLNetSerialize.packMsg(data, tcp)
             subPackg.i = count
             subPackg.content = strSub(bytes, len - left + 1, len)
             local package = strPack(">s2", BioUtl.writeObject(subPackg))
+            if netCfg.encryptType == EncryptType.serverEncrypt then
+                package = CLLNetSerialize.decrypt(package, netCfg.secretKey)
+            end
             tcp.socket:SendAsync(package)
         end
     else
         print(bytes)
         local package = strPack(">s2", bytes)
+        if netCfg.encryptType == EncryptType.serverEncrypt then
+            package = CLLNetSerialize.decrypt(package, netCfg.secretKey)
+        end
         tcp.socket:SendAsync(package)
     end
 end
@@ -129,6 +154,9 @@ end
 
 function CLLNetSerialize.xor(bytes, key)
     key = key or secretKey
+    if key == nil or key == "" then
+        return bytes
+    end
     local len = #bytes
     local keyLen = #key
     local byte, byte2
