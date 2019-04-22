@@ -187,9 +187,9 @@ do
             r[29] = m.val1  -- 值1 int
             r[18] = m.cidx  -- 主城idx int
             r[21] = m.val3  -- 值3 int
-            r[30] = m.type  -- 地块类型 1：玩家，2：npc int
-            r[22] = m.val2  -- 值2 int
             r[13] = m.pageIdx  -- 所在屏的index int
+            r[22] = m.val2  -- 值2 int
+            r[30] = m.type  -- 地块类型 1：玩家，2：npc int
             return r;
         end,
         parse = function(m)
@@ -199,9 +199,9 @@ do
             r.val1 = m[29] --  int
             r.cidx = m[18] --  int
             r.val3 = m[21] --  int
-            r.type = m[30] --  int
-            r.val2 = m[22] --  int
             r.pageIdx = m[13] --  int
+            r.val2 = m[22] --  int
+            r.type = m[30] --  int
             return r;
         end,
     }
@@ -250,6 +250,23 @@ do
             r.status = m[37] --  int
             r.pos = m[19] --  int
             r.pidx = m[38] --  int
+            return r;
+        end,
+    }
+    ---@class NetProtoIsland.ST_netCfg 网络协议解析配置
+    NetProtoIsland.ST_netCfg = {
+        toMap = function(m)
+            local r = {}
+            if m == nil then return r end
+            r[14] = m.shipsMap  -- key=舰船的配置id, val=舰船数量 map
+            r[15] = m.buildingIdx  -- 造船厂的idx int
+            return r;
+        end,
+        parse = function(m)
+            local r = {}
+            if m == nil then return r end
+            r.shipsMap = m[14] --  table
+            r.buildingIdx = m[15] --  int
             return r;
         end,
     }
@@ -331,12 +348,11 @@ do
         setCallback(__callback, __orgs, ret)
         return ret
     end,
-    -- 当完成建造部分舰艇的通知
-    onFinishBuildOneShip = function(buildingIdx, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
+    -- 网络协议配置
+    sendNetCfg = function(__callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 57
+        ret[0] = 81
         ret[1] = NetProtoIsland.__sessionID
-        ret[15] = buildingIdx; -- 造船厂的idx int
         setCallback(__callback, __orgs, ret)
         return ret
     end,
@@ -363,6 +379,15 @@ do
         local ret = {}
         ret[0] = 62
         ret[1] = NetProtoIsland.__sessionID
+        setCallback(__callback, __orgs, ret)
+        return ret
+    end,
+    -- 当完成建造部分舰艇的通知
+    onFinishBuildOneShip = function(buildingIdx, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
+        local ret = {}
+        ret[0] = 57
+        ret[1] = NetProtoIsland.__sessionID
+        ret[15] = buildingIdx; -- 造船厂的idx int
         setCallback(__callback, __orgs, ret)
         return ret
     end,
@@ -519,13 +544,11 @@ do
         doCallback(map, ret)
         return ret
     end,
-    onFinishBuildOneShip = function(map)
+    sendNetCfg = function(map)
         local ret = {}
-        ret.cmd = "onFinishBuildOneShip"
+        ret.cmd = "sendNetCfg"
         ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
-        ret.buildingIdx = map[15]-- 造船厂的idx int
-        ret.shipAttrID = map[58]-- 航船的配置id
-        ret.shipNum = map[59]-- 航船的数量
+        ret.netCfg = NetProtoIsland.ST_netCfg.parse(map[82]) -- 网络协议解析配置
         doCallback(map, ret)
         return ret
     end,
@@ -550,6 +573,16 @@ do
         ret.cmd = "onResChg"
         ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
         ret.resInfor = NetProtoIsland.ST_resInfor.parse(map[63]) -- 资源信息
+        doCallback(map, ret)
+        return ret
+    end,
+    onFinishBuildOneShip = function(map)
+        local ret = {}
+        ret.cmd = "onFinishBuildOneShip"
+        ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
+        ret.buildingIdx = map[15]-- 造船厂的idx int
+        ret.shipAttrID = map[58]-- 航船的配置id
+        ret.shipNum = map[59]-- 航船的数量
         doCallback(map, ret)
         return ret
     end,
@@ -655,10 +688,11 @@ do
     NetProtoIsland.dispatch[46]={onReceive = NetProtoIsland.recive.rmBuilding, send = NetProtoIsland.send.rmBuilding}
     NetProtoIsland.dispatch[47]={onReceive = NetProtoIsland.recive.newBuilding, send = NetProtoIsland.send.newBuilding}
     NetProtoIsland.dispatch[48]={onReceive = NetProtoIsland.recive.login, send = NetProtoIsland.send.login}
-    NetProtoIsland.dispatch[57]={onReceive = NetProtoIsland.recive.onFinishBuildOneShip, send = NetProtoIsland.send.onFinishBuildOneShip}
+    NetProtoIsland.dispatch[81]={onReceive = NetProtoIsland.recive.sendNetCfg, send = NetProtoIsland.send.sendNetCfg}
     NetProtoIsland.dispatch[60]={onReceive = NetProtoIsland.recive.getBuilding, send = NetProtoIsland.send.getBuilding}
     NetProtoIsland.dispatch[61]={onReceive = NetProtoIsland.recive.rmTile, send = NetProtoIsland.send.rmTile}
     NetProtoIsland.dispatch[62]={onReceive = NetProtoIsland.recive.onResChg, send = NetProtoIsland.send.onResChg}
+    NetProtoIsland.dispatch[57]={onReceive = NetProtoIsland.recive.onFinishBuildOneShip, send = NetProtoIsland.send.onFinishBuildOneShip}
     NetProtoIsland.dispatch[64]={onReceive = NetProtoIsland.recive.moveBuilding, send = NetProtoIsland.send.moveBuilding}
     NetProtoIsland.dispatch[65]={onReceive = NetProtoIsland.recive.logout, send = NetProtoIsland.send.logout}
     NetProtoIsland.dispatch[66]={onReceive = NetProtoIsland.recive.buildShip, send = NetProtoIsland.send.buildShip}
@@ -678,10 +712,11 @@ do
         rmBuilding = "rmBuilding", -- 移除建筑,
         newBuilding = "newBuilding", -- 新建建筑,
         login = "login", -- 登陆,
-        onFinishBuildOneShip = "onFinishBuildOneShip", -- 当完成建造部分舰艇的通知,
+        sendNetCfg = "sendNetCfg", -- 网络协议配置,
         getBuilding = "getBuilding", -- 取得建筑,
         rmTile = "rmTile", -- 移除地块,
         onResChg = "onResChg", -- 资源变化时推送,
+        onFinishBuildOneShip = "onFinishBuildOneShip", -- 当完成建造部分舰艇的通知,
         moveBuilding = "moveBuilding", -- 移动建筑,
         logout = "logout", -- 登出,
         buildShip = "buildShip", -- 造船,

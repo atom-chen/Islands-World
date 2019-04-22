@@ -12,19 +12,21 @@ local strPack = string.pack
 local strbyte = string.byte
 local strchar = string.char
 local insert = table.insert
+local concat = table.concat
 local maxPackSize = 64 * 1024 - 1
 local subPackSize = 64 * 1024 - 1 - 50
 local __maxLen = 1024 * 1024
 
 local currPack = {} --处理分包用
-local netCfg = {}   --配置数据
+local netCfg = {} --配置数据
+local index = 0
 --============================================================
 local EncryptType = {
-    clientEncrypt=1,
-    serverEncrypt=2,
-    both=3,
-    none=0,
-    }
+    clientEncrypt = 1,
+    serverEncrypt = 2,
+    both = 3,
+    none = 0,
+}
 function CLLNetSerialize.setCfg(cfg)
     --[[
         cfg.encryptType:加密类别，1：只加密客户端，2：只加密服务器，3：前后端都加密，0及其它情况：不加密
@@ -32,6 +34,28 @@ function CLLNetSerialize.setCfg(cfg)
         cfg.checkTimeStamp:检测时间戳
     ]]
     netCfg = cfg
+    printe(netCfg.secretKey)
+end
+
+---@public 添加时间戳
+function CLLNetSerialize.addTimestamp(bytes)
+    if bytes == nil then
+        return nil
+    end
+    index = index + 1
+    local ts = DateEx.nowMS + index
+    return BioUtl.number2bio(ts) .. bytes
+end
+
+---@public 安全加固
+local securityReinforce = function(bytes)
+    if netCfg.checkTimeStamp then
+        bytes = CLLNetSerialize.addTimestamp(bytes)
+    end
+    if netCfg.encryptType and (netCfg.encryptType == EncryptType.clientEncrypt or netCfg.encryptType == EncryptType.both) then
+        bytes = CLLNetSerialize.encrypt(bytes, netCfg.secretKey)
+    end
+    return bytes
 end
 --============================================================
 function CLLNetSerialize.packMsg(data, tcp)
@@ -55,10 +79,8 @@ function CLLNetSerialize.packMsg(data, tcp)
             subPackg.count = count
             subPackg.i = i
             subPackg.content = strSub(bytes, ((i - 1) * subPackSize) + 1, i * subPackSize)
-            local package = strPack(">s2", BioUtl.writeObject(subPackg))
-            if netCfg.encryptType == EncryptType.serverEncrypt then
-                package = CLLNetSerialize.decrypt(package, netCfg.secretKey)
-            end
+            local _bytes = securityReinforce(BioUtl.writeObject(subPackg))
+            local package = strPack(">s2", _bytes)
             tcp.socket:SendAsync(package)
         end
         if left > 0 then
@@ -67,18 +89,15 @@ function CLLNetSerialize.packMsg(data, tcp)
             subPackg.count = count
             subPackg.i = count
             subPackg.content = strSub(bytes, len - left + 1, len)
-            local package = strPack(">s2", BioUtl.writeObject(subPackg))
-            if netCfg.encryptType == EncryptType.serverEncrypt then
-                package = CLLNetSerialize.decrypt(package, netCfg.secretKey)
-            end
+            local _bytes = securityReinforce(BioUtl.writeObject(subPackg))
+            local package = strPack(">s2", _bytes)
             tcp.socket:SendAsync(package)
         end
     else
-        print(bytes)
+        print("befor:" ..  bytes)
+        bytes = securityReinforce(bytes)
+        print("after:" ..  bytes)
         local package = strPack(">s2", bytes)
-        if netCfg.encryptType == EncryptType.serverEncrypt then
-            package = CLLNetSerialize.decrypt(package, netCfg.secretKey)
-        end
         tcp.socket:SendAsync(package)
     end
 end
@@ -127,6 +146,10 @@ function CLLNetSerialize.unpackMsg(buffer, tcp)
     local usedLen = buffer.Position
     if (usedLen + needLen <= totalLen) then
         local lessBuff = Utl.read4MemoryStream(buffer, 0, needLen)
+
+        if netCfg.encryptType and (netCfg.encryptType == EncryptType.serverEncrypt or netCfg.encryptType == EncryptType.both) then
+            lessBuff = CLLNetSerialize.decrypt(lessBuff, netCfg.secretKey)
+        end
         ret = BioUtl.readObject(lessBuff)
     else
         --说明长度不够
@@ -141,7 +164,7 @@ function CLLNetSerialize.unpackMsg(buffer, tcp)
 end
 
 --============================================================
-local secretKey = "coolape99"
+local secretKey = ""
 ---@public 加密
 function CLLNetSerialize.encrypt(bytes, key)
     return CLLNetSerialize.xor(bytes, key)
@@ -168,7 +191,7 @@ function CLLNetSerialize.xor(bytes, key)
         byte2 = BitUtl.xorOp(byte, strbyte(key, keyIdx))
         insert(result, strchar(byte2))
     end
-    return table.concat(result)
+    return concat(result)
 end
 --------------------------------------------
 return CLLNetSerialize

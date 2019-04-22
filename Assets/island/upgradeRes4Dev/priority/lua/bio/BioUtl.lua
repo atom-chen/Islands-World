@@ -51,10 +51,11 @@ do
         is:init(bytes)
         local status, result = pcall(BioInputStream.readObject, is)
         if status then
+            local readLen = is.pos - 1 -- 读取了多长
             is:release()
             --is = nil
             inputStreemPool:retObj(is)
-            return result
+            return result, readLen
         else
             is:release()
             inputStreemPool:retObj(is)

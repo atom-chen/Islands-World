@@ -198,6 +198,8 @@ function CLLNet.cacheData(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onGetShips4Dockyard(data.dockyardShips)
         end
+    elseif  cmd == NetProtoIsland.cmds.sendNetCfg then
+        csSelf.luaTable.setCfg(data.netCfg)
     end
 end
 
