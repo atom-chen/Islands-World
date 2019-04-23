@@ -4,6 +4,7 @@ require("bio.BioUtl")
 require("toolkit.CLLPrintEx")
 require("toolkit.BitUtl")
 
+---@class CLLNetSerialize
 local CLLNetSerialize = {}
 
 local strLen = string.len
@@ -32,9 +33,9 @@ function CLLNetSerialize.setCfg(cfg)
         cfg.encryptType:加密类别，1：只加密客户端，2：只加密服务器，3：前后端都加密，0及其它情况：不加密
         cfg.secretKey:密钥
         cfg.checkTimeStamp:检测时间戳
+        cfg.systime:系统时间 long"
     ]]
     netCfg = cfg
-    printe(netCfg.secretKey)
 end
 
 ---@public 添加时间戳
@@ -43,6 +44,9 @@ function CLLNetSerialize.addTimestamp(bytes)
         return nil
     end
     index = index + 1
+    if index > 100 then
+        index = 0
+    end
     local ts = DateEx.nowMS + index
     return BioUtl.number2bio(ts) .. bytes
 end
@@ -52,7 +56,8 @@ local securityReinforce = function(bytes)
     if netCfg.checkTimeStamp then
         bytes = CLLNetSerialize.addTimestamp(bytes)
     end
-    if netCfg.encryptType and (netCfg.encryptType == EncryptType.clientEncrypt or netCfg.encryptType == EncryptType.both) then
+    local enType = bio2Int(netCfg.encryptType)
+    if enType == EncryptType.clientEncrypt or enType == EncryptType.both then
         bytes = CLLNetSerialize.encrypt(bytes, netCfg.secretKey)
     end
     return bytes
@@ -94,10 +99,8 @@ function CLLNetSerialize.packMsg(data, tcp)
             tcp.socket:SendAsync(package)
         end
     else
-        print("befor:" ..  bytes)
-        bytes = securityReinforce(bytes)
-        print("after:" ..  bytes)
-        local package = strPack(">s2", bytes)
+        local _bytes = securityReinforce(bytes)
+        local package = strPack(">s2", _bytes)
         tcp.socket:SendAsync(package)
     end
 end
@@ -146,8 +149,8 @@ function CLLNetSerialize.unpackMsg(buffer, tcp)
     local usedLen = buffer.Position
     if (usedLen + needLen <= totalLen) then
         local lessBuff = Utl.read4MemoryStream(buffer, 0, needLen)
-
-        if netCfg.encryptType and (netCfg.encryptType == EncryptType.serverEncrypt or netCfg.encryptType == EncryptType.both) then
+        local enType = bio2Int(netCfg.encryptType)
+        if enType == EncryptType.serverEncrypt or enType == EncryptType.both then
             lessBuff = CLLNetSerialize.decrypt(lessBuff, netCfg.secretKey)
         end
         ret = BioUtl.readObject(lessBuff)

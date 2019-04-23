@@ -199,7 +199,15 @@ function CLLNet.cacheData(cmd, data)
             IDDBCity.curCity:onGetShips4Dockyard(data.dockyardShips)
         end
     elseif  cmd == NetProtoIsland.cmds.sendNetCfg then
-        csSelf.luaTable.setCfg(data.netCfg)
+        -- 初始化时间
+        local systime = bio2number(data.systime)
+        DateEx.init(systime)
+        
+        ---@type CLLNetSerialize
+        local netSerialize = csSelf.luaTable
+        if netSerialize then
+            netSerialize.setCfg(data.netCfg)
+        end
     end
 end
 

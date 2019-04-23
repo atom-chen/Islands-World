@@ -129,6 +129,10 @@ do
                 if (pars == Net.self.gateTcp) then
                 end
                 ]]
+                hideHotWheel()
+            elseif cmd == NetProtoIsland.cmds.sendNetCfg then
+                -- 服务器通知的网络相关配置，可以发送请求了
+                showHotWheel()
                 local uid = bio2Int(user.idx)
                 if CLCfgBase.self.isEditMode then
                     if not isNilOrEmpty(MyCfg.self.default_UID) then
@@ -141,8 +145,6 @@ do
                         uid = __UUID__
                     end
                 end
-                hideHotWheel()
-                showHotWheel()
                 net:send(NetProtoIsland.send.login(uid, getChlCode(), Utl.uuid, MyCfg.self.isEditScene or __EditorMode__))
             elseif cmd == NetProtoIsland.cmds.login then
                 hideHotWheel()

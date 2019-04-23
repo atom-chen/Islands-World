@@ -16,6 +16,7 @@ namespace Coolape
             self = this;
         }
         public CLBaseLua lua;
+        public LuaTable luaTable = null;
         public enum NetWorkType
         {
             publish,
@@ -103,7 +104,6 @@ namespace Coolape
                 serializelua = new LuaEnv();
             }
             CLUtlLua.addLuaLoader(serializelua);
-            LuaTable luaTable = null;
             object[] ret = CLUtlLua.doLua (serializelua, serializeluaPath);
             if (ret != null && ret.Length > 0) {
                 luaTable = (LuaTable)(ret [0]);

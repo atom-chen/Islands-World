@@ -186,10 +186,10 @@ do
             r[16] = m.idx  -- 网格index int
             r[29] = m.val1  -- 值1 int
             r[18] = m.cidx  -- 主城idx int
-            r[21] = m.val3  -- 值3 int
+            r[30] = m.type  -- 地块类型 1：玩家，2：npc int
             r[13] = m.pageIdx  -- 所在屏的index int
             r[22] = m.val2  -- 值2 int
-            r[30] = m.type  -- 地块类型 1：玩家，2：npc int
+            r[21] = m.val3  -- 值3 int
             return r;
         end,
         parse = function(m)
@@ -198,10 +198,10 @@ do
             r.idx = m[16] --  int
             r.val1 = m[29] --  int
             r.cidx = m[18] --  int
-            r.val3 = m[21] --  int
+            r.type = m[30] --  int
             r.pageIdx = m[13] --  int
             r.val2 = m[22] --  int
-            r.type = m[30] --  int
+            r.val3 = m[21] --  int
             return r;
         end,
     }
@@ -258,15 +258,17 @@ do
         toMap = function(m)
             local r = {}
             if m == nil then return r end
-            r[14] = m.shipsMap  -- key=舰船的配置id, val=舰船数量 map
-            r[15] = m.buildingIdx  -- 造船厂的idx int
+            r[83] = m.encryptType  -- 加密类别，1：只加密客户端，2：只加密服务器，3：前后端都加密，0及其它情况：不加密 int
+            r[85] = m.checkTimeStamp  -- 检测时间戳 boolean
+            r[84] = m.secretKey  -- 密钥 string
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.shipsMap = m[14] --  table
-            r.buildingIdx = m[15] --  int
+            r.encryptType = m[83] --  int
+            r.checkTimeStamp = m[85] --  boolean
+            r.secretKey = m[84] --  string
             return r;
         end,
     }
@@ -549,6 +551,7 @@ do
         ret.cmd = "sendNetCfg"
         ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
         ret.netCfg = NetProtoIsland.ST_netCfg.parse(map[82]) -- 网络协议解析配置
+        ret.systime = map[55]-- 系统时间 long
         doCallback(map, ret)
         return ret
     end,
