@@ -188,3 +188,5 @@ Cost=消耗
 DockyardBusy=建造厂很繁忙!
 Number=数量
 Time=时间
+Enter=进入
+Attack=攻击

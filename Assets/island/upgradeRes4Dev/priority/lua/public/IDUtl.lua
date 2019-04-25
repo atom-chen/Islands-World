@@ -35,12 +35,18 @@ function IDUtl.nextOpen(attr, lev, type)
                 -- 地块
                 local diff = bio2number(headquartersOpenNext.Tiles) - bio2number(headquartersOpen.Tiles)
                 if diff > 0 then
-                    table.insert(list, { name = LGet("Tile"), currVal = bio2number(headquartersOpen.Tiles), addVal = diff })
+                    table.insert(
+                        list,
+                        {name = LGet("Tile"), currVal = bio2number(headquartersOpen.Tiles), addVal = diff}
+                    )
                 end
                 -- 工人
                 diff = bio2number(headquartersOpenNext.Workers) - bio2number(headquartersOpen.Workers)
                 if diff > 0 then
-                    table.insert(list, { name = LGet("Worker"), currVal = bio2number(headquartersOpen.Tiles), addVal = diff })
+                    table.insert(
+                        list,
+                        {name = LGet("Worker"), currVal = bio2number(headquartersOpen.Tiles), addVal = diff}
+                    )
                 end
             end
 
@@ -54,7 +60,14 @@ function IDUtl.nextOpen(attr, lev, type)
                     diff = bio2number(headquartersOpenNext[keyBuilding]) - bio2number(headquartersOpen[keyBuilding])
                     if diff > 0 then
                         local bAttr = DBCfg.getBuildingByID(buildingID)
-                        table.insert(list, { name = LGet(bAttr.NameKey), currVal = bio2number(headquartersOpen[keyBuilding]), addVal = diff })
+                        table.insert(
+                            list,
+                            {
+                                name = LGet(bAttr.NameKey),
+                                currVal = bio2number(headquartersOpen[keyBuilding]),
+                                addVal = diff
+                            }
+                        )
                     end
                 end
             end
@@ -77,7 +90,13 @@ function IDUtl.getBuildingUpgradeConditions(id, lev)
     if bio2number(attr.BuildCostFoodMax) > 0 then
         d = {}
         d.icon = "res_food"
-        d.value = DBCfg.getGrowingVal(bio2number(attr.BuildCostFoodMin), bio2number(attr.BuildCostFoodMax), bio2number(attr.BuildCostFoodCurve), lev / bio2number(attr.MaxLev))
+        d.value =
+            DBCfg.getGrowingVal(
+            bio2number(attr.BuildCostFoodMin),
+            bio2number(attr.BuildCostFoodMax),
+            bio2number(attr.BuildCostFoodCurve),
+            lev / bio2number(attr.MaxLev)
+        )
         d.other = {}
         table.insert(list, d)
     end
@@ -85,7 +104,13 @@ function IDUtl.getBuildingUpgradeConditions(id, lev)
     if bio2number(attr.BuildCostGoldMax) > 0 then
         d = {}
         d.icon = "res_gold"
-        d.value = DBCfg.getGrowingVal(bio2number(attr.BuildGoldFoodMin), bio2number(attr.BuildCostGoldMax), bio2number(attr.BuildCostGoldCurve), lev / bio2number(attr.MaxLev))
+        d.value =
+            DBCfg.getGrowingVal(
+            bio2number(attr.BuildGoldFoodMin),
+            bio2number(attr.BuildCostGoldMax),
+            bio2number(attr.BuildCostGoldCurve),
+            lev / bio2number(attr.MaxLev)
+        )
         d.other = {}
         table.insert(list, d)
     end
@@ -93,7 +118,13 @@ function IDUtl.getBuildingUpgradeConditions(id, lev)
     if bio2number(attr.BuildCostOilMax) > 0 then
         d = {}
         d.icon = "res_shiyou"
-        d.value = DBCfg.getGrowingVal(bio2number(attr.BuildCostOilMin), bio2number(attr.BuildCostOilMax), bio2number(attr.BuildCostOilCurve), lev / bio2number(attr.MaxLev))
+        d.value =
+            DBCfg.getGrowingVal(
+            bio2number(attr.BuildCostOilMin),
+            bio2number(attr.BuildCostOilMax),
+            bio2number(attr.BuildCostOilCurve),
+            lev / bio2number(attr.MaxLev)
+        )
         d.other = {}
         table.insert(list, d)
     end
@@ -111,15 +142,33 @@ function IDUtl.getBuildingUpgradeNeedRes(id, lev)
     local map = {}
     -- 粮食
     if bio2number(attr.BuildCostFoodMax) > 0 then
-        map.food = DBCfg.getGrowingVal(bio2number(attr.BuildCostFoodMin), bio2number(attr.BuildCostFoodMax), bio2number(attr.BuildCostFoodCurve), lev / bio2number(attr.MaxLev))
+        map.food =
+            DBCfg.getGrowingVal(
+            bio2number(attr.BuildCostFoodMin),
+            bio2number(attr.BuildCostFoodMax),
+            bio2number(attr.BuildCostFoodCurve),
+            lev / bio2number(attr.MaxLev)
+        )
     end
     -- 金币
     if bio2number(attr.BuildCostGoldMax) > 0 then
-        map.gold = DBCfg.getGrowingVal(bio2number(attr.BuildGoldFoodMin), bio2number(attr.BuildCostGoldMax), bio2number(attr.BuildCostGoldCurve), lev / bio2number(attr.MaxLev))
+        map.gold =
+            DBCfg.getGrowingVal(
+            bio2number(attr.BuildGoldFoodMin),
+            bio2number(attr.BuildCostGoldMax),
+            bio2number(attr.BuildCostGoldCurve),
+            lev / bio2number(attr.MaxLev)
+        )
     end
     -- 油
     if bio2number(attr.BuildCostOilMax) > 0 then
-        map.oil = DBCfg.getGrowingVal(bio2number(attr.BuildCostOilMin), bio2number(attr.BuildCostOilMax), bio2number(attr.BuildCostOilCurve), lev / bio2number(attr.MaxLev))
+        map.oil =
+            DBCfg.getGrowingVal(
+            bio2number(attr.BuildCostOilMin),
+            bio2number(attr.BuildCostOilMax),
+            bio2number(attr.BuildCostOilCurve),
+            lev / bio2number(attr.MaxLev)
+        )
     end
     return map
 end
@@ -253,18 +302,20 @@ end
 
 local playOneFlyPic = function(params)
     local initPos = params.initPos
-    CLUIOtherObjPool.borrowObjAsyn("FlyPic",
-            function(name, obj, orgs)
-                local cell = obj:GetComponent("CLCellLua")
-                cell.transform.parent = CLUIInit.self.transform
-                if initPos then
-                    cell.transform.position = initPos
-                end
-                cell.transform.localScale = Vector3.one
-                cell.transform.localEulerAngles = Vector3.zero
-                SetActive(cell.gameObject, true)
-                cell:init(params, nil)
-            end)
+    CLUIOtherObjPool.borrowObjAsyn(
+        "FlyPic",
+        function(name, obj, orgs)
+            local cell = obj:GetComponent("CLCellLua")
+            cell.transform.parent = CLUIInit.self.transform
+            if initPos then
+                cell.transform.position = initPos
+            end
+            cell.transform.localScale = Vector3.one
+            cell.transform.localEulerAngles = Vector3.zero
+            SetActive(cell.gameObject, true)
+            cell:init(params, nil)
+        end
+    )
 end
 
 ---@public playFlyPics图标飞的效果
@@ -277,11 +328,58 @@ end
 function IDUtl.playFlyPics(initPos, from, to, icon, sound, count)
     count = count or 1
     for i = 1, count do
-        InvokeEx.invokeByUpdate(playOneFlyPic,
-                { initPos = initPos, from = from, to = to, icon = icon, sound = sound },
-                (i - 1) * 0.05)
+        InvokeEx.invokeByUpdate(
+            playOneFlyPic,
+            {initPos = initPos, from = from, to = to, icon = icon, sound = sound},
+            (i - 1) * 0.05
+        )
     end
 end
 
+function IDUtl.hidePopupMenus()
+    if IDUtl.popupMenu then
+        SetActive(IDUtl.popupMenu.gameObject, false)
+    end
+end
+
+---@public 显示建筑操作hud
+function IDUtl.showPopupMenus(target, buttonsList, offset)
+    if target == nil then
+        if IDUtl.popupMenu then
+            SetActive(IDUtl.popupMenu.gameObject, false)
+        end
+    end
+    if IDUtl.popupMenu == nil then
+        showHotWheel()
+        CLUIOtherObjPool.borrowObjAsyn(
+            "PopupMenu",
+            function(name, obj, orgs)
+                if IDUtl.popupMenu then
+                    CLUIOtherObjPool.returnObj(IDUtl.popupMenu.gameObject)
+                    SetActive(IDUtl.popupMenu.gameObject, false)
+                end
+                IDUtl.popupMenu = obj:GetComponent("CLCellLua")
+                obj.transform.parent = MyCfg.self.hud3dRoot
+                obj.transform.localScale = Vector3.one
+                local d = {target = target, buttonList = buttonsList, offset = offset or Vector3.zero}
+                SetActive(IDUtl.popupMenu.gameObject, true)
+                IDUtl.popupMenu:init(d, nil)
+                hideHotWheel()
+            end
+        )
+    else
+        local d = {target = target, buttonList = buttonsList, offset = offset or Vector3.zero}
+        SetActive(IDUtl.popupMenu.gameObject, true)
+        IDUtl.popupMenu:init(d, nil)
+    end
+end
+
+function IDUtl.clean()
+    if IDUtl.popupMenu then
+        CLUIOtherObjPool.returnObj(IDUtl.popupMenu.gameObject)
+        SetActive(IDUtl.popupMenu.gameObject, false)
+        IDUtl.popupMenu = nil
+    end
+end
 --------------------------------------------
 return IDUtl

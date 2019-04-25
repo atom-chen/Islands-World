@@ -29,6 +29,7 @@ IDWorldMap.mapTileSize = nil -- 大地图地块
 IDWorldMap.scaleCityHeighMin = 45
 IDWorldMap.scaleCityHeighMax = 50
 local isDragOcean = false
+local popupMenus
 
 -- 重新加载海
 function IDWorldMap.onLoadOcena(name, obj, orgs)
@@ -79,6 +80,23 @@ function IDWorldMap.__init()
     IDWorldMap.fogOfWarInfluence.transform.parent = transform
     IDWorldMap.fogOfWarInfluence.transform.localPosition = Vector3.zero
     IDWorldMap.fogOfWarInfluence.transform.localScale = Vector3.one
+
+    popupMenus = {
+        enterCity = {
+            --进城
+            nameKey = "Enter",
+            callback = IDWorldMap.enterCity,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        },
+        attack= {
+            --攻击
+            nameKey = "Attack",
+            callback = IDWorldMap.attack,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        }
+    }
 end
 
 function IDWorldMap.init(gidx, onFinishCallback, onProgress)
@@ -378,6 +396,7 @@ end
 function IDWorldMap.onClickSelfCity()
     IDWorldMap.onClickOcean()
     --//TODO:
+    IDUtl.showPopupMenus()
 end
 
 ---@public 清除所有页的元素

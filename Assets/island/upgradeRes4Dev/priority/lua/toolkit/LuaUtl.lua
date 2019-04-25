@@ -370,7 +370,9 @@ function doReleaseAllRes()
     local panel = CLPanelManager.getPanel(CLMainBase.self.firstPanel)
     CLPanelManager.showPanel(panel)
     UIRichText4Chat.pool:clean()
-
+    if IDUtl then
+        IDUtl.clean()
+    end
     if IDMainCity then
         IDMainCity.clean()
     end

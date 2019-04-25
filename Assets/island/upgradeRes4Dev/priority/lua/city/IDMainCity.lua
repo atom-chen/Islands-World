@@ -20,7 +20,6 @@ local gridState4Building = {}
 IDMainCity.cityData = nil -- 城的数据
 IDMainCity.selectedUnit = nil
 IDMainCity.newBuildUnit = nil
-IDMainCity.buildingProc = nil
 IDMainCity.ExtendTile = nil
 local finishCallback, progressCallback
 ---@type MirrorReflection
@@ -48,6 +47,7 @@ local smoothFollow = IDLCameraMgr.smoothFollow
 local preGameMode = GameMode.city
 local scaleCityHeighMax = 0
 local scaleCityHeighMin = 0
+local PopUpMenus
 
 local function _init()
     if csSelf then
@@ -85,6 +85,79 @@ local function _init()
     IDMainCity.astar4Tile.transform.parent = transform
     IDMainCity.astar4Worker = getCC(MyMain.self.transform, "AStar3", "CLAStarPathSearch")
     IDMainCity.astar4Worker.transform.parent = transform
+
+    PopUpMenus = {
+        cancelBuild = {
+            --取消建筑
+            nameKey = "Cancel",
+            callback = IDMainCity.cancelCreateBuilding,
+            icon = "public_guest_bt_delete",
+            bg = "public_edit_circle_bt_shipshop_n"
+        },
+        build = {
+            --建造
+            nameKey = "Okay",
+            callback = IDMainCity.doCreateBuilding,
+            icon = "public_guest_checkbox_check",
+            bg = "public_edit_circle_bt_management"
+        },
+        extend = {
+            --扩建
+            nameKey = "Extend",
+            callback = IDMainCity.showExtendTile,
+            icon = "icon_build",
+            bg = "public_edit_circle_bt_management"
+        },
+        removeTile = {
+            --移除地块
+            nameKey = "Remove",
+            callback = IDMainCity.removeTile,
+            icon = "public_guest_bt_delete",
+            bg = "public_edit_circle_bt_shipshop_n"
+        },
+        detail = {
+            --详情
+            nameKey = "Detail",
+            callback = IDMainCity.showBuildingDetail,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        },
+        upgrade = {
+            --升级
+            nameKey = "Upgrade",
+            callback = IDMainCity.showBuildingUpgrade,
+            icon = "icon_build",
+            bg = "public_edit_circle_bt_management"
+        },
+        buildSpeedUp = {
+            --建筑升级加速
+            nameKey = "SpeedUp",
+            callback = IDMainCity.speedUpBuild,
+            icon = "icon_arrow",
+            bg = "public_edit_circle_bt_management"
+        },
+        renew = {
+            --修复
+            nameKey = "Renew",
+            callback = nil,
+            icon = "icon_build",
+            bg = "public_edit_circle_bt_management"
+        },
+        buildShip = {
+            --造船
+            nameKey = "BuildShip",
+            callback = IDMainCity.buildShip,
+            icon = "icon_ship",
+            bg = "public_edit_circle_bt_management"
+        },
+        removeBuilding = {
+            --移除建筑
+            nameKey = "Remove",
+            callback = IDMainCity.removeBuilding,
+            icon = "public_guest_bt_delete",
+            bg = "public_edit_circle_bt_shipshop_n"
+        }
+    }
 end
 
 function IDMainCity.init(cityData, onFinishCallback, onProgress)
@@ -144,18 +217,6 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     --    IDMainCity.astar4Worker.transform.position = Vector3(-size / 2, 0, -size / 2)
     --    IDMainCity.astar4Worker:init()
     --end
-
-    if IDMainCity.buildingProc == nil then
-        CLUIOtherObjPool.borrowObjAsyn(
-            "PopupMenu",
-            function(name, obj, orgs)
-                IDMainCity.buildingProc = obj:GetComponent("CLCellLua")
-                obj.transform.parent = MyCfg.self.hud3dRoot
-                obj.transform.localScale = Vector3.one
-                SetActive(obj, false)
-            end
-        )
-    end
 
     if seabed == nil then
         CLThingsPool.borrowObjAsyn(
@@ -512,11 +573,6 @@ function IDMainCity.clean()
         seabed = nil
     end
 
-    if IDMainCity.buildingProc then
-        CLUIOtherObjPool.returnObj(IDMainCity.buildingProc.gameObject)
-        SetActive(IDMainCity.buildingProc.gameObject, false)
-        IDMainCity.buildingProc = nil
-    end
     IDLGridTileSide.clean()
 
     gridState4Building = {}
@@ -527,11 +583,6 @@ end
 
 function IDMainCity.destory()
     IDMainCity.clean()
-    if IDMainCity.buildingProc then
-        CLUIOtherObjPool.returnObj(IDMainCity.buildingProc.gameObject)
-        SetActive(IDMainCity.buildingProc.gameObject, false)
-        IDMainCity.buildingProc = nil
-    end
     if SFourWayArrow.self ~= nil then
         CLThingsPool.returnObj(SFourWayArrow.self.gameObject)
         SetActive(SFourWayArrow.self.gameObject, false)
@@ -558,7 +609,7 @@ function IDMainCity.onClickOcean()
             SetActive(IDMainCity.selectedUnit.csSelf.gameObject, false)
             IDMainCity.newBuildUnit = nil
         end
-        NGUITools.SetActive(IDMainCity.buildingProc.gameObject, false)
+        IDUtl.hidePopupMenus()
         IDMainCity.selectedUnit = nil
     end
 
@@ -577,7 +628,7 @@ function IDMainCity.onClickBuilding(building)
         IDMainCity.setSelected(IDMainCity.selectedUnit, false)
         if (IDMainCity.newBuildUnit == IDMainCity.selectedUnit) then
             -- 说明是新建
-            NGUITools.SetActive(IDMainCity.buildingProc.gameObject, false)
+            IDUtl.hidePopupMenus()
             IDMainCity.selectedUnit.csSelf:clean()
             CLThingsPool.returnObj(IDMainCity.selectedUnit.csSelf.gameObject)
             SetActive(IDMainCity.selectedUnit.csSelf.gameObject, false)
@@ -606,7 +657,7 @@ function IDMainCity.onClickTile(tile)
         IDMainCity.setSelected(IDMainCity.selectedUnit, false)
         if (IDMainCity.newBuildUnit == IDMainCity.selectedUnit) then
             -- 说明是新建
-            NGUITools.SetActive(IDMainCity.buildingProc.gameObject, false)
+            IDUtl.hidePopupMenus()
             IDMainCity.selectedUnit.csSelf:clean()
             CLThingsPool.returnObj(IDMainCity.selectedUnit.csSelf.gameObject)
             SetActive(IDMainCity.selectedUnit.csSelf.gameObject, false)
@@ -649,11 +700,9 @@ end
 ---@public 显示建筑操作hud
 function IDMainCity.showhhideBuildingProc(building)
     if building == nil then
-        SetActive(IDMainCity.buildingProc.gameObject, false)
+        IDUtl.hidePopupMenus()
     else
-        local d = {target = building, buttonList = IDMainCity.prepareData4PopupMenu(building), offset = Vector3.zero}
-        SetActive(IDMainCity.buildingProc.gameObject, true)
-        IDMainCity.buildingProc:init(d, nil)
+        IDUtl.showPopupMenus(building, IDMainCity.prepareData4PopupMenu(building))
     end
 end
 
@@ -666,60 +715,20 @@ function IDMainCity.prepareData4PopupMenu(building)
     if IDMainCity.newBuildUnit == building then
         -- 说明是新建
         -- 取消
-        tbInsert(
-            buttonList,
-            {
-                nameKey = "Cancel",
-                callback = IDMainCity.cancelCreateBuilding,
-                icon = "public_guest_bt_delete",
-                bg = "public_edit_circle_bt_shipshop_n"
-            }
-        )
+        tbInsert(buttonList, PopUpMenus.cancelBuild)
         -- 建造
-        tbInsert(
-            buttonList,
-            {
-                nameKey = "Okay",
-                callback = IDMainCity.doCreateBuilding,
-                icon = "public_guest_checkbox_check",
-                bg = "public_edit_circle_bt_management"
-            }
-        )
+        tbInsert(buttonList, PopUpMenus.build)
     else
         if isTile then
             -- 扩建
-            tbInsert(
-                buttonList,
-                {
-                    nameKey = "Extend",
-                    callback = IDMainCity.showExtendTile,
-                    icon = "icon_build",
-                    bg = "public_edit_circle_bt_management"
-                }
-            )
+            tbInsert(buttonList, PopUpMenus.extend)
             -- 移除
-            tbInsert(
-                buttonList,
-                {
-                    nameKey = "Remove",
-                    callback = IDMainCity.removeTile,
-                    icon = "public_guest_bt_delete",
-                    bg = "public_edit_circle_bt_shipshop_n"
-                }
-            )
+            tbInsert(buttonList, PopUpMenus.removeTile)
         else
             local attrid = bio2number(attr.ID)
             local attrgid = bio2number(attr.GID)
             -- 详情
-            tbInsert(
-                buttonList,
-                {
-                    nameKey = "Detail",
-                    callback = IDMainCity.showBuildingDetail,
-                    icon = "icon_detail",
-                    bg = "public_edit_circle_bt_management"
-                }
-            )
+            tbInsert(buttonList, PopUpMenus.detail)
 
             -- 升级加速
             if
@@ -730,38 +739,14 @@ function IDMainCity.prepareData4PopupMenu(building)
                 if bio2number(serverData.state) == IDConst.BuildingState.normal then
                     if bio2number(serverData.lev) < bio2number(attr.MaxLev) then
                         -- 升级
-                        tbInsert(
-                            buttonList,
-                            {
-                                nameKey = "Upgrade",
-                                callback = IDMainCity.showBuildingUpgrade,
-                                icon = "icon_build",
-                                bg = "public_edit_circle_bt_management"
-                            }
-                        )
+                        tbInsert(buttonList, PopUpMenus.upgrade)
                     end
                 elseif bio2number(serverData.state) == IDConst.BuildingState.upgrade then
                     -- 立即
-                    tbInsert(
-                        buttonList,
-                        {
-                            nameKey = "SpeedUp",
-                            callback = IDMainCity.speedUpBuild,
-                            icon = "icon_arrow",
-                            bg = "public_edit_circle_bt_management"
-                        }
-                    )
+                    tbInsert(buttonList, PopUpMenus.buildSpeedUp)
                 elseif bio2number(serverData.state) == IDConst.BuildingState.renew then
                     -- 修复
-                    tbInsert(
-                        buttonList,
-                        {
-                            nameKey = "Renew",
-                            callback = nil,
-                            icon = "icon_build",
-                            bg = "public_edit_circle_bt_management"
-                        }
-                    )
+                    tbInsert(buttonList, PopUpMenus.renew)
                 end
             end
 
@@ -776,29 +761,13 @@ function IDMainCity.prepareData4PopupMenu(building)
             if attrid == 2 then
                 -- 造船厂
                 if bio2number(serverData.lev) > 0 then
-                    tbInsert(
-                        buttonList,
-                        {
-                            nameKey = "BuildShip",
-                            callback = IDMainCity.buildShip,
-                            icon = "icon_ship",
-                            bg = "public_edit_circle_bt_management"
-                        }
-                    )
+                    tbInsert(buttonList, PopUpMenus.buildShip)
                 end
             end
 
             if attrgid == IDConst.BuildingGID.tree or MyCfg.self.isEditScene or __EditorMode__ then
                 -- 移除
-                tbInsert(
-                    buttonList,
-                    {
-                        nameKey = "Remove",
-                        callback = IDMainCity.removeBuilding,
-                        icon = "public_guest_bt_delete",
-                        bg = "public_edit_circle_bt_shipshop_n"
-                    }
-                )
+                tbInsert(buttonList, PopUpMenus.removeBuilding)
             end
         end
     end
@@ -837,12 +806,12 @@ function IDMainCity.speedUpBuild(data)
     end
 
     CLUIUtl.showConfirm(
-            string.format(LGet("MsgUseDiamSpeedUp"), diam),
-            function()
-                showHotWheel()
-                net:send(NetProtoIsland.send.upLevBuildingImm(bio2number(data.serverData.idx)))
-            end,
-            nil
+        string.format(LGet("MsgUseDiamSpeedUp"), diam),
+        function()
+            showHotWheel()
+            net:send(NetProtoIsland.send.upLevBuildingImm(bio2number(data.serverData.idx)))
+        end,
+        nil
     )
 end
 
@@ -869,7 +838,7 @@ function IDMainCity.onfinsihCreateBuilding(d)
             true,
             {index = bio2number(b.pos), serverData = b}
         )
-        SetActive(IDMainCity.buildingProc.gameObject, false)
+        IDUtl.hidePopupMenus()
         buildings[bio2number(b.idx)] = IDMainCity.newBuildUnit
         -- 统计每种建筑的数据
         buildingsCount[bio2number(b.attrid)] =
@@ -1179,7 +1148,7 @@ end
 
 ---@public 扩建地块
 function IDMainCity.showExtendTile(data)
-    SetActive(IDMainCity.buildingProc.gameObject, false)
+    IDUtl.hidePopupMenus()
     SFourWayArrow.hide()
     if IDMainCity.selectedUnit == nil then
         return
@@ -1292,7 +1261,7 @@ end
 
 ---@public 移除地块
 function IDMainCity.doRemoveTile(idx)
-    SetActive(IDMainCity.buildingProc.gameObject, false)
+    IDUtl.hidePopupMenus()
     SFourWayArrow.hide()
     IDMainCity.selectedUnit = nil
     local tile = tiles[idx]
@@ -1311,7 +1280,7 @@ function IDMainCity.doRemoveTile(idx)
 end
 
 function IDMainCity.doRemoveBuilding(idx)
-    SetActive(IDMainCity.buildingProc.gameObject, false)
+    IDUtl.hidePopupMenus()
     SFourWayArrow.hide()
     IDMainCity.selectedUnit = nil
     local building = buildings[idx]
@@ -1341,7 +1310,7 @@ function IDMainCity.onFinishBuildingUpgrade(bData)
         return
     end
     if building == IDMainCity.selectedUnit then
-        SetActive(IDMainCity.buildingProc.gameObject, false)
+        IDUtl.hidePopupMenus()
         SFourWayArrow.hide()
         IDMainCity.selectedUnit = nil
     end
