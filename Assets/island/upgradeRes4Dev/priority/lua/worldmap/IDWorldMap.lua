@@ -14,6 +14,7 @@ IDWorldMap.grid = nil
 local grid = nil
 local isInited = false
 local lookAtTarget = MyCfg.self.lookAtTarget
+local lookAtTargetTween = lookAtTarget:GetComponent("MyTween")
 local mapCells = {} -- 地块，key=在块网格idx， val=luatable
 IDWorldMap.ocean = nil
 local drag4World = CLUIDrag4World.self
@@ -73,7 +74,7 @@ function IDWorldMap.__init()
     IDWorldMap.grid.numGroundRows = worldsize
     IDWorldMap.grid.numGroundCols = worldsize
     IDWorldMap.grid.cellSize = cellSize
-    IDWorldMap.grid.transform.localPosition = Vector3(-worldsize*cellSize/2, 0, -worldsize*cellSize/2)
+    IDWorldMap.grid.transform.localPosition = Vector3(-worldsize * cellSize / 2, 0, -worldsize * cellSize / 2)
     IDWorldMap.grid:Start()
 
     IDWorldMap.fogOfWarInfluence = GameObject("fogOfWarInfluence"):AddComponent(typeof(FogOfWarInfluence))
@@ -89,7 +90,7 @@ function IDWorldMap.__init()
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
         },
-        attack= {
+        attack = {
             --攻击
             nameKey = "Attack",
             callback = IDWorldMap.attack,
@@ -116,24 +117,27 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
         IDWorldMap.loadPagesData()
 
         IDMainCity.init(
-                nil,
-                function()
-                    onFinishCallback()
-                    smoothFollow:tween(Vector2(20, 100), Vector2(10, 15), 2.5, nil, IDWorldMap.onScaleGround)
-                end,
-                onProgress)
+            nil,
+            function()
+                onFinishCallback()
+                smoothFollow:tween(Vector2(20, 100), Vector2(10, 15), 2.5, nil, IDWorldMap.onScaleGround)
+            end,
+            onProgress
+        )
         IDWorldMap.showFogwar()
     end
 
     if IDWorldMap.mapTileSize == nil then
-        CLThingsPool.borrowObjAsyn("MapTileSize",
-                function(name, obj, orgs)
-                    IDWorldMap.mapTileSize = obj
-                    IDWorldMap.mapTileSize.transform.parent = transform
-                    IDWorldMap.mapTileSize.transform.localScale = Vector3.one
-                    IDWorldMap.mapTileSize.transform.localEulerAngles = Vector3.zero
-                    SetActive(obj, false)
-                end)
+        CLThingsPool.borrowObjAsyn(
+            "MapTileSize",
+            function(name, obj, orgs)
+                IDWorldMap.mapTileSize = obj
+                IDWorldMap.mapTileSize.transform.parent = transform
+                IDWorldMap.mapTileSize.transform.localScale = Vector3.one
+                IDWorldMap.mapTileSize.transform.localEulerAngles = Vector3.zero
+                SetActive(obj, false)
+            end
+        )
     end
 
     if IDWorldMap.ocean == nil then
@@ -146,7 +150,12 @@ end
 function IDWorldMap.setGameMode()
     -- 判断当前中心点离自己的主城的距离来处理是否可以进入城里面
     if MyCfg.mode == GameMode.map then
-        local lastHit = Utl.getRaycastHitInfor(MyCfg.self.mainCamera, Vector3(Screen.width / 2, Screen.height / 2, 0), Utl.getLayer("Water"));
+        local lastHit =
+            Utl.getRaycastHitInfor(
+            MyCfg.self.mainCamera,
+            Vector3(Screen.width / 2, Screen.height / 2, 0),
+            Utl.getLayer("Water")
+        )
         if lastHit then
             local currCenterPos = lastHit.point
             currCenterPos.y = 0
@@ -165,8 +174,7 @@ function IDWorldMap.setGameMode()
     dragSetting.scaleHeightMini = 10
     dragSetting.scaleHeightMax = 100
 
-    if smoothFollow.height > IDWorldMap.scaleCityHeighMin
-            and smoothFollow.height < IDWorldMap.scaleCityHeighMax then
+    if smoothFollow.height > IDWorldMap.scaleCityHeighMin and smoothFollow.height < IDWorldMap.scaleCityHeighMax then
         if MyCfg.mode == GameMode.map then
             IDWorldMap.cleanPages()
         end
@@ -221,7 +229,12 @@ end
 function IDWorldMap.onDragMove(delta)
     IDWorldMap.oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
     -- 取得屏幕中心点下的地块
-    local lastHit = Utl.getRaycastHitInfor(MyCfg.self.mainCamera, Vector3(Screen.width / 2, Screen.height / 2, 0), Utl.getLayer("Water"));
+    local lastHit =
+        Utl.getRaycastHitInfor(
+        MyCfg.self.mainCamera,
+        Vector3(Screen.width / 2, Screen.height / 2, 0),
+        Utl.getLayer("Water")
+    )
     if lastHit then
         local centerPos = lastHit.point
         local tmpPageIdx = IDWorldMap.getPageIdx(grid:GetCellIndex(centerPos))
@@ -257,7 +270,7 @@ function IDWorldMap.showFogwar()
     worldsize = (worldsize + 200) * cellSize
     fogOfWar.color = Color.black -- ColorEx.getColor(34, 34, 34);
     fogOfWar.Size = worldsize
-    fogOfWar.transform.position = Vector3(-worldsize / 2, 0, -worldsize / 2);
+    fogOfWar.transform.position = Vector3(-worldsize / 2, 0, -worldsize / 2)
     SetActive(fogOfWar.gameObject, true)
 
     -- 设置可视范围
@@ -357,9 +370,13 @@ end
 function IDWorldMap.onPress(isPressed)
     if isPressed then
     else
-        csSelf:invoke4Lua(function()
-            isDragOcean = false
-        end, 0.1)
+        csSelf:invoke4Lua(
+            function()
+                isDragOcean = false
+            end,
+            0.1
+        )
+        IDUtl.hidePopupMenus()
     end
 end
 
@@ -388,6 +405,7 @@ function IDWorldMap.onClickOcean()
             IDWorldMap.mapTileSize.transform.position = cellPos
             SetActive(IDWorldMap.mapTileSize, true)
         end
+        IDUtl.hidePopupMenus()
     else
     end
 end
@@ -395,8 +413,20 @@ end
 ---@public 点击了自己的城
 function IDWorldMap.onClickSelfCity()
     IDWorldMap.onClickOcean()
-    --//TODO:
-    IDUtl.showPopupMenus()
+    local clickPos = MyMainCamera.lastHit.point
+    local index = grid:GetCellIndex(clickPos)
+    local cellPos = grid:GetCellCenter(index)
+    local buttons = {}
+    table.insert(buttons, popupMenus.enterCity)
+    table.insert(buttons, popupMenus.attack)
+    IDUtl.showPopupMenus(nil, cellPos, buttons, cellPos)
+end
+
+---@public 进入自己的城
+function IDWorldMap.enterCity(data)
+    local cellPos = data
+    smoothFollow:tween(Vector2(smoothFollow.distance, smoothFollow.height), Vector2(10, 15), 3, nil, IDWorldMap.onScaleGround)
+    lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
 end
 
 ---@public 清除所有页的元素

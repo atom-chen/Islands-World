@@ -261,6 +261,7 @@ end
 function IDMainCity.onChgMode(oldMode, curMode)
     local isShowBuilding = true
     local isShowTile = true
+    IDUtl.hidePopupMenus()
     if curMode == GameMode.city then
         preGameMode = oldMode
         isShowBuilding = true
@@ -702,7 +703,7 @@ function IDMainCity.showhhideBuildingProc(building)
     if building == nil then
         IDUtl.hidePopupMenus()
     else
-        IDUtl.showPopupMenus(building, IDMainCity.prepareData4PopupMenu(building))
+        IDUtl.showPopupMenus(building, nil, IDMainCity.prepareData4PopupMenu(building), building)
     end
 end
 

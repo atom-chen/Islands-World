@@ -27,22 +27,29 @@ do
 
     -- 显示，
     -- 注意，c#侧不会在调用show时，调用refresh
-    ---@param data={target=目标,offset=偏移, buttonList＝{{icon=图标,bg=背景图, nameKey=显示名称,callback=点击回调}}}
+    ---@param data={target=目标,offset=偏移, buttonList＝{{icon=图标,bg=背景图, nameKey=显示名称,callback=点击回调}}, params=点击的回调参数}
     function _cell.show ( go, data )
         mData = data
-        attr = data.target.attr
-        serverData = data.target.serverData
+        if mData.target and mData.target then
+            attr = data.target.attr
+            serverData = data.target.serverData
 
-        if serverData and bio2number(attr.GID) ~= IDConst.BuildingGID.tree and bio2number(attr.GID) ~= IDConst.BuildingGID.decorate then
-            uiobjs.Label.text = joinStr(LGet(attr.NameKey), " ", string.format(LGet("LevelWithNum"), bio2number(serverData.lev)))
-        else
-            if attr then
-                uiobjs.Label.text = LGet(attr.NameKey)
+            if mData.target.isBuilding and serverData and bio2number(attr.GID) ~= IDConst.BuildingGID.tree and bio2number(attr.GID) ~= IDConst.BuildingGID.decorate then
+                uiobjs.Label.text = joinStr(LGet(attr.NameKey), " ", string.format(LGet("LevelWithNum"), bio2number(serverData.lev)))
             else
-                uiobjs.Label.text = ""
+                if attr then
+                    uiobjs.Label.text = LGet(attr.NameKey)
+                else
+                    uiobjs.Label.text = ""
+                end
             end
         end
-        uiobjs.followTarget:setTarget(mData.target.transform, (mData.offset or Vector3.zero))
+
+        if mData.target then
+            uiobjs.followTarget:setTarget(mData.target.transform, (mData.offset or Vector3.zero))
+        else
+            uiobjs.followTarget:setTargetPosition(mData.targetPosition or Vector3.zero, (mData.offset or Vector3.zero))
+        end
         _cell.showButtons()
 
         uiobjs.SpriteCircle.transform.localScale = Vector3.one * ((mData.radius and mData.radius or default_radius) / default_radius)
@@ -86,14 +93,15 @@ do
     end
 
     function _cell.onClickBtn(cell)
-        local building = mData.target
-        local isTile = building.isTile
-
         local d = cell.luaTable.getData()
-        Utl.doCallback(d.callback, mData.target)
+        Utl.doCallback(d.callback, mData.params, d)
 
-        if IDMainCity.newBuildUnit == nil and (not isTile) then
-            IDMainCity.onClickOcean()
+        if mData.target then
+            local building = mData.target
+            local isTile = building.isTile
+            if IDMainCity.newBuildUnit == nil and (not isTile) then
+                IDMainCity.onClickOcean()
+            end
         end
     end
 

@@ -5,6 +5,7 @@ IDLBuilding = class("IDLBuilding", IDLUnitBase)
 function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuilding).init(self, selfObj, id, star, lev, _isOffense, other)
+    self.isBuilding = true
     self:loadFloor()
     self:upgrading()
 end

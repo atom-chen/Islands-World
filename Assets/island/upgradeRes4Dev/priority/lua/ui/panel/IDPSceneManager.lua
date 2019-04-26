@@ -180,7 +180,8 @@ function IDPSceneManager.loadWorldMap()
     IDWorldMap.init(
         bio2number(IDDBCity.curCity.pos),
         function()
-            SoundEx.playMainMusic("MainScene_1")
+            --//TODO:播放音乐
+            -- SoundEx.playMainMusic("MainScene_1")
             getPanelAsy("PanelMain", onLoadedPanel)
         end,
         IDPSceneManager.onProgress

@@ -343,7 +343,7 @@ function IDUtl.hidePopupMenus()
 end
 
 ---@public 显示建筑操作hud
-function IDUtl.showPopupMenus(target, buttonsList, offset)
+function IDUtl.showPopupMenus(target, targetPosition, buttonsList, params, offset)
     if target == nil then
         if IDUtl.popupMenu then
             SetActive(IDUtl.popupMenu.gameObject, false)
@@ -361,14 +361,14 @@ function IDUtl.showPopupMenus(target, buttonsList, offset)
                 IDUtl.popupMenu = obj:GetComponent("CLCellLua")
                 obj.transform.parent = MyCfg.self.hud3dRoot
                 obj.transform.localScale = Vector3.one
-                local d = {target = target, buttonList = buttonsList, offset = offset or Vector3.zero}
+                local d = {target = target, targetPosition = targetPosition, buttonList = buttonsList, params = params, offset = offset or Vector3.zero}
                 SetActive(IDUtl.popupMenu.gameObject, true)
                 IDUtl.popupMenu:init(d, nil)
                 hideHotWheel()
             end
         )
     else
-        local d = {target = target, buttonList = buttonsList, offset = offset or Vector3.zero}
+        local d = {target = target, targetPosition = targetPosition, buttonList = buttonsList, params = params, offset = offset or Vector3.zero}
         SetActive(IDUtl.popupMenu.gameObject, true)
         IDUtl.popupMenu:init(d, nil)
     end

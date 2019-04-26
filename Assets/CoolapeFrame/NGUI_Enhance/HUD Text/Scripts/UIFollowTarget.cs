@@ -17,7 +17,8 @@ public class UIFollowTarget : MonoBehaviour
 	/// </summary>
 
 	public Transform target;
-	public Camera mGameCamera;
+    public Vector3 targetPosition = Vector3.zero;
+    public Camera mGameCamera;
 	public Camera mUICamera;
 	
 	public Vector3 offsetPos = Vector3.zero;
@@ -81,18 +82,29 @@ public class UIFollowTarget : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Update the position of the HUD object every frame such that is position correctly over top of its real world object.
-	/// </summary>
-
-	public void LateUpdate ()
+    /// <summary>
+    /// Update the position of the HUD object every frame such that is position correctly over top of its real world object.
+    /// </summary>
+    Vector3 pos;
+    bool isVisible = false;
+    public void LateUpdate ()
 	{
-		if(!isInitFinish || target == null) return;
-		Vector3 pos = mGameCamera.WorldToViewportPoint(target.position + offsetPos);
-		//Debug.Log("pos============" + pos);
+        if (!isInitFinish)
+        {
+            return;
+        }
+        if(target != null)
+        {
+            pos = mGameCamera.WorldToViewportPoint(target.position + offsetPos);
+        }
+        else
+        {
+            pos = mGameCamera.WorldToViewportPoint(targetPosition+ offsetPos);
+        }
+        //Debug.Log("pos============" + pos);
 
-		// Determine the visibility and the target alpha
-		bool isVisible = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
+        // Determine the visibility and the target alpha
+        isVisible = (pos.z > 0f && pos.x > 0f && pos.x < 1f && pos.y > 0f && pos.y < 1f);
 		// Update the visibility flag
 		if (disableIfInvisible && mIsVisible != isVisible) SetVisible(isVisible);
 
@@ -109,7 +121,6 @@ public class UIFollowTarget : MonoBehaviour
 			//Debug.Log("mTrans.localPosition============" + mTrans.localPosition);
 		} else {
 			mTrans.localPosition = new Vector3(20000, 20000, 0);
-			
 		}
 	}
 	
@@ -122,7 +133,16 @@ public class UIFollowTarget : MonoBehaviour
 	
 	public void setTarget(Transform target, Vector3 offset) {
 		this.target = target;
-		this.offsetPos = offset;
+        this.targetPosition = Vector3.zero;
+        this.offsetPos = offset;
 		LateUpdate ();
 	}
+
+    public void setTargetPosition(Vector3 targetPosition, Vector3 offset)
+    {
+        this.target = null;
+        this.targetPosition = targetPosition;
+        this.offsetPos = offset;
+        LateUpdate();
+    }
 }

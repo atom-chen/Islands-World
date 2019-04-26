@@ -557,6 +557,11 @@ namespace Coolape
         /// </summary>
         void screenTouch()
         {
+            if (CLPanelManager.topPanel != null &&
+                canProcClickPanels[CLPanelManager.topPanel.name] == null)
+            {
+                return;
+            }
             if (Application.platform == RuntimePlatform.Android ||
                 Application.platform == RuntimePlatform.IPhonePlayer)
             {
