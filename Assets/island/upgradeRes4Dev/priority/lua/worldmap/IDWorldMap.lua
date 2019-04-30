@@ -96,7 +96,14 @@ function IDWorldMap.__init()
             callback = IDWorldMap.attack,
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
-        }
+        },
+        moveCity = {
+            --迁城
+            nameKey = "MoveCity",
+            callback = IDWorldMap.moveCity,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        },
     }
 end
 
@@ -405,7 +412,7 @@ function IDWorldMap.onClickOcean()
             IDWorldMap.mapTileSize.transform.position = cellPos
             SetActive(IDWorldMap.mapTileSize, true)
         end
-        IDUtl.hidePopupMenus()
+        IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, index)
     else
     end
 end
@@ -423,10 +430,27 @@ function IDWorldMap.onClickSelfCity()
 end
 
 ---@public 进入自己的城
-function IDWorldMap.enterCity(data)
-    local cellPos = data
-    smoothFollow:tween(Vector2(smoothFollow.distance, smoothFollow.height), Vector2(10, 15), 3, nil, IDWorldMap.onScaleGround)
+function IDWorldMap.enterCity(cellPos)
+    IDUtl.hidePopupMenus()
+    smoothFollow:tween(
+        Vector2(smoothFollow.distance, smoothFollow.height),
+        Vector2(10, 15),
+        3,
+        nil,
+        IDWorldMap.onScaleGround
+    )
     lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
+end
+
+---@public 攻击
+function IDWorldMap.attack(cellPos)
+    IDUtl.hidePopupMenus()
+
+end
+---@public 搬迁
+function IDWorldMap.moveCity(cellIndex)
+    IDUtl.hidePopupMenus()
+    net:send(NetProtoIsland.send.moveCity(cellIndex))
 end
 
 ---@public 清除所有页的元素

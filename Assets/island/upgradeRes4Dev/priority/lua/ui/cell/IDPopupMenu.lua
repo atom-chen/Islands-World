@@ -43,6 +43,8 @@ do
                     uiobjs.Label.text = ""
                 end
             end
+        else
+            uiobjs.Label.text = ""
         end
 
         if mData.target then

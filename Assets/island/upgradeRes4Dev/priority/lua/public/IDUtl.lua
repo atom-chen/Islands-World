@@ -344,11 +344,6 @@ end
 
 ---@public 显示建筑操作hud
 function IDUtl.showPopupMenus(target, targetPosition, buttonsList, params, offset)
-    if target == nil then
-        if IDUtl.popupMenu then
-            SetActive(IDUtl.popupMenu.gameObject, false)
-        end
-    end
     if IDUtl.popupMenu == nil then
         showHotWheel()
         CLUIOtherObjPool.borrowObjAsyn(
