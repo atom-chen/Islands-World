@@ -247,6 +247,25 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     )
 end
 
+function IDMainCity.refreshData(cityData)
+    if cityData then
+        IDMainCity.cityData = cityData
+    else
+        IDMainCity.cityData = IDDBCity.curCity
+    end
+
+    local gridIndex = bio2number(IDMainCity.cityData.pos)
+    transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
+    IDMainCity.grid:Start()
+
+    if not IDMainCity.astar4Ocean.isIninted then
+        IDMainCity.astar4Ocean:init()
+    end
+    if not IDMainCity.astar4Tile.isIninted then
+        IDMainCity.astar4Tile:init()
+    end
+end
+
 function IDMainCity.onDragMove(delta)
     oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
 end
@@ -703,7 +722,22 @@ function IDMainCity.showhhideBuildingProc(building)
     if building == nil then
         IDUtl.hidePopupMenus()
     else
-        IDUtl.showPopupMenus(building, nil, IDMainCity.prepareData4PopupMenu(building), building)
+        local label
+        local attr = building.attr
+        local serverData = building.serverData
+        if
+            building.isBuilding and serverData and bio2number(attr.GID) ~= IDConst.BuildingGID.tree and
+                bio2number(attr.GID) ~= IDConst.BuildingGID.decorate
+         then
+            label = joinStr(LGet(attr.NameKey), " ", string.format(LGet("LevelWithNum"), bio2number(serverData.lev)))
+        else
+            if attr then
+                label = LGet(attr.NameKey)
+            else
+                label = ""
+            end
+        end
+        IDUtl.showPopupMenus(building, nil, IDMainCity.prepareData4PopupMenu(building), label, building)
     end
 end
 

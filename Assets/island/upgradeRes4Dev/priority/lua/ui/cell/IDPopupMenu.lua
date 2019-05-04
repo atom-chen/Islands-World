@@ -27,25 +27,10 @@ do
 
     -- 显示，
     -- 注意，c#侧不会在调用show时，调用refresh
-    ---@param data={target=目标,offset=偏移, buttonList＝{{icon=图标,bg=背景图, nameKey=显示名称,callback=点击回调}}, params=点击的回调参数}
+    ---@param data={target=目标,offset=偏移, label=点击说明, buttonList＝{{icon=图标,bg=背景图, nameKey=显示名称,callback=点击回调}}, params=点击的回调参数}
     function _cell.show ( go, data )
         mData = data
-        if mData.target and mData.target then
-            attr = data.target.attr
-            serverData = data.target.serverData
-
-            if mData.target.isBuilding and serverData and bio2number(attr.GID) ~= IDConst.BuildingGID.tree and bio2number(attr.GID) ~= IDConst.BuildingGID.decorate then
-                uiobjs.Label.text = joinStr(LGet(attr.NameKey), " ", string.format(LGet("LevelWithNum"), bio2number(serverData.lev)))
-            else
-                if attr then
-                    uiobjs.Label.text = LGet(attr.NameKey)
-                else
-                    uiobjs.Label.text = ""
-                end
-            end
-        else
-            uiobjs.Label.text = ""
-        end
+        uiobjs.Label.text = mData.label or ""
 
         if mData.target then
             uiobjs.followTarget:setTarget(mData.target.transform, (mData.offset or Vector3.zero))

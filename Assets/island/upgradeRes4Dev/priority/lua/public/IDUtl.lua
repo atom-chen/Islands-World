@@ -342,8 +342,22 @@ function IDUtl.hidePopupMenus()
     end
 end
 
----@public 显示建筑操作hud
-function IDUtl.showPopupMenus(target, targetPosition, buttonsList, params, offset)
+---@public 点击后的弹出菜单
+---@param target LuaTable 目标对象，可以取得target.transform
+---@param targetPosition UnityEngine.Vector3 popupMenu跟随的坐标
+---@param buttonsList List 弹出的按钮列表{nameKey = 显示名的key,callback = 点击回调函数,icon = 按钮图标,bg = 按钮的背景}
+---@param label string 点击后显示的文本
+---@param params any 点击回调的参数
+---@param offset UnityEngine.Vector3 位置的偏差
+function IDUtl.showPopupMenus(target, targetPosition, buttonsList, label, params, offset)
+    local d = {
+        target = target,
+        targetPosition = targetPosition,
+        buttonList = buttonsList,
+        label = label,
+        params = params,
+        offset = offset or Vector3.zero
+    }
     if IDUtl.popupMenu == nil then
         showHotWheel()
         CLUIOtherObjPool.borrowObjAsyn(
@@ -356,14 +370,12 @@ function IDUtl.showPopupMenus(target, targetPosition, buttonsList, params, offse
                 IDUtl.popupMenu = obj:GetComponent("CLCellLua")
                 obj.transform.parent = MyCfg.self.hud3dRoot
                 obj.transform.localScale = Vector3.one
-                local d = {target = target, targetPosition = targetPosition, buttonList = buttonsList, params = params, offset = offset or Vector3.zero}
                 SetActive(IDUtl.popupMenu.gameObject, true)
                 IDUtl.popupMenu:init(d, nil)
                 hideHotWheel()
             end
         )
     else
-        local d = {target = target, targetPosition = targetPosition, buttonList = buttonsList, params = params, offset = offset or Vector3.zero}
         SetActive(IDUtl.popupMenu.gameObject, true)
         IDUtl.popupMenu:init(d, nil)
     end

@@ -55,6 +55,31 @@ function IDDBWorldMap.onGetMapPageData(data)
     end
 end
 
+---@param mapCell NetProtoIsland.ST_mapCell
+function IDDBWorldMap.onMapCellChg(mapCell)
+    local pageIdx = bio2number(mapCell.pageIdx)
+    local pageData = mapPageData[pageIdx]
+    if pageData then
+        local list = pageData.list
+        local idx = bio2number(mapCell.idx)
+        for i,v in ipairs(list) do
+            if bio2number(v.idx) == idx then
+                table.remove(list, i)
+                break
+            end
+        end
+        table.insert(list, mapCell)
+        pageData.map[idx] = mapCell
+        
+        if MyCfg.mode == GameMode.map then
+            if IDWorldMap then
+                IDWorldMap.onMapCellChg(mapCell)
+            end
+        end
+    end
+end
+
+
 function IDDBWorldMap.clean()
     mapPageData = {}  -- key:pageIdx, value = list
     mapPageCacheTime = {} -- key:pageIdx, value = timeOut

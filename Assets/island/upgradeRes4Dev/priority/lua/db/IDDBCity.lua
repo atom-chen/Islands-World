@@ -8,14 +8,11 @@ IDDBCity = class("IDDBCity")
 IDDBCity.curCity = nil
 
 function IDDBCity:ctor(d)
-    self._data = d
-    self.idx = d.idx  -- 唯一标识 int int
-    self.tiles = {}  -- 地块信息 key=idx, map
+    self:setBaseData(d)
+    self.tiles = {} -- 地块信息 key=idx, map
     for k, v in pairs(d.tiles) do
         self.tiles[k] = IDDBTile.new(v)
     end
-    self.name = d.name  -- 名称 string
-    self.stat = d.status  -- 状态 1:正常; int int
     self.buildings = {} -- 建筑信息 key=idx, map
     for k, v in pairs(d.buildings) do
         self.buildings[k] = IDDBBuilding.new(v)
@@ -24,9 +21,16 @@ function IDDBCity:ctor(d)
             net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(v.idx)))
         end
     end
-    self.lev = d.lev  -- 等级 int int
-    self.pos = d.pos  -- 城所在世界grid的index int int
-    self.pidx = d.pidx  -- 玩家idx int int
+end
+
+function IDDBCity:setBaseData(d)
+    self._data = d
+    self.idx = d.idx -- 唯一标识 int int
+    self.name = d.name -- 名称 string
+    self.stat = d.status -- 状态 1:正常; int int
+    self.lev = d.lev -- 等级 int int
+    self.pos = d.pos -- 城所在世界grid的index int int
+    self.pidx = d.pidx -- 玩家idx int int
     self.dockyardShips = {} --造船厂里的已经有的舰船数据
 end
 
@@ -58,34 +62,40 @@ function IDDBCity:getRes()
             if attrfood == nil then
                 attrfood = DBCfg.getBuildingByID(id)
             end
-            maxfood = maxfood + DBCfg.getGrowingVal(
+            maxfood =
+                maxfood +
+                DBCfg.getGrowingVal(
                     bio2number(attrfood.ComVal1Min),
                     bio2number(attrfood.ComVal1Max),
                     bio2number(attrfood.ComVal1Curve),
                     bio2number(b.lev) / bio2number(attrfood.MaxLev)
-            )
+                )
         elseif id == IDConst.goldStorageBuildingID then
             gold = gold + bio2number(b.val)
             if attrgold == nil then
                 attrgold = DBCfg.getBuildingByID(id)
             end
-            maxgold = maxgold + DBCfg.getGrowingVal(
+            maxgold =
+                maxgold +
+                DBCfg.getGrowingVal(
                     bio2number(attrgold.ComVal1Min),
                     bio2number(attrgold.ComVal1Max),
                     bio2number(attrgold.ComVal1Curve),
                     bio2number(b.lev) / bio2number(attrgold.MaxLev)
-            )
+                )
         elseif id == IDConst.oildStorageBuildingID then
             oil = oil + bio2number(b.val)
             if attroil == nil then
                 attroil = DBCfg.getBuildingByID(id)
             end
-            maxoil = maxoil + DBCfg.getGrowingVal(
+            maxoil =
+                maxoil +
+                DBCfg.getGrowingVal(
                     bio2number(attroil.ComVal1Min),
                     bio2number(attroil.ComVal1Max),
                     bio2number(attroil.ComVal1Curve),
                     bio2number(b.lev) / bio2number(attroil.MaxLev)
-            )
+                )
         elseif id == IDConst.headquartersBuildingID then
             -- 主基地
             food = food + bio2number(b.val)
@@ -165,6 +175,16 @@ function IDDBCity:onGetShips4Dockyard(data)
         shipsMap[tonumber(k)] = v
     end
     self.dockyardShips[bidx] = shipsMap
+end
+
+---@public 当主城变化时
+function IDDBCity:onMyselfCityChg(d)
+    self:setBaseData(d)
+    if MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.city or MyCfg.mode == GameMode.mapBtwncity then
+        if IDMainCity then
+            IDMainCity.refreshData(self)
+        end
+    end
 end
 --------------------------------------------
 return IDDBCity

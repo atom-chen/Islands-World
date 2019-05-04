@@ -412,7 +412,8 @@ function IDWorldMap.onClickOcean()
             IDWorldMap.mapTileSize.transform.position = cellPos
             SetActive(IDWorldMap.mapTileSize, true)
         end
-        IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, index)
+        local label = joinStr("Pos:" , index)
+        IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
     else
     end
 end
@@ -426,7 +427,8 @@ function IDWorldMap.onClickSelfCity()
     local buttons = {}
     table.insert(buttons, popupMenus.enterCity)
     table.insert(buttons, popupMenus.attack)
-    IDUtl.showPopupMenus(nil, cellPos, buttons, cellPos)
+    local label = joinStr("Pos:" , index)
+    IDUtl.showPopupMenus(nil, cellPos, buttons, label, cellPos)
 end
 
 ---@public 进入自己的城
@@ -451,6 +453,16 @@ end
 function IDWorldMap.moveCity(cellIndex)
     IDUtl.hidePopupMenus()
     net:send(NetProtoIsland.send.moveCity(cellIndex))
+end
+
+---@public 当地图块有变化时的推送
+function IDWorldMap.onMapCellChg(mapCell)
+    local pageIdx = bio2number(mapCell.pageIdx)
+    ---@type IDWorldMapPage
+    local page = pages[pageIdx]
+    if page then
+        page:refreshOneCell(mapCell)
+    end
 end
 
 ---@public 清除所有页的元素

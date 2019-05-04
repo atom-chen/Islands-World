@@ -16,7 +16,7 @@ local strPack = string.pack
 ---@type Coolape.Net
 local csSelf = Net.self
 --local __maxLen = 1024 * 1024
-local timeOutSec = 30  -- 超时秒
+local timeOutSec = 30 -- 超时秒
 local NetSuccess = NetSuccess
 local __httpBaseUrl = PStr.b():a("http://"):a(Net.self.gateHost):a(":"):a(tostring(Net.self.gatePort)):e()
 local baseUrlUsermgr = joinStr(__httpBaseUrl, "/usermgr/postbio")
@@ -31,16 +31,12 @@ end
 --end
 
 local httpPostBio = function(url, postData, callback, orgs)
-    WWWEx.postBytes(Utl.urlAddTimes(url),
-            postData,
-            CLAssetType.bytes,
-            callback,
-            CLLNet.httpError, orgs, true)
+    WWWEx.postBytes(Utl.urlAddTimes(url), postData, CLAssetType.bytes, callback, CLLNet.httpError, orgs, true)
 end
 
 function CLLNet.httpPostUsermgr(data, callback)
     local postData = BioUtl.writeObject(data)
-    httpPostBio(baseUrlUsermgr, postData, CLLNet.onResponsedUsermgr, { callback = callback, data = data })
+    httpPostBio(baseUrlUsermgr, postData, CLLNet.onResponsedUsermgr, {callback = callback, data = data})
 end
 
 function CLLNet.onResponsedUsermgr(content, orgs)
@@ -198,15 +194,20 @@ function CLLNet.cacheData(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onGetShips4Dockyard(data.dockyardShips)
         end
-    elseif  cmd == NetProtoIsland.cmds.sendNetCfg then
+    elseif cmd == NetProtoIsland.cmds.sendNetCfg then
         -- 初始化时间
         local systime = bio2number(data.systime)
         DateEx.init(systime)
-        
         ---@type CLLNetSerialize
         local netSerialize = csSelf.luaTable
         if netSerialize then
             netSerialize.setCfg(data.netCfg)
+        end
+    elseif cmd == NetProtoIsland.cmds.onMapCellChg then
+        IDDBWorldMap.onMapCellChg(data.mapCell)
+    elseif  cmd == NetProtoIsland.cmds.onMyselfCityChg then
+        if IDDBCity.curCity then
+            IDDBCity.curCity:onMyselfCityChg(data.city)
         end
     end
 end
