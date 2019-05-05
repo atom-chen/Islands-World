@@ -188,7 +188,7 @@ function IDWorldMap.setGameMode()
         end
         if MyCfg.mode ~= GameMode.mapBtwncity then
             IDMainCity.onChgMode(MyCfg.mode, GameMode.mapBtwncity)
-            IDMainCity.grid:hideRect()
+            IDWorldMap.grid:hideRect()
             MyCfg.mode = GameMode.mapBtwncity
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
@@ -200,7 +200,7 @@ function IDWorldMap.setGameMode()
     elseif smoothFollow.height > IDWorldMap.scaleCityHeighMax then
         if MyCfg.mode ~= GameMode.map then
             IDMainCity.onChgMode(MyCfg.mode, GameMode.map)
-            IDMainCity.grid:showRect()
+            IDWorldMap.grid:showRect()
             MyCfg.mode = GameMode.map
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
@@ -212,7 +212,7 @@ function IDWorldMap.setGameMode()
     else
         if MyCfg.mode ~= GameMode.city then
             IDMainCity.onChgMode(MyCfg.mode, GameMode.city)
-            IDMainCity.grid:hideRect()
+            IDWorldMap.grid:hideRect()
             MyCfg.mode = GameMode.city
             dragSetting.viewRadius = 65
             dragSetting.viewCenter = grid:GetCellCenter(bio2number(IDDBCity.curCity.pos))
@@ -456,7 +456,14 @@ end
 ---@public 搬迁
 function IDWorldMap.moveCity(cellIndex)
     IDUtl.hidePopupMenus()
-    net:send(NetProtoIsland.send.moveCity(cellIndex))
+    net:send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.onFinishMoveCity, cellIndex))
+end
+
+function IDWorldMap.onFinishMoveCity(cellIndex, retData)
+    if bio2number(retData.retInfor.code) == NetSuccess then
+        cityGidx = cellIndex
+        IDWorldMap.showFogwar()
+    end
 end
 
 ---@public 当地图块有变化时的推送

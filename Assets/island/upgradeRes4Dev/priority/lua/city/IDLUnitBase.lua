@@ -22,26 +22,25 @@
 //           游戏大卖       公司腾飞
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 --]]
-
 require("public.class")
 -- 建筑基础相关
 ---@class IDLUnitBase
 IDLUnitBase = class("IDLUnitBase")
 
 function IDLUnitBase:ctor(csSelf)
-    self.csSelf = csSelf        -- cs对象
+    self.csSelf = csSelf -- cs对象
     self.transform = nil
     self.gameObject = nil
-    self.isOffense = false      -- 是进攻方
+    self.isOffense = false -- 是进攻方
     self.id = 0
     self.tweenScale = nil
-    self.canClick = true        -- 能否点击
+    self.canClick = true -- 能否点击
 
     -----@type IDDBBuilding
-    self.serverData = nil       -- 服务器数据
-    self.attr = nil             -- 属性
-    self.size = 1               -- 占格子
-    self.gridIndex = -1         -- 所在格子的index
+    self.serverData = nil -- 服务器数据
+    self.attr = nil -- 属性
+    self.size = 1 -- 占格子
+    self.gridIndex = -1 -- 所在格子的index
     self.oldindex = -1
     self.isFinishInited = false
 end
@@ -60,7 +59,7 @@ function IDLUnitBase:__init(selfObj, other)
 end
 
 ---@param other = {index=网格位置 ,serverData=服务器数据（不是必须）}
-function IDLUnitBase:init (selfObj, id, star, lev, _isOffense, other)
+function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self:__init(selfObj, other)
     self.isOffense = _isOffense
     self.id = id
@@ -83,20 +82,25 @@ function IDLUnitBase:loadShadow()
             return
         end
         local shadowName = joinStr("shadow", shadowType)
-        CLUIOtherObjPool.borrowObjAsyn(shadowName,
-                function(name, obj, orgs)
-                    if (not self.gameObject.activeInHierarchy) or self.shadow ~= nil then
-                        CLUIOtherObjPool.returnObj(obj)
-                        SetActive(obj, false)
-                        return
-                    end
-                    self.shadow = obj.transform;
-                    self.shadow.parent = MyCfg.self.shadowRoot
-                    self.shadow.localEulerAngles = Vector3.zero
-                    self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
-                    self.shadow.position = self.transform.position + Vector3.up * 0.02
-                    SetActive(self.shadow.gameObject, true)
-                end)
+        CLUIOtherObjPool.borrowObjAsyn(
+            shadowName,
+            function(name, obj, orgs)
+                if (not self.gameObject.activeInHierarchy) or self.shadow ~= nil then
+                    CLUIOtherObjPool.returnObj(obj)
+                    SetActive(obj, false)
+                    return
+                end
+                self.shadow = obj.transform
+                self.shadow.parent = MyCfg.self.shadowRoot
+                self.shadow.localEulerAngles = Vector3.zero
+                self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
+                self.shadow.position = self.transform.position + Vector3.up * 0.02
+                SetActive(self.shadow.gameObject, true)
+            end
+        )
+    else
+        self.shadow.position = self.transform.position + Vector3.up * 0.02
+        SetActive(self.shadow.gameObject, true)
     end
 end
 
@@ -160,7 +164,7 @@ function IDLUnitBase:_OnPress(go, isPress)
     else
         if (isPress) then
             IDMainCity.setOtherUnitsColiderState(self, false)
-            CLUIDrag4World.self.enabled = false  --不可托动屏幕
+            CLUIDrag4World.self.enabled = false --不可托动屏幕
         else
             self.isDraged = false
 
@@ -187,7 +191,7 @@ function IDLUnitBase:_OnPress(go, isPress)
 end
 
 function IDLUnitBase:setScreenCanDrag()
-    CLUIDrag4World.self.enabled = true  --可托动屏幕
+    CLUIDrag4World.self.enabled = true --可托动屏幕
 end
 
 function IDLUnitBase:onShowingGrid(...)
@@ -254,8 +258,8 @@ function IDLUnitBase:_OnDrag(delta)
         IDLBuildingSize.show(self.size, isOK and Color.green or Color.red, newPos)
         IDLBuildingSize.setLayer("Top")
         if (isOK) then
-            SFourWayArrow.setMatToon()
             --self.csSelf:setMatToon()
+            SFourWayArrow.setMatToon()
         else
             --SFourWayArrow.setMatToon()
             --csSelf:setMatOutLine()
@@ -302,6 +306,9 @@ end
 
 function IDLUnitBase:SetActive(active)
     if self.shadow then
+        if active then
+            self.shadow.position = self.transform.position + Vector3.up * 0.02
+        end
         SetActive(self.shadow.gameObject, active)
     end
     SetActive(self.gameObject, active)

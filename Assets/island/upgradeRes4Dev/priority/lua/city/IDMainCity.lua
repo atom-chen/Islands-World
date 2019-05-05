@@ -264,6 +264,9 @@ function IDMainCity.refreshData(cityData)
     if not IDMainCity.astar4Tile.isIninted then
         IDMainCity.astar4Tile:init()
     end
+    if IDMainCity.Headquarters then
+        IDMainCity.Headquarters:loadShadow()
+    end
 end
 
 function IDMainCity.onDragMove(delta)
@@ -412,7 +415,7 @@ function IDMainCity.onLoadTile(name, obj, orgs)
     tile:init(d, nil)
     tiles[bio2number(d.idx)] = tile.luaTable
 
-    Utl.doCallback(progressCallback, IDMainCity.totalBuilding + IDMainCity.totalTile, i)
+    Utl.doCallback(progressCallback, IDMainCity.totalTile, i)
     if i == #list then
         IDLGridTileSide.refreshAndShow(cb, progressCallback, false)
     else
@@ -505,7 +508,7 @@ function IDMainCity.onLoadBuilding(name, obj, param)
         end
     end
 
-    Utl.doCallback(progressCallback, IDMainCity.totalBuilding + IDMainCity.totalTile, IDMainCity.totalTile + i)
+    Utl.doCallback(progressCallback, IDMainCity.totalBuilding, i)
 
     if i == #list then
         -- 完成
