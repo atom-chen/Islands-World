@@ -69,7 +69,15 @@ public class CLGrid :UIEventListener
 
 	public void showRect ()
 	{
-		float width = (numGroundCols * cellSize);
+        if (lineList4Rect.Count > 0)
+        {
+            for (int i = 0; i < lineList4Rect.Count; i++)
+            {
+                NGUITools.SetActive(((LineRenderer)(lineList4Rect[i])).gameObject, true);
+            }
+            return;
+        }
+        float width = (numGroundCols * cellSize);
 		float height = (numGroundRows * cellSize);
 		Vector3 origin = transform.position - new Vector3 ((numGroundRows - numRows), 0, (numGroundCols - numCols));
 		
@@ -88,7 +96,19 @@ public class CLGrid :UIEventListener
 		drawLine (startPos, endPos, Color.red);
 	}
 
-	public void drawLine (Vector3 startPos, Vector3 endPos, Color color)
+    public void hideRect()
+    {
+        if (lineList4Rect == null)
+        {
+            return;
+        }
+        for (int i = 0; i < lineList4Rect.Count; i++)
+        {
+            NGUITools.SetActive(((LineRenderer)(lineList4Rect[i])).gameObject, false);
+        }
+    }
+
+    public void drawLine (Vector3 startPos, Vector3 endPos, Color color)
 	{
 		ArrayList list = ListEx.builder ().Add (startPos).Add (endPos).Add (color).ToList ();
 		CLThingsPool.borrowObjAsyn (lineName, (Callback)doDrawLine, list);
@@ -108,7 +128,9 @@ public class CLGrid :UIEventListener
 		lr.SetPosition (1, endPos);
 		lr.SetColors (Color.red, Color.red);
 		NGUITools.SetActive (lr.gameObject, true);
-		list.Clear ();
+        lineList4Rect.Add(lr);
+
+        list.Clear ();
 		list = null;
 	}
 
@@ -130,7 +152,13 @@ public class CLGrid :UIEventListener
 				GameObject.DestroyImmediate (((LineRenderer)(lineList4Grid [i])).gameObject, true);
 			}
 		}
-		lineList4Grid = null;
+        lineList4Grid = null;
+
+        for (int i = 0; i < lineList4Rect.Count; i++)
+        {
+            GameObject.DestroyImmediate(((LineRenderer)(lineList4Rect[i])).gameObject, true);
+        }
+        lineList4Rect.Clear();
 		Transform tr = null;
 		while (transform.childCount > 0) {
 			tr = transform.GetChild (0);

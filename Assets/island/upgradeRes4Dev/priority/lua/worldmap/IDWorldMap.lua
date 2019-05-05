@@ -152,6 +152,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
     else
         onLoadOcena(IDWorldMap.ocean.name, IDWorldMap.ocean.gameObject, nil)
     end
+    IDWorldMap.grid:showRect()
 end
 
 function IDWorldMap.setGameMode()
@@ -187,6 +188,7 @@ function IDWorldMap.setGameMode()
         end
         if MyCfg.mode ~= GameMode.mapBtwncity then
             IDMainCity.onChgMode(MyCfg.mode, GameMode.mapBtwncity)
+            IDMainCity.grid:hideRect()
             MyCfg.mode = GameMode.mapBtwncity
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
@@ -198,6 +200,7 @@ function IDWorldMap.setGameMode()
     elseif smoothFollow.height > IDWorldMap.scaleCityHeighMax then
         if MyCfg.mode ~= GameMode.map then
             IDMainCity.onChgMode(MyCfg.mode, GameMode.map)
+            IDMainCity.grid:showRect()
             MyCfg.mode = GameMode.map
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
@@ -209,6 +212,7 @@ function IDWorldMap.setGameMode()
     else
         if MyCfg.mode ~= GameMode.city then
             IDMainCity.onChgMode(MyCfg.mode, GameMode.city)
+            IDMainCity.grid:hideRect()
             MyCfg.mode = GameMode.city
             dragSetting.viewRadius = 65
             dragSetting.viewCenter = grid:GetCellCenter(bio2number(IDDBCity.curCity.pos))
@@ -488,6 +492,7 @@ function IDWorldMap.clean()
         SetActive(IDWorldMap.mapTileSize, false)
         IDWorldMap.mapTileSize = nil
     end
+    IDWorldMap.grid:clean()
 end
 --------------------------------------------
 return IDWorldMap
