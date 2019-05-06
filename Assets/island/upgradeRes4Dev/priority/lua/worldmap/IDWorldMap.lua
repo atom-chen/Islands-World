@@ -403,7 +403,7 @@ function IDWorldMap.hideOnClickShow()
     if isDragOcean then
         SetActive(IDWorldMap.mapTileSize, false)
     end
-    --//TODO：隐藏UI
+    --//TODO：隐藏主UI，当视野更广
 end
 
 function IDWorldMap.onClickOcean()
@@ -419,6 +419,7 @@ function IDWorldMap.onClickOcean()
         local label = joinStr("Pos:" , index)
         IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
     else
+        --//TODO:
     end
 end
 

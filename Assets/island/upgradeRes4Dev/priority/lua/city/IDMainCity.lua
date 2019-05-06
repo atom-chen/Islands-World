@@ -258,12 +258,8 @@ function IDMainCity.refreshData(cityData)
     transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
     IDMainCity.grid:Start()
 
-    if not IDMainCity.astar4Ocean.isIninted then
-        IDMainCity.astar4Ocean:init()
-    end
-    if not IDMainCity.astar4Tile.isIninted then
-        IDMainCity.astar4Tile:init()
-    end
+    IDMainCity.astar4Ocean:init()
+    IDMainCity.astar4Tile:init()
     if IDMainCity.Headquarters then
         IDMainCity.Headquarters:loadShadow()
     end
