@@ -194,7 +194,8 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     IDMainCity.grid.transform.localPosition = Vector3(-size / 2, 0, -size / 2)
     IDMainCity.grid.showGrid = false
     IDMainCity.grid.showGridRange = true
-    IDMainCity.grid:Start()
+    IDMainCity.grid:showRect()
+    IDMainCity.grid:init()
 
     if not IDMainCity.astar4Ocean.isIninted then
         IDMainCity.astar4Ocean.numRows = size * 2
@@ -253,10 +254,12 @@ function IDMainCity.refreshData(cityData)
     else
         IDMainCity.cityData = IDDBCity.curCity
     end
-
+    
     local gridIndex = bio2number(IDMainCity.cityData.pos)
+    printe(gridIndex)
     transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
-    IDMainCity.grid:Start()
+    IDMainCity.grid:clean()
+    IDMainCity.grid:init()
 
     IDMainCity.astar4Ocean:init()
     IDMainCity.astar4Tile:init()
@@ -285,12 +288,14 @@ function IDMainCity.onChgMode(oldMode, curMode)
         isShowBuilding = true
         isShowTile = true
         IDMainCity.setOtherUnitsColiderState(nil, true)
+        IDMainCity.grid:showRect()
     elseif curMode == GameMode.mapBtwncity then
         preGameMode = oldMode
         isShowBuilding = false
         isShowTile = true
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
+        IDMainCity.grid:hideRect()
     elseif curMode == GameMode.map then
         preGameMode = oldMode
         isShowBuilding = false
@@ -299,6 +304,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         IDMainCity.setOtherUnitsColiderState(nil, false)
         -- 主基地还可以点击
         IDMainCity.Headquarters:setCollider(true)
+        IDMainCity.grid:hideRect()
     end
     for k, v in pairs(tiles) do
         SetActive(v.gameObject, isShowTile)

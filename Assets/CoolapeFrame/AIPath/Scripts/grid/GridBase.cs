@@ -82,7 +82,7 @@ namespace Coolape
         }
 
         // Use this for initialization
-        public virtual void Awake(Vector3 origin, int numRows, int numCols, float cellSize, bool show)
+        public void init(Vector3 origin, int numRows, int numCols, float cellSize, bool show)
         {
             m_origin = origin;
             m_numberOfRows = numRows;

@@ -75,8 +75,9 @@ namespace Coolape
         public void init()
         {
             radius4CheckSphere = cellSize / 4;
-            grid.Awake(transform.position, numRows, numCols, cellSize, false);
+            grid.init(transform.position, numRows, numCols, cellSize, false);
 
+            nodesMap.Clear();
             for (int i = 0; i < grid.NumberOfCells; i++)
             {
                 nodesMap[i] = new CLAStarNode(i, grid.GetCellCenter(i));

@@ -99,6 +99,9 @@ function IDLUnitBase:loadShadow()
             end
         )
     else
+        self.shadow.parent = MyCfg.self.shadowRoot
+        self.shadow.localEulerAngles = Vector3.zero
+        self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
         self.shadow.position = self.transform.position + Vector3.up * 0.02
         SetActive(self.shadow.gameObject, true)
     end

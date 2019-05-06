@@ -41,13 +41,19 @@ public class CLGrid :UIEventListener
 	// Use this for initialization
 	public void Start ()
 	{
-		grid.Awake (transform.position, numRows, numCols, cellSize, false);
-		if (showGrid) {
-			show ();
-		}
-	}
+        init();
+    }
 
-	public void show ()
+    public void init()
+    {
+        grid.init(transform.position, numRows, numCols, cellSize, false);
+        if (showGrid)
+        {
+            show();
+        }
+    }
+
+    public void show ()
 	{
 		if (isShowingGrid) {
 //			reShow ();
@@ -80,20 +86,20 @@ public class CLGrid :UIEventListener
         float width = (numGroundCols * cellSize);
 		float height = (numGroundRows * cellSize);
 		Vector3 origin = transform.position - new Vector3 ((numGroundRows - numRows), 0, (numGroundCols - numCols));
+
+        Vector3 startPos = origin + 0 * cellSize * Utl.kZAxis + Vector3.up * gridLineHight;
+		Vector3 endPos = startPos + width * Utl.kXAxis + Vector3.up * gridLineHight;
+        drawLine (startPos, endPos, Color.red);
+		startPos = origin + numGroundRows * cellSize * Utl.kZAxis + Vector3.up * gridLineHight;
+        endPos = startPos + width * Utl.kXAxis + Vector3.up * gridLineHight;
+        drawLine (startPos, endPos, Color.red);
 		
-		Vector3 startPos = origin + 0 * cellSize * Utl.kZAxis;// + Vector3.up * h;
-		Vector3 endPos = startPos + width * Utl.kXAxis;
-		drawLine (startPos, endPos, Color.red);
-		startPos = origin + numGroundRows * cellSize * Utl.kZAxis;// + Vector3.up * h;
-		endPos = startPos + width * Utl.kXAxis;
-		drawLine (startPos, endPos, Color.red);
-		
-		startPos = origin + 0 * cellSize * Utl.kXAxis;// + Vector3.up * h;
-		endPos = startPos + height * Utl.kZAxis;
-		drawLine (startPos, endPos, Color.red);
-		startPos = origin + numGroundCols * cellSize * Utl.kXAxis;// + Vector3.up * h;
-		endPos = startPos + height * Utl.kZAxis;
-		drawLine (startPos, endPos, Color.red);
+		startPos = origin + 0 * cellSize * Utl.kXAxis + Vector3.up * gridLineHight;
+        endPos = startPos + height * Utl.kZAxis + Vector3.up * gridLineHight;
+        drawLine (startPos, endPos, Color.red);
+		startPos = origin + numGroundCols * cellSize * Utl.kXAxis + Vector3.up * gridLineHight;
+        endPos = startPos + height * Utl.kZAxis + Vector3.up * gridLineHight;
+        drawLine (startPos, endPos, Color.red);
 	}
 
     public void hideRect()

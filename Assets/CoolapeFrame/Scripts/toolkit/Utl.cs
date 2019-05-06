@@ -530,8 +530,8 @@ namespace Coolape
 			// Draw the horizontal grid lines
 			for (int i = 0; i < numRows + 1; i++) {
 				Vector3 startPos = origin + i * cellSize * kZAxis + Vector3.up * h;
-				Vector3 endPos = startPos + width * kXAxis;
-				LineRenderer lr = drawLine (prefab, startPos, endPos, color);
+				Vector3 endPos = startPos + width * kXAxis + Vector3.up * h;
+                LineRenderer lr = drawLine (prefab, startPos, endPos, color);
 				list.Add (lr);
 				lr.transform.parent = gridRoot;
 			}
@@ -539,8 +539,8 @@ namespace Coolape
 			// Draw the vertial grid lines
 			for (int i = 0; i < numCols + 1; i++) {
 				Vector3 startPos = origin + i * cellSize * kXAxis + Vector3.up * h;
-				Vector3 endPos = startPos + height * kZAxis;
-				LineRenderer lr = drawLine (prefab, startPos, endPos, color);
+				Vector3 endPos = startPos + height * kZAxis + Vector3.up * h;
+                LineRenderer lr = drawLine (prefab, startPos, endPos, color);
 				list.Add (lr);
 				lr.transform.parent = gridRoot;
 			}
