@@ -464,6 +464,9 @@ function IDWorldMap.onFinishMoveCity(cellIndex, retData)
     if bio2number(retData.retInfor.code) == NetSuccess then
         cityGidx = cellIndex
         IDWorldMap.showFogwar()
+        if IDMainCity then
+            IDMainCity.onMoveCity()
+        end
     end
 end
 

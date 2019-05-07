@@ -248,23 +248,37 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     )
 end
 
+---@public 当主城数据列新时处理
 function IDMainCity.refreshData(cityData)
     if cityData then
         IDMainCity.cityData = cityData
     else
         IDMainCity.cityData = IDDBCity.curCity
     end
-    
-    local gridIndex = bio2number(IDMainCity.cityData.pos)
-    printe(gridIndex)
-    transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
-    IDMainCity.grid:clean()
-    IDMainCity.grid:init()
+end
 
-    IDMainCity.astar4Ocean:init()
-    IDMainCity.astar4Tile:init()
+---@public 迁城处理
+function IDMainCity.onMoveCity()
+    local gridIndex = bio2number(IDMainCity.cityData.pos)
+    transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
+    local newWorldPos = transform.position + IDMainCity.grid.transform.localPosition
+    IDMainCity.grid:clean()
+    IDMainCity.grid:init(newWorldPos)
+
+    newWorldPos = transform.position + IDMainCity.astar4Ocean.transform.localPosition
+    IDMainCity.astar4Ocean:init(newWorldPos)
+    newWorldPos = transform.position + IDMainCity.astar4Tile.transform.localPosition
+    IDMainCity.astar4Tile:init(newWorldPos)
     if IDMainCity.Headquarters then
         IDMainCity.Headquarters:loadShadow()
+    end
+
+    --重新设置建筑的影子
+    ---@param v IDLUnitBase
+    for k, v in pairs(buildings) do
+        if v.shadow then
+            v.shadow.position = transform.position + v.transform.localPosition + Vector3.up * 0.02
+        end
     end
 end
 

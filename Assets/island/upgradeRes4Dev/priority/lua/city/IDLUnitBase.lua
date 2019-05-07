@@ -309,9 +309,6 @@ end
 
 function IDLUnitBase:SetActive(active)
     if self.shadow then
-        if active then
-            self.shadow.position = self.transform.position + Vector3.up * 0.02
-        end
         SetActive(self.shadow.gameObject, active)
     end
     SetActive(self.gameObject, active)

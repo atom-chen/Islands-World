@@ -82,7 +82,7 @@ namespace Coolape
         }
 
         // Use this for initialization
-        public void init(Vector3 origin, int numRows, int numCols, float cellSize, bool show)
+        public void init(Vector3 origin, int numRows, int numCols, float cellSize)
         {
             m_origin = origin;
             m_numberOfRows = numRows;

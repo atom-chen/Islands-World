@@ -26,8 +26,11 @@ public class CLGrid :UIEventListener
 	public bool showGridRange = true;
     public GridBase grid = new GridBase ();
 	bool isShowingGrid = false;
+    [HideInInspector]
+    public Vector3 originPos = Vector3.zero;
 
-	public static string lineName = "line";
+
+    public static string lineName = "line";
 	ArrayList lineList4Rect = new ArrayList ();
 	ArrayList lineList4Grid;
 
@@ -43,10 +46,14 @@ public class CLGrid :UIEventListener
 	{
         init();
     }
-
     public void init()
     {
-        grid.init(transform.position, numRows, numCols, cellSize, false);
+        init(transform.position);
+    }
+    public void init(Vector3 origin)
+    {
+        originPos = origin;
+        grid.init(originPos, numRows, numCols, cellSize);
         if (showGrid)
         {
             show();
@@ -85,7 +92,7 @@ public class CLGrid :UIEventListener
         }
         float width = (numGroundCols * cellSize);
 		float height = (numGroundRows * cellSize);
-		Vector3 origin = transform.position - new Vector3 ((numGroundRows - numRows), 0, (numGroundCols - numCols));
+		Vector3 origin = originPos - new Vector3 ((numGroundRows - numRows), 0, (numGroundCols - numCols));
 
         Vector3 startPos = origin + 0 * cellSize * Utl.kZAxis + Vector3.up * gridLineHight;
 		Vector3 endPos = startPos + width * Utl.kXAxis + Vector3.up * gridLineHight;
@@ -264,9 +271,9 @@ public class CLGrid :UIEventListener
 		if (showGrid) {
 			float width = (numCols * cellSize);
 			float height = (numRows * cellSize);
-			Vector3 origin = transform.position;
-			// Draw the horizontal grid lines
-			for (int i = 0; i < numRows + 1; i++) {
+			Vector3 origin = originPos;
+            // Draw the horizontal grid lines
+            for (int i = 0; i < numRows + 1; i++) {
 				Vector3 startPos = origin + i * cellSize * Utl.kZAxis;// + Vector3.up * h;
 				Vector3 endPos = startPos + width * Utl.kXAxis;
 				//			LineRenderer lr = drawLine(startPos, endPos, Color.white);
@@ -284,7 +291,7 @@ public class CLGrid :UIEventListener
 			Gizmos.color = Color.red;
 			float width = (numGroundCols * cellSize);
 			float height = (numGroundRows * cellSize);
-			Vector3 origin = transform.position - new Vector3 ((numGroundRows - numRows), 0, (numGroundCols - numCols));
+			Vector3 origin = originPos - new Vector3 ((numGroundRows - numRows), 0, (numGroundCols - numCols));
 			
 			Vector3 startPos = origin;
 			Vector3 endPos = startPos + width * Utl.kXAxis;

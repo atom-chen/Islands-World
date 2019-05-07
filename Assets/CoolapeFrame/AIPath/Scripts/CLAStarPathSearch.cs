@@ -46,6 +46,8 @@ namespace Coolape
         public bool showGrid = true;
         public bool showObstruct = true;
         public bool isIninted = false;
+        [HideInInspector]
+        public Vector3 originPos = Vector3.zero;
         public ArrayList OnGridStateChgCallbacks = new ArrayList();
         //当ray检测后，再检测一次Sphere以保当节点在障碍内部时也可能检测成功
         float radius4CheckSphere = 1;
@@ -68,14 +70,18 @@ namespace Coolape
                 init();
             }
         }
-
+        public void init()
+        {
+            init(transform.position);
+        }
         /// <summary>
         /// Init this instance.初始化网格
         /// </summary>
-        public void init()
+        public void init(Vector3 origin)
         {
+            originPos = origin;
             radius4CheckSphere = cellSize / 4;
-            grid.init(transform.position, numRows, numCols, cellSize, false);
+            grid.init(origin, numRows, numCols, cellSize);
 
             nodesMap.Clear();
             for (int i = 0; i < grid.NumberOfCells; i++)
@@ -589,7 +595,7 @@ namespace Coolape
         {
             if (showGrid)
             {
-                GridBase.DebugDraw(transform.position, numRows, numCols, cellSize, Color.white);
+                GridBase.DebugDraw(originPos, numRows, numCols, cellSize, Color.white);
             }
             if (showObstruct)
             {
