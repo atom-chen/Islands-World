@@ -360,6 +360,7 @@ function IDMainCity.scaleCity()
     end
 end
 
+---@public 当缩放屏幕时缩放主基地
 function IDMainCity.scaleHeadquarters()
     local maxVal = scaleCityHeighMax
     local minVal = scaleCityHeighMin

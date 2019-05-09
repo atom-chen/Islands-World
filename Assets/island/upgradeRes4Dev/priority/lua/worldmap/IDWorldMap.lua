@@ -2,7 +2,7 @@
 require("city.IDMainCity")
 require("worldmap.IDWorldMapPage")
 IDWorldMap = {}
-
+IDWorldMap.popupEvent = {}
 local csSelf = nil
 local transform = nil
 local gameObject
@@ -86,24 +86,24 @@ function IDWorldMap.__init()
         enterCity = {
             --进城
             nameKey = "Enter",
-            callback = IDWorldMap.enterCity,
+            callback = IDWorldMap.popupEvent.enterCity,
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
         },
         attack = {
             --攻击
             nameKey = "Attack",
-            callback = IDWorldMap.attack,
+            callback = IDWorldMap.popupEvent.attack,
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
         },
         moveCity = {
             --迁城
             nameKey = "MoveCity",
-            callback = IDWorldMap.moveCity,
+            callback = IDWorldMap.popupEvent.moveCity,
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
-        },
+        }
     }
 end
 
@@ -406,6 +406,7 @@ function IDWorldMap.hideOnClickShow()
     --//TODO：隐藏主UI，当视野更广
 end
 
+---@public 点击了海面
 function IDWorldMap.onClickOcean()
     isDragOcean = false
     local clickPos = MyMainCamera.lastHit.point
@@ -416,7 +417,7 @@ function IDWorldMap.onClickOcean()
             IDWorldMap.mapTileSize.transform.position = cellPos
             SetActive(IDWorldMap.mapTileSize, true)
         end
-        local label = joinStr("Pos:" , index)
+        local label = joinStr("Pos:", index)
         IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
     else
         --//TODO:
@@ -432,12 +433,13 @@ function IDWorldMap.onClickSelfCity()
     local buttons = {}
     table.insert(buttons, popupMenus.enterCity)
     table.insert(buttons, popupMenus.attack)
-    local label = joinStr("Pos:" , index)
-    IDUtl.showPopupMenus(nil, cellPos, buttons, label, cellPos)
+    local label = joinStr("Pos:", index)
+    IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
 end
 
 ---@public 进入自己的城
-function IDWorldMap.enterCity(cellPos)
+function IDWorldMap.popupEvent.enterCity(cellIndex)
+    local cellPos = grid:GetCellCenter(cellIndex)
     IDUtl.hidePopupMenus()
     smoothFollow:tween(
         Vector2(smoothFollow.distance, smoothFollow.height),
@@ -450,17 +452,20 @@ function IDWorldMap.enterCity(cellPos)
 end
 
 ---@public 攻击
-function IDWorldMap.attack(cellPos)
+function IDWorldMap.popupEvent.attack(cellIndex)
     IDUtl.hidePopupMenus()
-
+    showHotWheel()
+    net:send(NetProtoIsland.send.attack(cellIndex, IDWorldMap.doAttack, cellIndex))
 end
+
 ---@public 搬迁
-function IDWorldMap.moveCity(cellIndex)
+function IDWorldMap.popupEvent.moveCity(cellIndex)
     IDUtl.hidePopupMenus()
-    net:send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.onFinishMoveCity, cellIndex))
+    net:send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.doMoveCity, cellIndex))
 end
 
-function IDWorldMap.onFinishMoveCity(cellIndex, retData)
+---@public 迁城服务器接口回调
+function IDWorldMap.doMoveCity(cellIndex, retData)
     if bio2number(retData.retInfor.code) == NetSuccess then
         cityGidx = cellIndex
         IDWorldMap.showFogwar()
@@ -468,6 +473,11 @@ function IDWorldMap.onFinishMoveCity(cellIndex, retData)
             IDMainCity.onMoveCity()
         end
     end
+end
+
+---@public 战斗服务器接口回调
+function IDWorldMap.doAttack(cellIndex, retData)
+
 end
 
 ---@public 当地图块有变化时的推送
