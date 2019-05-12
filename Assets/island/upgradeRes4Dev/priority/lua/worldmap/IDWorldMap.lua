@@ -417,8 +417,11 @@ function IDWorldMap.onClickOcean()
             IDWorldMap.mapTileSize.transform.position = cellPos
             SetActive(IDWorldMap.mapTileSize, true)
         end
-        local label = joinStr("Pos:", index)
-        IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
+        if MyCfg.self.fogOfWar:GetVisibility(cellPos) == FogOfWarSystem.FogVisibility.Visible then
+            -- 当可见时，才弹出菜单
+            local label = joinStr("Pos:", index)
+            IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
+        end
     else
         --//TODO:
     end
@@ -437,38 +440,39 @@ function IDWorldMap.onClickSelfCity()
     IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
 end
 
----@public 进入自己的城
-function IDWorldMap.popupEvent.enterCity(cellIndex)
-    local cellPos = grid:GetCellCenter(cellIndex)
-    IDUtl.hidePopupMenus()
-    smoothFollow:tween(
-        Vector2(smoothFollow.distance, smoothFollow.height),
-        Vector2(10, 15),
-        3,
-        nil,
-        IDWorldMap.onScaleGround
-    )
-    lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
-end
-
----@public 攻击
-function IDWorldMap.popupEvent.attack(cellIndex)
-    IDUtl.hidePopupMenus()
-    showHotWheel()
-    net:send(NetProtoIsland.send.attack(cellIndex, IDWorldMap.doAttack, cellIndex))
-end
-
----@public 搬迁
-function IDWorldMap.popupEvent.moveCity(cellIndex)
-    IDUtl.hidePopupMenus()
-    net:send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.doMoveCity, cellIndex))
-end
+IDWorldMap.popupEvent = {
+    ---@public 进入自己的城
+    enterCity = function(cellIndex)
+        local cellPos = grid:GetCellCenter(cellIndex)
+        IDUtl.hidePopupMenus()
+        smoothFollow:tween(
+            Vector2(smoothFollow.distance, smoothFollow.height),
+            Vector2(10, 15),
+            3,
+            nil,
+            IDWorldMap.onScaleGround
+        )
+        lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
+    end,
+    ---@public 攻击
+    attack = function(cellIndex)
+        IDUtl.hidePopupMenus()
+        showHotWheel()
+        net:send(NetProtoIsland.send.attack(cellIndex, IDWorldMap.doAttack, cellIndex))
+    end,
+    ---@public 搬迁
+    moveCity = function(cellIndex)
+        IDUtl.hidePopupMenus()
+        net:send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.doMoveCity, cellIndex))
+    end
+}
 
 ---@public 迁城服务器接口回调
 function IDWorldMap.doMoveCity(cellIndex, retData)
     if bio2number(retData.retInfor.code) == NetSuccess then
         cityGidx = cellIndex
-        IDWorldMap.showFogwar()
+        -- IDWorldMap.showFogwar()
+        IDWorldMap.fogOfWarInfluence.transform.position = grid:GetCellCenter(cellIndex)
         if IDMainCity then
             IDMainCity.onMoveCity()
         end
@@ -477,7 +481,17 @@ end
 
 ---@public 战斗服务器接口回调
 function IDWorldMap.doAttack(cellIndex, retData)
-
+    local code = BioUtl.bio2int(retData.retInfor.code)
+    if code == NetSuccess then
+        ---@type IDDBPlayer
+        local player = IDDBPlayer.new(retData.player)
+        ---@type IDDBCity
+        local city = IDDBCity.new(retData.city)
+        city:setAllDockyardShips(retData.dockyardShipss)
+        --//TODO:
+    else
+        CLAlert.add(LGet("Error_" .. code))
+    end
 end
 
 ---@public 当地图块有变化时的推送
@@ -514,6 +528,13 @@ function IDWorldMap.clean()
         IDWorldMap.mapTileSize = nil
     end
     IDWorldMap.grid:clean()
+end
+
+---@public 需要销毁处理
+function IDWorldMap.destory()
+    IDWorldMap.clean()
+    GameObject.DestroyImmediate(IDWorldMap.fogOfWarInfluence.gameObject)
+    IDWorldMap.fogOfWarInfluence = nil
 end
 --------------------------------------------
 return IDWorldMap

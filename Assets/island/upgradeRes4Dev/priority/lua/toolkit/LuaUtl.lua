@@ -380,6 +380,10 @@ function doReleaseAllRes()
         IDLBattle.clean()
     end
 
+    if IDWorldMap then
+        IDWorldMap.clean()
+    end
+
     hideHotWheel()
 end
 
@@ -399,6 +403,10 @@ function doSomethingBeforeRestart()
     end
     if IDLBattle then
         IDLBattle.destory()
+    end
+
+    if IDWorldMap then
+        IDWorldMap.destory()
     end
     -- 取消音效开关的回调
     SoundEx.clean()

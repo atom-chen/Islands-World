@@ -126,7 +126,7 @@ function CLLNet.dispatch(map)
     end
 
     if (succ ~= NetSuccess) then
-        retInfor.msg = Localization.Get("Error_" .. succ)
+        retInfor.msg = Localization.Get(joinStr("Error_", succ))
         CLAlert.add(retInfor.msg, Color.red, 1)
         hideHotWheel()
     else
@@ -157,6 +157,7 @@ function CLLNet.cacheData(cmd, data)
         ---@type NetProtoIsland.ST_city
         local city = data.city
         local curCity = IDDBCity.new(city)
+        curCity:initDockyardShips()
         IDDBCity.curCity = curCity
         -- 初始化时间
         local systime = bio2number(data.systime)

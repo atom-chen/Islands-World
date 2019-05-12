@@ -184,24 +184,24 @@ do
             local r = {}
             if m == nil then return r end
             r[16] = m.idx  -- 网格index int
-            r[29] = m.val1  -- 值1 int
-            r[18] = m.cidx  -- 主城idx int
             r[30] = m.type  -- 地块类型 1：玩家，2：npc int
+            r[18] = m.cidx  -- 主城idx int
+            r[21] = m.val3  -- 值3 int
             r[13] = m.pageIdx  -- 所在屏的index int
             r[22] = m.val2  -- 值2 int
-            r[21] = m.val3  -- 值3 int
+            r[29] = m.val1  -- 值1 int
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
             r.idx = m[16] --  int
-            r.val1 = m[29] --  int
-            r.cidx = m[18] --  int
             r.type = m[30] --  int
+            r.cidx = m[18] --  int
+            r.val3 = m[21] --  int
             r.pageIdx = m[13] --  int
             r.val2 = m[22] --  int
-            r.val3 = m[21] --  int
+            r.val1 = m[29] --  int
             return r;
         end,
     }
@@ -232,9 +232,9 @@ do
             r[16] = m.idx  -- 唯一标识 int int
             r[34] = NetProtoIsland._toMap(NetProtoIsland.ST_tile, m.tiles)  -- 地块信息 key=idx, map
             r[35] = m.name  -- 名称 string
+            r[37] = m.status  -- 状态 1:正常; int int
             r[36] = NetProtoIsland._toMap(NetProtoIsland.ST_building, m.buildings)  -- 建筑信息 key=idx, map
             r[24] = m.lev  -- 等级 int int
-            r[37] = m.status  -- 状态 1:正常; int int
             r[19] = m.pos  -- 城所在世界grid的index int int
             r[38] = m.pidx  -- 玩家idx int int
             return r;
@@ -245,9 +245,9 @@ do
             r.idx = m[16] --  int
             r.tiles = NetProtoIsland._parseMap(NetProtoIsland.ST_tile, m[34])  -- 地块信息 key=idx, map
             r.name = m[35] --  string
+            r.status = m[37] --  int
             r.buildings = NetProtoIsland._parseMap(NetProtoIsland.ST_building, m[36])  -- 建筑信息 key=idx, map
             r.lev = m[24] --  int
-            r.status = m[37] --  int
             r.pos = m[19] --  int
             r.pidx = m[38] --  int
             return r;
@@ -280,9 +280,9 @@ do
             r[16] = m.idx  -- 唯一标识 int int
             r[39] = m.diam  -- 钻石 long int
             r[35] = m.name  -- 名字 string
-            r[41] = m.unionidx  -- 联盟id int int
             r[37] = m.status  -- 状态 1：正常 int int
             r[40] = m.cityidx  -- 城池id int int
+            r[41] = m.unionidx  -- 联盟id int int
             r[24] = m.lev  -- 等级 long int
             return r;
         end,
@@ -292,9 +292,9 @@ do
             r.idx = m[16] --  int
             r.diam = m[39] --  int
             r.name = m[35] --  string
-            r.unionidx = m[41] --  int
             r.status = m[37] --  int
             r.cityidx = m[40] --  int
+            r.unionidx = m[41] --  int
             r.lev = m[24] --  int
             return r;
         end,
@@ -347,6 +347,15 @@ do
         ret[50] = channel; -- 渠道号
         ret[51] = deviceID; -- 机器码
         ret[52] = isEditMode; -- 编辑模式
+        setCallback(__callback, __orgs, ret)
+        return ret
+    end,
+    -- 搬迁
+    moveCity = function(pos, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
+        local ret = {}
+        ret[0] = 88
+        ret[1] = NetProtoIsland.__sessionID
+        ret[19] = pos; -- 位置 int
         setCallback(__callback, __orgs, ret)
         return ret
     end,
@@ -516,12 +525,12 @@ do
         setCallback(__callback, __orgs, ret)
         return ret
     end,
-    -- 搬迁
-    moveCity = function(pos, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
+    -- 攻击
+    attack = function(pos, __callback, __orgs) -- __callback:接口回调, __orgs:回调参数
         local ret = {}
-        ret[0] = 88
+        ret[0] = 90
         ret[1] = NetProtoIsland.__sessionID
-        ret[19] = pos; -- 位置 int
+        ret[19] = pos; -- 世界地图坐标idx int
         setCallback(__callback, __orgs, ret)
         return ret
     end,
@@ -571,13 +580,20 @@ do
         doCallback(map, ret)
         return ret
     end,
+    moveCity = function(map)
+        local ret = {}
+        ret.cmd = "moveCity"
+        ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
+        doCallback(map, ret)
+        return ret
+    end,
     onFinishBuildOneShip = function(map)
         local ret = {}
         ret.cmd = "onFinishBuildOneShip"
         ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
         ret.buildingIdx = map[15]-- 造船厂的idx int
-        ret.shipAttrID = map[58]-- 航船的配置id
-        ret.shipNum = map[59]-- 航船的数量
+        ret.shipAttrID = map[58]-- 舰船的配置id
+        ret.shipNum = map[59]-- 舰船的数量
         doCallback(map, ret)
         return ret
     end,
@@ -725,10 +741,14 @@ do
         doCallback(map, ret)
         return ret
     end,
-    moveCity = function(map)
+    attack = function(map)
         local ret = {}
-        ret.cmd = "moveCity"
+        ret.cmd = "attack"
         ret.retInfor = NetProtoIsland.ST_retInfor.parse(map[2]) -- 返回信息
+        ret.player = NetProtoIsland.ST_player.parse(map[53]) -- 被攻击玩家信息
+        ret.city = NetProtoIsland.ST_city.parse(map[54]) -- 被攻击主城信息
+        ret.dockyardShipss = NetProtoIsland._parseList(NetProtoIsland.ST_dockyardShips, map[91]) -- 被攻击航船的数据
+        ret.dockyardShipss2 = NetProtoIsland._parseList(NetProtoIsland.ST_dockyardShips, map[97]) -- 进攻击方航船的数据
         doCallback(map, ret)
         return ret
     end,
@@ -739,6 +759,7 @@ do
     NetProtoIsland.dispatch[46]={onReceive = NetProtoIsland.recive.rmBuilding, send = NetProtoIsland.send.rmBuilding}
     NetProtoIsland.dispatch[47]={onReceive = NetProtoIsland.recive.newBuilding, send = NetProtoIsland.send.newBuilding}
     NetProtoIsland.dispatch[48]={onReceive = NetProtoIsland.recive.login, send = NetProtoIsland.send.login}
+    NetProtoIsland.dispatch[88]={onReceive = NetProtoIsland.recive.moveCity, send = NetProtoIsland.send.moveCity}
     NetProtoIsland.dispatch[57]={onReceive = NetProtoIsland.recive.onFinishBuildOneShip, send = NetProtoIsland.send.onFinishBuildOneShip}
     NetProtoIsland.dispatch[81]={onReceive = NetProtoIsland.recive.sendNetCfg, send = NetProtoIsland.send.sendNetCfg}
     NetProtoIsland.dispatch[60]={onReceive = NetProtoIsland.recive.getBuilding, send = NetProtoIsland.send.getBuilding}
@@ -758,7 +779,7 @@ do
     NetProtoIsland.dispatch[80]={onReceive = NetProtoIsland.recive.onFinishBuildingUpgrade, send = NetProtoIsland.send.onFinishBuildingUpgrade}
     NetProtoIsland.dispatch[76]={onReceive = NetProtoIsland.recive.moveTile, send = NetProtoIsland.send.moveTile}
     NetProtoIsland.dispatch[89]={onReceive = NetProtoIsland.recive.onMyselfCityChg, send = NetProtoIsland.send.onMyselfCityChg}
-    NetProtoIsland.dispatch[88]={onReceive = NetProtoIsland.recive.moveCity, send = NetProtoIsland.send.moveCity}
+    NetProtoIsland.dispatch[90]={onReceive = NetProtoIsland.recive.attack, send = NetProtoIsland.send.attack}
     --==============================
     NetProtoIsland.cmds = {
         getShipsByBuildingIdx = "getShipsByBuildingIdx", -- 取得造船厂所有舰艇列表,
@@ -766,6 +787,7 @@ do
         rmBuilding = "rmBuilding", -- 移除建筑,
         newBuilding = "newBuilding", -- 新建建筑,
         login = "login", -- 登陆,
+        moveCity = "moveCity", -- 搬迁,
         onFinishBuildOneShip = "onFinishBuildOneShip", -- 当完成建造部分舰艇的通知,
         sendNetCfg = "sendNetCfg", -- 网络协议配置,
         getBuilding = "getBuilding", -- 取得建筑,
@@ -785,7 +807,7 @@ do
         onFinishBuildingUpgrade = "onFinishBuildingUpgrade", -- 建筑升级完成,
         moveTile = "moveTile", -- 移动地块,
         onMyselfCityChg = "onMyselfCityChg", -- 自己的城变化时推送,
-        moveCity = "moveCity", -- 搬迁
+        attack = "attack", -- 攻击
     }
     --==============================
     return NetProtoIsland

@@ -7,6 +7,7 @@ IDDBCity = class("IDDBCity")
 ---@type IDDBCity 当前城
 IDDBCity.curCity = nil
 
+---@param d NetProtoIsland.ST_city
 function IDDBCity:ctor(d)
     self:setBaseData(d)
     self.tiles = {} -- 地块信息 key=idx, map
@@ -16,10 +17,6 @@ function IDDBCity:ctor(d)
     self.buildings = {} -- 建筑信息 key=idx, map
     for k, v in pairs(d.buildings) do
         self.buildings[k] = IDDBBuilding.new(v)
-        if bio2number(v.attrid) == IDConst.dockyardBuildingID then
-            -- 取得造船厂的航船数据
-            net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(v.idx)))
-        end
     end
 end
 
@@ -32,6 +29,25 @@ function IDDBCity:setBaseData(d)
     self.pos = d.pos -- 城所在世界grid的index int int
     self.pidx = d.pidx -- 玩家idx int int
     self.dockyardShips = {} --造船厂里的已经有的舰船数据
+end
+
+---@public 初始化造船厂数据
+function IDDBCity:initDockyardShips()
+    ---@param v IDDBBuilding
+    for k, v in pairs(self.buildings) do
+        if bio2number(v.attrid) == IDConst.dockyardBuildingID then
+            -- 取得造船厂的航船数据
+            net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(v.idx)))
+        end
+    end
+end
+
+---@public 设置所有造船厂的舰船数据
+function IDDBCity:setAllDockyardShips(list)
+    ---@param v NetProtoIsland.ST_dockyardShips
+    for i, v in ipairs(list) do
+        self:onGetShips4Dockyard(v)
+    end
 end
 
 function IDDBCity:toMap()
@@ -168,6 +184,7 @@ function IDDBCity:getDockyardUsedSpace(idx)
 end
 
 ---@public 当取得造船厂的舰船数据
+---@param data NetProtoIsland.ST_dockyardShips
 function IDDBCity:onGetShips4Dockyard(data)
     local bidx = bio2number(data.buildingIdx)
     local shipsMap = {}
