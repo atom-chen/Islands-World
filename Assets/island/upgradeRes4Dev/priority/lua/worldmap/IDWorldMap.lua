@@ -481,6 +481,7 @@ end
 
 ---@public 战斗服务器接口回调
 function IDWorldMap.doAttack(cellIndex, retData)
+    hideHotWheel()
     local code = BioUtl.bio2int(retData.retInfor.code)
     if code == NetSuccess then
         ---@type IDDBPlayer
@@ -516,7 +517,9 @@ end
 ---@public 离开世界后的清理
 function IDWorldMap.clean()
     if IDWorldMap.ocean then
-        IDWorldMap.ocean.luaTable.clean()
+        if IDWorldMap.ocean.luaTable then
+            IDWorldMap.ocean.luaTable.clean()
+        end
         CLThingsPool.returnObj(IDWorldMap.ocean.gameObject)
         SetActive(IDWorldMap.ocean.gameObject, false)
         IDWorldMap.ocean = nil
