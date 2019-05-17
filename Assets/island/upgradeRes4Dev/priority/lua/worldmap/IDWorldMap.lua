@@ -489,6 +489,8 @@ function IDWorldMap.doAttack(cellIndex, retData)
         ---@type IDDBCity
         local city = IDDBCity.new(retData.city)
         city:setAllDockyardShips(retData.dockyardShipss)
+
+        local atkShips = retData.dockyardShipss2
         --//TODO:
     else
         CLAlert.add(LGet("Error_" .. code))
