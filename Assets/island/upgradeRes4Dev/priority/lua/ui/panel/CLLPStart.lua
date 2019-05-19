@@ -9,7 +9,7 @@ do
 
     -- 放在后面加载的页面
     local lateLoadPanels = {
-        "PanelSceneManager", -- 切换场景页面
+        "PanelSceneManager" -- 切换场景页面
     }
 
     local isLogined = false
@@ -145,7 +145,9 @@ do
                         uid = __UUID__
                     end
                 end
-                net:send(NetProtoIsland.send.login(uid, getChlCode(), Utl.uuid, MyCfg.self.isEditScene or __EditorMode__))
+                net:send(
+                    NetProtoIsland.send.login(uid, getChlCode(), Utl.uuid, MyCfg.self.isEditScene or __EditorMode__)
+                )
             elseif cmd == NetProtoIsland.cmds.login then
                 hideHotWheel()
                 DateEx.init(bio2number(pars.systime))
@@ -161,15 +163,15 @@ do
             if (cmd == "outofNetConnect") then
                 hideHotWheel()
                 CLUIUtl.showConfirm(
-                        LGet("MsgOutofConnect"),
-                        CLLPStart.connectServer,
-                        function()
-                            local p = CLPanelManager.getPanel("PanelSplash")
-                            if (p ~= nil) then
-                                CLPanelManager.showPanel(p)
-                            end
-                            hideTopPanel()
+                    LGet("MsgOutofConnect"),
+                    CLLPStart.connectServer,
+                    function()
+                        local p = CLPanelManager.getPanel("PanelSplash")
+                        if (p ~= nil) then
+                            CLPanelManager.showPanel(p)
                         end
+                        hideTopPanel()
+                    end
                 )
             else
                 CLAlert.add(msg, Color.red, 1)
@@ -183,16 +185,11 @@ do
     end
 
     function CLLPStart.doEnterGame()
-        CLPanelManager.getPanelAsy("PanelSceneManager",
-                function(p)
-                    p:setData({ mode = GameMode.map })
-                    CLPanelManager.showTopPanel(p)
-
-                    local p2 = CLPanelManager.getPanel("PanelSplash")
-                    if (p2 ~= nil) then
-                        CLPanelManager.hidePanel(p2)
-                    end
-                end)
+        IDUtl.chgScene({mode = GameMode.map})
+        local p2 = CLPanelManager.getPanel("PanelSplash")
+        if (p2 ~= nil) then
+            CLPanelManager.hidePanel(p2)
+        end
     end
 
     ----------------------------------------------

@@ -17,6 +17,7 @@ local tiles = {}
 local buildings = {}
 local gridState4Tile = {}
 local gridState4Building = {}
+---@type IDDBCity
 IDMainCity.cityData = nil -- 城的数据
 IDMainCity.selectedUnit = nil
 IDMainCity.newBuildUnit = nil
@@ -317,7 +318,9 @@ function IDMainCity.onChgMode(oldMode, curMode)
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
         -- 主基地还可以点击
-        IDMainCity.Headquarters:setCollider(true)
+        if IDMainCity.Headquarters then
+            IDMainCity.Headquarters:setCollider(true)
+        end
         IDMainCity.grid:hideRect()
     end
     for k, v in pairs(tiles) do
@@ -464,9 +467,17 @@ function IDMainCity.loadbuilding(param)
     local list = param[1]
     local i = param[2]
     local cb = param[3]
-    ---@type IDDBBuilding
-    local dbb = list[i]
-    CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(dbb.attrid)), IDMainCity.onLoadBuilding, param)
+    if i >= #list then
+        -- 完成
+        IDMainCity.astar4Ocean:scan()
+        IDMainCity.astar4Tile:scan()
+        --IDMainCity.astar4Worker:scan()
+        Utl.doCallback(cb)
+    else
+        ---@type IDDBBuilding
+        local dbb = list[i]
+        CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(dbb.attrid)), IDMainCity.onLoadBuilding, param)
+    end
 end
 
 ---@param obj UnityEngine.GameObject
@@ -527,15 +538,7 @@ function IDMainCity.onLoadBuilding(name, obj, param)
 
     Utl.doCallback(progressCallback, IDMainCity.totalBuilding, i)
 
-    if i == #list then
-        -- 完成
-        IDMainCity.astar4Ocean:scan()
-        IDMainCity.astar4Tile:scan()
-        --IDMainCity.astar4Worker:scan()
-        Utl.doCallback(cb)
-    else
-        InvokeEx.invokeByUpdate(IDMainCity.loadbuilding, {list, i + 1, cb}, 0.01)
-    end
+    IDMainCity.loadbuilding({list, i + 1, cb})
 end
 
 ---@public 新建筑

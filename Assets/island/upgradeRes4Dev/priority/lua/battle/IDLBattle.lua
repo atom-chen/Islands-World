@@ -45,7 +45,7 @@ end
 
 ---@public 初始化
 ---@param offData table 进攻方数据
----@param defData IDDBCity 防守方数据
+---@param defData table 防守方数据
 ---@param callback 回调
 ---@param progressCB 进度回调
 function IDLBattle.init(defData, offData, callback, progressCB)
@@ -55,7 +55,7 @@ function IDLBattle.init(defData, offData, callback, progressCB)
     CLAssetsManager.self:pause()
     -- 加载城
     IDMainCity.init(
-        defData,
+        defData.city,
         function()
             city = IDMainCity
             -- 预加载进攻方兵种
@@ -67,6 +67,7 @@ end
 
 ---@public 预加载进攻方兵种
 function IDLBattle.prepareSoliders(data, callback, progressCB)
+    Utl.doCallback(callback)
 end
 
 ---@public 通知战场，玩家点击了我

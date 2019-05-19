@@ -1,5 +1,6 @@
 ﻿-- xx界面
 require("city.IDMainCity")
+require("battle.IDLBattle")
 IDPSceneManager = {}
 
 ---@type Coolape.CLPanelLua
@@ -88,6 +89,9 @@ end
 function IDPSceneManager.hide()
     csSelf:cancelInvoke4Lua()
     _isLoadingScene = false
+    if mData and mData.__finishCallback__ then
+        mData.__finishCallback__()
+    end
 end
 
 -- 网络请求的回调；cmd：指命，succ：成功失败，msg：消息；paras：服务器下行数据
@@ -213,7 +217,14 @@ function IDPSceneManager.loadBattle()
     smoothFollow.distance = 5
     smoothFollow.height = 5
 
-    IDLBattle.init(mData.defData, mData.offData, IDPSceneManager.onLoadCity, IDPSceneManager.onProgress)
+    IDLBattle.init(mData.defData, mData.offData, IDPSceneManager.onLoadBattle, IDPSceneManager.onProgress)
+end
+
+function IDPSceneManager.onLoadBattle()
+    lookAtTarget.localEulerAngles = Vector3(0, 45, 0)
+    SoundEx.playMainMusic("Battle_1")
+    getPanelAsy("PanelBattle", onLoadedPanel)
+    printe("onLoadBattle")
 end
 
 --------------------------------------------

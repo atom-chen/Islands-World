@@ -491,7 +491,9 @@ function IDWorldMap.doAttack(cellIndex, retData)
         city:setAllDockyardShips(retData.dockyardShipss)
 
         local atkShips = retData.dockyardShipss2
-        --//TODO:
+
+        local data = {mode = GameMode.battle, defData = {player = player, city = city}, offData = atkShips}
+        IDUtl.chgScene(data, nil)
     else
         CLAlert.add(LGet("Error_" .. code))
     end

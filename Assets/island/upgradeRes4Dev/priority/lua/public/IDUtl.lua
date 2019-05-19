@@ -381,6 +381,13 @@ function IDUtl.showPopupMenus(target, targetPosition, buttonsList, label, params
     end
 end
 
+---@public 切换场景
+function IDUtl.chgScene(data, callback)
+    data = data or {}
+    data.__finishCallback__ = callback
+    getPanelAsy("PanelSceneManager", onLoadedPanel, data)
+end
+
 function IDUtl.clean()
     if IDUtl.popupMenu then
         CLUIOtherObjPool.returnObj(IDUtl.popupMenu.gameObject)
@@ -388,5 +395,6 @@ function IDUtl.clean()
         IDUtl.popupMenu = nil
     end
 end
+
 --------------------------------------------
 return IDUtl
