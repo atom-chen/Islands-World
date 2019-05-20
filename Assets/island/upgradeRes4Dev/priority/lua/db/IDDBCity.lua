@@ -197,7 +197,7 @@ end
 ---@public 当主城变化时
 function IDDBCity:onMyselfCityChg(d)
     self:setBaseData(d)
-    if MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.city or MyCfg.mode == GameMode.mapBtwncity then
+    if MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.city then
         if IDMainCity then
             IDMainCity.refreshData(self)
         end

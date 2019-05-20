@@ -10,6 +10,7 @@ local cellSize = 10
 local ConstCreenSize = 10
 ---@type CLGrid
 IDWorldMap.grid = nil
+IDWorldMap.mode = GameModeSub.none
 ---@type GridBase
 local grid = nil
 local isInited = false
@@ -21,6 +22,7 @@ local drag4World = CLUIDrag4World.self
 ---@type CLLQueue
 local freePages = CLLQueue.new()
 local pages = {}
+---@type Coolape.CLSmoothFollow
 local smoothFollow = IDLCameraMgr.smoothFollow
 local cityGidx = 0
 local centerPageIdx = -1
@@ -117,10 +119,10 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
         -- 屏幕拖动代理
         drag4World.onDragMoveDelegate = IDWorldMap.onDragMove
         drag4World.onDragScaleDelegate = IDWorldMap.onScaleGround
-        IDWorldMap.setGameMode()
         local pageIdx = IDWorldMap.getPageIdx(gidx)
         cityGidx = gidx
         centerPageIdx = pageIdx
+        IDWorldMap.mode = GameModeSub.map
         IDWorldMap.loadPagesData()
 
         IDMainCity.init(
@@ -157,7 +159,7 @@ end
 
 function IDWorldMap.setGameMode()
     -- 判断当前中心点离自己的主城的距离来处理是否可以进入城里面
-    if MyCfg.mode == GameMode.map then
+    if IDWorldMap.mode == GameModeSub.map then
         local lastHit =
             Utl.getRaycastHitInfor(
             MyCfg.self.mainCamera,
@@ -183,13 +185,13 @@ function IDWorldMap.setGameMode()
     dragSetting.scaleHeightMax = 100
 
     if smoothFollow.height > IDWorldMap.scaleCityHeighMin and smoothFollow.height < IDWorldMap.scaleCityHeighMax then
-        if MyCfg.mode == GameMode.map then
+        if IDWorldMap.mode == GameModeSub.map then
             IDWorldMap.cleanPages()
         end
-        if MyCfg.mode ~= GameMode.mapBtwncity then
-            IDMainCity.onChgMode(MyCfg.mode, GameMode.mapBtwncity)
+        if IDWorldMap.mode ~= GameModeSub.mapBtwncity then
+            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.mapBtwncity)
             IDWorldMap.grid:hideRect()
-            MyCfg.mode = GameMode.mapBtwncity
+            IDWorldMap.mode = GameModeSub.mapBtwncity
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
             if IDPMain then
@@ -198,10 +200,10 @@ function IDWorldMap.setGameMode()
             end
         end
     elseif smoothFollow.height > IDWorldMap.scaleCityHeighMax then
-        if MyCfg.mode ~= GameMode.map then
-            IDMainCity.onChgMode(MyCfg.mode, GameMode.map)
+        if IDWorldMap.mode ~= GameModeSub.map then
+            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.map)
             IDWorldMap.grid:showRect()
-            MyCfg.mode = GameMode.map
+            IDWorldMap.mode = GameModeSub.map
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
             if IDPMain then
@@ -210,10 +212,10 @@ function IDWorldMap.setGameMode()
             end
         end
     else
-        if MyCfg.mode ~= GameMode.city then
-            IDMainCity.onChgMode(MyCfg.mode, GameMode.city)
+        if IDWorldMap.mode ~= GameModeSub.city then
+            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.city)
             IDWorldMap.grid:hideRect()
-            MyCfg.mode = GameMode.city
+            IDWorldMap.mode = GameModeSub.city
             dragSetting.viewRadius = 65
             dragSetting.viewCenter = grid:GetCellCenter(bio2number(IDDBCity.curCity.pos))
             if IDPMain then
@@ -379,6 +381,10 @@ function IDWorldMap.onGetMapPageData(pageIdx, cells)
 end
 
 function IDWorldMap.onPress(isPressed)
+    if IDWorldMap.mode == GameModeSub.city then
+        IDMainCity.onPress(isPressed)
+        return
+    end
     if isPressed then
     else
         csSelf:invoke4Lua(
@@ -392,6 +398,10 @@ function IDWorldMap.onPress(isPressed)
 end
 
 function IDWorldMap.onDragOcean()
+    if IDWorldMap.mode == GameModeSub.city then
+        IDMainCity.onDragOcean()
+        return
+    end
     isDragOcean = true
     if IDWorldMap.mapTileSize and IDWorldMap.mapTileSize.activeInHierarchy then
         csSelf:invoke4Lua(IDWorldMap.hideOnClickShow, 0.3)
@@ -408,6 +418,10 @@ end
 
 ---@public 点击了海面
 function IDWorldMap.onClickOcean()
+    if IDWorldMap.mode == GameModeSub.city then
+        IDMainCity.onClickOcean()
+        return
+    end
     isDragOcean = false
     local clickPos = MyMainCamera.lastHit.point
     local index = grid:GetCellIndex(clickPos)
@@ -441,7 +455,7 @@ function IDWorldMap.onClickSelfCity()
 end
 
 IDWorldMap.popupEvent = {
-    ---@public 进入自己的城
+    ---@public 进入的城
     enterCity = function(cellIndex)
         local cellPos = grid:GetCellCenter(cellIndex)
         IDUtl.hidePopupMenus()

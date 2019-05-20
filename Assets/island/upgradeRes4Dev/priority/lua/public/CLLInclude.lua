@@ -4,7 +4,8 @@ do
     -- 重写require
     local localReq = require
     function require(path)
-        local ret, result = pcall(localReq, path)--("toolkit.KKWhiteList")
+        local ret, result = pcall(localReq, path)
+         --("toolkit.KKWhiteList")
         if not ret then
             print("err:" .. result)
             return nil
@@ -405,8 +406,14 @@ do
         none = 0,
         city = 1,
         map = 2,
-        battle = 3,
-        mapBtwncity = 4, -- 地图与主城之前切换
+        battle = 3
+    }
+    -- 子模式
+    GameModeSub = {
+        none = 0,
+        map = 1,
+        city = 2,
+        mapBtwncity = 4 -- 地图与主城之前切换
     }
 
     -- 角色的状态
@@ -418,7 +425,7 @@ do
         attack = 5,
         waitAttack = 6,
         dizzy = 7,
-        backDockyard = 8,   -- 返回造船厂
+        backDockyard = 8 -- 返回造船厂
     }
 
     -- 重载pcall，以便可以自动print error msg
@@ -431,7 +438,7 @@ do
         return ret, result
     end
     -------------------------------------------------------
-    local chnCfg -- 安装包配置
+    local chnCfg  -- 安装包配置
     function getChlCfg()
         if chnCfg ~= nil then
             return chnCfg

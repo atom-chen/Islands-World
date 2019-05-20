@@ -45,7 +45,7 @@ local idelWorkers = CLLQueue.new() -- 空闲工人
 local buildingsWithWorkers = {} -- 工人与建筑的关系
 local drag4World = CLUIDrag4World.self
 local smoothFollow = IDLCameraMgr.smoothFollow
-local preGameMode = GameMode.city
+local preGameMode = GameModeSub.city
 local scaleCityHeighMax = 0
 local scaleCityHeighMin = 0
 local PopUpMenus
@@ -240,7 +240,7 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
         function()
             IDMainCity.loadBuildings(
                 function()
-                    IDMainCity.onChgMode(GameMode.city, GameMode.map)
+                    IDMainCity.onChgMode(GameModeSub.city, GameModeSub.map)
                     IDMainCity.onScaleScreen()
                     finishCallback()
                 end
@@ -298,20 +298,20 @@ function IDMainCity.onChgMode(oldMode, curMode)
     local isShowBuilding = true
     local isShowTile = true
     IDUtl.hidePopupMenus()
-    if curMode == GameMode.city then
+    if curMode == GameModeSub.city then
         preGameMode = oldMode
         isShowBuilding = true
         isShowTile = true
         IDMainCity.setOtherUnitsColiderState(nil, true)
         IDMainCity.grid:showRect()
-    elseif curMode == GameMode.mapBtwncity then
+    elseif curMode == GameModeSub.mapBtwncity then
         preGameMode = oldMode
         isShowBuilding = false
         isShowTile = true
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
         IDMainCity.grid:hideRect()
-    elseif curMode == GameMode.map then
+    elseif curMode == GameModeSub.map then
         preGameMode = oldMode
         isShowBuilding = false
         isShowTile = false
@@ -357,7 +357,7 @@ function IDMainCity.scaleCity()
     local currDiff = curVal - minVal
     local persent = currDiff / diffVal
     transform.localScale = Vector3.one * (1 + cityRootDiff * persent)
-    if preGameMode == GameMode.map and MyCfg.mode == GameMode.mapBtwncity then
+    if preGameMode == GameModeSub.map and IDWorldMap.mode == GameModeSub.mapBtwncity then
         lookAtTarget.position =
             lookAtTarget.position + (transform.position - lookAtTarget.position) * (1 + cityRootDiff * persent)
     end

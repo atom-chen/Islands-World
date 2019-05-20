@@ -10,9 +10,9 @@ function IDLBuildingHeadquarters:init(selfObj, id, star, lev, _isOffense, other)
 end
 
 function IDLBuildingHeadquarters:OnClick()
-    if MyCfg.mode == GameMode.city then
+    if IDWorldMap.mode == GameModeSub.city then
         self:getBase(IDLBuildingHeadquarters).OnClick(self)
-    elseif MyCfg.mode == GameMode.map then
+    elseif IDWorldMap.mode == GameModeSub.map then
         IDWorldMap.onClickSelfCity()
     end
 end

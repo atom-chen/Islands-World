@@ -10,7 +10,7 @@ function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)
     if self.bodyRotate == nil then
         self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
     end
-    if GameMode.city == MyCfg.mode then
+    if GameModeSub.city == IDWorldMap.mode then
         self:idel()
     end
 end

@@ -63,10 +63,10 @@ end
 
 ---@public 当游戏模式变化（主要是从世界到主城的切换时ui的变化）
 function IDPMain.onChgMode()
-    if MyCfg.mode == GameMode.city then
+    if IDWorldMap.mode == GameModeSub.city then
         SetActive(uiobjs.worldRoot.gameObject, false)
         IDPMain.refreshCityInfor()
-    elseif MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.mapBtwncity then
+    elseif IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
         SetActive(uiobjs.cityRoot.gameObject, false)
         IDPMain.refreshWorldInfor()
     end
