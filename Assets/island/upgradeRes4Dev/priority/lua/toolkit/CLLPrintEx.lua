@@ -3,9 +3,9 @@
     warning = 2,
     debug = 3,
 }
-
 local logLev = LogLev.debug
 local logBackTraceLev = -1
+local select = select
 local table = table
 local smatch = string.match
 local sfind = string.find
@@ -60,6 +60,20 @@ local parseBackTrace = function(traceInfor, level)
     end
 end
 
+local wrapMsg = function (...)
+    local tb = {}
+    local v
+    for i = 1, select("#", ...) do
+        v = select(i, ...)
+        if v then
+            table.insert(tb, tostring(v))
+        else
+            table.insert(tb, "nil")
+        end
+    end
+    return table.concat(tb, "|")
+end
+
 local luaprint = print
 
 function print(...)
@@ -67,7 +81,7 @@ function print(...)
         return
     end
     local trace = debug.traceback("")
-    local msg = table.concat({ ... }, "|")
+    local msg = wrapMsg(...)
     msg = msg or ""
     luaprint("[debug]:" .. msg .. "\n" .. parseBackTrace(trace, logBackTraceLev))
 end
@@ -77,7 +91,7 @@ function printw(...)
         return
     end
     local trace = debug.traceback("")
-    local msg = table.concat({ ... }, "|")
+    local msg = wrapMsg(...)
     msg = msg or ""
     Utl.printw("[warn]:" .. msg .. "\n" .. parseBackTrace(trace, logBackTraceLev))
 end
@@ -87,7 +101,7 @@ function printe(...)
         return
     end
     local trace = debug.traceback("")
-    local msg = table.concat({ ... }, "|")
+    local msg = wrapMsg(...)
     msg = msg or ""
     Utl.printe("[err]:" .. msg .. "\n" .. parseBackTrace(trace, logBackTraceLev))
 end

@@ -78,9 +78,9 @@ end
 
 ---@public 让舰船在海航行
 function IDLBuildingDockyard:showShipsInOcean()
-    if self.serverData == nil then return end
+    if self.serverData == nil or MyCfg.mode == GameMode.battle then return end
     self.csSelf:cancelInvoke4Lua(self:wrapFunction4CS(self.showShipsInOcean))
-    -- 取得一个航船id及数量
+    -- 取得一个舰船id及数量
     local ships = IDDBCity.curCity:getShipsByDockyardId(bio2number(self.serverData.idx))
     if ships then
         for shipId, num in pairs(ships) do

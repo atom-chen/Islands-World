@@ -293,12 +293,26 @@ function isNilOrEmpty(s)
     return false
 end
 
+-- function joinStr(...)
+--     local paras = {...}
+--     if paras == nil or #paras == 0 then
+--         return ""
+--     end
+--     return table.concat(paras)
+-- end
+
+---@public 拼接字符串
 function joinStr(...)
-    local paras = {...}
-    if paras == nil or #paras == 0 then
-        return ""
+    -- local paras = {...}
+    local tb = {}
+    local v
+    for i = 1, select("#", ...) do
+        v = select(i, ...)
+        if v then
+            table.insert(tb, tostring(v))
+        end
     end
-    return table.concat(paras)
+    return table.concat(tb)
 end
 
 ---@public 保留小数位位数

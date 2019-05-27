@@ -504,10 +504,16 @@ function IDWorldMap.doAttack(cellIndex, retData)
         local city = IDDBCity.new(retData.city)
         city:setAllDockyardShips(retData.dockyardShipss)
 
+        ---进攻方舰船数据
         local atkShips = retData.dockyardShipss2
 
         local data = {mode = GameMode.battle, defData = {player = player, city = city}, offData = atkShips}
-        IDUtl.chgScene(data, nil)
+        IDUtl.chgScene(
+            data,
+            function()
+                IDWorldMap.popupEvent.enterCity(cellIndex)
+            end
+        )
     else
         CLAlert.add(LGet("Error_" .. code))
     end
@@ -534,14 +540,6 @@ end
 
 ---@public 离开世界后的清理
 function IDWorldMap.clean()
-    if IDWorldMap.ocean then
-        if IDWorldMap.ocean.luaTable then
-            IDWorldMap.ocean.luaTable.clean()
-        end
-        CLThingsPool.returnObj(IDWorldMap.ocean.gameObject)
-        SetActive(IDWorldMap.ocean.gameObject, false)
-        IDWorldMap.ocean = nil
-    end
     IDWorldMap.cleanPages()
     if IDWorldMap.mapTileSize then
         CLThingsPool.returnObj(IDWorldMap.mapTileSize)
@@ -554,6 +552,15 @@ end
 ---@public 需要销毁处理
 function IDWorldMap.destory()
     IDWorldMap.clean()
+    if IDWorldMap.ocean then
+        if IDWorldMap.ocean.luaTable then
+            IDWorldMap.ocean.luaTable.clean()
+        end
+        CLThingsPool.returnObj(IDWorldMap.ocean.gameObject)
+        SetActive(IDWorldMap.ocean.gameObject, false)
+        IDWorldMap.ocean = nil
+    end
+    
     GameObject.DestroyImmediate(IDWorldMap.fogOfWarInfluence.gameObject)
     IDWorldMap.fogOfWarInfluence = nil
 end

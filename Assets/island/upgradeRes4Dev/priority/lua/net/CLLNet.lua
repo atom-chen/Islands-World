@@ -122,7 +122,7 @@ function CLLNet.dispatch(map)
     local msg = retInfor.msg
 
     if MyCfg.self.isEditMode then
-        printw(joinStr("cmd=", cmd, "==succ==", succ, "==msg==", msg))
+        print(joinStr("cmd=", cmd, "==succ==", succ, "==msg==", msg))
     end
 
     if (succ ~= NetSuccess) then
@@ -206,7 +206,7 @@ function CLLNet.cacheData(cmd, data)
         end
     elseif cmd == NetProtoIsland.cmds.onMapCellChg then
         IDDBWorldMap.onMapCellChg(data.mapCell)
-    elseif  cmd == NetProtoIsland.cmds.onMyselfCityChg then
+    elseif cmd == NetProtoIsland.cmds.onMyselfCityChg then
         if IDDBCity.curCity then
             IDDBCity.curCity:onMyselfCityChg(data.city)
         end

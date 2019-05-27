@@ -191,3 +191,4 @@ Time=时间
 Enter=进入
 Attack=攻击
 MoveCity=搬迁
+Quit=退出

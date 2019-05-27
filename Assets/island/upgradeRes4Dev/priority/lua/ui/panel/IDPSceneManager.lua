@@ -224,7 +224,6 @@ function IDPSceneManager.onLoadBattle()
     lookAtTarget.localEulerAngles = Vector3(0, 45, 0)
     SoundEx.playMainMusic("Battle_1")
     getPanelAsy("PanelBattle", onLoadedPanel)
-    printe("onLoadBattle")
 end
 
 --------------------------------------------

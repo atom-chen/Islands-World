@@ -188,7 +188,7 @@ do
             end
         end
     end
-
+    
     --------------------------------------------
     --------------------------------------------
     if CLCfgBase.self.isEditMode and CLCfgBase.self.isContBorrowSpriteTimes then
