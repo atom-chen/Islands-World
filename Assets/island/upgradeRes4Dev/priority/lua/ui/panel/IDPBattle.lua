@@ -3,6 +3,8 @@ local IDPBattle = {}
 
 local csSelf = nil
 local transform = nil
+---@type BattleData
+local mData
 
 -- 初始化，只会调用一次
 function IDPBattle.init(csObj)
@@ -15,6 +17,9 @@ end
 
 -- 设置数据
 function IDPBattle.setData(paras)
+    mData = paras
+    --mData.defData
+    --mData.offData 进攻方的舰船数据
 end
 
 -- 显示，在c#中。show为调用refresh，show和refresh的区别在于，当页面已经显示了的情况，当页面再次出现在最上层时，只会调用refresh
@@ -24,6 +29,18 @@ end
 
 -- 刷新
 function IDPBattle.refresh()
+    IDPBattle.shwoShips()
+end
+
+function IDPBattle.shwoShips()
+    -- wrap mData
+    local shipMap = mData.offShips
+    ---@param v NetProtoIsland.ST_dockyardShips
+    for k, v in pairs(shipMap) do
+        for shipId, num in pairs(v.shipsMap or {}) do
+          
+        end
+    end
 end
 
 -- 关闭页面
@@ -46,7 +63,6 @@ end
 function IDPBattle.uiEventDelegate(go)
     local goName = go.name
     if goName == "ButtonQuit" then
-      
     end
 end
 

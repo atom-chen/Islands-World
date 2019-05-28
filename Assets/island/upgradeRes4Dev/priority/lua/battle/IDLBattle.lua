@@ -24,12 +24,17 @@
 --]]
 ---@public 战斗逻辑
 IDLBattle = {}
+---@type IDPreloadPrefab
+local IDPreloadPrefab = require("public.IDPreloadPrefab")
+---@class BattleData 战场数据
+---@field targetCity IDDBCity 目标城
+---@field offShips table key:舰船id; value:数量
 
 local csSelf = nil
 local transform = nil
 local city = nil -- 城池对象
-IDLBattle.offData = nil -- 进攻方数据
-IDLBattle.defData = nil -- 防守方数据
+---@type BattleData
+IDLBattle.mData = nil -- 战斗方数据
 
 --------------------------------------------
 function IDLBattle._init()
@@ -44,22 +49,20 @@ function IDLBattle._init()
 end
 
 ---@public 初始化
----@param offData table 进攻方数据
----@param defData table 防守方数据
+---@param data BattleData 进攻方数据
 ---@param callback 回调
 ---@param progressCB 进度回调
-function IDLBattle.init(defData, offData, callback, progressCB)
-    IDLBattle.defData = defData
-    IDLBattle.offData = offData
+function IDLBattle.init(data, callback, progressCB)
+    IDLBattle.mData = data
     -- 先暂停资源释放
     CLAssetsManager.self:pause()
     -- 加载城
     IDMainCity.init(
-        defData.city,
+        IDLBattle.mData.targetCity,
         function()
             city = IDMainCity
             -- 预加载进攻方兵种
-            IDLBattle.prepareSoliders(offData, callback, progressCB)
+            IDLBattle.prepareSoliders(IDLBattle.mData.offShips, callback, progressCB)
         end,
         progressCB
     )
@@ -67,7 +70,7 @@ end
 
 ---@public 预加载进攻方兵种
 function IDLBattle.prepareSoliders(data, callback, progressCB)
-    Utl.doCallback(callback)
+    IDPreloadPrefab.preloadRoles(data, callback, progressCB)
 end
 
 ---@public 通知战场，玩家点击了我

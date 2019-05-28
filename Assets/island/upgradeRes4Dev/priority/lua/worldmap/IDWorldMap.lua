@@ -494,6 +494,7 @@ function IDWorldMap.doMoveCity(cellIndex, retData)
 end
 
 ---@public 战斗服务器接口回调
+---@param retData NetProtoIsland.RC_attack
 function IDWorldMap.doAttack(cellIndex, retData)
     hideHotWheel()
     local code = BioUtl.bio2int(retData.retInfor.code)
@@ -503,11 +504,28 @@ function IDWorldMap.doAttack(cellIndex, retData)
         ---@type IDDBCity
         local city = IDDBCity.new(retData.city)
         city:setAllDockyardShips(retData.dockyardShipss)
-
         ---进攻方舰船数据
         local atkShips = retData.dockyardShipss2
+        local offShips = {}
+        ---@param v NetProtoIsland.ST_dockyardShips
+        for k, v in pairs(atkShips) do
+            for shipId, num in pairs(v.shipsMap or {}) do
+                if num > 0 then
+                    offShips[shipId] = (offShips[shipId] or 0) + num
+                end
+            end
+        end
+        for k, v in pairs(offShips) do
+            --转成bio存储，避免被修改
+            offShips[k] = number2bio(v)
+        end
 
-        local data = {mode = GameMode.battle, defData = {player = player, city = city}, offData = atkShips}
+        ---@type BattleData
+        local battleData = {}
+        battleData.targetCity = city
+        battleData.offShips = offShips
+
+        local data = {mode = GameMode.battle, data = battleData}
         IDUtl.chgScene(
             data,
             function()
@@ -560,7 +578,7 @@ function IDWorldMap.destory()
         SetActive(IDWorldMap.ocean.gameObject, false)
         IDWorldMap.ocean = nil
     end
-    
+
     GameObject.DestroyImmediate(IDWorldMap.fogOfWarInfluence.gameObject)
     IDWorldMap.fogOfWarInfluence = nil
 end

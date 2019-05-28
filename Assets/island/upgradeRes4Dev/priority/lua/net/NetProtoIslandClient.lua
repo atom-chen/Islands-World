@@ -68,6 +68,8 @@ do
   --==================================
   --==================================
     ---@class NetProtoIsland.ST_retInfor 返回信息
+    ---@field public msg string 返回消息
+    ---@field public code number 返回值
     NetProtoIsland.ST_retInfor = {
         toMap = function(m)
             local r = {}
@@ -85,6 +87,8 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_mapPage 一屏大地图数据
+    ---@field public cells table 地图数据 key=网络index, map
+    ---@field public pageIdx number 一屏所在的网格index 
     NetProtoIsland.ST_mapPage = {
         toMap = function(m)
             local r = {}
@@ -102,6 +106,8 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_dockyardShips 造船厂的舰船信息
+    ---@field public shipsMap table key=舰船的配置id, val=舰船数量 map
+    ---@field public buildingIdx number 造船厂的idx
     NetProtoIsland.ST_dockyardShips = {
         toMap = function(m)
             local r = {}
@@ -119,6 +125,10 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_tile 建筑信息对象
+    ---@field public idx number 唯一标识 int
+    ---@field public attrid number 属性配置id int
+    ---@field public cidx number 主城idx int
+    ---@field public pos number 位置，即在城的gird中的index int
     NetProtoIsland.ST_tile = {
         toMap = function(m)
             local r = {}
@@ -140,6 +150,19 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_building 建筑信息对象
+    ---@field public idx number 唯一标识 int
+    ---@field public val4 number 值4。如:产量，仓库的存储量等 int
+    ---@field public val3 number 值3。如:产量，仓库的存储量等 int
+    ---@field public val2 number 值2。如:产量，仓库的存储量等 int
+    ---@field public endtime number 完成升级、恢复、采集等的时间点 long
+    ---@field public lev number 等级 int
+    ---@field public val number 值。如:产量，仓库的存储量等 int
+    ---@field public cidx number 主城idx int
+    ---@field public val5 number 值5。如:产量，仓库的存储量等 int
+    ---@field public attrid number 属性配置id int
+    ---@field public starttime number 开始升级、恢复、采集等的时间点 long
+    ---@field public state number 状态. 0：正常；1：升级中；9：恢复中
+    ---@field public pos number 位置，即在城的gird中的index int
     NetProtoIsland.ST_building = {
         toMap = function(m)
             local r = {}
@@ -179,33 +202,43 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_mapCell 大地图地块数据
+    ---@field public idx number 网格index
+    ---@field public val1 number 值1
+    ---@field public cidx number 主城idx
+    ---@field public val3 number 值3
+    ---@field public type number 地块类型 1：玩家，2：npc
+    ---@field public val2 number 值2
+    ---@field public pageIdx number 所在屏的index
     NetProtoIsland.ST_mapCell = {
         toMap = function(m)
             local r = {}
             if m == nil then return r end
             r[16] = m.idx  -- 网格index int
-            r[30] = m.type  -- 地块类型 1：玩家，2：npc int
+            r[29] = m.val1  -- 值1 int
             r[18] = m.cidx  -- 主城idx int
             r[21] = m.val3  -- 值3 int
-            r[13] = m.pageIdx  -- 所在屏的index int
+            r[30] = m.type  -- 地块类型 1：玩家，2：npc int
             r[22] = m.val2  -- 值2 int
-            r[29] = m.val1  -- 值1 int
+            r[13] = m.pageIdx  -- 所在屏的index int
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
             r.idx = m[16] --  int
-            r.type = m[30] --  int
+            r.val1 = m[29] --  int
             r.cidx = m[18] --  int
             r.val3 = m[21] --  int
-            r.pageIdx = m[13] --  int
+            r.type = m[30] --  int
             r.val2 = m[22] --  int
-            r.val1 = m[29] --  int
+            r.pageIdx = m[13] --  int
             return r;
         end,
     }
     ---@class NetProtoIsland.ST_resInfor 资源信息
+    ---@field public oil number 油
+    ---@field public gold number 金
+    ---@field public food number 粮
     NetProtoIsland.ST_resInfor = {
         toMap = function(m)
             local r = {}
@@ -225,6 +258,14 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_city 主城
+    ---@field public idx number 唯一标识 int
+    ---@field public tiles table 地块信息 key=idx, map
+    ---@field public name string 名称
+    ---@field public status number 状态 1:正常; int
+    ---@field public buildings table 建筑信息 key=idx, map
+    ---@field public lev number 等级 int
+    ---@field public pos number 城所在世界grid的index int
+    ---@field public pidx number 玩家idx int
     NetProtoIsland.ST_city = {
         toMap = function(m)
             local r = {}
@@ -254,6 +295,9 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_netCfg 网络协议解析配置
+    ---@field public encryptType number 加密类别，1：只加密客户端，2：只加密服务器，3：前后端都加密，0及其它情况：不加密
+    ---@field public checkTimeStamp useData 检测时间戳
+    ---@field public secretKey string 密钥
     NetProtoIsland.ST_netCfg = {
         toMap = function(m)
             local r = {}
@@ -273,6 +317,13 @@ do
         end,
     }
     ---@class NetProtoIsland.ST_player 用户信息
+    ---@field public idx number 唯一标识 int
+    ---@field public diam number 钻石 long
+    ---@field public name string 名字
+    ---@field public status number 状态 1：正常 int
+    ---@field public cityidx number 城池id int
+    ---@field public unionidx number 联盟id int
+    ---@field public lev number 等级 long
     NetProtoIsland.ST_player = {
         toMap = function(m)
             local r = {}
@@ -537,6 +588,9 @@ do
     }
     --==============================
     NetProtoIsland.recive = {
+    ---@class NetProtoIsland.RC_getShipsByBuildingIdx
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public dockyardShips NetProtoIsland.ST_dockyardShips 造船厂的idx int
     getShipsByBuildingIdx = function(map)
         local ret = {}
         ret.cmd = "getShipsByBuildingIdx"
@@ -545,6 +599,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_upLevBuilding
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息
     upLevBuilding = function(map)
         local ret = {}
         ret.cmd = "upLevBuilding"
@@ -553,6 +610,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_rmBuilding
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public idx  被移除建筑的idx int
     rmBuilding = function(map)
         local ret = {}
         ret.cmd = "rmBuilding"
@@ -561,6 +621,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_newBuilding
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息对象
     newBuilding = function(map)
         local ret = {}
         ret.cmd = "newBuilding"
@@ -569,6 +632,12 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_login
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public player NetProtoIsland.ST_player 玩家信息
+    ---@field public city NetProtoIsland.ST_city 主城信息
+    ---@field public systime  系统时间 long
+    ---@field public session  会话id
     login = function(map)
         local ret = {}
         ret.cmd = "login"
@@ -580,6 +649,8 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_moveCity
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
     moveCity = function(map)
         local ret = {}
         ret.cmd = "moveCity"
@@ -587,6 +658,11 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onFinishBuildOneShip
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public buildingIdx  造船厂的idx int
+    ---@field public shipAttrID  舰船的配置id
+    ---@field public shipNum  舰船的数量
     onFinishBuildOneShip = function(map)
         local ret = {}
         ret.cmd = "onFinishBuildOneShip"
@@ -597,6 +673,10 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_sendNetCfg
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public netCfg NetProtoIsland.ST_netCfg 网络协议解析配置
+    ---@field public systime  系统时间 long
     sendNetCfg = function(map)
         local ret = {}
         ret.cmd = "sendNetCfg"
@@ -606,6 +686,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_getBuilding
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息对象
     getBuilding = function(map)
         local ret = {}
         ret.cmd = "getBuilding"
@@ -614,6 +697,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_rmTile
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public idx  被移除地块的idx int
     rmTile = function(map)
         local ret = {}
         ret.cmd = "rmTile"
@@ -622,6 +708,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_buildShip
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 造船厂信息
     buildShip = function(map)
         local ret = {}
         ret.cmd = "buildShip"
@@ -630,6 +719,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onMapCellChg
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public mapCell NetProtoIsland.ST_mapCell 地块
     onMapCellChg = function(map)
         local ret = {}
         ret.cmd = "onMapCellChg"
@@ -638,6 +730,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onResChg
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public resInfor NetProtoIsland.ST_resInfor 资源信息
     onResChg = function(map)
         local ret = {}
         ret.cmd = "onResChg"
@@ -646,6 +741,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_getMapDataByPageIdx
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public mapPage NetProtoIsland.ST_mapPage 在地图一屏数据 map
     getMapDataByPageIdx = function(map)
         local ret = {}
         ret.cmd = "getMapDataByPageIdx"
@@ -654,6 +752,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_moveBuilding
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息
     moveBuilding = function(map)
         local ret = {}
         ret.cmd = "moveBuilding"
@@ -662,6 +763,8 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_logout
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
     logout = function(map)
         local ret = {}
         ret.cmd = "logout"
@@ -669,6 +772,11 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_collectRes
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public resType  收集的资源类型 int
+    ---@field public resVal  收集到的资源量 int
+    ---@field public building NetProtoIsland.ST_building 建筑信息
     collectRes = function(map)
         local ret = {}
         ret.cmd = "collectRes"
@@ -679,6 +787,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_upLevBuildingImm
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息
     upLevBuildingImm = function(map)
         local ret = {}
         ret.cmd = "upLevBuildingImm"
@@ -687,6 +798,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_newTile
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public tile NetProtoIsland.ST_tile 地块信息对象
     newTile = function(map)
         local ret = {}
         ret.cmd = "newTile"
@@ -695,6 +809,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onBuildingChg
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息
     onBuildingChg = function(map)
         local ret = {}
         ret.cmd = "onBuildingChg"
@@ -703,6 +820,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onPlayerChg
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public player NetProtoIsland.ST_player 玩家信息
     onPlayerChg = function(map)
         local ret = {}
         ret.cmd = "onPlayerChg"
@@ -711,12 +831,16 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_heart
     heart = function(map)
         local ret = {}
         ret.cmd = "heart"
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onFinishBuildingUpgrade
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public building NetProtoIsland.ST_building 建筑信息
     onFinishBuildingUpgrade = function(map)
         local ret = {}
         ret.cmd = "onFinishBuildingUpgrade"
@@ -725,6 +849,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_moveTile
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public tile NetProtoIsland.ST_tile 地块信息
     moveTile = function(map)
         local ret = {}
         ret.cmd = "moveTile"
@@ -733,6 +860,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_onMyselfCityChg
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public city NetProtoIsland.ST_city 主城信息
     onMyselfCityChg = function(map)
         local ret = {}
         ret.cmd = "onMyselfCityChg"
@@ -741,6 +871,12 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoIsland.RC_attack
+    ---@field public retInfor NetProtoIsland.ST_retInfor 返回信息
+    ---@field public player NetProtoIsland.ST_player 被攻击玩家信息
+    ---@field public city NetProtoIsland.ST_city 被攻击主城信息
+    ---@field public dockyardShipss NetProtoIsland.ST_dockyardShips Array List 被攻击航船的数据
+    ---@field public dockyardShipss2 NetProtoIsland.ST_dockyardShips Array List 进攻击方航船的数据
     attack = function(map)
         local ret = {}
         ret.cmd = "attack"

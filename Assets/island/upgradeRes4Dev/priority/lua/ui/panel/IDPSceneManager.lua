@@ -217,13 +217,14 @@ function IDPSceneManager.loadBattle()
     smoothFollow.distance = 5
     smoothFollow.height = 5
 
-    IDLBattle.init(mData.defData, mData.offData, IDPSceneManager.onLoadBattle, IDPSceneManager.onProgress)
+    IDLBattle.init(mData.data, IDPSceneManager.onLoadBattle, IDPSceneManager.onProgress)
 end
 
 function IDPSceneManager.onLoadBattle()
     lookAtTarget.localEulerAngles = Vector3(0, 45, 0)
     SoundEx.playMainMusic("Battle_1")
-    getPanelAsy("PanelBattle", onLoadedPanel)
+    -- mData.defData, mData.offData
+    getPanelAsy("PanelBattle", onLoadedPanel, mData.data)
 end
 
 --------------------------------------------

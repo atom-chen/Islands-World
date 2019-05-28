@@ -1,6 +1,6 @@
 
 ---@public 预加载处理
----@callback IDPreloadPrefab
+---@class IDPreloadPrefab
 local IDPreloadPrefab = {}
 require("public.CLLQueue")
 IDPreloadPrefab.roleQueue = CLLQueue.new() -- 角色
@@ -29,7 +29,7 @@ function IDPreloadPrefab.preloadRoles(roles, callback, progressCB)
     IDPreloadPrefab.onFinishCallback = callback
     IDPreloadPrefab.onProgressCB = progressCB
     for k, v in pairs(roles) do
-        local id = (v.id)
+        local id = (v.id) or k
         IDPreloadPrefab.extractRole(id)
     end
 end
