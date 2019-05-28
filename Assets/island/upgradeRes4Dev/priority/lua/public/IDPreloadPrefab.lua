@@ -1,4 +1,3 @@
-
 ---@public 预加载处理
 ---@class IDPreloadPrefab
 local IDPreloadPrefab = {}
@@ -46,10 +45,17 @@ end
 ---@public 提取了角色相关的需要预加载的资源
 function IDPreloadPrefab.extractRole(id)
     local cfg = DBCfg.getRoleByID(id)
-    IDPreloadPrefab.enQueue(IDPreloadPrefab.roleQueue, IDUtl.getRolePrefabName(id))
-    IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, cfg.AttackSound)
-    IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
-    IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
+    if cfg then
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.roleQueue, IDUtl.getRolePrefabName(id))
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, cfg.AttackSound)
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
+        IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
+    else
+        printe("get cfg is nil.id=" .. id)
+        if IDPreloadPrefab.onFinishCallback then
+            IDPreloadPrefab.onFinishCallback()
+        end
+    end
 end
 
 ---@public 子弹
@@ -112,9 +118,9 @@ function IDPreloadPrefab.loadUIThing()
 end
 
 function IDPreloadPrefab.onFinishOne()
-    IDPreloadPrefab.currCount = IDPreloadPrefab.currCount + 1;
+    IDPreloadPrefab.currCount = IDPreloadPrefab.currCount + 1
     if (IDPreloadPrefab.onProgressCB ~= nil) then
-        IDPreloadPrefab.onProgressCB(IDPreloadPrefab.totalAssets, IDPreloadPrefab.currCount);
+        IDPreloadPrefab.onProgressCB(IDPreloadPrefab.totalAssets, IDPreloadPrefab.currCount)
     end
 end
 
