@@ -51,7 +51,7 @@ function IDPreloadPrefab.extractRole(id)
         IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
         IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
     else
-        printe("get cfg is nil.id=" .. id)
+        printe("get cfg is nil.id=" .. id .. ",type=" .. type(id))
         if IDPreloadPrefab.onFinishCallback then
             IDPreloadPrefab.onFinishCallback()
         end

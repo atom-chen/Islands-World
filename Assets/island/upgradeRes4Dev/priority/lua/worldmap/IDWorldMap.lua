@@ -507,17 +507,18 @@ function IDWorldMap.doAttack(cellIndex, retData)
         ---进攻方舰船数据
         local atkShips = retData.dockyardShipss2
         local offShips = {}
+        local _offShips = {}
         ---@param v NetProtoIsland.ST_dockyardShips
         for k, v in pairs(atkShips) do
             for shipId, num in pairs(v.shipsMap or {}) do
                 if num > 0 then
-                    offShips[shipId] = (offShips[shipId] or 0) + num
+                    _offShips[shipId] = (_offShips[shipId] or 0) + num
                 end
             end
         end
-        for k, v in pairs(offShips) do
+        for k, v in pairs(_offShips) do
             --转成bio存储，避免被修改
-            offShips[k] = number2bio(v)
+            offShips[tonumber(k)] = {id = tonumber(k), num = number2bio(v)}
         end
 
         ---@type BattleData
