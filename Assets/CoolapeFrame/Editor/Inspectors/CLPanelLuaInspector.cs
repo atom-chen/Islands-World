@@ -10,8 +10,10 @@ public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 {
 	CLPanelLua panel;
 	Object panelData;
+    Object frameObj;
+    bool _isFinishInit = false;
 
-	public override void OnInspectorGUI()
+    public override void OnInspectorGUI()
 	{
 		panel = target as CLPanelLua;
 
@@ -21,7 +23,85 @@ public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 		}
 
 		base.OnInspectorGUI();
-		NGUIEditorTools.BeginContents();
+        init();
+
+        GUILayout.BeginHorizontal();
+        {
+            EditorGUILayout.LabelField("背景框", GUILayout.Width(100));
+            frameObj = EditorGUILayout.ObjectField(frameObj, typeof(UnityEngine.Object), GUILayout.Width(125));
+        }
+        GUILayout.EndHorizontal();
+        string path = AssetDatabase.GetAssetPath(frameObj);
+        panel.frameName = Path.GetFileNameWithoutExtension(path);
+        EditorUtility.SetDirty(panel);
+
+        if (GUILayout.Button("增加渐显缩放效果"))
+        {
+            //instance.EffectList.Count
+            TweenScale ts = panel.gameObject.AddComponent<TweenScale>();
+            ts.from = Vector3.one * 1.5f;
+            ts.to = Vector3.one;
+            ts.duration = 0.5f;
+            ts.method = UITweener.Method.EaseInOut;
+            ts.enabled = false;
+            panel.EffectList.Add(ts);
+
+            TweenAlpha ta = panel.gameObject.AddComponent<TweenAlpha>();
+            ta.from = 0.1f;
+            ta.to = 1;
+            ta.duration = 0.5f;
+            ta.method = UITweener.Method.EaseInOut;
+            ta.enabled = false;
+            panel.EffectList.Add(ta);
+            panel.effectType = CLPanelBase.EffectType.synchronized;
+            EditorUtility.SetDirty(panel);
+        }
+
+        if (GUILayout.Button("增加渐显左移效果"))
+        {
+            //instance.EffectList.Count
+            TweenPosition ts = panel.gameObject.AddComponent<TweenPosition>();
+            ts.from = Vector3.left * 1920;
+            ts.to = Vector3.zero;
+            ts.duration = 0.5f;
+            ts.method = UITweener.Method.EaseInOut;
+            ts.enabled = false;
+            panel.EffectList.Add(ts);
+
+            TweenAlpha ta = panel.gameObject.AddComponent<TweenAlpha>();
+            ta.from = 0.1f;
+            ta.to = 1;
+            ta.duration = 0.5f;
+            ta.method = UITweener.Method.EaseInOut;
+            ta.enabled = false;
+            panel.EffectList.Add(ta);
+            panel.effectType = CLPanelBase.EffectType.synchronized;
+            EditorUtility.SetDirty(panel);
+        }
+
+        if (GUILayout.Button("增加渐显下移效果"))
+        {
+            //instance.EffectList.Count
+            TweenPosition ts = panel.gameObject.AddComponent<TweenPosition>();
+            ts.from = Vector3.up * 1080;
+            ts.to = Vector3.zero;
+            ts.duration = 0.5f;
+            ts.method = UITweener.Method.EaseInOut;
+            ts.enabled = false;
+            panel.EffectList.Add(ts);
+
+            TweenAlpha ta = panel.gameObject.AddComponent<TweenAlpha>();
+            ta.from = 0.1f;
+            ta.to = 1;
+            ta.duration = 0.5f;
+            ta.method = UITweener.Method.EaseInOut;
+            ta.enabled = false;
+            panel.EffectList.Add(ta);
+            panel.effectType = CLPanelBase.EffectType.synchronized;
+            EditorUtility.SetDirty(panel);
+        }
+
+        NGUIEditorTools.BeginContents();
 		{
 			GUILayout.Space(3);
 //			if (GUILayout.Button("Reload Lua")) {
@@ -72,4 +152,19 @@ public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 			CLUIUtl.resetAtlasAndFont(panel.transform, false);
 		}
 	}
+
+
+    void init()
+    {
+        if (!_isFinishInit || frameObj == null)
+        {
+            _isFinishInit = true;
+
+            if (!string.IsNullOrEmpty(panel.frameName))
+            {
+                string tmpPath = PStr.b().a("Assets/").a(CLPathCfg.self.basePath).a("/upgradeRes4Dev/priority/ui/other/").a(panel.frameName).a(".prefab").e();
+                frameObj = AssetDatabase.LoadMainAssetAtPath(tmpPath);
+            }
+        }
+    }
 }

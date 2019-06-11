@@ -24,7 +24,7 @@ namespace Coolape
             test2,
         }
 
-        public int _SuccessCodeValue = 0;
+        public int _SuccessCodeValue = 1;
 
         // 成功的返回值
         public static int SuccessCode
@@ -73,10 +73,8 @@ namespace Coolape
             }
         }
 
-        public int gatePort;
         //网关
-        public int httpPort;
-        public string httpFunc = "";
+        public int gatePort;
 
         [XLua.CSharpCallLua]
         public delegate void __DispatchGame(object data);

@@ -795,33 +795,25 @@ public static class ECLProjectSetting
 		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/Scripts/xLua");
 		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/Scripts/Main");
 		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/Scripts/public");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/bullet");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/effect");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/sound");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/Materials");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/roles");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/Textures");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/things");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/uiAtlas");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/uiAtlas/public");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/atlas");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/font");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/cfg");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/localization");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/cfg");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/net");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/public");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/toolkit");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/cell");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui/panel");
-		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui/other");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/bullet");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/effect");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/sound");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/Materials");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/roles");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/Textures");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/things");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/uiAtlas");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/uiAtlas/public");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/atlas");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/font");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/cfg");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/localization");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui/panel");
+		//Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui/other");
 		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Publish");
 		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/upgradeRes4Ver");
 		Directory.CreateDirectory (Application.dataPath + "/" + data.name + "/xRes");
@@ -842,28 +834,49 @@ public static class ECLProjectSetting
 		to = Application.dataPath + "/" + data.name + "/DBCfg/dataCpTool.bat";
 		File.Copy (from, to);
 
-		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Textures/_empty.png";
-		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/uiAtlas/public/_empty.png";
-		File.Copy (from, to);
+        from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/zip/other.zip";
+        to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/";
+        ZipEx.UnZip(from, to, 4096);
+        from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/zip/priority.zip";
+        to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/";
+        ZipEx.UnZip(from, to, 4096);
+        AssetDatabase.Refresh();
 
-		AssetDatabase.Refresh ();
-		//Prefab
-		GameObject atlasAllRealGo = new GameObject ("atlasAllReal");
-		UIAtlas atlasAllReal = atlasAllRealGo.AddComponent<UIAtlas> ();
-		atlasAllReal.isBorrowSpriteMode = true;
-		List<Texture> textureList = new List<Texture> ();
-		Texture tex = ECLEditorUtl.getObjectByPath (data.name + "/upgradeRes4Dev/other/uiAtlas/public/_empty.png") as Texture;
-		textureList.Add (tex);
-		UIAtlasMaker.UpdateAtlas_BorrowMode (atlasAllReal, textureList);
-		textureList.Clear ();
-		textureList = null;
-		atlasAllRealGo = PrefabUtility.CreatePrefab ("Assets/" + data.name + "/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab", atlasAllRealGo) as GameObject;
-		atlasAllReal = atlasAllRealGo.GetComponent<UIAtlas> ();
+        //UIAtlas atlasAllReal = ECLEditorUtl.getObjectByPath(data.name + "/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab") as UIAtlas;
+        UIAtlas atlasAllReal = PrefabUtility.LoadPrefabContents("Assets/" + data.name + "/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab").GetComponent<UIAtlas>();
+        for (int i=0; i < atlasAllReal.spriteList.Count;i++)
+        {
+            atlasAllReal.spriteList[i].path = atlasAllReal.spriteList[i].path.Replace("MonsterWorld/", data.name+"/");
+            Debug.LogError(atlasAllReal.spriteList[i].path);
+        }
+        PrefabUtility.SaveAsPrefabAsset(atlasAllReal.gameObject, "Assets/" + data.name + "/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab");
+        PrefabUtility.UnloadPrefabContents(atlasAllReal.gameObject);
 
-		GameObject atlasGo = new GameObject ();
+        setPrefabLuaPath(Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/ui");
+       /*
+       from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Textures/_empty.png";
+       to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/other/uiAtlas/public/_empty.png";
+       File.Copy (from, to);
+
+       AssetDatabase.Refresh ();
+       //Prefab
+       GameObject atlasAllRealGo = new GameObject ("atlasAllReal");
+       UIAtlas c = atlasAllRealGo.AddComponent<UIAtlas> ();
+       atlasAllReal.isBorrowSpriteMode = true;
+       List<Texture> textureList = new List<Texture> ();
+       Texture tex = ECLEditorUtl.getObjectByPath (data.name + "/upgradeRes4Dev/other/uiAtlas/public/_empty.png") as Texture;
+       textureList.Add (tex);
+       UIAtlasMaker.UpdateAtlas_BorrowMode (atlasAllReal, textureList);
+       textureList.Clear ();
+       textureList = null;
+       atlasAllRealGo = PrefabUtility.CreatePrefab ("Assets/" + data.name + "/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab", atlasAllRealGo) as GameObject;
+       atlasAllReal = atlasAllRealGo.GetComponent<UIAtlas> ();
+       */
+
+       GameObject atlasGo = new GameObject ();
 		UIAtlas atlas = atlasGo.AddComponent<UIAtlas> ();
 		atlas.isBorrowSpriteMode = true;
-		atlas.replacement = atlasAllReal;
+        atlas.replacement = atlasAllReal;
 		atlasGo = PrefabUtility.CreatePrefab ("Assets/" + data.name + "/Resources/Atlas/EmptyAtlas.prefab", atlasGo);
 		atlas = atlasGo.GetComponent<UIAtlas> ();
 
@@ -873,74 +886,13 @@ public static class ECLProjectSetting
 		fontGo = PrefabUtility.CreatePrefab ("Assets/" + data.name + "/Resources/Font/EmptyFont.prefab", fontGo);
 		font = fontGo.GetComponent<UIFont> ();
 
-		//Copy Lua res
-		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/luaTemplates.zip";
-		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/";
+        /*
+        //Copy Lua res
+        from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/luaTemplates.zip";
+		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/";
 		ZipEx.UnZip (from, to, 4096);
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/TempMainLua.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/CLLMainLua.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/cfg/TempDBCfg.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/cfg/DBCfg.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/cfg/TempDBCfgTool.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/cfg/DBCfgTool.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/net/TempNetDispatch.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/net/NetDispatch.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/public/TempInclude.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/public/CLLInclude.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/public/TempPrefs.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/public/CLLPrefs.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/toolkit/TempLuaUtl.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/toolkit/LuaUtl.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/toolkit/TempUpdateUpgrader.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/toolkit/CLLUpdateUpgrader.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/toolkit/TempVerManager.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/toolkit/CLLVerManager.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/panel/TempPBackplate.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel/CLLPBackplate.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/panel/TempPConfirm.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel/CLLPConfirm.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/panel/TempPHotWheel.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel/CLLPHotWheel.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/panel/TempPSplash.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel/CLLPSplash.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/panel/TempPStart.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel/CLLPStart.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/panel/TempPWWWProgress.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/panel/CLLPWWWProgress.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-//
-//		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Lua/ui/cell/TempCellWWWProgress.lua";
-//		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/lua/ui/cell/CLLCellWWWProgress.lua";
-//		ECLCreateFile.PubCreatNewFile2 (from, to);
-
+        Directory.Move(to+ "luaTemplates", to + "lua");
+        */
 		//==================================================
 		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/hotUpgradeCfg/tempChannels.json";
 		to = Application.dataPath + "/StreamingAssets/channels.json";
@@ -949,6 +901,7 @@ public static class ECLProjectSetting
 		to = Application.dataPath + "/StreamingAssets/upgraderVer.json";
 		ECLCreateFile.PubCreatNewFile2 (from, to);
 
+        /*
 		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/Localization/TempChinese.txt";
 		to = Application.dataPath + "/" + data.name + "/upgradeRes4Dev/priority/Localization/Chinese.txt";
 		ECLCreateFile.PubCreatNewFile2 (from, to);
@@ -982,7 +935,7 @@ public static class ECLProjectSetting
 		panelLua.luaPath = data.name + "/upgradeRes/priority/lua/ui/panel/CLLPSplash.lua";
 		PrefabUtility.CreatePrefab ("Assets/" + data.name + "/upgradeRes4Dev/priority/ui/panel/PanelSplash.prefab", panelGo);
 		//==================================================
-		panelGo = ECLEditorUtl.getObjectByPath (ECLProjectManager.FrameName + "/Templates/prefab/ui/TempLogin.prefab") as GameObject;
+		panelGo = ECLEditorUtl.getObjectByPath (ECLProjectManager.FrameName + "/Templates/prefab/ui/TempPanelLogin.prefab") as GameObject;
 		panelGo = GameObject.Instantiate (panelGo) as GameObject;
 		panelLua = panelGo.GetComponent<CLPanelLua> ();
 		panelLua.luaPath = data.name + "/upgradeRes/priority/lua/ui/panel/CLLPLogin.lua";
@@ -1005,9 +958,10 @@ public static class ECLProjectSetting
 		panelGo = GameObject.Instantiate (panelGo) as GameObject;
 		PrefabUtility.CreatePrefab ("Assets/" + data.name + "/upgradeRes4Dev/priority/ui/other/AlertRoot.prefab", panelGo);
 		//==================================================
+		*/
 
-		//C# Code
-		from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/cs/TempXluaGenCodeConfig.cs.bak";
+        //C# Code
+        from = Application.dataPath + "/" + ECLProjectManager.FrameName + "/Templates/cs/TempXluaGenCodeConfig.cs.bak";
 		to = Application.dataPath + "/" + data.name + "/Scripts/xLua/XluaGenCodeConfig.cs";
 		ECLCreateFile.PubCreatNewFile2 (from, to);
 
@@ -1027,7 +981,44 @@ public static class ECLProjectSetting
 		return true;
 	}
 
-	public static GameObject createPanelPrefab (string name, string luaPath,
+    public static void setPrefabLuaPath(string path)
+    {
+        string[] files = Directory.GetFiles(path);
+        for (int i = 0; i < files.Length; i++)
+        {
+            string prefabPath = "Assets/" + files[i].Replace(Application.dataPath + "/", "");
+            string extension = Path.GetExtension(prefabPath).ToLower();
+            if (extension != ".prefab") continue;
+            GameObject go = PrefabUtility.LoadPrefabContents(prefabPath);
+            if (go != null)
+            {
+                CLBaseLua panelLua = go.GetComponent<CLBaseLua>();
+                if(panelLua != null)
+                {
+                    panelLua.luaPath = panelLua.luaPath.Replace("MonsterWorld/", data.name + "/");
+                }
+                CLBaseLua[] cells = go.GetComponentsInChildren<CLBaseLua>();
+                if(cells != null)
+                {
+                    for(int j =0; j < cells.Length; j++)
+                    {
+                        cells[j].luaPath = cells[j].luaPath.Replace("MonsterWorld/", data.name + "/");
+                    }
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
+                PrefabUtility.UnloadPrefabContents(go);
+            }
+        }
+
+        string[] dirs = Directory.GetDirectories(path);
+        for(int i=0; i < dirs.Length; i++)
+        {
+            setPrefabLuaPath(dirs[i]);
+        }
+    }
+
+    public static GameObject createPanelPrefab (string name, string luaPath,
 	                                            bool isNeedBackplate, bool destroyWhenHide, 
 	                                            bool isNeedResetAtlase, bool isNeedMask4Init)
 	{
@@ -1078,7 +1069,11 @@ public static class ECLProjectSetting
         go.AddComponent<WWWEx>();
 
         go = new GameObject ("Net");
-		go.AddComponent<Net> ();
+        CLBaseLua netLua = go.AddComponent<CLBaseLua>();
+        netLua.luaPath = data.name + "/upgradeRes/priority/lua/net/CLLNet.lua";
+        Net net = go.AddComponent<Net> ();
+        net.lua = netLua;
+        net.serializeluaPath = data.name + "/upgradeRes/priority/lua/net/CLLNetSerialize.lua";
 
 		go = new GameObject ("Main");
 		//		type = Types.GetType ("MyMain", "Assembly-CSharp");

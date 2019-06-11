@@ -21,8 +21,11 @@ namespace Coolape
 	public class CLPanelLua : CLPanelBase
 	{
 		bool isLoadedLua = false;
+        public string frameName;
+        [HideInInspector]
+        public CLCellLua frameObj;
 
-		public void reLoadLua ()
+        public void reLoadLua ()
 		{
 			isLoadedLua = false;
 		}
@@ -39,6 +42,7 @@ namespace Coolape
 		LuaFunction lfOnDestroy;
 		LuaFunction lfPrepare;
         LuaFunction lfOnApplicationPause;
+        LuaFunction lfonShowFrame;
 
         public override void setLua ()
 		{
@@ -55,7 +59,8 @@ namespace Coolape
             lfOnApplicationPause = getLuaFunction("OnApplicationPause");
             lfOnDestroy = getLuaFunction ("OnDestroy");
 			lfPrepare = getLuaFunction ("prepare");
-		}
+            lfonShowFrame = getLuaFunction("onShowFrame");
+        }
 
         public void OnApplicationPause(bool isPause)
         {
@@ -187,7 +192,9 @@ namespace Coolape
 				} else {
 					_show ();
 				}
-			} catch (System.Exception e) {
+
+                showFrame();
+            } catch (System.Exception e) {
 				Debug.LogError (e);
 			}
 		}
@@ -253,7 +260,13 @@ namespace Coolape
 			}
 		}
 
-		public void uiEventDelegate (GameObject go)
+        public override void finishMoveOut()
+        {
+            releaseFrame();
+            base.finishMoveOut();
+        }
+
+        public void uiEventDelegate (GameObject go)
 		{
 			try {
 				if (lfUIEventDelegate != null) {
@@ -348,5 +361,55 @@ namespace Coolape
 				Debug.LogError (e);
 			}
 		}
-	}
+
+
+        public void showFrame()
+        {
+            if (string.IsNullOrEmpty(frameName)) return;
+            CLUIOtherObjPool.borrowObjAsyn(frameName, (Callback)onBorrowFrame);
+        }
+
+        void onBorrowFrame(params object[] objs)
+        {
+            GameObject frame = objs[1] as GameObject;
+            if (frame != null)
+            {
+                if (frameObj != null)
+                {
+                    CLUIOtherObjPool.returnObj(frame);
+                    NGUITools.SetActive(frame, false);
+                    return;
+                }
+                frameObj = frame.GetComponent<CLCellLua>();
+                if (frameObj == null)
+                {
+                    frameObj = frame.AddComponent<CLCellLua>();
+                }
+                frameObj.transform.parent = transform;
+                frameObj.transform.localScale = Vector3.one;
+                frameObj.transform.localPosition = Vector3.zero;
+                frameObj.transform.localEulerAngles = Vector3.zero;
+                NGUITools.SetActive(frameObj.gameObject, true);
+                if (frameObj.luaTable == null)
+                {
+                    frameObj.setLua();
+                }
+
+                if (lfonShowFrame != null)
+                {
+                    lfonShowFrame.Call(this);
+                }
+            }
+        }
+
+        public void releaseFrame()
+        {
+            if (frameObj != null)
+            {
+                CLUIOtherObjPool.returnObj(frameObj.gameObject);
+                NGUITools.SetActive(frameObj.gameObject, false);
+                frameObj = null;
+            }
+        }
+    }
 }
