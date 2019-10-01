@@ -60,8 +60,9 @@ public class ECLCreatAssetBundle4Update
 			return;
 		}
 		cleanShardAssets (obj);
-		//==================================
-		file = file.Replace ("/upgradeRes4Dev", "/upgradeRes4Publish");
+        //==================================
+        file = file.Replace("\\", "/");
+        file = file.Replace ("/upgradeRes4Dev", "/upgradeRes4Publish");
 		
 		BuildAssetBundleOptions opt = BuildAssetBundleOptions.CollectDependencies;
 		if (isCompress) {
@@ -136,13 +137,14 @@ public class ECLCreatAssetBundle4Update
 			sharedAsset.cleanRefAssets ();
 			isRefresh = true;
 		}
-		if (isRefresh) {
+		if (isRefresh && obj is GameObject) {
 		//			AssetDatabase.Refresh ();
-			string path = AssetDatabase.GetAssetPath (obj);
-			EditorUtility.SetDirty (obj);
-			AssetDatabase.WriteImportSettingsIfDirty (path);
-			AssetDatabase.ImportAsset (path);
-		}
+			//string path = AssetDatabase.GetAssetPath (obj);
+			//EditorUtility.SetDirty (obj);
+			//AssetDatabase.WriteImportSettingsIfDirty (path);
+			//AssetDatabase.ImportAsset (path);
+            PrefabUtility.SavePrefabAsset(obj as GameObject);
+        }
 	}
 
 	public static void resetShardAssets (UnityEngine.Object obj)
@@ -180,12 +182,13 @@ public class ECLCreatAssetBundle4Update
 			sharedAsset.resetAssets ();
 			isRefresh = true;
 		}
-		if (isRefresh) {
-			string path = AssetDatabase.GetAssetPath (obj);
-			EditorUtility.SetDirty (obj);
-			AssetDatabase.WriteImportSettingsIfDirty (path);
-			AssetDatabase.ImportAsset (path);
-		}
+		if (isRefresh && obj is GameObject) {
+			//string path = AssetDatabase.GetAssetPath (obj);
+			//EditorUtility.SetDirty (obj);
+			//AssetDatabase.WriteImportSettingsIfDirty (path);
+			//AssetDatabase.ImportAsset (path);
+            PrefabUtility.SavePrefabAsset(obj as GameObject);
+        }
 	}
 
 	public static void createUnity3dFiles (string path, CreateDelegate procDelegate, bool isTraversal)
@@ -195,11 +198,12 @@ public class ECLCreatAssetBundle4Update
 			string[] fileEntries = Directory.GetFiles (path);//因为Application.dataPath得到的是型如 "工程名称/Assets"
 			string[] div_line = new string[] { "Assets/" };
 			foreach (string fileName in fileEntries) {
-				Debug.Log ("fileName=" + fileName);
+                Debug.Log ("fileName=" + fileName);
 				string[] sTemp = fileName.Split (div_line, StringSplitOptions.RemoveEmptyEntries);
 				string filePath = sTemp [1];
-				//Debug.Log(filePath);S
-				string localPath = "Assets/" + filePath;
+                filePath = filePath.Replace("\\", "/");
+                //Debug.Log(filePath);S
+                string localPath = "Assets/" + filePath;
 
 				UnityEngine.Object t = AssetDatabase.LoadMainAssetAtPath (localPath);
 				if (t != null) {
@@ -214,7 +218,7 @@ public class ECLCreatAssetBundle4Update
 			if (isTraversal) {
 				string[] dirEntries = Directory.GetDirectories (path);
 				foreach (string dir in dirEntries) {
-					createUnity3dFiles (dir, procDelegate, isTraversal);
+					createUnity3dFiles (dir.Replace("\\", "/"), procDelegate, isTraversal);
 				}
 			}
 		}

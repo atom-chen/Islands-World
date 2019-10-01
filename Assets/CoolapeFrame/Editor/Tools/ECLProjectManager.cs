@@ -207,10 +207,19 @@ public class ECLProjectManager : EditorWindow
 				tabTexture = state2 ? tabHide : tabShow;
 				using (new FoldableBlock (ref state2, "Refresh AssetBundles", tabTexture)) {
 					if (state2) {
-						using (new HighlightBox ()) {
-							GUI.color = Color.green;
-							if (GUILayout.Button ("One Key Refresh All AssetBundles", GUILayout.Width (300), GUILayout.Height (50))) {
-								if (EditorUtility.DisplayDialog ("Alert", "Really want to refresh all assetbundles!", "Okey", "cancel")) {
+						using (new HighlightBox ())
+                        {
+                            GUI.color = Color.green;
+                            if (GUILayout.Button("One Key Refresh All AssetBundles", GUILayout.Width(300), GUILayout.Height(50)))
+                            {
+                                if (EditorUtility.DisplayDialog("Alert", "Really want to refresh all assetbundles!", "Okey", "cancel"))
+                                {
+                                    refreshAllAssetbundles(true);
+                                }
+                            }
+                            GUI.color = Color.yellow;
+							if (GUILayout.Button ("One Key Refresh All AssetBundles\n(Collect Assets)", GUILayout.Width (300), GUILayout.Height (50))) {
+								if (EditorUtility.DisplayDialog ("Alert", "Really want to refresh all assetbundles and collect Assets!", "Okey", "cancel")) {
 									EditorApplication.delayCall += onRefreshAllAssetbundles;
 								}
 							}
@@ -740,6 +749,7 @@ public class ECLProjectManager : EditorWindow
 			//默认需要重新设置
 			CLUIUtl.resetAtlasAndFont (go.transform, true);
 		}
+        PrefabUtility.SavePrefabAsset(go);
 		string dir = Application.dataPath + "/" + ECLEditorUtl.getPathByObject (go);
 		dir = Path.GetDirectoryName (dir);
 		ECLCreatAssetBundle4Update.createAssets4Upgrade (dir, go, true);
@@ -753,8 +763,9 @@ public class ECLProjectManager : EditorWindow
 		} else {
 			//默认需要重新设置
 			CLUIUtl.resetAtlasAndFont (go.transform, false);
-		}
-	}
+        }
+        PrefabUtility.SavePrefabAsset(go);
+    }
 
 	//判断是否有修改过文件
 	public static bool isModified (string file)
@@ -852,11 +863,12 @@ public class ECLProjectManager : EditorWindow
 					sharedAsset = ((GameObject)obj).AddComponent<CLSharedAssets> ();
 
 					ret = CLSharedAssetsInspector.getAssets (sharedAsset, sharedAsset.transform) || ret ? true : false;
-					if (sharedAsset.isEmpty ()) {
-						DestroyImmediate (sharedAsset, true);
-					}
+					//if (sharedAsset.isEmpty ()) {
+					//	DestroyImmediate (sharedAsset, true);
+					//}
 					EditorUtility.SetDirty (obj);
-				}
+                    PrefabUtility.SavePrefabAsset(obj as GameObject);
+                }
 //				if (sharedAsset != null) {
 //					ret = CLSharedAssetsInspector.getAssets (sharedAsset, sharedAsset.transform) || ret ? true : false;
 //					if (sharedAsset.isEmpty ()) {
@@ -920,17 +932,24 @@ public class ECLProjectManager : EditorWindow
 	/// </summary>
 	/// <returns>The all assetbundles.</returns>
 
-	public string refreshAllAssetbundles ()
+	public string refreshAllAssetbundles (bool isSkillCoolectAssets = false)
 	{
-		AssetDatabase.Refresh (ImportAssetOptions.ForceUpdate);
+        //AssetDatabase.Refresh (ImportAssetOptions.ForceUpdate);
+        AssetDatabase.SaveAssets();
 
-		if (collectAssets ()) {
-			if (EditorUtility.DisplayDialog ("Alert", "There are some new assets have moved to [upgradeRes4Dev],  do you want refresh all assets now?", "Do it now", "Cancel")) {
-				refreshAllAssetbundles ();
-			}
-			return "";
-		}
-		AssetDatabase.Refresh ();
+        if (!isSkillCoolectAssets)
+        {
+            if (collectAssets())
+            {
+                if (EditorUtility.DisplayDialog("Alert", "There are some new assets have moved to [upgradeRes4Dev],  do you want refresh all assets now?", "Do it now", "Cancel"))
+                {
+                    refreshAllAssetbundles();
+
+                }
+                return "";
+            }
+        }
+		//AssetDatabase.Refresh ();
 
 		// get current ver
 		Hashtable tmpOtherVer = ECLCreateVerCfg.create2Map ("Assets/" + data.name + "/upgradeRes4Dev/other");

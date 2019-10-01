@@ -212,7 +212,7 @@ namespace Coolape
 
         public int GetRow(int index)
         {
-            int row = index / m_numberOfRows;
+            int row = index / m_numberOfColumns; //m_numberOfRows;
             return row;
         }
 
@@ -221,6 +221,16 @@ namespace Coolape
             int col = index % m_numberOfColumns;
             return col;
         }
+        public int GetX(int index)
+        {
+            return GetColumn(index);
+        }
+
+        public int GetY(int index)
+        {
+            return GetRow(index);
+        }
+
 
         public bool IsInBounds(int col, int row)
         {
@@ -397,7 +407,7 @@ namespace Coolape
             }
 
             int half = size / 2;
-            int numRows = m_numberOfRows;
+            int numRows = m_numberOfColumns;// m_numberOfRows;
             if (size % 2 == 0)
             {
                 for (int row = 0; row <= half; row++)

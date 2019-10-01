@@ -129,7 +129,9 @@ public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 
 	void saveToU3d()
 	{
-		doSaveAsset(panel.gameObject);
+        GameObject go = AssetDatabase.LoadAssetAtPath("Assets/" + CLPathCfg.self.basePath + "/upgradeRes4Dev/priority/ui/panel/" + panel.name + ".prefab", typeof(GameObject)) as GameObject;
+
+        doSaveAsset(go);
 		EditorUtility.DisplayDialog("success", "cuccess!", "Okey");
 	}
 
@@ -141,6 +143,7 @@ public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 		Debug.Log(panel.name);
 		if (panel.isNeedResetAtlase) {
 			CLUIUtl.resetAtlasAndFont(panel.transform, true);
+            PrefabUtility.SavePrefabAsset(go);
 		}
 		string dir = Application.dataPath + "/" + ECLEditorUtl.getPathByObject(go);
 		dir = Path.GetDirectoryName(dir);
@@ -150,7 +153,8 @@ public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 		panel = go.GetComponent<CLPanelBase>();
 		if (panel != null && panel.isNeedResetAtlase) {
 			CLUIUtl.resetAtlasAndFont(panel.transform, false);
-		}
+            PrefabUtility.SavePrefabAsset(go);
+        }
 	}
 
 

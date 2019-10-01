@@ -364,13 +364,54 @@ public class CLSharedAssetsInspector : Editor
 		return ret1 || ret2 || ret3;
 	}
 
-	public static void saveMaterialTexCfg (string matName, ArrayList propNames, ArrayList texNames, ArrayList texPaths)
+    static string arrayList2Str(ArrayList list)
+    {
+        if (list == null) return "";
+        string str = "";
+        for (int i = 0; i < list.Count; i++)
+        {
+            str = PStr.b().a(str).a(list[i].ToString()).a("_").e();
+        }
+        return str;
+    }
+
+    public static bool needSave(string matName, ArrayList propNames, ArrayList texNames, ArrayList texPaths)
+    {
+        if (propNames == null || propNames.Count <= 0)
+        {
+            Debug.Log("There is no textures");
+            return false;
+        }
+        //Debug.Log("matName===" + matName);
+        Hashtable map = MapEx.getMap(CLMaterialPool.materialTexRefCfg, matName);
+        if (map == null)
+        {
+            return true;
+        }
+        ArrayList _propNames = MapEx.getList(map, "pp");
+        ArrayList _texNames = MapEx.getList(map, "tn");
+        ArrayList _texPaths = MapEx.getList(map, "tp");
+        if (!arrayList2Str(_propNames).Equals(arrayList2Str(propNames))
+            || !arrayList2Str(_texNames).Equals(arrayList2Str(texNames))
+            || !arrayList2Str(_texPaths).Equals(arrayList2Str(texPaths)))
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    public static void saveMaterialTexCfg (string matName, ArrayList propNames, ArrayList texNames, ArrayList texPaths)
 	{
 		if (propNames == null || propNames.Count <= 0) {
 			Debug.Log ("There is no textures");
 			return;
 		}
-		Hashtable map = MapEx.getMap (CLMaterialPool.materialTexRefCfg, matName);
+        if (!needSave(matName, propNames, texNames, texPaths))
+        {
+            return;
+        }
+        Hashtable map = MapEx.getMap (CLMaterialPool.materialTexRefCfg, matName);
 		if (map == null) {
 			map = new Hashtable ();
 		}
@@ -382,6 +423,10 @@ public class CLSharedAssetsInspector : Editor
 		MemoryStream ms = new MemoryStream ();
 		B2OutputStream.writeObject (ms, CLMaterialPool.materialTexRefCfg);
 		Directory.CreateDirectory (Path.GetDirectoryName (CLMaterialPool.materialTexRefCfgPath));
-		File.WriteAllBytes (CLMaterialPool.materialTexRefCfgPath, ms.ToArray ());
-	}
+        //File.WriteAllBytes (CLMaterialPool.materialTexRefCfgPath, ms.ToArray ());
+        byte[] bytes = ms.ToArray();
+        FileStream fs = new FileStream(CLMaterialPool.materialTexRefCfgPath, FileMode.OpenOrCreate);
+        fs.Write(bytes, 0, bytes.Length);
+        fs.Close();
+    }
 }

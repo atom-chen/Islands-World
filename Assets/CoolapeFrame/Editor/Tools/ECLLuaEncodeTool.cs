@@ -88,6 +88,7 @@ public class ECLLuaEncodeTool
 		string fname = Path.GetFileNameWithoutExtension (path);
 		string fext = Path.GetExtension (path);
 		string outPath = basePath + dir + "/" + fname + fext;
+        outPath = outPath.Replace("\\", "/");
 		outPath = outPath.Replace ("/upgradeRes4Dev", "/upgradeRes4Publish");
 		Directory.CreateDirectory (Path.GetDirectoryName (outPath));
 		#if UNITY_IOS
@@ -118,6 +119,7 @@ public class ECLLuaEncodeTool
 		string fname = Path.GetFileNameWithoutExtension (path);
 		string fext = Path.GetExtension (path);
 		string outPath = basePath + dir + "/" + fname + fext;
+        outPath = outPath.Replace("\\", "/");
 		outPath = outPath.Replace ("/upgradeRes4Dev", "/upgradeRes4Publish");
 		Directory.CreateDirectory (Path.GetDirectoryName (outPath));
 		byte[] bytes = XXTEA.Encrypt (System.Text.Encoding.UTF8.GetBytes (File.ReadAllText (basePath + path)), XXTEA.defaultKey);

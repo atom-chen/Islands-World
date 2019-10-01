@@ -35,6 +35,7 @@ public static class ECLEditorUtl
 			return "";
 		}
 		int startPos = 0;
+
 		startPos = tmpPath.IndexOf ("Assets/");
 		startPos += 7;
 		tmpPath = tmpPath.Substring (startPos, tmpPath.Length - startPos);
@@ -106,7 +107,8 @@ public static class ECLEditorUtl
 	static public bool moveAsset4Upgrade (Object obj)
 	{
 		string objPath = getPathByObject (obj);
-		if (objPath.Contains ("/upgradeRes4Dev/")) {
+        objPath = objPath.Replace("\\", "/");
+        if (objPath.Contains ("/upgradeRes4Dev/")) {
 			return false;
 		}
 
@@ -163,6 +165,7 @@ public static class ECLEditorUtl
 //		Debug.Log ("objPath===" + objPath);
 		string objName = Path.GetFileNameWithoutExtension (objPath);
 		string basePath = Path.GetDirectoryName (objPath) + "/";
+        basePath = basePath.Replace("\\", "/");
 //		Debug.Log (objName);
 //		Debug.Log (basePath);
 		string replacePath = CLPathCfg.self.basePath + "/upgradeRes4Dev/other/";
@@ -191,7 +194,8 @@ public static class ECLEditorUtl
 		} else {
 			objName = Path.GetFileNameWithoutExtension (objPath);
 		}
-		objName = objName.Replace ("/", ".");
+        objName = objName.Replace("\\", "/");
+        objName = objName.Replace ("/", ".");
 //		Debug.Log ("objName===" + objName);
 		return objName;
 	}
