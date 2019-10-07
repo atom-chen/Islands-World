@@ -21,9 +21,11 @@ end
 function IDLBuildingDockyard:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuildingDockyard).init(self, selfObj, id, star, lev, _isOffense, other)
-    self:buildShip()
     self:showShipsInPort()
-    self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), 1)
+    if MyCfg.mode ~= GameMode.battle then
+        self:buildShip()
+        self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), 1)
+    end
 end
 
 ---@public 造船

@@ -1,5 +1,6 @@
 ﻿--- - 管理数据配置
-DBCfgTool = {}
+---@class DBCfgTool 管理数据配置
+local DBCfgTool = {}
 local mdb = {} -- 原始数据
 local mMaps4ID = {}
 

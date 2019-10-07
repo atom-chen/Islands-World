@@ -1,7 +1,7 @@
 ﻿---@public 管理数据配置
 ---@class DBCfg
 DBCfg = {}
-require("cfg.DBCfgTool")
+local DBCfgTool = require("cfg.DBCfgTool")
 local curve = require("toolkit.curve")
 local math = math
 local db = {} -- 经过处理后的数据
@@ -17,17 +17,20 @@ local cfgWorldBasePath = joinStr(priorityPath, "worldMap/")
 -- 大地图
 local cfgMapPath = joinStr(cfgWorldBasePath)
 -- 全局变量定义
-local cfgCfgPath = joinStr(cfgBasePath, "DBCFCfgData.cfg")
-local cfgBuildingPath = joinStr(cfgBasePath, "DBCFBuildingData.cfg")
-local cfgHeadquartersLevsDataPath = joinStr(cfgBasePath, "DBCFHeadquartersLevsData.cfg")
-local cfgRolePath = joinStr(cfgBasePath, "DBCFRoleData.cfg")
-local cfgBulletPath = joinStr(cfgBasePath, "DBCFBulletData.cfg")
+local CfgPath = {
+    Cfg = joinStr(cfgBasePath, "DBCFCfgData.cfg"),
+    Building = joinStr(cfgBasePath, "DBCFBuildingData.cfg"),
+    HeadquartersLevsData = joinStr(cfgBasePath, "DBCFHeadquartersLevsData.cfg"),
+    Role = joinStr(cfgBasePath, "DBCFRoleData.cfg"),
+    Bullet = joinStr(cfgBasePath, "DBCFBulletData.cfg")
+}
+DBCfg.CfgPath = CfgPath
 
 ---@public 取得数据列表
 function DBCfg.getData(path)
     local dbMap = db[path]
     if (dbMap == nil) then
-        if path == cfgBuildingPath or path == cfgRolePath then
+        if path == CfgPath.Building or path == CfgPath.Role then
             local gidList
             gidList, dbMap = DBCfgTool.pubGetList4GID(path)
             dbMap.list = gidList
@@ -45,7 +48,7 @@ end
 
 ---@public 取得常量配置
 function DBCfg.getConstCfg(...)
-    local datas = DBCfg.getData(cfgCfgPath)
+    local datas = DBCfg.getData(CfgPath.Cfg)
     if (datas == nil) then
         return nil
     end
@@ -113,18 +116,24 @@ function DBCfg.getGrowingVal(base, max, curveID, persent, precision)
     end
 end
 
----@public 取得建筑配置
-function DBCfg.getBuildingByID(id)
-    local datas = DBCfg.getData(cfgBuildingPath)
+---@public 通用取得
+function DBCfg.getDataById(path, id)
+    local datas = DBCfg.getData(path)
     if (datas == nil) then
+        printe("get cfg data is nil.path=" .. path)
         return nil
     end
     return datas[id]
 end
 
+---@public 取得建筑配置
+function DBCfg.getBuildingByID(id)
+    return DBCfg.getDataById(CfgPath.Building, id)
+end
+
 ---@public 取得建筑列表
 function DBCfg.getBuildingsByGID(gid)
-    local datas = DBCfg.getData(cfgBuildingPath)
+    local datas = DBCfg.getData(CfgPath.Building)
     if (datas == nil) then
         return nil
     end
@@ -133,16 +142,12 @@ end
 
 ---@public 取得数据主基地各等级开放配置
 function DBCfg.getHeadquartersLevsDataByLev(lev)
-    local datas = DBCfg.getData(cfgHeadquartersLevsDataPath)
-    if (datas == nil) then
-        return nil
-    end
-    return datas[lev]
+    return DBCfg.getDataById(CfgPath.HeadquartersLevsData, lev)
 end
 
 ---@public 取得兵种列表
 function DBCfg.getRolesByGID(gid)
-    local datas = DBCfg.getData(cfgRolePath)
+    local datas = DBCfg.getData(CfgPath.Role)
     if (datas == nil) then
         return nil
     end
@@ -151,20 +156,12 @@ end
 
 ---@public 取得兵种
 function DBCfg.getRoleByID(id)
-    local datas = DBCfg.getData(cfgRolePath)
-    if (datas == nil) then
-        return nil
-    end
-    return datas[id]
+    return DBCfg.getDataById(CfgPath.Role, id)
 end
 
 ---@public 取得子弹
 function DBCfg.getBulletByID(id)
-    local datas = DBCfg.getData(cfgBulletPath)
-    if (datas == nil) then
-        return nil
-    end
-    return datas[id]
+    return DBCfg.getDataById(CfgPath.Bullet, id)
 end
 --------------------------------------------------
 return DBCfg

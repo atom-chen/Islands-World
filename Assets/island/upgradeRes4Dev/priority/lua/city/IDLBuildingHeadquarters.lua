@@ -25,5 +25,21 @@ function IDLBuildingHeadquarters:onScaleScreen(scaleVal)
         self.shadow.localScale = (Vector3.one * scaleVal) * (bio2number(self.attr.ShadowSize) / 10)
     end
 end
+
+
+---@public 显示隐藏（可能为连带做一些其它的处理）
+function IDLBuildingHeadquarters:SetActive(active)
+    -- self:getBase(IDLBuilding).SetActive(self, active)
+    if active then
+        self:upgrading()
+        -- self:loadFloor()
+    else
+        self:fireWorker(true)
+        self:unLoadProgressHud()
+        -- if self.floor then
+        --     SetActive(self.floor, active)
+        -- end
+    end
+end
 --------------------------------------------
 return IDLBuildingHeadquarters

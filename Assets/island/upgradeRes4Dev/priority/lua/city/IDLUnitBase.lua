@@ -144,7 +144,7 @@ function IDLUnitBase:_OnClick(...)
         -- 通知战场，玩家点击了我
         IDLBattle.onClickSomeObj(self.csSelf, self.transform.position)
     else
-        SoundEx.playSound(self.attr.SelectSound, 1, 1)
+        SoundEx.playSound(self.attr.SelectedEffect, 1, 1)
         self:jump()
         IDMainCity.onClickBuilding(self)
     end

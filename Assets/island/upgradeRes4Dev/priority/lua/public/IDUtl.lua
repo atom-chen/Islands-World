@@ -290,13 +290,13 @@ end
 ---@public 取得资源音效
 function IDUtl.getResSoundEffect(type)
     if type == IDConst.ResType.food then
-        return ""
+        return "" --//TODO:音效效需要添加
     elseif type == IDConst.ResType.gold then
-        return ""
+        return "collect_coins_01"
     elseif type == IDConst.ResType.oil then
-        return ""
+        return "collect_oil_01"
     elseif type == IDConst.ResType.diam then
-        return ""
+        return "collect_diamonds_01"
     end
 end
 
@@ -336,6 +336,7 @@ function IDUtl.playFlyPics(initPos, from, to, icon, sound, count)
     end
 end
 
+---@public 隐藏弹出的菜单
 function IDUtl.hidePopupMenus()
     if IDUtl.popupMenu then
         SetActive(IDUtl.popupMenu.gameObject, false)
@@ -382,10 +383,12 @@ function IDUtl.showPopupMenus(target, targetPosition, buttonsList, label, params
 end
 
 ---@public 切换场景
-function IDUtl.chgScene(data, callback)
-    data = data or {}
-    data.__finishCallback__ = callback
-    getPanelAsy("PanelSceneManager", onLoadedPanel, data)
+function IDUtl.chgScene(mode, data, callback)
+    local params = {}
+    params.mode = mode
+    params.data = data
+    params.__finishCallback__ = callback
+    getPanelAsy("PanelSceneManager", onLoadedPanel, params)
 end
 
 function IDUtl.clean()

@@ -122,10 +122,11 @@ function CLLNet.dispatch(map)
     local msg = retInfor.msg
 
     if MyCfg.self.isEditMode then
-        print(joinStr("cmd=", cmd, "==succ==", succ, "==msg==", msg))
+        print(joinStr("cmd:[", cmd, "]succ:[", succ, "]msg:", msg))
     end
 
     if (succ ~= NetSuccess) then
+        printe(joinStr("cmd:[", cmd, "]succ:[", succ, "]msg:", msg))
         retInfor.msg = Localization.Get(joinStr("Error_", succ))
         CLAlert.add(retInfor.msg, Color.red, 1)
         hideHotWheel()

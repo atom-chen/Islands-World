@@ -5,6 +5,7 @@ require("city.IDLBuildingDefense")
 IDLBuildingTrap = class("IDLBuildingTrap", IDLBuildingDefense)
 
 function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
+    self.isTrap = true
     if self.bodyRotate == nil then
         -- 先把self.bodyRotate设值，在调用父类的方法时就不会有再设值了
         self.bodyRotate = selfObj.mbody:GetComponent("TweenRotation")

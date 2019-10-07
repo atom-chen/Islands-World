@@ -12,6 +12,9 @@ end
 
 ---@public 加载地表
 function IDLBuilding:loadFloor()
+    if self.attr.DontNeedFloor then
+        return
+    end
     if IDMainCity.isOnTheLand(self.gridIndex, self.size) then
         if self.floor == nil then
             CLThingsPool.borrowObjAsyn("buildingFloor",

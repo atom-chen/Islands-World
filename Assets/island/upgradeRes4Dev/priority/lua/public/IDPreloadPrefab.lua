@@ -31,6 +31,19 @@ function IDPreloadPrefab.preloadRoles(roles, callback, progressCB)
         local id = (v.id) or k
         IDPreloadPrefab.extractRole(id)
     end
+    IDPreloadPrefab.startPreload()
+end
+
+---@public 预加载建筑
+function IDPreloadPrefab.preloadBuildings(buildings, callback, progressCB)
+    IDPreloadPrefab.reset()
+    IDPreloadPrefab.onFinishCallback = callback
+    IDPreloadPrefab.onProgressCB = progressCB
+    for k, v in pairs(buildings) do
+        local id = (v.id) or k
+        IDPreloadPrefab.extractBuilding(id)
+    end
+    IDPreloadPrefab.startPreload()
 end
 
 ---@param queue CLLQueue
@@ -46,7 +59,22 @@ end
 function IDPreloadPrefab.extractRole(id)
     local cfg = DBCfg.getRoleByID(id)
     if cfg then
-        IDPreloadPrefab.enQueue(IDPreloadPrefab.roleQueue, IDUtl.getRolePrefabName(id))
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.roleQueue, cfg.PrefabName)
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, cfg.AttackSound)
+        IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
+        IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
+    else
+        printe("get cfg is nil.id=" .. id .. ",type=" .. type(id))
+        if IDPreloadPrefab.onFinishCallback then
+            IDPreloadPrefab.onFinishCallback()
+        end
+    end
+end
+
+---@public 提取了建筑相关的需要预加载的资源
+function IDPreloadPrefab.extractBuilding(id)
+    local cfg = DBCfg.getBuildingByID(id)
+    if cfg then
         IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, cfg.AttackSound)
         IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
         IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
@@ -74,7 +102,10 @@ function IDPreloadPrefab.startPreload()
     IDPreloadPrefab.loadRole()
 end
 
-function IDPreloadPrefab.loadRole()
+function IDPreloadPrefab.loadRole(obj)
+    if obj then
+        IDPreloadPrefab.onFinishOne(obj)
+    end
     if IDPreloadPrefab.roleQueue:size() > 0 then
         CLRolePool.setPrefab(IDPreloadPrefab.roleQueue:deQueue(), IDPreloadPrefab.loadRole)
     else
@@ -82,7 +113,10 @@ function IDPreloadPrefab.loadRole()
     end
 end
 
-function IDPreloadPrefab.loadEffect()
+function IDPreloadPrefab.loadEffect(obj)
+    if obj then
+        IDPreloadPrefab.onFinishOne(obj)
+    end
     if IDPreloadPrefab.effectQueue:size() > 0 then
         CLEffectPool.setPrefab(IDPreloadPrefab.effectQueue:deQueue(), IDPreloadPrefab.loadEffect)
     else
@@ -90,7 +124,10 @@ function IDPreloadPrefab.loadEffect()
     end
 end
 
-function IDPreloadPrefab.loadSound()
+function IDPreloadPrefab.loadSound(obj)
+    if obj then
+        IDPreloadPrefab.onFinishOne(obj)
+    end
     if IDPreloadPrefab.soundQueue:size() > 0 then
         CLSoundPool.setPrefab(IDPreloadPrefab.soundQueue:deQueue(), IDPreloadPrefab.loadSound)
     else
@@ -98,7 +135,10 @@ function IDPreloadPrefab.loadSound()
     end
 end
 
-function IDPreloadPrefab.loadThing()
+function IDPreloadPrefab.loadThing(obj)
+    if obj then
+        IDPreloadPrefab.onFinishOne(obj)
+    end
     if IDPreloadPrefab.thingQueue:size() > 0 then
         CLThingsPool.setPrefab(IDPreloadPrefab.thingQueue:deQueue(), IDPreloadPrefab.loadThing)
     else
@@ -106,7 +146,10 @@ function IDPreloadPrefab.loadThing()
     end
 end
 
-function IDPreloadPrefab.loadUIThing()
+function IDPreloadPrefab.loadUIThing(obj)
+    if obj then
+        IDPreloadPrefab.onFinishOne(obj)
+    end
     if IDPreloadPrefab.uiThingQueue:size() > 0 then
         CLUIOtherObjPool.setPrefab(IDPreloadPrefab.uiThingQueue:deQueue(), IDPreloadPrefab.loadUIThing)
     else
@@ -117,7 +160,7 @@ function IDPreloadPrefab.loadUIThing()
     end
 end
 
-function IDPreloadPrefab.onFinishOne()
+function IDPreloadPrefab.onFinishOne(obj)
     IDPreloadPrefab.currCount = IDPreloadPrefab.currCount + 1
     if (IDPreloadPrefab.onProgressCB ~= nil) then
         IDPreloadPrefab.onProgressCB(IDPreloadPrefab.totalAssets, IDPreloadPrefab.currCount)

@@ -526,9 +526,9 @@ function IDWorldMap.doAttack(cellIndex, retData)
         battleData.targetCity = city
         battleData.offShips = offShips
 
-        local data = {mode = GameMode.battle, data = battleData}
         IDUtl.chgScene(
-            data,
+            GameMode.battle,
+            battleData,
             function()
                 IDWorldMap.popupEvent.enterCity(cellIndex)
             end

@@ -214,7 +214,7 @@ public class ECLProjectManager : EditorWindow
                             {
                                 if (EditorUtility.DisplayDialog("Alert", "Really want to refresh all assetbundles!", "Okey", "cancel"))
                                 {
-                                    refreshAllAssetbundles(true);
+                                    EditorApplication.delayCall += refreshAllAssetbundlesSkipCollect;
                                 }
                             }
                             GUI.color = Color.yellow;
@@ -917,12 +917,17 @@ public class ECLProjectManager : EditorWindow
 		return retVal;
 	}
 
-	/// <summary>
-	/// Refreshs all assetbundles. 根据md5来刷新资源
-	/// </summary>
-	/// <returns>The all assetbundles.</returns>
+    public void refreshAllAssetbundlesSkipCollect()
+    {
+        refreshAllAssetbundles(true);
+    }
 
-	public void onRefreshAllAssetbundles ()
+    /// <summary>
+    /// Refreshs all assetbundles. 根据md5来刷新资源
+    /// </summary>
+    /// <returns>The all assetbundles.</returns>
+
+    public void onRefreshAllAssetbundles ()
 	{
 		refreshAllAssetbundles ();
 	}

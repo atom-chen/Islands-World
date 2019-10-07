@@ -69,6 +69,7 @@ local function _init()
     IDMainCity.grid.gridLineHight = IDMainCity.offset4Tile.y
     grid = IDMainCity.grid.grid
 
+    -- 波浪的处理
     local uvWave = csSelf.gameObject:AddComponent(typeof(CS.Wave))
     IDMainCity.gridTileSidePorc = IDLGridTileSide
     IDLGridTileSide.init(grid, uvWave)
@@ -332,11 +333,14 @@ function IDMainCity.onChgMode(oldMode, curMode)
         IDLGridTileSide.hide()
     end
 
+    ---@param v IDLBuilding
     for k, v in pairs(buildings) do
-        if v.id ~= IDConst.headquartersBuildingID then
-            -- 主基地跳过
+        -- if v.id == IDConst.headquartersBuildingID then
+            -- 主基地跳过,但是也需要处理
             v:SetActive(isShowBuilding)
-        end
+        -- else
+        --     v:SetActive(isShowBuilding)
+        -- end
     end
 end
 
@@ -981,10 +985,16 @@ function IDMainCity.setSelected(unit, selected)
         return
     end
 
+    ---@type IDLBuilding
     local cell = unit
     local isTile = cell.isTile
     if (selected) then
-        SFourWayArrow.show(unit.csSelf, cell.size) --设置箭头
+        if cell.isTree then
+            -- 树是不可以拖动的
+            SFourWayArrow.hide()
+        else
+            SFourWayArrow.show(unit.csSelf, cell.size) --设置箭头
+        end
         SFourWayArrow.setMatToon()
         if unit ~= IDMainCity.newBuildUnit then
             if isTile then
@@ -1452,6 +1462,7 @@ end
 ---@param b IDDBBuilding
 function IDMainCity.onFinishCollectRes(b)
     local idx = bio2number(b.idx)
+    ---@type IDLBuildingRes
     local building = buildings[idx]
     if building == nil then
         printe("get building is nil")

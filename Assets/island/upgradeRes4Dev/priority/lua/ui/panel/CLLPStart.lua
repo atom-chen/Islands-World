@@ -185,7 +185,7 @@ do
     end
 
     function CLLPStart.doEnterGame()
-        IDUtl.chgScene({mode = GameMode.map})
+        IDUtl.chgScene(GameMode.map)
         local p2 = CLPanelManager.getPanel("PanelSplash")
         if (p2 ~= nil) then
             CLPanelManager.hidePanel(p2)

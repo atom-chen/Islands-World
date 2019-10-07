@@ -99,7 +99,7 @@ function IDLBuildingRes:playCollectResEffect()
         pos.z = 0
         IDUtl.playFlyPics(pos, nil, to.transform,
                 IDUtl.getResIcon(self.resType),
-                IDUtl.getResSoundEffect(self.resType), 12)
+                self.attr.CollectEffect, 12)
     end
 end
 

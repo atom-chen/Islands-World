@@ -55,7 +55,7 @@ function IDLGridTileSide.init(grid, waveUvAn)
     cache.grid = grid
     cache.waveUvAn = waveUvAn
     cache.waveUvAn.isStop = true
-    cache.waveUvAn.speed = -0.5
+    cache.waveUvAn.speed = -1
     cache.waveUvAn.singleX = 1
     cache.waveUvAn.singleY = 1
 end

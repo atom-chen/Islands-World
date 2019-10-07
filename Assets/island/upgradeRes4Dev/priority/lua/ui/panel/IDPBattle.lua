@@ -63,6 +63,10 @@ end
 function IDPBattle.uiEventDelegate(go)
     local goName = go.name
     if goName == "ButtonQuit" then
+        IDLBattle.clean()
+        --//TODO:强制退出战斗时，通知服务器
+        -- net:send(NetProtoIsland.send.stopAttack)
+        IDUtl.chgScene(GameMode.map)
     end
 end
 

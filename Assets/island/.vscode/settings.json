@@ -9,6 +9,6 @@
         "**/upgradeRes4Publish/**": true
     },
     "search.exclude": {
-        "**/upgradeRes4Publish": true
+        "**/upgradeRes4Publish/**": true
     }
 }
