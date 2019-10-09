@@ -36,3 +36,4 @@ sysinfo.txt
 *.unitypackage
 Logs
 .resModifyDate.v
+*.code-workspace
