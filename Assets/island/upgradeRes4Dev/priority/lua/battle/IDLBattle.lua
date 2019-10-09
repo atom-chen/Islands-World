@@ -28,7 +28,7 @@ IDLBattle = {}
 local IDPreloadPrefab = require("public.IDPreloadPrefab")
 ---@class BattleData 战场数据
 ---@field targetCity IDDBCity 目标城
----@field offShips table key:舰船id; value:{id=舰船id，num=数量}
+---@field offShips table key:舰船id; value:{id=舰船id，num=数量(注意bio)}
 
 local csSelf = nil
 local transform = nil

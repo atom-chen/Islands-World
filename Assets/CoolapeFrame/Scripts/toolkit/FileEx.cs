@@ -200,24 +200,27 @@ namespace Coolape
 
 		public static byte[] readBytesFromStreamingAssetsPath (string filepath)
 		{
-			byte[] buff = null;
-			try {
-				#if UNITY_ANDROID && !UNITY_EDITOR
+
+            byte[] buff = null;
+            try {
+#if UNITY_ANDROID && !UNITY_EDITOR
+                sbyte[] sbuff = null;
 				string tempPath = filepath.Replace(PStr.b().a(Application.streamingAssetsPath).a("/").e(), "");
 
 				AndroidJavaObject obj =  jcAssetMgr.CallStatic<AndroidJavaObject>("getBytes", tempPath);
 				if (obj != null && obj.GetRawObject().ToInt32() != 0) {
-					buff = AndroidJNIHelper.ConvertFromJNIArray<byte[]>(obj.GetRawObject());
+					sbuff = AndroidJNIHelper.ConvertFromJNIArray<sbyte[]>(obj.GetRawObject());
 				}
 				if(obj != null) {
 					obj.Dispose();
 					obj = null;
 				}
-				#else
-				if (File.Exists (filepath)) {
+                buff =  Array.ConvertAll<sbyte, byte>(sbuff, a => (byte)a);
+#else
+                if (File.Exists (filepath)) {
 					buff = File.ReadAllBytes (filepath);
 				}
-				#endif
+#endif
 			} catch (Exception e) {
 				Debug.LogError (e);
 			}

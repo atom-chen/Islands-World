@@ -24,7 +24,7 @@ do
     function _cell.show (go, data)
         mData = data
         attr = mData.attr
-        uiobjs.Icon.spriteName = joinStr("roleIcon_", bio2number(attr.ID))
+        uiobjs.Icon.spriteName = IDUtl.getRoleIcon(bio2number(attr.ID))
         uiobjs.Label.text = tostring(mData.count)
         CLUIUtl.setAllSpriteGray(csSelf.gameObject, mData.isLocked)
     end

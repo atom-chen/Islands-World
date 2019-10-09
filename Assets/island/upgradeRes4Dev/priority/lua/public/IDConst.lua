@@ -30,10 +30,10 @@ IDConst.BuildingGID = {
 
 ---@public 角色类别
 IDConst.RoleGID = {
-    worker = 0, -- 工人
-    ship = 1, -- 舰船
-    solider = 2, -- 陆战兵
-    pet = 3, -- 宠物
+    worker = 100, -- 工人
+    ship = 101, -- 舰船
+    solider = 102, -- 陆战兵
+    pet = 103, -- 宠物
 }
 
 ---@public 游戏中各种类型

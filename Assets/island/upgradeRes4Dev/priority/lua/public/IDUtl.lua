@@ -244,6 +244,11 @@ function IDUtl.getRolePrefabName(id)
     end
 end
 
+---@public 取得角色的icon
+function IDUtl.getRoleIcon(id)
+    return joinStr("roleIcon_", id)
+end
+
 function IDUtl.newMapTileLua(type)
     if type == 1 then
         return IDWorldTile.new()
@@ -290,7 +295,7 @@ end
 ---@public 取得资源音效
 function IDUtl.getResSoundEffect(type)
     if type == IDConst.ResType.food then
-        return "" --//TODO:音效效需要添加
+        return "collect_Food"
     elseif type == IDConst.ResType.gold then
         return "collect_coins_01"
     elseif type == IDConst.ResType.oil then

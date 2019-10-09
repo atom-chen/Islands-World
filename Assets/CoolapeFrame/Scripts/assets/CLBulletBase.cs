@@ -108,7 +108,7 @@ namespace Coolape
 			if (SpeedRandomFactor > 0) {
 				speed = speed + attacker.fakeRandom (-SpeedRandomFactor, SpeedRandomFactor) / 100.0f;
 			}
-			high = MapEx.getBytes2Int (attr, "High");
+			high = MapEx.getBytes2Int (attr, "High")/10.0f;
 //			high = NumEx.bio2Int (MapEx.getBytes (attr, "High"));
 			if (MapEx.getBool (attr, "IsHighOffset")) {
 				high = high * (1.0f + attacker.fakeRandom (-200, 200) / 1000.0f);

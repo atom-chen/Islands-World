@@ -964,11 +964,13 @@ function IDMainCity.onReleaseTile(tile, hadMoved)
 
             -- 刷新a星网格
             local oldIndex = bio2number(d.pos)
-            IDMainCity.astar4Tile:scanRange(oldIndex, 2)
-            IDMainCity.astar4Ocean:scanRange(oldIndex, 2)
+            local oldPos = grid:GetCellPosition(oldIndex)
+            IDMainCity.astar4Tile:scanRange(oldPos, 4)
+            IDMainCity.astar4Ocean:scanRange(oldPos, 4)
+
             -- 新位置
-            IDMainCity.astar4Tile:scanRange(tile.transform.position, 2)
-            IDMainCity.astar4Ocean:scanRange(tile.transform.position, 2)
+            IDMainCity.astar4Tile:scanRange(blua.transform.position, 4)
+            IDMainCity.astar4Ocean:scanRange(blua.transform.position, 4)
 
             net:send(NetProtoIsland.send.moveTile(bio2number(d.idx), gidx))
         end

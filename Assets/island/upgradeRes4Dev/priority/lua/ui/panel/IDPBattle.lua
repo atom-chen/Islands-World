@@ -5,6 +5,7 @@ local csSelf = nil
 local transform = nil
 ---@type BattleData
 local mData
+local uiobjs = {}
 
 -- 初始化，只会调用一次
 function IDPBattle.init(csObj)
@@ -12,7 +13,9 @@ function IDPBattle.init(csObj)
     transform = csObj.transform
     --[[
     上的组件：getChild(transform, "offset", "Progress BarHong"):GetComponent("UISlider");
-    --]]
+	--]]
+    uiobjs.unitGrid = getCC(transform, "AnchorBottom/Scroll View/Grid", "UIGrid")
+    uiobjs.unitGridPrefab = getChild(uiobjs.unitGrid.transform, "00000").gameObject
 end
 
 -- 设置数据
@@ -29,18 +32,47 @@ end
 
 -- 刷新
 function IDPBattle.refresh()
-    IDPBattle.shwoShips()
+    IDPBattle.showShips()
 end
 
-function IDPBattle.shwoShips()
+---@class WrapBattleUnitData
+---@field public type System.Int32
+---@field public id System.Int32
+---@field public name System.Int32
+---@field public icon System.Int32
+---@field public num System.Int32
+function IDPBattle.showShips()
     -- wrap mData
-    local shipMap = mData.offShips
-    ---@param v NetProtoIsland.ST_dockyardShips
-    for k, v in pairs(shipMap) do
-        for shipId, num in pairs(v.shipsMap or {}) do
-          
+    local list = {}
+    local shipMap = {}
+    ---@type WrapBattleUnitData
+    local cellData
+    for k, v in pairs(mData.offShips) do
+        local shipId = v.id
+        if shipMap[shipId] == nil then
+            cellData = {}
+            cellData.type = IDConst.UnitType.ship
+            cellData.id = tonumber(shipId)
+            cellData.num = v.num
+            local attr = DBCfg.getRoleByID(v.id)
+            cellData.name = LGet(attr.NameKey)
+            cellData.icon = IDUtl.getRoleIcon(v.id)
+            shipMap[shipId] = cellData
+        else
+            cellData = shipMap[shipId]
+            cellData.num = number2bio(bio2number(v.num) + bio2number(cellData.num))
         end
     end
+
+    CLUIUtl.resetList4Lua(uiobjs.unitGrid, uiobjs.unitGridPrefab, shipMap, IDPBattle.initUnitCell)
+end
+
+function IDPBattle.initUnitCell(cell, data)
+    cell:init(data, IDPBattle.onClickUnitCell)
+end
+
+function IDPBattle.onClickUnitCell(cell)
+	local data = cell.luaTable.getData()
 end
 
 -- 关闭页面
