@@ -118,7 +118,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
 
         -- 屏幕拖动代理
         drag4World.onDragMoveDelegate = IDWorldMap.onDragMove
-        drag4World.onDragScaleDelegate = IDWorldMap.onScaleGround
+        drag4World.onDragScaleDelegate = IDWorldMap.onTouchScaleGround
         local pageIdx = IDWorldMap.getPageIdx(gidx)
         cityGidx = gidx
         centerPageIdx = pageIdx
@@ -129,7 +129,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
             nil,
             function()
                 onFinishCallback()
-                smoothFollow:tween(Vector2(20, 100), Vector2(10, 15), 2.5, nil, IDWorldMap.onScaleGround)
+                smoothFollow:tween(Vector2(20, 100), Vector2(10, 15), 2.5, nil, IDWorldMap.scaleGround)
             end,
             onProgress
         )
@@ -179,16 +179,23 @@ function IDWorldMap.setGameMode()
             end
         end
     end
-    dragSetting.scaleMini = 7
-    dragSetting.scaleMax = 20
-    dragSetting.scaleHeightMini = 10
-    dragSetting.scaleHeightMax = 100
+    if GameMode.map == MyCfg.mode then
+        dragSetting.scaleMini = 7
+        dragSetting.scaleMax = 20
+        dragSetting.scaleHeightMini = 10
+        dragSetting.scaleHeightMax = 100
+    else
+        dragSetting.scaleMini = 7
+        dragSetting.scaleMax = 20
+        dragSetting.scaleHeightMini = 10
+        dragSetting.scaleHeightMax = 50
+    end
 
     if smoothFollow.height > IDWorldMap.scaleCityHeighMin and smoothFollow.height < IDWorldMap.scaleCityHeighMax then
         if IDWorldMap.mode == GameModeSub.map then
             IDWorldMap.cleanPages()
         end
-        if IDWorldMap.mode ~= GameModeSub.mapBtwncity then
+        if IDWorldMap.mode ~= GameModeSub.mapBtwncity and MyCfg.mode == GameMode.map then
             IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.mapBtwncity)
             IDWorldMap.grid:hideRect()
             IDWorldMap.mode = GameModeSub.mapBtwncity
@@ -200,7 +207,7 @@ function IDWorldMap.setGameMode()
             end
         end
     elseif smoothFollow.height > IDWorldMap.scaleCityHeighMax then
-        if IDWorldMap.mode ~= GameModeSub.map then
+        if IDWorldMap.mode ~= GameModeSub.map and MyCfg.mode == GameMode.map then
             IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.map)
             IDWorldMap.grid:showRect()
             IDWorldMap.mode = GameModeSub.map
@@ -226,7 +233,15 @@ function IDWorldMap.setGameMode()
     end
 end
 
-function IDWorldMap.onScaleGround(delta, offset)
+function IDWorldMap.onTouchScaleGround(delta, offset)
+    if GameMode.map == MyCfg.mode then
+        IDWorldMap.scaleGround(delta, offset)
+    else
+        drag4World:procScaler(offset)
+    end
+end
+
+function IDWorldMap.scaleGround(delta, offset)
     drag4World:procScaler(offset)
     IDWorldMap.setGameMode()
     ---@param v IDWorldMapPage
@@ -241,20 +256,22 @@ end
 
 function IDWorldMap.onDragMove(delta)
     IDWorldMap.oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
-    -- 取得屏幕中心点下的地块
-    local lastHit =
-        Utl.getRaycastHitInfor(
-        MyCfg.self.mainCamera,
-        Vector3(Screen.width / 2, Screen.height / 2, 0),
-        Utl.getLayer("Water")
-    )
-    if lastHit then
-        local centerPos = lastHit.point
-        local tmpPageIdx = IDWorldMap.getPageIdx(grid:GetCellIndex(centerPos))
-        if tmpPageIdx ~= centerPageIdx then
-            -- 说明已经切换屏了,重新加载数据
-            centerPageIdx = tmpPageIdx
-            IDWorldMap.refreshPagesData()
+    if MyCfg.mode == GameMode.map then
+        -- 取得屏幕中心点下的地块
+        local lastHit =
+            Utl.getRaycastHitInfor(
+            MyCfg.self.mainCamera,
+            Vector3(Screen.width / 2, Screen.height / 2, 0),
+            Utl.getLayer("Water")
+        )
+        if lastHit then
+            local centerPos = lastHit.point
+            local tmpPageIdx = IDWorldMap.getPageIdx(grid:GetCellIndex(centerPos))
+            if tmpPageIdx ~= centerPageIdx then
+                -- 说明已经切换屏了,重新加载数据
+                centerPageIdx = tmpPageIdx
+                IDWorldMap.refreshPagesData()
+            end
         end
     end
 end
@@ -436,8 +453,6 @@ function IDWorldMap.onClickOcean()
             local label = joinStr("Pos:", index)
             IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
         end
-    else
-        --//TODO:
     end
 end
 
@@ -464,7 +479,7 @@ IDWorldMap.popupEvent = {
             Vector2(10, 15),
             3,
             nil,
-            IDWorldMap.onScaleGround
+            IDWorldMap.scaleGround
         )
         lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
     end,

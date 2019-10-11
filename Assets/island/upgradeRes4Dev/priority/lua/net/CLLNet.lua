@@ -173,6 +173,10 @@ function CLLNet.cacheData(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onTileChg(data.tile)
         end
+    elseif cmd == NetProtoIsland.cmds.moveTile then
+        if IDDBCity.curCity then
+            IDDBCity.curCity:onTileChg(data.tile)
+        end
     elseif cmd == NetProtoIsland.cmds.onBuildingChg then
         -- 当有建筑变化
         if IDDBCity.curCity then

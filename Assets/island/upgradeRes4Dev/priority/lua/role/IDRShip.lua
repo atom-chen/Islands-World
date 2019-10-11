@@ -109,6 +109,7 @@ end
 function IDRShip:clean()
     self.csSelf:cancelInvoke4Lua()
     self.dockyard = nil
+    self.seeker:stopMove()
     self:getBase(IDRShip).clean(self)
     if self.trail then
         CLThingsPool.returnObj(self.trail.gameObject)

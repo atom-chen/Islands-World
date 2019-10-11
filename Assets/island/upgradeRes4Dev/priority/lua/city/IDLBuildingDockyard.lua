@@ -14,7 +14,7 @@ function IDLBuildingDockyard:__init(selfObj, other)
     self.ports = {}
     for i = 1, 8 do
         -- 取得停泊点，并设置为空闲
-        self.ports[i] = { point = getChild(self.transform, joinStr("ports/", i)), isFree = true }
+        self.ports[i] = {point = getChild(self.transform, joinStr("ports/", i)), isFree = true}
     end
 end
 
@@ -43,7 +43,9 @@ function IDLBuildingDockyard:buildShip()
 end
 ---@public 显示舰船停泊在港口
 function IDLBuildingDockyard:showShipsInPort()
-    if self.serverData == nil then return end
+    if self.serverData == nil then
+        return
+    end
     local shipsMap = IDDBCity.curCity:getShipsByDockyardId(bio2number(self.serverData.idx))
     if shipsMap then
         for k, v in pairs(shipsMap) do
@@ -80,8 +82,10 @@ end
 
 ---@public 让舰船在海航行
 function IDLBuildingDockyard:showShipsInOcean()
-    if self.serverData == nil or MyCfg.mode == GameMode.battle then return end
     self.csSelf:cancelInvoke4Lua(self:wrapFunction4CS(self.showShipsInOcean))
+    if self.serverData == nil or MyCfg.mode == GameMode.battle then
+        return
+    end
     -- 取得一个舰船id及数量
     local ships = IDDBCity.curCity:getShipsByDockyardId(bio2number(self.serverData.idx))
     if ships then
@@ -91,8 +95,12 @@ function IDLBuildingDockyard:showShipsInOcean()
                 local hadNum = #list
                 if hadNum < 3 and num > hadNum then
                     -- 最多5个
-                    CLRolePool.borrowObjAsyn(IDUtl.getRolePrefabName(shipId), self:wrapFunction4CS(self.onLoadShipInOcean), shipId)
-                    self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), NumEx.NextInt(30, 70)/10)
+                    CLRolePool.borrowObjAsyn(
+                        IDUtl.getRolePrefabName(shipId),
+                        self:wrapFunction4CS(self.onLoadShipInOcean),
+                        shipId
+                    )
+                    self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), NumEx.NextInt(30, 70) / 10)
                     break
                 end
             end

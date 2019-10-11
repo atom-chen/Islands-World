@@ -171,7 +171,17 @@ function IDLGridTileSide.startSetSides(orgs)
             callback()
         end
     else
-        IDLGridTileSide.set4Sides(0)
+        cache.__tmpCount = 0
+        local tile = cache.tileList[1]
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, 1)
+        tile = cache.tileList[2]
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, 2)
+        tile = cache.tileList[3]
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, 3)
+        tile = cache.tileList[4]
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, 4)
+        tile = cache.tileList[5]
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, 5)
     end
 end
 
@@ -200,22 +210,26 @@ function IDLGridTileSide.getDownSide(index)
 end
 
 function IDLGridTileSide.set4Sides(i)
-    local count = #cache.tileList
-    if i >= count then
+    local count = #(cache.tileList)
+    cache.__tmpCount = cache.__tmpCount + 1
+    if cache.__tmpCount == count then
         -- finish
         IDLGridTileSide.set4SidesAngle(0)
     else
         if cache.onProgressCB then
-            cache.onProgressCB(count * 2, i)
+            cache.onProgressCB(count * 2, cache.__tmpCount)
         end
-        i = i + 1
-        local tile = cache.tileList[i]
-        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, i)
+
+        local tile = cache.tileList[i + 5]
+        IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, i + 5)
     end
 end
 
 ---@public 处理一个地块的四边，left,right,up,down
 function IDLGridTileSide.procOneCellSide(tile, callback, orgs, imm)
+    if tile == nil then
+        return
+    end
     if tile == IDMainCity.selectedUnit then
         if (not IDMainCity.isSizeInFreeCell(tile.getPosIndex(), tile.size, false, true)) then
             if callback then

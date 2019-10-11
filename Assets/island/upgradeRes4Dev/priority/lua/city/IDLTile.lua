@@ -24,6 +24,11 @@ function cell.show(go, data)
     cell.isDraged = false
     cell.canClick = true
     cell.isSelected = false
+    if GameMode.battle == MyCfg.mode then
+        cell.setCollider(false)
+    else
+        cell.setCollider(true)
+    end
 end
 
 function cell.getPosIndex()
@@ -39,7 +44,7 @@ function cell.OnClick()
 
     if (MyCfg.mode == GameMode.battle) then
         -- 通知战场，玩家点击了我
-        CLLBattle.onClickSomeObj(cell, cell.transform.position)
+        IDLBattle.onClickSomeObj(cell, cell.transform.position)
     else
         --SoundEx.playSound(self.attr.SelectSound, 1, 1)
         IDMainCity.onClickTile(cell)

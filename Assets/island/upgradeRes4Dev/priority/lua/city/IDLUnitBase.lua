@@ -72,6 +72,12 @@ function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self.gridIndex = other.index
     self.oldindex = self.gridIndex
     self:loadShadow()
+
+    if GameMode.battle == MyCfg.mode then
+        self:setCollider(false)
+    else
+        self:setCollider(true)
+    end
 end
 
 ---@public 加载影子
@@ -163,7 +169,7 @@ function IDLUnitBase:_OnPress(go, isPress)
     end
     if (MyCfg.mode == GameMode.battle) then
         -- 通知战场，玩家按下了我
-        CLLBattle.onPressRole(isPress, self.csSelf, self.transform.position)
+        IDLBattle.onPressRole(isPress, self.csSelf, self.transform.position)
     else
         if (isPress) then
             IDMainCity.setOtherUnitsColiderState(self, false)

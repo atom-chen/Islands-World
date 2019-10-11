@@ -32,7 +32,10 @@ local IDPreloadPrefab = require("public.IDPreloadPrefab")
 
 local csSelf = nil
 local transform = nil
+---@type IDMainCity
 local city = nil -- 城池对象
+---@type CLGrid
+local grid
 ---@type BattleData
 IDLBattle.mData = nil -- 战斗方数据
 
@@ -61,6 +64,7 @@ function IDLBattle.init(data, callback, progressCB)
         IDLBattle.mData.targetCity,
         function()
             city = IDMainCity
+            grid = city.grid
             -- 预加载进攻方兵种
             IDLBattle.prepareSoliders(IDLBattle.mData.offShips, callback, progressCB)
         end,
@@ -73,9 +77,20 @@ function IDLBattle.prepareSoliders(data, callback, progressCB)
     IDPreloadPrefab.preloadRoles(data, callback, progressCB)
 end
 
+---@public
+function IDLBattle.onClickOcean()
+    local clickPos = MyMainCamera.lastHit.point
+    local grid = grid.grid
+    local index = grid:GetCellIndex(clickPos)
+    local cellPos = grid:GetCellCenter(index)
+    printe(index)
+end
+
 ---@public 通知战场，玩家点击了我
 function IDLBattle.onClickSomeObj(obg, pos)
-    
+end
+
+function IDLBattle.onPressRole(isPress, role, pos)
 end
 
 function IDLBattle.clean()

@@ -32,24 +32,26 @@ do
 
     function IDOcean.playBGM()
         if audioSource.clip == nil then
-            CLSoundPool.borrowObjAsyn("Sea",
-                    function(name, sound, orgs)
-                        if audioSource.clip ~= nil then
-                            CLSoundPool.returnObj(name)
-                            return
-                        end
-                        audioSource.clip = sound
-                        if SoundEx.musicBgSwitch then
-                            audioSource:Play()
-                        end
-                    end)
+            CLSoundPool.borrowObjAsyn(
+                "Sea",
+                function(name, sound, orgs)
+                    if audioSource.clip ~= nil then
+                        CLSoundPool.returnObj(name)
+                        return
+                    end
+                    audioSource.clip = sound
+                    if SoundEx.musicBgSwitch then
+                        audioSource:Play()
+                    end
+                end
+            )
         else
             audioSource:Play()
         end
     end
 
     -- 处理ui上的事件，例如点击等
-    function IDOcean.onNotifyLua( go )
+    function IDOcean.onNotifyLua(go)
         local goName = go.name
     end
 
@@ -74,6 +76,8 @@ do
             IDMainCity.onClickOcean()
         elseif MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.mapBtwncity then
             IDWorldMap.onClickOcean()
+        elseif MyCfg.mode == GameMode.battle then
+            IDLBattle.onClickOcean()
         end
     end
 

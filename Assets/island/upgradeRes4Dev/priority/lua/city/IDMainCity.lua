@@ -1,4 +1,5 @@
 -- 基地
+---@class IDMainCity
 IDMainCity = {}
 local tbInsert = table.insert
 require("public.class")
@@ -295,6 +296,7 @@ function IDMainCity.onScaleScreen(delta, offset)
     IDMainCity.scaleHeadquarters()
 end
 
+---@public 改变在大地图的子模式
 function IDMainCity.onChgMode(oldMode, curMode)
     local isShowBuilding = true
     local isShowTile = true
@@ -319,7 +321,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
         -- 主基地还可以点击
-        if IDMainCity.Headquarters then
+        if IDMainCity.Headquarters and GameMode.battle ~= MyCfg.mode then
             IDMainCity.Headquarters:setCollider(true)
         end
         IDMainCity.grid:hideRect()
@@ -336,8 +338,8 @@ function IDMainCity.onChgMode(oldMode, curMode)
     ---@param v IDLBuilding
     for k, v in pairs(buildings) do
         -- if v.id == IDConst.headquartersBuildingID then
-            -- 主基地跳过,但是也需要处理
-            v:SetActive(isShowBuilding)
+        -- 主基地跳过,但是也需要处理
+        v:SetActive(isShowBuilding)
         -- else
         --     v:SetActive(isShowBuilding)
         -- end
@@ -412,7 +414,12 @@ function IDMainCity.loadTiles(cb)
             cb()
         end
     else
+        IDMainCity.__tmpCount = 0
         IDMainCity.doLoadTile({1, list, cb})
+        IDMainCity.doLoadTile({2, list, cb})
+        IDMainCity.doLoadTile({3, list, cb})
+        IDMainCity.doLoadTile({4, list, cb})
+        IDMainCity.doLoadTile({5, list, cb})
     end
 end
 
@@ -425,6 +432,10 @@ end
 function IDMainCity.onLoadTile(name, obj, orgs)
     local i = orgs[1]
     local list = orgs[2]
+    if i > #list then
+        return
+    end
+    IDMainCity.__tmpCount = IDMainCity.__tmpCount + 1
     local cb = orgs[3]
     local d = list[i]
     local index = bio2number(d.pos)
@@ -439,11 +450,11 @@ function IDMainCity.onLoadTile(name, obj, orgs)
     tile:init(d, nil)
     tiles[bio2number(d.idx)] = tile.luaTable
 
-    Utl.doCallback(progressCallback, IDMainCity.totalTile, i)
-    if i == #list then
+    Utl.doCallback(progressCallback, IDMainCity.totalTile, IDMainCity.__tmpCount)
+    if IDMainCity.__tmpCount == #list then
         IDLGridTileSide.refreshAndShow(cb, progressCallback, false)
     else
-        InvokeEx.invokeByUpdate(IDMainCity.doLoadTile, {i + 1, list, cb}, 0.01)
+        InvokeEx.invokeByUpdate(IDMainCity.doLoadTile, {i + 5, list, cb}, 0.01)
     end
 end
 
@@ -965,14 +976,25 @@ function IDMainCity.onReleaseTile(tile, hadMoved)
             -- 刷新a星网格
             local oldIndex = bio2number(d.pos)
             local oldPos = grid:GetCellPosition(oldIndex)
+
+            csSelf:invoke4Lua(function()
             IDMainCity.astar4Tile:scanRange(oldPos, 4)
             IDMainCity.astar4Ocean:scanRange(oldPos, 4)
 
-            -- 新位置
             IDMainCity.astar4Tile:scanRange(blua.transform.position, 4)
             IDMainCity.astar4Ocean:scanRange(blua.transform.position, 4)
+            end, 0.3)
 
-            net:send(NetProtoIsland.send.moveTile(bio2number(d.idx), gidx))
+            -- 通知服务器
+            net:send(
+                NetProtoIsland.send.moveTile(
+                    bio2number(d.idx),
+                    gidx,
+                    function(org, result)
+                        blua.mData = result.tile
+                    end
+                )
+            )
         end
     end
 end
@@ -1075,6 +1097,9 @@ function IDMainCity.setSelected(unit, selected)
 end
 
 function IDMainCity.setOtherUnitsColiderState(target, activeCollider)
+    if GameMode.battle == MyCfg.mode then
+        return
+    end
     for k, v in pairs(buildings) do
         if v ~= target then
             v:setCollider(activeCollider)
