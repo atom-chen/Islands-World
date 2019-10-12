@@ -428,6 +428,25 @@ namespace Coolape
             }
         }
 
+        public bool isObstructNode(Vector3 pos)
+        {
+            int index = grid.GetCellIndex(pos);
+            return isObstructNode(index);
+        }
+
+        public bool isObstructNode(int index)
+        {
+            if (grid.IsInBounds(index))
+            {
+                CLAStarNode node = nodesMap[index];
+                return node.isObstruct;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Filters the path.过滤掉多余的节(障碍物的collider尽量和障碍物保持一至大小，因为是通过射线来检测过滤多余的节点)
         /// </summary>
@@ -605,6 +624,7 @@ namespace Coolape
                     CLAStarNode node = nodesMap[i];
                     if (node.isObstruct)
                     {
+                        Debug.LogError(node.index);
                         //显示障碍格子
                         pos = node.position;
                         Gizmos.color = Color.red;

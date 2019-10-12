@@ -24,11 +24,6 @@ function cell.show(go, data)
     cell.isDraged = false
     cell.canClick = true
     cell.isSelected = false
-    if GameMode.battle == MyCfg.mode then
-        cell.setCollider(false)
-    else
-        cell.setCollider(true)
-    end
 end
 
 function cell.getPosIndex()
@@ -169,6 +164,7 @@ end
 
 function cell.clean()
     cell.isJump = false
+    cell.setCollider(true)
 end
 
 function cell.jump()

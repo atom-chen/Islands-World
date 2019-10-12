@@ -27,9 +27,12 @@ IDLBattle = {}
 ---@type IDPreloadPrefab
 local IDPreloadPrefab = require("public.IDPreloadPrefab")
 ---@class BattleData 战场数据
+---@field type IDConst.BattleType
 ---@field targetCity IDDBCity 目标城
 ---@field offShips table key:舰船id; value:{id=舰船id，num=数量(注意bio)}
 
+---@type WrapBattleUnitData
+IDLBattle.currSelectedUnit = nil
 local csSelf = nil
 local transform = nil
 ---@type IDMainCity
@@ -38,6 +41,7 @@ local city = nil -- 城池对象
 local grid
 ---@type BattleData
 IDLBattle.mData = nil -- 战斗方数据
+IDLBattle.isFirstDeployShip = true
 
 --------------------------------------------
 function IDLBattle._init()
@@ -77,23 +81,57 @@ function IDLBattle.prepareSoliders(data, callback, progressCB)
     IDPreloadPrefab.preloadRoles(data, callback, progressCB)
 end
 
+---@public 设置当前选择的战斗单元
+function IDLBattle.setSelectedUnit(data)
+    IDLBattle.currSelectedUnit = data
+end
+
 ---@public
 function IDLBattle.onClickOcean()
     local clickPos = MyMainCamera.lastHit.point
+    IDLBattle.placeBattleUnit()
+end
+
+function IDLBattle.placeBattleUnit()
+    if IDLBattle.currSelectedUnit == nil then
+        CLAlert.add(LGet("MsgSelectBattleUnit"), Color.yellow, 1)
+        return
+    end
+    if bio2Int(IDLBattle.currSelectedUnit.num) <= 0 then
+        CLAlert.add(LGet("MsgSelectBattleUnit"), Color.yellow, 1)
+        return
+    end
+    local pos = MyMainCamera.lastHit.point
     local grid = grid.grid
-    local index = grid:GetCellIndex(clickPos)
+    local index = grid:GetCellIndex(pos)
     local cellPos = grid:GetCellCenter(index)
-    printe(index)
+    if (not city.astar4Ocean:isObstructNode(pos)) or IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
+        if IDLBattle.isFirstDeployShip then
+            -- 首次投放战斗单元，的处理
+            IDLBattle.isFirstDeployShip = false
+            if IDLBattle.mData.type == IDConst.BattleType.pvp then
+                SoundEx.playMainMusic("BattleSound1")
+            elseif IDLBattle.mData.type == IDConst.BattleType.pvp then
+                SoundEx.playMainMusic("npc")
+            end
+        end
+
+    else
+        --//TODO: can not place
+    end
 end
 
 ---@public 通知战场，玩家点击了我
 function IDLBattle.onClickSomeObj(obg, pos)
+    IDLBattle.placeBattleUnit()
 end
 
 function IDLBattle.onPressRole(isPress, role, pos)
 end
 
 function IDLBattle.clean()
+    IDLBattle.isFirstDeployShip = true
+    IDLBattle.currSelectedUnit = nil
     -- 恢复资源释放
     CLAssetsManager.self:regain()
     if city then

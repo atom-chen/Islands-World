@@ -11,14 +11,17 @@ function IDLBuildingRes:init(selfObj, id, star, lev, _isOffense, other)
     -- 设置建筑的资源类型
     self.resType = IDUtl.getResTypeByBuildingID(self.id)
 
-    if self.serverData and bio2number(self.serverData.state) == IDConst.BuildingState.normal then
+    if
+        GameMode.map == MyCfg.mode and self.serverData and
+            bio2number(self.serverData.state) == IDConst.BuildingState.normal
+     then
         self:showCollect()
     end
 end
 
 ---@public 收集资源
 function IDLBuildingRes:showCollect()
-    if not self.serverData then
+    if (not self.serverData) or GameMode.map ~= MyCfg.mode then
         return
     end
     if bio2number(self.serverData.state) == IDConst.BuildingState.normal then
@@ -37,31 +40,38 @@ end
 
 function IDLBuildingRes:showCollectHud()
     if self.tipHud == nil then
-        CLUIOtherObjPool.borrowObjAsyn("TipHud",
-                function(name, obj, orgs)
-                    if (not self.gameObject.activeInHierarchy) or self.tipHud ~= nil then
-                        CLUIOtherObjPool.returnObj(obj)
-                        SetActive(obj, false)
-                        return
-                    end
-                    self.tipHud = obj:GetComponent("CLCellLua")
-                    self.tipHud.transform.parent = MyCfg.self.hud3dRoot
-                    self.tipHud.transform.localScale = Vector3.one
-                    self.tipHud.transform.localEulerAngles = Vector3.zero
-                    SetActive(self.tipHud.gameObject, true)
-                    local color = Color.white
-                    if not self:canCollect() then
-                        color = Color.yellow
-                    end
-                    self.tipHud:init({ target = self.csSelf, data = self.serverData,
-                                       offset = Vector3(0, 2, 0),
-                                       icon = IDUtl.getResIcon(self.resType),
-                                       bgColor = color,
-                                       onClick = self.OnClick })
-                end)
+        CLUIOtherObjPool.borrowObjAsyn(
+            "TipHud",
+            function(name, obj, orgs)
+                if (not self.gameObject.activeInHierarchy) or self.tipHud ~= nil then
+                    CLUIOtherObjPool.returnObj(obj)
+                    SetActive(obj, false)
+                    return
+                end
+                self.tipHud = obj:GetComponent("CLCellLua")
+                self.tipHud.transform.parent = MyCfg.self.hud3dRoot
+                self.tipHud.transform.localScale = Vector3.one
+                self.tipHud.transform.localEulerAngles = Vector3.zero
+                SetActive(self.tipHud.gameObject, true)
+                local color = Color.white
+                if not self:canCollect() then
+                    color = Color.yellow
+                end
+                self.tipHud:init(
+                    {
+                        target = self.csSelf,
+                        data = self.serverData,
+                        offset = Vector3(0, 2, 0),
+                        icon = IDUtl.getResIcon(self.resType),
+                        bgColor = color,
+                        onClick = self.OnClick
+                    }
+                )
+            end
+        )
     else
         SetActive(self.tipHud.gameObject, true)
-        self.tipHud:init({ target = self.csSelf, data = self.serverData, offset = Vector3(0, 2, 0) })
+        self.tipHud:init({target = self.csSelf, data = self.serverData, offset = Vector3(0, 2, 0)})
     end
 end
 
@@ -97,9 +107,7 @@ function IDLBuildingRes:playCollectResEffect()
         local pos = MyCfg.self.mainCamera:WorldToViewportPoint(self.transform.position)
         pos = MyCfg.self.uiCamera:ViewportToWorldPoint(pos)
         pos.z = 0
-        IDUtl.playFlyPics(pos, nil, to.transform,
-                IDUtl.getResIcon(self.resType),
-                self.attr.CollectEffect, 12)
+        IDUtl.playFlyPics(pos, nil, to.transform, IDUtl.getResIcon(self.resType), self.attr.CollectEffect, 12)
     end
 end
 
@@ -115,9 +123,13 @@ function IDLBuildingRes:estimateYield()
     local maxLev = bio2number(attr.MaxLev)
     local persent = bio2number(self.serverData.lev) / maxLev
     -- 每分钟产量
-    local yieldsPerMinutes = DBCfg.getGrowingVal(bio2number(attr.ComVal1Min),
-            bio2number(attr.ComVal1Max),
-            bio2number(attr.ComVal1Curve), persent)
+    local yieldsPerMinutes =
+        DBCfg.getGrowingVal(
+        bio2number(attr.ComVal1Min),
+        bio2number(attr.ComVal1Max),
+        bio2number(attr.ComVal1Curve),
+        persent
+    )
     return yieldsPerMinutes * proTime
 end
 

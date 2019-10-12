@@ -192,3 +192,4 @@ Enter=进入
 Attack=攻击
 MoveCity=搬迁
 Quit=退出
+MsgSelectBattleUnit=请选择要投放的战斗单元！

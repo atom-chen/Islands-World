@@ -1,4 +1,11 @@
-﻿-- xx界面
+﻿---@class WrapBattleUnitData 战斗单元的数据包装
+---@field public type IDConst.UnitType
+---@field public id System.Int32
+---@field public name System.Int32
+---@field public icon System.Int32
+---@field public num System.Int32
+
+-- xx界面
 local IDPBattle = {}
 
 local csSelf = nil
@@ -35,12 +42,6 @@ function IDPBattle.refresh()
     IDPBattle.showShips()
 end
 
----@class WrapBattleUnitData
----@field public type System.Int32
----@field public id System.Int32
----@field public name System.Int32
----@field public icon System.Int32
----@field public num System.Int32
 function IDPBattle.showShips()
     -- wrap mData
     local list = {}
@@ -73,6 +74,7 @@ end
 
 function IDPBattle.onClickUnitCell(cell)
 	local data = cell.luaTable.getData()
+	IDLBattle.setSelectedUnit(data)
 end
 
 -- 关闭页面

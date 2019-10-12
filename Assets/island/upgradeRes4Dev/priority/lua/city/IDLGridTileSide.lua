@@ -1135,6 +1135,14 @@ function IDLGridTileSide.onLoadSide(name, obj, orgs)
         printe("get tile side is nil. ==" .. name)
         return
     end
+    if tileSides[index] ~= nil then
+        CLThingsPool.returnObj(obj)
+        SetActive(obj, false)
+        if callback then
+            callback(orgs)
+        end
+        return
+    end
     obj.transform.parent = IDMainCity.transform
     obj.transform.localScale = Vector3.one
     obj.transform.localEulerAngles = Vector3.zero

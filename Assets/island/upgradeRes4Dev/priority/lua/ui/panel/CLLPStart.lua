@@ -12,6 +12,12 @@ do
         "PanelSceneManager" -- 切换场景页面
     }
 
+    -- 其它ui资源提前加载
+    local lateLoadOtherUIs = {
+        "Frame1",
+        "Frame2"
+    }
+
     local isLogined = false
     local CLLPStart = {}
 
@@ -89,7 +95,7 @@ do
             end
         else
             isLogined = true
-            CLLPStart.connectServer()
+            CLLPStart.loadOtherUI()
         end
     end
 
@@ -97,6 +103,30 @@ do
         p:init()
         panelIndex = panelIndex + 1
         local count = #(lateLoadPanels)
+        if (panelIndex >= count) then
+            --已经加载完
+            CLLPStart.loadOtherUI()
+        end
+    end
+    
+    -- 加载其它ui资源
+    function CLLPStart.loadOtherUI()
+        panelIndex = 0
+        local count = #(lateLoadOtherUIs)
+        if (count > 0) then
+            for i = 1, count do
+                local name = lateLoadOtherUIs[i]
+                CLUIOtherObjPool.setPrefab(name, CLLPStart.onLoadOtherUIAfter, nil, nil)
+            end
+        else
+            isLogined = true
+            CLLPStart.connectServer()
+        end
+    end
+    
+    function CLLPStart.onLoadOtherUIAfter()
+        panelIndex = panelIndex + 1
+        local count = #(lateLoadOtherUIs)
         if (panelIndex >= count) then
             --已经加载完
             CLLPStart.connectServer()

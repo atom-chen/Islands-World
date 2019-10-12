@@ -34,28 +34,6 @@ IDWorldMap.scaleCityHeighMax = 50
 local isDragOcean = false
 local popupMenus
 
--- 重新加载海
-function IDWorldMap.onLoadOcena(name, obj, orgs)
-    IDWorldMap.ocean = obj:GetComponent("MirrorReflection")
-    IDWorldMap.oceanTransform = IDWorldMap.ocean.transform
-    IDWorldMap.oceanTransform.parent = transform
-    --IDWorldMap.oceanTransform.localPosition = IDMainCity.offset4Ocean
-    IDWorldMap.oceanTransform.localScale = Vector3.one
-    ---@type Coolape.CLBaseLua
-    local oceanlua = IDWorldMap.ocean:GetComponent("CLBaseLua")
-    if oceanlua.luaTable == nil then
-        oceanlua:setLua()
-        oceanlua.luaTable.init(oceanlua)
-    end
-    -- 先为false
-    IDWorldMap.ocean.enableMirrorReflection = false
-    IDWorldMap.oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
-    SetActive(obj, true)
-    for i = 1, 9 do
-        freePages:enQueue(IDWorldMapPage.new())
-    end
-end
-
 function IDWorldMap.__init()
     if isInited then
         return
@@ -83,6 +61,10 @@ function IDWorldMap.__init()
     IDWorldMap.fogOfWarInfluence.transform.parent = transform
     IDWorldMap.fogOfWarInfluence.transform.localPosition = Vector3.zero
     IDWorldMap.fogOfWarInfluence.transform.localScale = Vector3.one
+
+    for i = 1, 9 do
+        freePages:enQueue(IDWorldMapPage.new())
+    end
 
     popupMenus = {
         enterCity = {
@@ -113,9 +95,8 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
     IDWorldMap.__init()
     lookAtTarget.transform.position = grid:GetCellCenter(gidx)
 
-    local onLoadOcena = function(name, obj, orgs)
-        IDWorldMap.onLoadOcena(name, obj, orgs)
-
+    local onLoadOcena = function()
+        IDWorldMap.ocean.luaTable.playBGM()
         -- 屏幕拖动代理
         drag4World.onDragMoveDelegate = IDWorldMap.onDragMove
         drag4World.onDragScaleDelegate = IDWorldMap.onTouchScaleGround
@@ -150,11 +131,37 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
     end
 
     if IDWorldMap.ocean == nil then
-        CLThingsPool.borrowObjAsyn("OceanLow", onLoadOcena)
+        CLThingsPool.borrowObjAsyn(
+            "OceanLow",
+            function(name, obj, orgs)
+                IDWorldMap.onLoadOcena(name, obj, orgs)
+                onLoadOcena()
+            end
+        )
     else
-        onLoadOcena(IDWorldMap.ocean.name, IDWorldMap.ocean.gameObject, nil)
+        onLoadOcena()
     end
     IDWorldMap.grid:showRect()
+end
+
+-- 重新加载海
+function IDWorldMap.onLoadOcena(name, obj, orgs)
+    IDWorldMap.oceanObj = obj:GetComponent("MirrorReflection")
+    IDWorldMap.oceanTransform = IDWorldMap.oceanObj.transform
+    IDWorldMap.oceanTransform.parent = transform
+    --IDWorldMap.oceanTransform.localPosition = IDMainCity.offset4Ocean
+    IDWorldMap.oceanTransform.localScale = Vector3.one
+    ---@type Coolape.CLBaseLua
+    local oceanlua = IDWorldMap.oceanObj:GetComponent("CLBaseLua")
+    if oceanlua.luaTable == nil then
+        oceanlua:setLua()
+        oceanlua.luaTable.init(oceanlua)
+    end
+    -- 先为false
+    IDWorldMap.oceanObj.enableMirrorReflection = false
+    IDWorldMap.ocean = oceanlua
+    IDWorldMap.oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
+    SetActive(obj, true)
 end
 
 function IDWorldMap.setGameMode()
@@ -252,6 +259,7 @@ function IDWorldMap.scaleGround(delta, offset)
     if IDWorldMap.mapTileSize then
         SetActive(IDWorldMap.mapTileSize, false)
     end
+    IDUtl.hidePopupMenus()
 end
 
 function IDWorldMap.onDragMove(delta)
@@ -532,12 +540,13 @@ function IDWorldMap.doAttack(cellIndex, retData)
             end
         end
         for k, v in pairs(_offShips) do
-            --转成bio存储，避免被修改
+            -- 转成bio存储，避免被修改
             offShips[tonumber(k)] = {id = tonumber(k), num = number2bio(v)}
         end
 
         ---@type BattleData
         local battleData = {}
+        battleData.type = IDConst.BattleType.pvp
         battleData.targetCity = city
         battleData.offShips = offShips
 

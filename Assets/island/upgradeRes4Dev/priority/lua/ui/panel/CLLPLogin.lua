@@ -44,11 +44,13 @@ do
         SetActive(uiobjs.ButtonServer, false)
         uiobjs.grid:Play(false)
         if isAutoLogin then
-            csSelf:invoke4Lua(CLLPLogin.autoLogin, 0.1)
+            showHotWheel()
+            csSelf:invoke4Lua(CLLPLogin.autoLogin, 1)
         end
     end
 
     function CLLPLogin.autoLogin()
+        hideHotWheel()
         local lastLoginBtn = Prefs.getLastLoginBtn()
         if not isNilOrEmpty(lastLoginBtn) then
             CLLPLogin.doUiEventDelegate(lastLoginBtn)

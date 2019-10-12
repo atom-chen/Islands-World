@@ -184,8 +184,7 @@ function IDPSceneManager.loadWorldMap()
     IDWorldMap.init(
         bio2number(IDDBCity.curCity.pos),
         function()
-            --//TODO:播放音乐
-            -- SoundEx.playMainMusic("MainScene_1")
+            SoundEx.playMainMusic("MainScene_1")
             getPanelAsy("PanelMain", onLoadedPanel)
         end,
         IDPSceneManager.onProgress
@@ -222,7 +221,10 @@ end
 
 function IDPSceneManager.onLoadBattle()
     lookAtTarget.localEulerAngles = Vector3(0, 45, 0)
-    SoundEx.playMainMusic("Battle_1")
+    if IDWorldMap and IDWorldMap.ocean and IDWorldMap.ocean.luaTable then
+        IDWorldMap.ocean.luaTable.stopBGM()
+    end
+    SoundEx.playMainMusic("Fight_before")
     -- mData.defData, mData.offData
     getPanelAsy("PanelBattle", onLoadedPanel, mData.data)
 end

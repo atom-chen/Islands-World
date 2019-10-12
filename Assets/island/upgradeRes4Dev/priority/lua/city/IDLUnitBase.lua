@@ -72,12 +72,6 @@ function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self.gridIndex = other.index
     self.oldindex = self.gridIndex
     self:loadShadow()
-
-    if GameMode.battle == MyCfg.mode then
-        self:setCollider(false)
-    else
-        self:setCollider(true)
-    end
 end
 
 ---@public 加载影子

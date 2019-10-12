@@ -424,6 +424,11 @@ function IDMainCity.loadTiles(cb)
 end
 
 function IDMainCity.doLoadTile(orgs)
+    local i = orgs[1]
+    local list = orgs[2]
+    if i > #list then
+        return
+    end
     CLThingsPool.borrowObjAsyn("Tiles.Tile_1", IDMainCity.onLoadTile, orgs)
 end
 
@@ -432,9 +437,6 @@ end
 function IDMainCity.onLoadTile(name, obj, orgs)
     local i = orgs[1]
     local list = orgs[2]
-    if i > #list then
-        return
-    end
     IDMainCity.__tmpCount = IDMainCity.__tmpCount + 1
     local cb = orgs[3]
     local d = list[i]
@@ -475,24 +477,19 @@ function IDMainCity.loadBuildings(cb)
     end
 
     IDMainCity.totalBuilding = #list
+    IDMainCity.__tmpCount = 0
     IDMainCity.loadbuilding({list, 1, cb})
 end
 
 function IDMainCity.loadbuilding(param)
     local list = param[1]
     local i = param[2]
-    local cb = param[3]
-    if i >= #list then
-        -- 完成
-        IDMainCity.astar4Ocean:scan()
-        IDMainCity.astar4Tile:scan()
-        --IDMainCity.astar4Worker:scan()
-        Utl.doCallback(cb)
-    else
-        ---@type IDDBBuilding
-        local dbb = list[i]
-        CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(dbb.attrid)), IDMainCity.onLoadBuilding, param)
+    if i > #list then
+        return
     end
+    ---@type IDDBBuilding
+    local dbb = list[i]
+    CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(dbb.attrid)), IDMainCity.onLoadBuilding, param)
 end
 
 ---@param obj UnityEngine.GameObject
@@ -551,9 +548,26 @@ function IDMainCity.onLoadBuilding(name, obj, param)
         end
     end
 
-    Utl.doCallback(progressCallback, IDMainCity.totalBuilding, i)
+    IDMainCity.__tmpCount = IDMainCity.__tmpCount + 1
+    Utl.doCallback(progressCallback, IDMainCity.totalBuilding, IDMainCity.__tmpCount)
 
-    IDMainCity.loadbuilding({list, i + 1, cb})
+    if IDMainCity.__tmpCount == #list then
+        -- 完成
+        IDMainCity.astar4Ocean:scan()
+        IDMainCity.astar4Tile:scan()
+        --IDMainCity.astar4Worker:scan()
+        Utl.doCallback(cb)
+    else
+        if i == 1 then
+            IDMainCity.loadbuilding({list, i + 1, cb})
+            IDMainCity.loadbuilding({list, i + 2, cb})
+            IDMainCity.loadbuilding({list, i + 3, cb})
+            IDMainCity.loadbuilding({list, i + 4, cb})
+            IDMainCity.loadbuilding({list, i + 5, cb})
+        else
+            IDMainCity.loadbuilding({list, i + 5, cb})
+        end
+    end
 end
 
 ---@public 新建筑
@@ -977,13 +991,16 @@ function IDMainCity.onReleaseTile(tile, hadMoved)
             local oldIndex = bio2number(d.pos)
             local oldPos = grid:GetCellPosition(oldIndex)
 
-            csSelf:invoke4Lua(function()
-            IDMainCity.astar4Tile:scanRange(oldPos, 4)
-            IDMainCity.astar4Ocean:scanRange(oldPos, 4)
+            csSelf:invoke4Lua(
+                function()
+                    IDMainCity.astar4Tile:scanRange(oldPos, 4)
+                    IDMainCity.astar4Ocean:scanRange(oldPos, 4)
 
-            IDMainCity.astar4Tile:scanRange(blua.transform.position, 4)
-            IDMainCity.astar4Ocean:scanRange(blua.transform.position, 4)
-            end, 0.3)
+                    IDMainCity.astar4Tile:scanRange(blua.transform.position, 4)
+                    IDMainCity.astar4Ocean:scanRange(blua.transform.position, 4)
+                end,
+                0.3
+            )
 
             -- 通知服务器
             net:send(
