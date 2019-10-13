@@ -1,0 +1,20 @@
+---@class DBCFBulletData
+---@field public ID
+---@field public PrefabName
+---@field public Range
+---@field public High
+---@field public IsHighOffset
+---@field public Speed
+---@field public SpeedRandomFactor
+---@field public MaxStayTime
+---@field public SpreadRadius
+---@field public PosRandomFactor
+---@field public IsFollow
+---@field public IsMulHit
+---@field public NeedRotate
+---@field public CheckTrigger
+---@field public HitHandle
+---@field public HitEffect
+---@field public HitSFX
+---@field public IsScreenShake
+---@field public IsOnlyAEffect

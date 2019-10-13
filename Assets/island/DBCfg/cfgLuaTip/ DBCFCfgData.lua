@@ -1,0 +1,8 @@
+---@class DBCFCfgData
+---@field public ID
+---@field public LimitPhone
+---@field public GridCity
+---@field public GridWorld
+---@field public TilesTotal
+---@field public Minute2DiamRate
+---@field public MaxTimeLen4ResYields

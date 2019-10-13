@@ -1,0 +1,7 @@
+---@class DBCFTileData
+---@field public ID
+---@field public Prefab
+---@field public Left
+---@field public Right
+---@field public Up
+---@field public Down
