@@ -1,6 +1,5 @@
 ---@class Coolape.CLPBackplate : Coolape.CLPanelLua
 ---@field public self Coolape.CLPBackplate
-
 local m = { }
 ---public CLPBackplate .ctor()
 ---@return CLPBackplate

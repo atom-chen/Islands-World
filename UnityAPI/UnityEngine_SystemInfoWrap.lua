@@ -32,8 +32,6 @@
 ---@field public supportsShadows System.Boolean
 ---@field public supportsRawShadowDepthSampling System.Boolean
 ---@field public supportsMotionVectors System.Boolean
----@field public supportsRenderToCubemap System.Boolean
----@field public supportsImageEffects System.Boolean
 ---@field public supports3DTextures System.Boolean
 ---@field public supports2DArrayTextures System.Boolean
 ---@field public supports3DRenderTextures System.Boolean
@@ -54,10 +52,12 @@
 ---@field public maxTextureSize System.Int32
 ---@field public maxCubemapSize System.Int32
 ---@field public supportsAsyncCompute System.Boolean
----@field public supportsGPUFence System.Boolean
+---@field public supportsGraphicsFence System.Boolean
 ---@field public supportsAsyncGPUReadback System.Boolean
+---@field public supportsSetConstantBuffer System.Boolean
+---@field public minConstantBufferOffsetAlignment System.Boolean
+---@field public hasMipMaxLevel System.Boolean
 ---@field public supportsMipStreaming System.Boolean
-
 local m = { }
 ---public SystemInfo .ctor()
 ---@return SystemInfo
@@ -79,5 +79,14 @@ function m.SupportsTextureFormat(format) end
 ---@param optional GraphicsFormat format
 ---@param optional FormatUsage usage
 function m.IsFormatSupported(format, usage) end
+---public GraphicsFormat GetCompatibleFormat(GraphicsFormat format, FormatUsage usage)
+---@return number
+---@param optional GraphicsFormat format
+---@param optional FormatUsage usage
+function m.GetCompatibleFormat(format, usage) end
+---public GraphicsFormat GetGraphicsFormat(DefaultFormat format)
+---@return number
+---@param optional DefaultFormat format
+function m.GetGraphicsFormat(format) end
 UnityEngine.SystemInfo = m
 return m

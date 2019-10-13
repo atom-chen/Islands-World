@@ -7,7 +7,6 @@
 ---@field public building Coolape.CLBehaviour4Lua
 ---@field public cellSize System.Int32
 ---@field public material UnityEngine.Material
-
 local m = { }
 ---public SFourWayArrow .ctor()
 ---@return SFourWayArrow

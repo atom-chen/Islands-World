@@ -1,5 +1,4 @@
 ---@class MyUnit : Coolape.CLUnit
-
 local m = { }
 ---public MyUnit .ctor()
 ---@return MyUnit

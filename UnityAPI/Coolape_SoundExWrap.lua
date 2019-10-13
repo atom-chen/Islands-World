@@ -6,7 +6,6 @@
 ---@field public mainClip UnityEngine.AudioClip
 ---@field public soundEffectSwitch System.Boolean
 ---@field public musicBgSwitch System.Boolean
-
 local m = { }
 ---public SoundEx .ctor()
 ---@return SoundEx

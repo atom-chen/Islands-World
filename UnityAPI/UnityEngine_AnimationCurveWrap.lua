@@ -4,7 +4,6 @@
 ---@field public length System.Int32
 ---@field public preWrapMode UnityEngine.WrapMode
 ---@field public postWrapMode UnityEngine.WrapMode
-
 local m = { }
 ---public AnimationCurve .ctor()
 ---public AnimationCurve .ctor(Keyframe[] keys)

@@ -15,7 +15,6 @@
 ---@field public right UnityEngine.Vector2
 ---@field public positiveInfinity UnityEngine.Vector2
 ---@field public negativeInfinity UnityEngine.Vector2
-
 local m = { }
 ---public Vector2 .ctor(Single x, Single y)
 ---@return Vector2

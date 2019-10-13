@@ -1,7 +1,6 @@
 ---@class UnityEngine.TextAsset : UnityEngine.Object
 ---@field public text System.String
 ---@field public bytes System.Byte
-
 local m = { }
 ---public TextAsset .ctor()
 ---public TextAsset .ctor(String text)

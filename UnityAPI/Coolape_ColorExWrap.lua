@@ -1,5 +1,4 @@
 ---@class Coolape.ColorEx
-
 local m = { }
 ---public Color GetJetColor(Single val)
 ---@return Color

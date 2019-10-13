@@ -19,8 +19,8 @@
 ---@field public showGrid System.Boolean
 ---@field public showObstruct System.Boolean
 ---@field public isIninted System.Boolean
+---@field public originPos UnityEngine.Vector3
 ---@field public OnGridStateChgCallbacks System.Collections.ArrayList
-
 local m = { }
 ---public CLAStarPathSearch .ctor()
 ---@return CLAStarPathSearch
@@ -28,7 +28,9 @@ function m.New() end
 ---public Void Start()
 function m:Start() end
 ---public Void init()
-function m:init() end
+---public Void init(Vector3 origin)
+---@param Vector3 origin
+function m:init(origin) end
 ---public Void scan()
 function m:scan() end
 ---public Void scanRange(Vector3 center, Int32 r)
@@ -57,6 +59,11 @@ function m:searchPath(from, to, vectorList, notPocSoftenPath) end
 ---public Void softenPath(List`1& vectorList)
 ---@param optional List`1& vectorList
 function m:softenPath(vectorList) end
+---public Boolean isObstructNode(Vector3 pos)
+---public Boolean isObstructNode(Int32 index)
+---@return bool
+---@param optional Int32 index
+function m:isObstructNode(index) end
 ---public Void filterPath(List`1& list)
 ---@param optional List`1& list
 function m:filterPath(list) end

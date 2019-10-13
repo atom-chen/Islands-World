@@ -1,5 +1,5 @@
 ﻿require("city.IDLUnitBase")
----@class IDLBuilding
+---@class IDLBuilding:IDLUnitBase
 IDLBuilding = class("IDLBuilding", IDLUnitBase)
 
 function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)

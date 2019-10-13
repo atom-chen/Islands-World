@@ -2,7 +2,6 @@
 ---@field public self Coolape.SScreenShakes
 ---@field public twPos TweenPosition
 ---@field public offset UnityEngine.Vector3
-
 local m = { }
 ---public SScreenShakes .ctor()
 ---@return SScreenShakes

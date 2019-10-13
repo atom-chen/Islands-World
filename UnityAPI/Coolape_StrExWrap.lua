@@ -1,7 +1,6 @@
 ---@class Coolape.StrEx
 ---@field public sb System.Text.StringBuilder
 ---@field public Length System.Int32
-
 local m = { }
 ---public StrEx .ctor()
 ---public StrEx .ctor(StringBuilder sb)

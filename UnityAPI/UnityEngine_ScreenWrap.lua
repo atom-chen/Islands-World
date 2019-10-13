@@ -12,8 +12,9 @@
 ---@field public fullScreen System.Boolean
 ---@field public fullScreenMode UnityEngine.FullScreenMode
 ---@field public safeArea UnityEngine.Rect
+---@field public cutouts UnityEngine.Rect
 ---@field public resolutions UnityEngine.Resolution
-
+---@field public brightness System.Single
 local m = { }
 ---public Screen .ctor()
 ---@return Screen

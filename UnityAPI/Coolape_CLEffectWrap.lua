@@ -10,7 +10,6 @@
 ---@field public particleSys UnityEngine.ParticleSystem
 ---@field public animators UnityEngine.Animator
 ---@field public animations UnityEngine.Animator
-
 local m = { }
 ---public CLEffect .ctor()
 ---@return CLEffect

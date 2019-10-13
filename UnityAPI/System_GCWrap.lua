@@ -1,6 +1,5 @@
 ---@class System.GC
 ---@field public MaxGeneration System.Int32
-
 local m = { }
 ---public Void AddMemoryPressure(Int64 bytesAllocated)
 ---@param optional Int64 bytesAllocated

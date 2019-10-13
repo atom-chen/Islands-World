@@ -4,7 +4,6 @@
 ---@field public shaderPropName System.String
 ---@field public material UnityEngine.Material
 ---@field public value UnityEngine.Color
-
 local m = { }
 ---public CLTweenColor .ctor()
 ---@return CLTweenColor

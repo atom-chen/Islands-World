@@ -1,7 +1,6 @@
 ---@class UnityEngine.MonoBehaviour : UnityEngine.Behaviour
 ---@field public useGUILayout System.Boolean
 ---@field public runInEditMode System.Boolean
-
 local m = { }
 ---public MonoBehaviour .ctor()
 ---@return MonoBehaviour

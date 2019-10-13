@@ -2,7 +2,6 @@
 ---@field public transform UnityEngine.Transform
 ---@field public gameObject UnityEngine.GameObject
 ---@field public tag System.String
-
 local m = { }
 ---public Component .ctor()
 ---@return Component
@@ -12,6 +11,11 @@ function m.New() end
 ---@return Component
 ---@param optional String t
 function m:GetComponent(type) end
+---public Boolean TryGetComponent(Type t, Component& component)
+---@return bool
+---@param optional Type t
+---@param optional Component& component
+function m:TryGetComponent(type, component) end
 ---public Component GetComponentInChildren(Type t)
 ---public Component GetComponentInChildren(Type t, Boolean includeInactive)
 ---@return Component

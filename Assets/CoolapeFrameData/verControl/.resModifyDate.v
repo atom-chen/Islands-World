@@ -16,7 +16,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/CannonballFire.mat,130583779160000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/CannonballFire.mat.meta,130583779160000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/Tiles.meta,131645187690000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/buidingFloor.mat,132153639430000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/buidingFloor.mat,132154211590000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/buidingFloor.mat.meta,131681827420000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/cannonball.meta,131891884410000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect.meta,131681874680000000
@@ -154,7 +154,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect/pao07_daiji1.mat.meta,131782957860000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect/shandian01.mat,132150189510000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect/shandian01.mat.meta,131782957860000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect/jianzhubaozha/CFX_Smoke_4frms.mat,132150184520000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect/jianzhubaozha/CFX_Smoke_4frms.mat,132154211590000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/effect/jianzhubaozha/CFX_Smoke_4frms.mat.meta,130583779170000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/haidao/Materials.meta,131836519120000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/haidao/Materials/haidaogongren.mat,131909077500000000
@@ -191,7 +191,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/lhdh/Materials/xft.mat,131980815490000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/lhdh/Materials/xft.mat.meta,131889183100000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/ljjh/Materials.meta,131892645050000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/ljjh/Materials/dlt.mat,132144123820000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/ljjh/Materials/dlt.mat,132154211560000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/ljjh/Materials/dlt.mat.meta,131889183100000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/wgqjh/Materials.meta,131892661450000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/Materials/ship/wgqjh/Materials/wgqjh_jc.mat,132153623810000000
@@ -428,6 +428,8 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/bullet/Missile.prefab.meta,130583779200000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/BombMissile.prefab,132150184030000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/BombMissile.prefab.meta,130583779200000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/EffectDeploy.prefab,132154211590000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/EffectDeploy.prefab.meta,130583779200000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/FireRange.prefab,132150184610000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/FireRange.prefab.meta,130583779200000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/effect/FireRange2.prefab,132150184520000000
@@ -559,7 +561,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/model/ship/zbc/zbc.FBX.meta,131892663180000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship10.prefab,132153623810000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship10.prefab.meta,131892661630000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship4.prefab,132144123820000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship4.prefab,132154211560000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship4.prefab.meta,131892645230000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship5.prefab,131903890420000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/roles/ship5.prefab.meta,131891889600000000
@@ -665,6 +667,8 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/sound/ship_Attack_haidao.mp3.meta,130583779200000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/sound/tesla_zap_03.mp3,130583779200000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/sound/tesla_zap_03.mp3.meta,130583779200000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/sound/water_craft_place_01.wav,130583779200000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/sound/water_craft_place_01.wav.meta,130583779200000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/things/BuildingSize.prefab,131821404310000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/things/BuildingSize.prefab.meta,131820093340000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/other/things/Buildings.meta,131659366240000000
@@ -1070,11 +1074,11 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/ui.meta,131617684550000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/atlas/atlas4Logo.prefab,131833456870000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/atlas/atlas4Logo.prefab.meta,131833443620000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab,132153638520000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab,132154211540000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/atlas/atlasAllReal.prefab.meta,131993785850000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/cfg/materialTexRef.cfg,132150183120000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/cfg/materialTexRef.cfg.meta,131626346650000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/localization/Chinese.txt,132153543030000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/localization/Chinese.txt,132154037430000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/localization/Chinese.txt.meta,131617684610000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/.DS_Store,132002454790000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/CLLMainLua.lua,132146644280000000
@@ -1092,7 +1096,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/toolkit.meta,131617684550000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui.meta,131617684550000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/worldmap.meta,131881382740000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/battle/IDLBattle.lua,132153597850000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/battle/IDLBattle.lua,132154210630000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/battle/IDLBattle.lua.meta,131985606190000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/bio/.DS_Store,131586656720000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/bio/BioInputStream.lua,132000646590000000
@@ -1129,7 +1133,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDLTile.lua.meta,131783803450000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDLTree.lua,132149257460000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDLTree.lua.meta,131783779010000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDLUnitBase.lua,132153182660000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDLUnitBase.lua,132154070750000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDLUnitBase.lua.meta,131673241330000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDMainCity.lua,132153610560000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/city/IDMainCity.lua.meta,131626137190000000
@@ -1184,7 +1188,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/role/IDRShip.lua.meta,131895278440000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/role/IDRWorker.lua,131981635630000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/role/IDRWorker.lua.meta,131836500710000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/role/IDRoleBase.lua,131898828390000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/role/IDRoleBase.lua,132154163580000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/role/IDRoleBase.lua.meta,131875800550000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/sys/Math.lua,131639074550000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/sys/Math.lua.meta,131639076410000000
@@ -1264,7 +1268,7 @@
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/CLLPStart.lua.meta,131617684610000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/CLLPWWWProgress.lua,131617684590000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/CLLPWWWProgress.lua.meta,131617684610000000
-/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/IDPBattle.lua,132153559890000000
+/Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/IDPBattle.lua,132154058220000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/IDPBattle.lua.meta,132027140120000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/IDPBuildShip.lua,132001513030000000
 /Users/chenbin/Documents/working/u3dProjects/islands-World/Assets/island/upgradeRes4Dev/priority/lua/ui/panel/IDPBuildShip.lua.meta,131890047250000000

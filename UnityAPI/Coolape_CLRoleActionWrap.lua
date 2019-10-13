@@ -2,7 +2,6 @@
 ---@field public currAction Coolape.CLRoleAction.Action
 ---@field public currActionValue System.Int32
 ---@field public animator UnityEngine.Animator
-
 local m = { }
 ---public CLRoleAction .ctor()
 ---@return CLRoleAction

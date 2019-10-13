@@ -11,7 +11,6 @@
 ---@field public onChange System.Collections.Generic.List1EventDelegate
 ---@field public validator UIToggle.Validate
 ---@field public value System.Boolean
-
 local m = { }
 ---public UIToggle .ctor()
 ---@return UIToggle

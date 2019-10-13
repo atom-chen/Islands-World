@@ -4,7 +4,6 @@
 ---@field public label UILabel
 ---@field public self Coolape.CLPanelMask4Panel
 ---@field public defautSpriteNameList System.Collections.Generic.List1System.String
-
 local m = { }
 ---public CLPanelMask4Panel .ctor()
 ---@return CLPanelMask4Panel

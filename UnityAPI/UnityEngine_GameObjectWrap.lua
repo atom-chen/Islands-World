@@ -7,7 +7,6 @@
 ---@field public tag System.String
 ---@field public scene UnityEngine.SceneManagement.Scene
 ---@field public gameObject UnityEngine.GameObject
-
 local m = { }
 ---public GameObject .ctor()
 ---public GameObject .ctor(String name)
@@ -53,6 +52,11 @@ function m:GetComponentsInChildren(type, includeInactive) end
 ---@param Type t
 ---@param optional Boolean includeInactive
 function m:GetComponentsInParent(type, includeInactive) end
+---public Boolean TryGetComponent(Type t, Component& component)
+---@return bool
+---@param optional Type t
+---@param optional Component& component
+function m:TryGetComponent(type, component) end
 ---public GameObject FindWithTag(String tag)
 ---@return GameObject
 ---@param optional String tag

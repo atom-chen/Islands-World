@@ -1,5 +1,4 @@
 ---@class Coolape.CLCellBase : Coolape.CLBehaviour4Lua
-
 local m = { }
 ---public Void init(Object data, Object onClick)
 ---@param optional Object data

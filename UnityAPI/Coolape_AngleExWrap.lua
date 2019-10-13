@@ -1,5 +1,4 @@
 ---@class Coolape.AngleEx
-
 local m = { }
 ---public Vector2 getEndVector2(Vector2 directionalFrom, Vector2 directionalTo, Vector2 from, Single toDistance)
 ---@return Vector2

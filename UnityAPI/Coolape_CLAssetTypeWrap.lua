@@ -4,4 +4,3 @@
 ---@field public bytes Coolape.CLAssetType
 ---@field public texture Coolape.CLAssetType
 ---@field public assetBundle Coolape.CLAssetType
-

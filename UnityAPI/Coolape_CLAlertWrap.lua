@@ -8,7 +8,6 @@
 ---@field public bgAnchorRight System.Int32
 ---@field public hudBackgroundColor UnityEngine.Color
 ---@field public pool Coolape.SpriteHudPool
-
 local m = { }
 ---public CLAlert .ctor()
 ---@return CLAlert

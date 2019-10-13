@@ -14,12 +14,13 @@
 ---@field public mbody UnityEngine.Transform
 ---@field public matMap System.Collections.Hashtable
 ---@field public RandomFactor System.Single
+---@field public RandomFactor2 System.Single
+---@field public RandomFactor3 System.Single
 ---@field public lev System.Int32
 ---@field public isDefense System.Boolean
 ---@field public collider UnityEngine.Collider
 ---@field public minSize System.Single
 ---@field public materials UnityEngine.Material
-
 local m = { }
 ---public Void clean()
 function m:clean() end
@@ -62,6 +63,22 @@ function m:initRandomFactor() end
 ---@param optional Int32 min
 ---@param optional Int32 max
 function m:fakeRandom(min, max) end
+---public Single initRandomFactor2()
+---@return number
+function m:initRandomFactor2() end
+---public Int32 fakeRandom2(Int32 min, Int32 max)
+---@return number
+---@param optional Int32 min
+---@param optional Int32 max
+function m:fakeRandom2(min, max) end
+---public Single initRandomFactor3()
+---@return number
+function m:initRandomFactor3() end
+---public Int32 fakeRandom3(Int32 min, Int32 max)
+---@return number
+---@param optional Int32 min
+---@param optional Int32 max
+function m:fakeRandom3(min, max) end
 ---public Void init(Int32 id, Int32 star, Int32 lev, Boolean isOffense, Object other)
 ---@param optional Int32 id
 ---@param optional Int32 star

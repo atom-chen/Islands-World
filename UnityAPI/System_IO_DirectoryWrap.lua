@@ -1,5 +1,4 @@
 ---@class System.IO.Directory
-
 local m = { }
 ---public String[] GetFiles(String path)
 ---public String[] GetFiles(String path, String searchPattern)

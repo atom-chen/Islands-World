@@ -1,7 +1,7 @@
 ﻿---@public 防御建筑
 require("city.IDLBuilding")
 
----@class IDLBuildingDefense
+---@class IDLBuildingDefense:IDLBuilding
 IDLBuildingDefense = class("IDLBuildingDefense", IDLBuilding)
 
 function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)

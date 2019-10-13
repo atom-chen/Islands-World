@@ -13,7 +13,6 @@
 ---@field public yMin System.Single
 ---@field public xMax System.Single
 ---@field public yMax System.Single
-
 local m = { }
 ---public Rect .ctor(Rect source)
 ---public Rect .ctor(Vector2 position, Vector2 size)

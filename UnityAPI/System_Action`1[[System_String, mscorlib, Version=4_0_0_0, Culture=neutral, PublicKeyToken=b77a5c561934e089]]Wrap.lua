@@ -1,5 +1,4 @@
 ---@class System.Action`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] : System.MulticastDelegate
-
 local m = { }
 ---public Action`1 .ctor(Object object, IntPtr method)
 ---@return Action`1

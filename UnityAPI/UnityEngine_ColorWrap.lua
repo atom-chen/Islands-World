@@ -19,7 +19,6 @@
 ---@field public gamma UnityEngine.Color
 ---@field public maxColorComponent System.Single
 ---@field public Item System.Single
-
 local m = { }
 ---public Color .ctor(Single r, Single g, Single b)
 ---public Color .ctor(Single r, Single g, Single b, Single a)

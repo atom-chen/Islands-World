@@ -10,7 +10,6 @@
 ---@field public fogOfWar SimpleFogOfWar.FogOfWarSystem
 ---@field public _isEditScene System.Boolean
 ---@field public isEditScene System.Boolean
-
 local m = { }
 ---public MyCfg .ctor()
 ---@return MyCfg

@@ -2,7 +2,6 @@
 ---@field public Count System.Int32
 ---@field public IsSynchronized System.Boolean
 ---@field public SyncRoot System.Object
-
 local m = { }
 ---public Queue .ctor()
 ---public Queue .ctor(Int32 capacity)

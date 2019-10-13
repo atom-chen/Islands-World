@@ -1,7 +1,6 @@
 ---@class Coolape.EffectNum : UnityEngine.MonoBehaviour
 ---@field public isGui System.Boolean
 ---@field public speedCurve UnityEngine.AnimationCurve
-
 local m = { }
 ---public EffectNum .ctor()
 ---@return EffectNum

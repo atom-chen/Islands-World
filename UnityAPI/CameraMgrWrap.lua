@@ -7,7 +7,6 @@
 ---@field public fieldOfView System.Single
 ---@field public postProcessingProfile UnityEngine.Rendering.PostProcessing.PostProcessProfile
 ---@field public postProcessingProfileSub UnityEngine.Rendering.PostProcessing.PostProcessProfile
-
 local m = { }
 ---public CameraMgr .ctor()
 ---@return CameraMgr

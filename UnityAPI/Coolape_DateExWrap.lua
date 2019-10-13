@@ -20,7 +20,6 @@
 ---@field public now System.Int64
 ---@field public nowMS System.Int64
 ---@field public nowServerTime System.Int64
-
 local m = { }
 ---public DateEx .ctor()
 ---@return DateEx

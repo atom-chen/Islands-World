@@ -3,7 +3,6 @@
 ---@field public isAutoReleaseAssetBundle System.Boolean
 ---@field public materialTexRefCfgPath System.String
 ---@field public materialTexRefCfg System.Collections.Hashtable
-
 local m = { }
 ---public CLMaterialPool .ctor()
 ---@return CLMaterialPool

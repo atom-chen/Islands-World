@@ -8,18 +8,16 @@
 ---@field public Top System.Single
 ---@field public Bottom System.Single
 ---@field public CellSize System.Single
-
 local m = { }
 ---public GridBase .ctor()
 ---@return GridBase
 function m.New() end
----public Void Awake(Vector3 origin, Int32 numRows, Int32 numCols, Single cellSize, Boolean show)
+---public Void init(Vector3 origin, Int32 numRows, Int32 numCols, Single cellSize)
 ---@param optional Vector3 origin
 ---@param optional Int32 numRows
 ---@param optional Int32 numCols
 ---@param optional Single cellSize
----@param optional Boolean show
-function m:Awake(origin, numRows, numCols, cellSize, show) end
+function m:init(origin, numRows, numCols, cellSize) end
 ---public Void DebugDraw(Vector3 origin, Int32 numRows, Int32 numCols, Single cellSize, Color color)
 ---@param optional Vector3 origin
 ---@param optional Int32 numRows
@@ -66,6 +64,14 @@ function m:GetRow(index) end
 ---@return number
 ---@param optional Int32 index
 function m:GetColumn(index) end
+---public Int32 GetX(Int32 index)
+---@return number
+---@param optional Int32 index
+function m:GetX(index) end
+---public Int32 GetY(Int32 index)
+---@return number
+---@param optional Int32 index
+function m:GetY(index) end
 ---public Boolean IsInBounds(Int32 index)
 ---public Boolean IsInBounds(Vector3 pos)
 ---public Boolean IsInBounds(Int32 col, Int32 row)

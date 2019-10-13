@@ -2,7 +2,6 @@
 ---@field public _gridPage Coolape.UIGridPage
 ---@field public transform UnityEngine.Transform
 ---@field public gridPage Coolape.UIGridPage
-
 local m = { }
 ---public UIDragPageContents .ctor()
 ---@return UIDragPageContents

@@ -26,7 +26,6 @@
 ---@field public material UnityEngine.Material
 ---@field public sharedMaterial UnityEngine.Material
 ---@field public sharedMaterials UnityEngine.Material
-
 local m = { }
 ---public Renderer .ctor()
 ---@return Renderer

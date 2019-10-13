@@ -5,7 +5,6 @@
 ---@field public Capacity System.Int32
 ---@field public Length System.Int64
 ---@field public Position System.Int64
-
 local m = { }
 ---public MemoryStream .ctor()
 ---public MemoryStream .ctor(Int32 capacity)

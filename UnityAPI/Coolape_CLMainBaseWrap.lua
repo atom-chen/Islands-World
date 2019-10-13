@@ -1,7 +1,6 @@
 ---@class Coolape.CLMainBase : Coolape.CLBehaviourWithUpdate4Lua
 ---@field public self Coolape.CLMainBase
 ---@field public firstPanel System.String
-
 local m = { }
 ---public CLMainBase .ctor()
 ---@return CLMainBase

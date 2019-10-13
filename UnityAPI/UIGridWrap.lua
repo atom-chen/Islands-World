@@ -14,7 +14,6 @@
 ---@field public oldParentPos UnityEngine.Vector3
 ---@field public oldParentClipOffset UnityEngine.Vector2
 ---@field public repositionNow System.Boolean
-
 local m = { }
 ---public UIGrid .ctor()
 ---@return UIGrid

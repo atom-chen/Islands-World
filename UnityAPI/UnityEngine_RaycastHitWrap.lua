@@ -10,7 +10,6 @@
 ---@field public transform UnityEngine.Transform
 ---@field public rigidbody UnityEngine.Rigidbody
 ---@field public lightmapCoord UnityEngine.Vector2
-
 local m = { }
 UnityEngine.RaycastHit = m
 return m

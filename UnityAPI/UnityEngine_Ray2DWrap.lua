@@ -1,7 +1,6 @@
 ---@class UnityEngine.Ray2D : System.ValueType
 ---@field public origin UnityEngine.Vector2
 ---@field public direction UnityEngine.Vector2
-
 local m = { }
 ---public Ray2D .ctor(Vector2 origin, Vector2 direction)
 ---@return Ray2D

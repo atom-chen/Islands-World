@@ -10,7 +10,6 @@
 ---@field public onReposition UITable.OnReposition
 ---@field public onCustomSort System.Comparison1UnityEngine.Transform
 ---@field public repositionNow System.Boolean
-
 local m = { }
 ---public UITable .ctor()
 ---@return UITable

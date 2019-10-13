@@ -23,7 +23,6 @@
 ---@field public flOnPress XLua.LuaFunction
 ---@field public flOnDrag XLua.LuaFunction
 ---@field public flUIEventDelegate XLua.LuaFunction
-
 local m = { }
 ---public CLBehaviour4Lua .ctor()
 ---@return CLBehaviour4Lua

@@ -4,7 +4,6 @@
 ---@field public worldSpace System.Boolean
 ---@field public cachedTransform UnityEngine.Transform
 ---@field public value UnityEngine.Vector3
-
 local m = { }
 ---public TweenPosition .ctor()
 ---@return TweenPosition

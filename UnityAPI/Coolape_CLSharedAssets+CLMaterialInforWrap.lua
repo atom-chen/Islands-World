@@ -2,7 +2,6 @@
 ---@field public render UnityEngine.Renderer
 ---@field public index System.Int32
 ---@field public materialName System.String
-
 local m = { }
 ---public CLMaterialInfor .ctor()
 ---@return CLMaterialInfor

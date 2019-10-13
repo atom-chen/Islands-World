@@ -1,5 +1,4 @@
 ---@class Coolape.BlockWordsTrie
-
 local m = { }
 ---public BlockWordsTrie getInstanse()
 ---@return BlockWordsTrie

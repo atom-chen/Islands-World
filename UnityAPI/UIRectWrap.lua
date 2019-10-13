@@ -18,7 +18,6 @@
 ---@field public alpha System.Single
 ---@field public localCorners UnityEngine.Vector3
 ---@field public worldCorners UnityEngine.Vector3
-
 local m = { }
 ---public Single CalculateFinalAlpha(Int32 frameID)
 ---@return number

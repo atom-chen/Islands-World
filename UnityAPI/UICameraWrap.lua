@@ -73,7 +73,6 @@
 ---@field public mainCamera UnityEngine.Camera
 ---@field public eventHandler UICamera
 ---@field public dragThreshold System.Single
-
 local m = { }
 ---public UICamera .ctor()
 ---@return UICamera

@@ -1,5 +1,4 @@
 ---@class UnityEngine.Resources
-
 local m = { }
 ---public Resources .ctor()
 ---@return Resources

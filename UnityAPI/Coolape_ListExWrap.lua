@@ -1,6 +1,5 @@
 ---@class Coolape.ListEx
 ---@field public list System.Collections.ArrayList
-
 local m = { }
 ---public ListEx .ctor()
 ---public ListEx .ctor(ArrayList list)

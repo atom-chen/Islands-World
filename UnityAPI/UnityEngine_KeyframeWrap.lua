@@ -6,7 +6,6 @@
 ---@field public inWeight System.Single
 ---@field public outWeight System.Single
 ---@field public weightedMode UnityEngine.WeightedMode
-
 local m = { }
 ---public Keyframe .ctor(Single time, Single value)
 ---public Keyframe .ctor(Single time, Single value, Single inTangent, Single outTangent)

@@ -2,7 +2,6 @@
 ---@field public cellCount System.Int32
 ---@field public mOffset UnityEngine.Vector2
 ---@field public scrollView UIScrollView
-
 local m = { }
 ---public CLUILoopTable .ctor()
 ---@return CLUILoopTable

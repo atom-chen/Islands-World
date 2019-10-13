@@ -6,7 +6,6 @@
 ---@field public IsSynchronized System.Boolean
 ---@field public SyncRoot System.Object
 ---@field public Item System.Object
-
 local m = { }
 ---public ArrayList .ctor()
 ---public ArrayList .ctor(Int32 capacity)

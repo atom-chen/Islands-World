@@ -1,7 +1,7 @@
 ﻿---@public 造船厂
 require("city.IDLBuilding")
 
----@class IDLBuildingDockyard
+---@class IDLBuildingDockyard:IDLBuilding
 IDLBuildingDockyard = class("IDLBuildingDockyard", IDLBuilding)
 
 function IDLBuildingDockyard:__init(selfObj, other)

@@ -2,7 +2,6 @@
 ---@field public from System.Single
 ---@field public to System.Single
 ---@field public value System.Single
-
 local m = { }
 ---public TweenAlpha .ctor()
 ---@return TweenAlpha

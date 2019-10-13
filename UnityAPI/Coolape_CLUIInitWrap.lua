@@ -10,7 +10,6 @@
 ---@field public PanelHotWheelDepth System.Int32
 ---@field public PanelWWWProgressDepth System.Int32
 ---@field public AlertRootDepth System.Int32
-
 local m = { }
 ---public CLUIInit .ctor()
 ---@return CLUIInit

@@ -1,7 +1,6 @@
 ---@class UnityEngine.Ray : System.ValueType
 ---@field public origin UnityEngine.Vector3
 ---@field public direction UnityEngine.Vector3
-
 local m = { }
 ---public Ray .ctor(Vector3 origin, Vector3 direction)
 ---@return Ray

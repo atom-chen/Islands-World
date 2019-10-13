@@ -1,5 +1,4 @@
 ---@class UIWidgetContainer : UnityEngine.MonoBehaviour
-
 local m = { }
 ---public UIWidgetContainer .ctor()
 ---@return UIWidgetContainer

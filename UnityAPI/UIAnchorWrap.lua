@@ -6,7 +6,6 @@
 ---@field public relativeOffset UnityEngine.Vector2
 ---@field public pixelOffset UnityEngine.Vector2
 ---@field public screenRect UnityEngine.Rect
-
 local m = { }
 ---public UIAnchor .ctor()
 ---@return UIAnchor

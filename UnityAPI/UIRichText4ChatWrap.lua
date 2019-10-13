@@ -14,7 +14,6 @@
 ---@field public spList System.Collections.Generic.List1UISprite
 ---@field public label UILabel
 ---@field public value System.String
-
 local m = { }
 ---public UIRichText4Chat .ctor()
 ---@return UIRichText4Chat

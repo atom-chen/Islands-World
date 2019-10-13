@@ -12,7 +12,6 @@
 ---@field public minHeight System.Int32
 ---@field public drawingDimensions UnityEngine.Vector4
 ---@field public premultipliedAlpha System.Boolean
-
 local m = { }
 ---public UISprite .ctor()
 ---@return UISprite

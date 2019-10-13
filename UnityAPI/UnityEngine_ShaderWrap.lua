@@ -4,7 +4,7 @@
 ---@field public isSupported System.Boolean
 ---@field public globalRenderPipeline System.String
 ---@field public renderQueue System.Int32
-
+---@field public passCount System.Int32
 local m = { }
 ---public Shader Find(String name)
 ---@return Shader
@@ -26,6 +26,15 @@ function m.WarmupAllShaders() end
 ---@return number
 ---@param optional String name
 function m.PropertyToID(name) end
+---public Shader GetDependency(String name)
+---@return Shader
+---@param optional String name
+function m:GetDependency(name) end
+---public ShaderTagId FindPassTagValue(Int32 passIndex, ShaderTagId tagName)
+---@return ShaderTagId
+---@param optional Int32 passIndex
+---@param optional ShaderTagId tagName
+function m:FindPassTagValue(passIndex, tagName) end
 ---public Void SetGlobalFloat(String name, Single value)
 ---public Void SetGlobalFloat(Int32 nameID, Single value)
 ---@param optional Int32 nameID
@@ -61,6 +70,12 @@ function m.SetGlobalTexture(nameID, value) end
 ---@param optional Int32 nameID
 ---@param optional ComputeBuffer value
 function m.SetGlobalBuffer(nameID, value) end
+---public Void SetGlobalConstantBuffer(Int32 nameID, ComputeBuffer value, Int32 offset, Int32 size)
+---@param optional Int32 nameID
+---@param optional ComputeBuffer value
+---@param optional Int32 offset
+---@param optional Int32 size
+function m.SetGlobalConstantBuffer(nameID, value, offset, size) end
 ---public Void SetGlobalFloatArray(String name, List`1 values)
 ---public Void SetGlobalFloatArray(Int32 nameID, List`1 values)
 ---public Void SetGlobalFloatArray(String name, Single[] values)

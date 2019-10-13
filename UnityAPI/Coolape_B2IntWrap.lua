@@ -1,6 +1,5 @@
 ---@class Coolape.B2Int
 ---@field public value System.Int32
-
 local m = { }
 ---public B2Int .ctor(Int32 v)
 ---@return B2Int

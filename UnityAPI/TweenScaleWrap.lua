@@ -4,7 +4,6 @@
 ---@field public updateTable System.Boolean
 ---@field public cachedTransform UnityEngine.Transform
 ---@field public value UnityEngine.Vector3
-
 local m = { }
 ---public TweenScale .ctor()
 ---@return TweenScale

@@ -1,7 +1,6 @@
 ---@class UnityEngine.Object
 ---@field public name System.String
 ---@field public hideFlags UnityEngine.HideFlags
-
 local m = { }
 ---public Object .ctor()
 ---@return Object

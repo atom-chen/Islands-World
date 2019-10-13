@@ -1,5 +1,6 @@
 ---@class Coolape.CLPanelLua : Coolape.CLPanelBase
-
+---@field public frameName System.String
+---@field public frameObj Coolape.CLCellLua
 local m = { }
 ---public CLPanelLua .ctor()
 ---@return CLPanelLua
@@ -48,6 +49,8 @@ function m:doHideMask() end
 function m:_show() end
 ---public Void refresh()
 function m:refresh() end
+---public Void finishMoveOut()
+function m:finishMoveOut() end
 ---public Void uiEventDelegate(GameObject go)
 ---@param optional GameObject go
 function m:uiEventDelegate(go) end
@@ -84,5 +87,9 @@ function m:onDrop4Lua(button, functionName, go) end
 ---@param optional String functionName
 ---@param optional KeyCode key
 function m:onKey4Lua(button, functionName, key) end
+---public Void showFrame()
+function m:showFrame() end
+---public Void releaseFrame()
+function m:releaseFrame() end
 Coolape.CLPanelLua = m
 return m

@@ -88,7 +88,13 @@ static public class ECLCoolapeMenu
 		ECLLuaEncodeTool.luajitEncodeAll ();
 	}
 
-	[MenuItem (toolesName + "/GenerateSecondaryUVSet", false, 9)]
+    [MenuItem(toolesName + "/Create CfgBioData FromJson", false, 8)]
+    static public void createCfgBioDataFromJson()
+    {
+        ECLProjectManager.self.genCfgData();
+    }
+
+    [MenuItem (toolesName + "/GenerateSecondaryUVSet", false, 9)]
 	static public void GenerateSecondaryUVSet ()
 	{
 		MeshFilter mf = null;

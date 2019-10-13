@@ -4,7 +4,6 @@
 ---@field public absolute System.Int32
 ---@field public rect UIRect
 ---@field public targetCam UnityEngine.Camera
-
 local m = { }
 ---public AnchorPoint .ctor()
 ---public AnchorPoint .ctor(Single relative)

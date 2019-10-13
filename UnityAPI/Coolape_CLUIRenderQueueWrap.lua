@@ -7,7 +7,6 @@
 ---@field public panel UIPanel
 ---@field public mDepth System.Int32
 ---@field public mWidget UIWidget
-
 local m = { }
 ---public CLUIRenderQueue .ctor()
 ---@return CLUIRenderQueue

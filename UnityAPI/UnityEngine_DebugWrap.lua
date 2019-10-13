@@ -2,7 +2,6 @@
 ---@field public unityLogger UnityEngine.ILogger
 ---@field public developerConsoleVisible System.Boolean
 ---@field public isDebugBuild System.Boolean
-
 local m = { }
 ---public Debug .ctor()
 ---@return Debug
@@ -38,10 +37,13 @@ function m.DebugBreak() end
 function m.Log(message, context) end
 ---public Void LogFormat(String format, Object[] args)
 ---public Void LogFormat(Object context, String format, Object[] args)
+---public Void LogFormat(LogType logType, LogOption logOptions, Object context, String format, Object[] args)
+---@param LogType logType
+---@param LogOption logOptions
 ---@param Object context
 ---@param optional String format
 ---@param optional Object[] args
-function m.LogFormat(context, format, args) end
+function m.LogFormat(logType, logOptions, context, format, args) end
 ---public Void LogError(Object message)
 ---public Void LogError(Object message, Object context)
 ---@param Object message

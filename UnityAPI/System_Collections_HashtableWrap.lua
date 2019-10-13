@@ -7,7 +7,6 @@
 ---@field public Values System.Collections.ICollection
 ---@field public SyncRoot System.Object
 ---@field public Count System.Int32
-
 local m = { }
 ---public Hashtable .ctor()
 ---public Hashtable .ctor(Int32 capacity)

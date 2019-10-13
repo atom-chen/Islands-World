@@ -18,7 +18,6 @@
 ---@field public hasChanged System.Boolean
 ---@field public hierarchyCapacity System.Int32
 ---@field public hierarchyCount System.Int32
-
 local m = { }
 ---public Void SetParent(Transform p)
 ---public Void SetParent(Transform parent, Boolean worldPositionStays)

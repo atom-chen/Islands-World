@@ -1,7 +1,6 @@
 ---@class Coolape.FileEx
 ---@field public FileTextMap System.Collections.Hashtable
 ---@field public FileBytesMap System.Collections.Hashtable
-
 local m = { }
 ---public FileEx .ctor()
 ---@return FileEx

@@ -10,7 +10,6 @@
 ---@field public disableWhenFinished AnimationOrTween.DisableCondition
 ---@field public includeChildren System.Boolean
 ---@field public onFinished System.Collections.Generic.List1EventDelegate
-
 local m = { }
 ---public UIPlayTween .ctor()
 ---@return UIPlayTween

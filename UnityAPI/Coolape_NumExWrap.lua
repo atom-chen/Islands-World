@@ -12,7 +12,6 @@
 ---@field public GB System.Int64
 ---@field public TB System.Int64
 ---@field public PB System.Int64
-
 local m = { }
 ---public NumEx .ctor()
 ---@return NumEx

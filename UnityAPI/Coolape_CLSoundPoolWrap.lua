@@ -1,7 +1,6 @@
 ---@class Coolape.CLSoundPool : Coolape.CLAssetsPoolBase`1[[UnityEngine.AudioClip, UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLSoundPool
 ---@field public isAutoReleaseAssetBundle System.Boolean
-
 local m = { }
 ---public CLSoundPool .ctor()
 ---@return CLSoundPool

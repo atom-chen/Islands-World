@@ -3,7 +3,6 @@
 ---@field public DirectorySeparatorChar System.Char
 ---@field public PathSeparator System.Char
 ---@field public VolumeSeparatorChar System.Char
-
 local m = { }
 ---public String ChangeExtension(String path, String extension)
 ---@return String

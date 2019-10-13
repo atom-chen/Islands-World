@@ -460,6 +460,11 @@ function IDMainCity.onLoadTile(name, obj, orgs)
     end
 end
 
+---@public 取得建筑列表
+function IDMainCity.getBuildings()
+    return buildings
+end
+
 function IDMainCity.loadBuildings(cb)
     local bs = IDMainCity.cityData.buildings
     ---@type IDDBBuilding

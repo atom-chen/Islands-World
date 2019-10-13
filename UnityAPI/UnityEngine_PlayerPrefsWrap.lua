@@ -1,5 +1,4 @@
 ---@class UnityEngine.PlayerPrefs
-
 local m = { }
 ---public PlayerPrefs .ctor()
 ---@return PlayerPrefs

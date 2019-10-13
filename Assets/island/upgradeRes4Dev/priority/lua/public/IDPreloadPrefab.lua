@@ -63,6 +63,10 @@ function IDPreloadPrefab.extractRole(id)
         IDPreloadPrefab.enQueue(IDPreloadPrefab.soundQueue, cfg.AttackSound)
         IDPreloadPrefab.enQueue(IDPreloadPrefab.effectQueue, cfg.AttackEffect)
         IDPreloadPrefab.extractBullet(bio2Int(cfg.Bullets))
+        if bio2Int(cfg.SolderNum) > 0 then
+            -- 说明是可以下来士兵的
+            IDPreloadPrefab.extractRole(3)
+        end
     else
         printe("get cfg is nil.id=" .. id .. ",type=" .. type(id))
         if IDPreloadPrefab.onFinishCallback then

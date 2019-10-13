@@ -8,7 +8,6 @@
 ---@field public identity UnityEngine.Quaternion
 ---@field public eulerAngles UnityEngine.Vector3
 ---@field public normalized UnityEngine.Quaternion
-
 local m = { }
 ---public Quaternion .ctor(Single x, Single y, Single z, Single w)
 ---@return Quaternion

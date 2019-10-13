@@ -10,7 +10,6 @@
 ---@field public dirNum System.Int32
 ---@field public originPosition UnityEngine.Vector3
 ---@field public cellSize System.Single
-
 local m = { }
 ---public CLSeekerByRay .ctor()
 ---@return CLSeekerByRay

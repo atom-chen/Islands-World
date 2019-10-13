@@ -4,7 +4,6 @@
 ---@field public onFinished SpringPanel.OnFinished
 ---@field public onCenter UICenterOnChild.OnCenterCallback
 ---@field public centeredObject UnityEngine.GameObject
-
 local m = { }
 ---public UICenterOnChild .ctor()
 ---@return UICenterOnChild

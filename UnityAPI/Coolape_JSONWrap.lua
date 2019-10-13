@@ -11,7 +11,6 @@
 ---@field public TOKEN_TRUE System.Int32
 ---@field public TOKEN_FALSE System.Int32
 ---@field public TOKEN_NULL System.Int32
-
 local m = { }
 ---public JSON .ctor()
 ---@return JSON

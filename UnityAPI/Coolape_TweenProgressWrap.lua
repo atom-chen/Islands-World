@@ -4,7 +4,6 @@
 ---@field public finishCallback System.Object
 ---@field public slider UISlider
 ---@field public value System.Single
-
 local m = { }
 ---public TweenProgress .ctor()
 ---@return TweenProgress

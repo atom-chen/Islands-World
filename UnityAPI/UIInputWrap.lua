@@ -24,7 +24,6 @@
 ---@field public selectionStart System.Int32
 ---@field public selectionEnd System.Int32
 ---@field public caret UITexture
-
 local m = { }
 ---public UIInput .ctor()
 ---@return UIInput

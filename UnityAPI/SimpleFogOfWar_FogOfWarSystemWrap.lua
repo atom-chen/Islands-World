@@ -12,7 +12,6 @@
 ---@field public camera UnityEngine.Camera
 ---@field public VisibilitySnapshotInterval System.Single
 ---@field public Size System.Single
-
 local m = { }
 ---public FogOfWarSystem .ctor()
 ---@return FogOfWarSystem

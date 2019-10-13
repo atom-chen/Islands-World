@@ -12,14 +12,18 @@
 ---@field public showGrid System.Boolean
 ---@field public showGridRange System.Boolean
 ---@field public grid Coolape.GridBase
+---@field public originPos UnityEngine.Vector3
 ---@field public lineName System.String
-
 local m = { }
 ---public CLGrid .ctor()
 ---@return CLGrid
 function m.New() end
 ---public Void Start()
 function m:Start() end
+---public Void init()
+---public Void init(Vector3 origin)
+---@param Vector3 origin
+function m:init(origin) end
 ---public Void show()
 function m:show() end
 ---public Void onSetPrefab(Object[] paras)
@@ -27,6 +31,8 @@ function m:show() end
 function m:onSetPrefab(paras) end
 ---public Void showRect()
 function m:showRect() end
+---public Void hideRect()
+function m:hideRect() end
 ---public Void drawLine(Vector3 startPos, Vector3 endPos, Color color)
 ---@param optional Vector3 startPos
 ---@param optional Vector3 endPos

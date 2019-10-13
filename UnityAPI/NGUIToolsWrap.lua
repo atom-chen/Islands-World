@@ -5,7 +5,6 @@
 ---@field public screenSize UnityEngine.Vector2
 ---@field public isFringe System.Boolean
 ---@field public rateFringe System.Single
-
 local m = { }
 ---public AudioSource PlaySound(AudioClip clip)
 ---public AudioSource PlaySound(AudioClip clip, Single volume)

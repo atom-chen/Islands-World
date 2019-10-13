@@ -1,5 +1,4 @@
 ---@class UISlider : UIProgressBar
-
 local m = { }
 ---public UISlider .ctor()
 ---@return UISlider

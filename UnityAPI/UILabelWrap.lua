@@ -38,7 +38,6 @@
 ---@field public processedText System.String
 ---@field public printedSize UnityEngine.Vector2
 ---@field public localSize UnityEngine.Vector2
-
 local m = { }
 ---public UILabel .ctor()
 ---@return UILabel

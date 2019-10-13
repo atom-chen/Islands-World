@@ -1,5 +1,4 @@
 ---@class Coolape.ZipEx
-
 local m = { }
 ---public ZipEx .ctor()
 ---@return ZipEx

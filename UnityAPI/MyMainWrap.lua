@@ -1,5 +1,4 @@
 ---@class MyMain : Coolape.CLMainBase
-
 local m = { }
 ---public MyMain .ctor()
 ---@return MyMain

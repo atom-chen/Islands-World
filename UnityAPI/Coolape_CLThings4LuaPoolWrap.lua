@@ -1,7 +1,6 @@
 ---@class Coolape.CLThings4LuaPool : Coolape.CLAssetsPoolBase`1[[Coolape.CLBaseLua, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLThings4LuaPool
 ---@field public isAutoReleaseAssetBundle System.Boolean
-
 local m = { }
 ---public CLThings4LuaPool .ctor()
 ---@return CLThings4LuaPool

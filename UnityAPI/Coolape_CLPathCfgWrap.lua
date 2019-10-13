@@ -10,7 +10,6 @@
 ---@field public runtimePlatform System.String
 ---@field public _cellDataPath System.String
 ---@field public upgradeRes System.String
-
 local m = { }
 ---public CLPathCfg .ctor()
 ---@return CLPathCfg

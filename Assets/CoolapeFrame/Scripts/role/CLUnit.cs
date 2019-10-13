@@ -335,9 +335,37 @@ namespace Coolape
 			return min + point;
 		}
 
-		//====================================================
-		//====================================================
-		public virtual void init(int id, int star, int lev, bool isOffense, object other)
+        public float RandomFactor2 = 0;
+
+        public float initRandomFactor2()
+        {
+            RandomFactor2 = NumEx.NextInt(0, 1001) / 1000.0f;
+            return RandomFactor2;
+        }
+
+        public int fakeRandom2(int min, int max)
+        {
+            int diff = (max - min);
+            int point = Mathf.FloorToInt(diff * RandomFactor2);
+            return min + point;
+        }
+        public float RandomFactor3 = 0;
+
+        public float initRandomFactor3()
+        {
+            RandomFactor3 = NumEx.NextInt(0, 1001) / 1000.0f;
+            return RandomFactor3;
+        }
+
+        public int fakeRandom3(int min, int max)
+        {
+            int diff = (max - min);
+            int point = Mathf.FloorToInt(diff * RandomFactor3);
+            return min + point;
+        }
+        //====================================================
+        //====================================================
+        public virtual void init(int id, int star, int lev, bool isOffense, object other)
 		{
 			this.id = id;
 			this.lev = lev;

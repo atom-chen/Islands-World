@@ -5,7 +5,6 @@
 ---@field public dictionary System.Collections.Generic.Dictionary2System.StringSystem.String
 ---@field public knownLanguages System.String
 ---@field public language System.String
-
 local m = { }
 ---public Void Load(TextAsset asset)
 ---public Void Load(String name, Byte[] asset)

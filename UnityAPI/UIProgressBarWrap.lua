@@ -11,7 +11,6 @@
 ---@field public fillDirection UIProgressBar.FillDirection
 ---@field public value System.Single
 ---@field public alpha System.Single
-
 local m = { }
 ---public UIProgressBar .ctor()
 ---@return UIProgressBar

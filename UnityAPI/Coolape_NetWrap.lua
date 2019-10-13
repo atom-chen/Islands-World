@@ -1,6 +1,7 @@
 ---@class Coolape.Net : Coolape.Tcp
 ---@field public self Coolape.Net
 ---@field public lua Coolape.CLBaseLua
+---@field public luaTable XLua.LuaTable
 ---@field public _SuccessCodeValue System.Int32
 ---@field public switchNetType Coolape.Net.NetWorkType
 ---@field public host4Publish System.String
@@ -8,11 +9,8 @@
 ---@field public host4Test2 System.String
 ---@field public serializeluaPath System.String
 ---@field public gatePort System.Int32
----@field public httpPort System.Int32
----@field public httpFunc System.String
 ---@field public SuccessCode System.Int32
 ---@field public gateHost System.String
-
 local m = { }
 ---public Net .ctor()
 ---@return Net

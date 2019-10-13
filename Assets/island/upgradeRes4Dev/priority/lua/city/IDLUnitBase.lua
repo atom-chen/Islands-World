@@ -27,17 +27,22 @@ require("public.class")
 ---@class IDLUnitBase
 IDLUnitBase = class("IDLUnitBase")
 
+---@param csSelf MyUnit
 function IDLUnitBase:ctor(csSelf)
+    ---@type MyUnit
     self.csSelf = csSelf -- cs对象
+    ---@type UnityEngine.Transform
     self.transform = nil
+    ---@type UnityEngine.GameObject
     self.gameObject = nil
     self.isOffense = false -- 是进攻方
     self.id = 0
     self.tweenScale = nil
     self.canClick = true -- 能否点击
 
-    -----@type IDDBBuilding
+    ---@type IDDBBuilding
     self.serverData = nil -- 服务器数据
+    ---@type DBCFBuildingData
     self.attr = nil -- 属性
     self.size = 1 -- 占格子
     self.gridIndex = -1 -- 所在格子的index

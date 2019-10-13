@@ -1,6 +1,5 @@
 ---@class HUDRoot : UnityEngine.MonoBehaviour
 ---@field public go UnityEngine.GameObject
-
 local m = { }
 ---public HUDRoot .ctor()
 ---@return HUDRoot

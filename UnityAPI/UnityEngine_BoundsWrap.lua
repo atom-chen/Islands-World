@@ -4,7 +4,6 @@
 ---@field public extents UnityEngine.Vector3
 ---@field public min UnityEngine.Vector3
 ---@field public max UnityEngine.Vector3
-
 local m = { }
 ---public Bounds .ctor(Vector3 center, Vector3 size)
 ---@return Bounds

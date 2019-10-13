@@ -73,7 +73,6 @@
 ---@field public mainCamera UnityEngine.Camera
 ---@field public eventHandler Coolape.MyMainCamera
 ---@field public dragThreshold System.Single
-
 local m = { }
 ---public MyMainCamera .ctor()
 ---@return MyMainCamera

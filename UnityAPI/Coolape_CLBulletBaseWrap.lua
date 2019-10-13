@@ -20,7 +20,6 @@
 ---@field public haveCollider System.Boolean
 ---@field public boxCollider UnityEngine.BoxCollider
 ---@field public transform UnityEngine.Transform
-
 local m = { }
 ---public CLBulletBase .ctor()
 ---@return CLBulletBase

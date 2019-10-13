@@ -1,7 +1,7 @@
 ﻿---@public 资源建筑
 require("city.IDLBuilding")
 
----@class IDLBuildingHeadquarters
+---@class IDLBuildingHeadquarters:IDLBuilding
 IDLBuildingHeadquarters = class("IDLBuildingHeadquarters", IDLBuilding)
 
 function IDLBuildingHeadquarters:init(selfObj, id, star, lev, _isOffense, other)
@@ -26,19 +26,18 @@ function IDLBuildingHeadquarters:onScaleScreen(scaleVal)
     end
 end
 
-
 ---@public 显示隐藏（可能为连带做一些其它的处理）
 function IDLBuildingHeadquarters:SetActive(active)
     -- self:getBase(IDLBuilding).SetActive(self, active)
     if active then
-        self:upgrading()
         -- self:loadFloor()
+        self:upgrading()
     else
-        self:fireWorker(true)
-        self:unLoadProgressHud()
         -- if self.floor then
         --     SetActive(self.floor, active)
         -- end
+        self:fireWorker(true)
+        self:unLoadProgressHud()
     end
 end
 --------------------------------------------

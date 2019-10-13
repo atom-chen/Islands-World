@@ -5,7 +5,6 @@
 ---@field public timeOutSec4Realse System.Int32
 ---@field public assetsMap System.Collections.Hashtable
 ---@field public realseTime System.Int32
-
 local m = { }
 ---public CLAssetsManager .ctor()
 ---@return CLAssetsManager

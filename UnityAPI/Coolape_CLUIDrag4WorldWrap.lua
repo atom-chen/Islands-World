@@ -29,7 +29,6 @@
 ---@field public inertanceSpeed System.Single
 ---@field public dragMovement UnityEngine.Vector3
 ---@field public _scaleValue System.Single
-
 local m = { }
 ---public CLUIDrag4World .ctor()
 ---@return CLUIDrag4World

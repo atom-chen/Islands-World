@@ -1,6 +1,5 @@
 ---@class Coolape.UIDragPage4Lua : Coolape.UIDragPageContents
 ---@field public uiLua Coolape.CLCellLua
-
 local m = { }
 ---public UIDragPage4Lua .ctor()
 ---@return UIDragPage4Lua

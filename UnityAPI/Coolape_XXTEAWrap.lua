@@ -1,7 +1,6 @@
 ---@class Coolape.XXTEA
 ---@field public key System.String
 ---@field public defaultKey System.Byte
-
 local m = { }
 ---public XXTEA .ctor()
 ---@return XXTEA

@@ -1,5 +1,4 @@
 ---@class System.IO.File
-
 local m = { }
 ---public Void AppendAllText(String path, String contents)
 ---public Void AppendAllText(String path, String contents, Encoding encoding)

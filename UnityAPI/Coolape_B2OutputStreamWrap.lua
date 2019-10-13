@@ -1,5 +1,4 @@
 ---@class Coolape.B2OutputStream
-
 local m = { }
 ---public B2OutputStream .ctor()
 ---@return B2OutputStream

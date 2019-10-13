@@ -28,14 +28,18 @@ require("public.class")
 ---@class IDRoleBase
 IDRoleBase = class("IDRoleBase")
 
+---@param csSelf Coolape.CLUnit
 function IDRoleBase:ctor(csSelf)
+    ---@type Coolape.CLUnit
     self.csSelf = csSelf        -- cs对象
+    ---@type UnityEngine.Transform
     self.transform = nil
+    ---@type UnityEngine.GameObject
     self.gameObject = nil
     self.isOffense = false      -- 是进攻方
     self.id = 0
 
-    -----@type IDDBBuilding
+    ---@type WrapBattleUnitData
     self.serverData = nil       -- 服务器数据
     self.attr = nil             -- 属性
     self.isFinishInited = false
@@ -46,10 +50,15 @@ function IDRoleBase:init (selfObj, id, star, lev, _isOffense, other)
     self.isOffense = _isOffense
     self.id = id
 
+    -- 初始化
+    self.csSelf.RandomFactor = self.csSelf:initRandomFactor()
+    self.csSelf.RandomFactor2 = self.csSelf:initRandomFactor2()
+    self.csSelf.RandomFactor3 = self.csSelf:initRandomFactor3()
     -- 取得属性配置
     if other then
         self.serverData = other.serverData
     end
+    ---@type DBCFRoleData
     self.attr = DBCfg.getRoleByID(id)
     self:loadShadow()
 end
@@ -66,7 +75,6 @@ function IDRoleBase:__init(selfObj, other)
         self.action = self.body:GetComponent("CLRoleAction")
     end
 end
-
 
 ---@public 加载影子
 function IDRoleBase:loadShadow()

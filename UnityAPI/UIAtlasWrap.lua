@@ -12,7 +12,6 @@
 ---@field public texture UnityEngine.Texture
 ---@field public pixelSize System.Single
 ---@field public replacement UIAtlas
-
 local m = { }
 ---public UIAtlas .ctor()
 ---@return UIAtlas

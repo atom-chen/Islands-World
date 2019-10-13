@@ -7,7 +7,6 @@
 ---@field public luaTable XLua.LuaTable
 ---@field public isClassLua System.Boolean
 ---@field public transform UnityEngine.Transform
-
 local m = { }
 ---public CLBaseLua .ctor()
 ---@return CLBaseLua

@@ -4,7 +4,6 @@
 ---@field public updateTable System.Boolean
 ---@field public cachedWidget UIWidget
 ---@field public value System.Int32
-
 local m = { }
 ---public TweenWidth .ctor()
 ---@return TweenWidth

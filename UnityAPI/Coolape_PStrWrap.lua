@@ -1,6 +1,5 @@
 ---@class Coolape.PStr
 ---@field public sb System.Text.StringBuilder
-
 local m = { }
 ---public PStr b()
 ---public PStr b(String s)

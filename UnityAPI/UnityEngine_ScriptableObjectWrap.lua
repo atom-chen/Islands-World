@@ -1,5 +1,4 @@
 ---@class UnityEngine.ScriptableObject : UnityEngine.Object
-
 local m = { }
 ---public ScriptableObject .ctor()
 ---@return ScriptableObject

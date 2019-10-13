@@ -1,7 +1,7 @@
 ﻿---@public 陷阱建筑
 require("city.IDLBuildingDefense")
 
----@class IDLBuildingTrap
+---@class IDLBuildingTrap:IDLBuildingDefense
 IDLBuildingTrap = class("IDLBuildingTrap", IDLBuildingDefense)
 
 function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
@@ -12,6 +12,11 @@ function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
     end
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuildingTrap).init(self, selfObj, id, star, lev, _isOffense, other)
+    if MyCfg.mode == GameMode.battle then
+        self:hide()
+    else
+        self:show()
+    end
 end
 
 function IDLBuildingTrap:idel()
@@ -25,6 +30,16 @@ function IDLBuildingTrap:idel()
     self.bodyRotate:ResetToBeginning()
     self.bodyRotate:Play(true)
     self.csSelf:invoke4Lua(self.idel, NumEx.NextInt(25, 50) / 10)
+end
+
+function IDLBuildingTrap:show()
+    SetActive(self.csSelf.mbody.gameObject, true)
+end
+
+---@public 把自己隐藏起来
+function IDLBuildingTrap:hide()
+    SetActive(self.csSelf.mbody.gameObject, false)
+
 end
 
 function IDLBuildingTrap:clean()

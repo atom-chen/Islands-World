@@ -7,7 +7,6 @@
 ---@field public alpha System.Single
 ---@field public transform UnityEngine.Transform
 ---@field public instance MirrorReflection
-
 local m = { }
 ---public MirrorReflection .ctor()
 ---@return MirrorReflection

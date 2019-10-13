@@ -5,7 +5,6 @@
 ---@field public weight System.Single
 ---@field public priority System.Single
 ---@field public profile UnityEngine.Rendering.PostProcessing.PostProcessProfile
-
 local m = { }
 ---public PostProcessVolume .ctor()
 ---@return PostProcessVolume

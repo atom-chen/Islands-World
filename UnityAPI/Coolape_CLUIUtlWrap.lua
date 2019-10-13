@@ -1,5 +1,4 @@
 ---@class Coolape.CLUIUtl
-
 local m = { }
 ---public CLUIUtl .ctor()
 ---@return CLUIUtl

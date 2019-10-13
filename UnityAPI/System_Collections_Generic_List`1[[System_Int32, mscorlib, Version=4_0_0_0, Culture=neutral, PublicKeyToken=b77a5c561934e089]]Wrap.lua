@@ -2,7 +2,6 @@
 ---@field public Capacity System.Int32
 ---@field public Count System.Int32
 ---@field public Item System.Int32
-
 local m = { }
 ---public List`1 .ctor()
 ---public List`1 .ctor(Int32 capacity)

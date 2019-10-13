@@ -12,7 +12,6 @@
 ---@field public breakBeforeColorGrading System.Boolean
 ---@field public sortedBundles System.Collections.Generic.Dictionary2UnityEngine.Rendering.PostProcessing.PostProcessEventSystem.Collections.Generic.List1UnityEngine.Rendering.PostProcessing.PostProcessLayer.SerializedBundleRef
 ---@field public haveBundlesBeenInited System.Boolean
-
 local m = { }
 ---public PostProcessLayer .ctor()
 ---@return PostProcessLayer

@@ -1,6 +1,5 @@
 ---@class UnityEngine.LayerMask : System.ValueType
 ---@field public value System.Int32
-
 local m = { }
 ---public Int32 op_Implicit(LayerMask mask)
 ---public LayerMask op_Implicit(Int32 intVal)

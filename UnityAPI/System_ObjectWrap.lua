@@ -1,5 +1,4 @@
 ---@class System.Object
-
 local m = { }
 ---public Object .ctor()
 ---@return Object

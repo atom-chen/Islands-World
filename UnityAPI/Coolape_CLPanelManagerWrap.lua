@@ -24,7 +24,6 @@
 ---@field public uiPanelRoot UnityEngine.Transform
 ---@field public panels4Retain Coolape.CLPanelBase
 ---@field public mask UnityEngine.GameObject
-
 local m = { }
 ---public CLPanelManager .ctor()
 ---@return CLPanelManager

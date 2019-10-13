@@ -1,5 +1,4 @@
 ---@class Coolape.NewMap : System.Collections.Hashtable
-
 local m = { }
 ---public NewMap .ctor()
 ---@return NewMap

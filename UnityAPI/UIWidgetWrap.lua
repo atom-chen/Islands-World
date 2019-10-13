@@ -39,7 +39,6 @@
 ---@field public minWidth System.Int32
 ---@field public minHeight System.Int32
 ---@field public border UnityEngine.Vector4
-
 local m = { }
 ---public UIWidget .ctor()
 ---@return UIWidget

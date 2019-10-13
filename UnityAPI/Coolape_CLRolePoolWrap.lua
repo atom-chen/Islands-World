@@ -1,7 +1,6 @@
 ---@class Coolape.CLRolePool : Coolape.CLAssetsPoolBase`1[[Coolape.CLUnit, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@field public pool Coolape.CLRolePool
 ---@field public isAutoReleaseAssetBundle System.Boolean
-
 local m = { }
 ---public CLRolePool .ctor()
 ---@return CLRolePool

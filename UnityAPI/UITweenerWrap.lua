@@ -16,7 +16,6 @@
 ---@field public amountPerDelta System.Single
 ---@field public tweenFactor System.Single
 ---@field public direction AnimationOrTween.Direction
-
 local m = { }
 ---public Void Reset()
 function m:Reset() end

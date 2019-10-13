@@ -170,7 +170,7 @@ static public class XLuaIDEAapiMaker
 				WriteField (sw, GetTypeTagName (property.PropertyType), property.Name);
 			}
 
-			sw.Write ("\n");
+			//sw.Write ("\n");
 			#endregion
 
 			#region constructor

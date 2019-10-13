@@ -7,7 +7,6 @@
 ---@field public offset UnityEngine.Vector3
 ---@field public isCanRotate System.Boolean
 ---@field public isRole System.Boolean
-
 local m = { }
 ---public CLSmoothFollow .ctor()
 ---@return CLSmoothFollow

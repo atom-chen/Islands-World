@@ -29,7 +29,6 @@
 ---@field public shouldMoveHorizontally System.Boolean
 ---@field public shouldMoveVertically System.Boolean
 ---@field public currentMomentum UnityEngine.Vector3
-
 local m = { }
 ---public UIScrollView .ctor()
 ---@return UIScrollView

@@ -9,7 +9,6 @@
 ---@field public currPage Coolape.UIGridPage.LoopPage
 ---@field public scrollView UIScrollView
 ---@field public moveToCell Coolape.UIMoveToCell
-
 local m = { }
 ---public UIGridPage .ctor()
 ---@return UIGridPage

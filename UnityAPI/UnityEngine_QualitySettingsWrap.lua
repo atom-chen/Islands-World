@@ -24,7 +24,7 @@
 ---@field public realtimeReflectionProbes System.Boolean
 ---@field public billboardsFaceCameraPosition System.Boolean
 ---@field public resolutionScalingFixedDPIFactor System.Single
----@field public blendWeights UnityEngine.BlendWeights
+---@field public skinWeights UnityEngine.SkinWeights
 ---@field public streamingMipmapsActive System.Boolean
 ---@field public streamingMipmapsMemoryBudget System.Single
 ---@field public streamingMipmapsRenderersPerFrame System.Int32
@@ -35,7 +35,6 @@
 ---@field public names System.String
 ---@field public desiredColorSpace UnityEngine.ColorSpace
 ---@field public activeColorSpace UnityEngine.ColorSpace
-
 local m = { }
 ---public Void IncreaseLevel()
 ---public Void IncreaseLevel(Boolean applyExpensiveChanges)

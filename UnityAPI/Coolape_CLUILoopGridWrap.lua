@@ -10,7 +10,6 @@
 ---@field public panel UIPanel
 ---@field public list System.Collections.ArrayList
 ---@field public scrollView UIScrollView
-
 local m = { }
 ---public CLUILoopGrid .ctor()
 ---@return CLUILoopGrid

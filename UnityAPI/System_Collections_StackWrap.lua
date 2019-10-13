@@ -2,7 +2,6 @@
 ---@field public Count System.Int32
 ---@field public IsSynchronized System.Boolean
 ---@field public SyncRoot System.Object
-
 local m = { }
 ---public Stack .ctor()
 ---public Stack .ctor(Int32 initialCapacity)

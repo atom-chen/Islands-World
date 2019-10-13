@@ -7,7 +7,6 @@
 ---@field public progressCallback System.Object
 ---@field public onFinshLoad System.Collections.Generic.List1EventDelegate
 ---@field public progress System.Single
-
 local m = { }
 ---public CLSharedAssets .ctor()
 ---@return CLSharedAssets

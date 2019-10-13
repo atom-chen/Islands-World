@@ -29,7 +29,6 @@
 ---@field public genuine System.Boolean
 ---@field public genuineCheckAvailable System.Boolean
 ---@field public isEditor System.Boolean
-
 local m = { }
 ---public Application .ctor()
 ---@return Application
@@ -111,6 +110,12 @@ function m.add_focusChanged(value) end
 ---public Void remove_focusChanged(Action`1 value)
 ---@param optional Action`1 value
 function m.remove_focusChanged(value) end
+---public Void add_deepLinkActivated(Action`1 value)
+---@param optional Action`1 value
+function m.add_deepLinkActivated(value) end
+---public Void remove_deepLinkActivated(Action`1 value)
+---@param optional Action`1 value
+function m.remove_deepLinkActivated(value) end
 ---public Void add_wantsToQuit(Func`1 value)
 ---@param optional Func`1 value
 function m.add_wantsToQuit(value) end

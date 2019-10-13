@@ -5,7 +5,6 @@
 ---@field public wwwMap4Get System.Collections.Hashtable
 ---@field public checkTimeOutSec System.Int32
 ---@field public isCheckWWWTimeOut System.Boolean
-
 local m = { }
 ---public WWWEx .ctor()
 ---@return WWWEx

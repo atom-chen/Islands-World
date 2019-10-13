@@ -1,7 +1,6 @@
 ---@class Coolape.UIMoveToCell : UnityEngine.MonoBehaviour
 ---@field public speed System.Single
 ---@field public moveCurve UnityEngine.AnimationCurve
-
 local m = { }
 ---public UIMoveToCell .ctor()
 ---@return UIMoveToCell

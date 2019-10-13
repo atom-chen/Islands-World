@@ -20,7 +20,6 @@
 ---@field public nextSeekTargetTime System.Single
 ---@field public mTransform UnityEngine.Transform
 ---@field public cellSize System.Single
-
 local m = { }
 ---public CLSeeker .ctor()
 ---@return CLSeeker

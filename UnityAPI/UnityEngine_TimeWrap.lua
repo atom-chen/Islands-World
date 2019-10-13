@@ -15,9 +15,9 @@
 ---@field public frameCount System.Int32
 ---@field public renderedFrameCount System.Int32
 ---@field public realtimeSinceStartup System.Single
+---@field public captureDeltaTime System.Single
 ---@field public captureFramerate System.Int32
 ---@field public inFixedTimeStep System.Boolean
-
 local m = { }
 ---public Time .ctor()
 ---@return Time

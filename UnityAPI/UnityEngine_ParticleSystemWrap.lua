@@ -30,26 +30,10 @@
 ---@field public lights UnityEngine.ParticleSystem.LightsModule
 ---@field public trails UnityEngine.ParticleSystem.TrailModule
 ---@field public customData UnityEngine.ParticleSystem.CustomDataModule
-
 local m = { }
 ---public ParticleSystem .ctor()
 ---@return ParticleSystem
 function m.New() end
----public Void SetCustomParticleData(List`1 customData, ParticleSystemCustomData streamIndex)
----@param optional List`1 customData
----@param optional ParticleSystemCustomData streamIndex
-function m:SetCustomParticleData(customData, streamIndex) end
----public Int32 GetCustomParticleData(List`1 customData, ParticleSystemCustomData streamIndex)
----@return number
----@param optional List`1 customData
----@param optional ParticleSystemCustomData streamIndex
-function m:GetCustomParticleData(customData, streamIndex) end
----public Void TriggerSubEmitter(Int32 subEmitterIndex)
----public Void TriggerSubEmitter(Int32 subEmitterIndex, Particle& particle)
----public Void TriggerSubEmitter(Int32 subEmitterIndex, List`1 particles)
----@param Int32 subEmitterIndex
----@param optional List`1 particles
-function m:TriggerSubEmitter(subEmitterIndex, particles) end
 ---public Void SetParticles(Particle[] particles)
 ---public Void SetParticles(Particle[] particles, Int32 size)
 ---public Void SetParticles(Particle[] particles, Int32 size, Int32 offset)
@@ -65,6 +49,15 @@ function m:SetParticles(particles, size, offset) end
 ---@param Int32 size
 ---@param optional Int32 offset
 function m:GetParticles(particles, size, offset) end
+---public Void SetCustomParticleData(List`1 customData, ParticleSystemCustomData streamIndex)
+---@param optional List`1 customData
+---@param optional ParticleSystemCustomData streamIndex
+function m:SetCustomParticleData(customData, streamIndex) end
+---public Int32 GetCustomParticleData(List`1 customData, ParticleSystemCustomData streamIndex)
+---@return number
+---@param optional List`1 customData
+---@param optional ParticleSystemCustomData streamIndex
+function m:GetCustomParticleData(customData, streamIndex) end
 ---public Void Simulate(Single t)
 ---public Void Simulate(Single t, Boolean withChildren)
 ---public Void Simulate(Single t, Boolean withChildren, Boolean restart)
@@ -102,7 +95,15 @@ function m:IsAlive(withChildren) end
 ---@param EmitParams emitParams
 ---@param optional Int32 count
 function m:Emit(emitParams, count) end
+---public Void TriggerSubEmitter(Int32 subEmitterIndex)
+---public Void TriggerSubEmitter(Int32 subEmitterIndex, Particle& particle)
+---public Void TriggerSubEmitter(Int32 subEmitterIndex, List`1 particles)
+---@param Int32 subEmitterIndex
+---@param optional List`1 particles
+function m:TriggerSubEmitter(subEmitterIndex, particles) end
 ---public Void ResetPreMappedBufferMemory()
 function m.ResetPreMappedBufferMemory() end
+---public Void ClearJob()
+function m:ClearJob() end
 UnityEngine.ParticleSystem = m
 return m

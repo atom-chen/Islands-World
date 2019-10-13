@@ -14,7 +14,6 @@
 ---@field public hasBorder System.Boolean
 ---@field public premultipliedAlpha System.Boolean
 ---@field public pixelSize System.Single
-
 local m = { }
 UIBasicSprite = m
 return m

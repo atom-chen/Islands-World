@@ -1,5 +1,4 @@
 ---@class Coolape.NewList : System.Collections.ArrayList
-
 local m = { }
 ---public NewList .ctor()
 ---@return NewList

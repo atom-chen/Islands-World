@@ -12,7 +12,6 @@
 ---@field public one UnityEngine.Vector4
 ---@field public positiveInfinity UnityEngine.Vector4
 ---@field public negativeInfinity UnityEngine.Vector4
-
 local m = { }
 ---public Vector4 .ctor(Single x, Single y)
 ---public Vector4 .ctor(Single x, Single y, Single z)

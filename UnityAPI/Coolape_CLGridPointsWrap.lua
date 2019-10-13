@@ -9,7 +9,6 @@
 ---@field public vectors UnityEngine.Vector3
 ---@field public offsetType Coolape.CLGridPoints.OffsetType
 ---@field public offsetValue System.Single
-
 local m = { }
 ---public CLGridPoints .ctor()
 ---@return CLGridPoints

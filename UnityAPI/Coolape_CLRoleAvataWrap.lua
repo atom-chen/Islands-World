@@ -5,7 +5,6 @@
 ---@field public bodyPartNames System.Collections.Generic.List1System.String
 ---@field public bodyParts System.Collections.Generic.List1Coolape.CLBodyPart
 ---@field public bonesMap System.Collections.Hashtable
-
 local m = { }
 ---public CLRoleAvata .ctor()
 ---@return CLRoleAvata

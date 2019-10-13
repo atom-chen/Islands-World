@@ -2,7 +2,6 @@
 ---@field public kXAxis UnityEngine.Vector3
 ---@field public kZAxis UnityEngine.Vector3
 ---@field public uuid System.String
-
 local m = { }
 ---public String GetMacAddress()
 ---@return String

@@ -1,6 +1,6 @@
 ﻿require("role.IDRoleBase")
 -- 航船
----@class IDRShip
+---@class IDRShip:IDRoleBase
 IDRShip = class("IDRShip", IDRoleBase)
 
 function IDRShip:init(selfObj, id, star, lev, _isOffense, other)

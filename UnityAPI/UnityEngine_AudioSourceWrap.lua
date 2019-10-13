@@ -27,7 +27,6 @@
 ---@field public minDistance System.Single
 ---@field public maxDistance System.Single
 ---@field public rolloffMode UnityEngine.AudioRolloffMode
-
 local m = { }
 ---public AudioSource .ctor()
 ---@return AudioSource
@@ -42,6 +41,11 @@ function m:PlayDelayed(delay) end
 ---public Void PlayScheduled(Double time)
 ---@param optional Double time
 function m:PlayScheduled(time) end
+---public Void PlayOneShot(AudioClip clip)
+---public Void PlayOneShot(AudioClip clip, Single volumeScale)
+---@param AudioClip clip
+---@param optional Single volumeScale
+function m:PlayOneShot(clip, volumeScale) end
 ---public Void SetScheduledStartTime(Double time)
 ---@param optional Double time
 function m:SetScheduledStartTime(time) end
@@ -54,11 +58,6 @@ function m:Stop() end
 function m:Pause() end
 ---public Void UnPause()
 function m:UnPause() end
----public Void PlayOneShot(AudioClip clip)
----public Void PlayOneShot(AudioClip clip, Single volumeScale)
----@param AudioClip clip
----@param optional Single volumeScale
-function m:PlayOneShot(clip, volumeScale) end
 ---public Void PlayClipAtPoint(AudioClip clip, Vector3 position)
 ---public Void PlayClipAtPoint(AudioClip clip, Vector3 position, Single volume)
 ---@param AudioClip clip
@@ -92,15 +91,15 @@ function m:SetSpatializerFloat(index, value) end
 ---@param optional Int32 index
 ---@param optional Single& value
 function m:GetSpatializerFloat(index, value) end
----public Boolean SetAmbisonicDecoderFloat(Int32 index, Single value)
----@return bool
----@param optional Int32 index
----@param optional Single value
-function m:SetAmbisonicDecoderFloat(index, value) end
 ---public Boolean GetAmbisonicDecoderFloat(Int32 index, Single& value)
 ---@return bool
 ---@param optional Int32 index
 ---@param optional Single& value
 function m:GetAmbisonicDecoderFloat(index, value) end
+---public Boolean SetAmbisonicDecoderFloat(Int32 index, Single value)
+---@return bool
+---@param optional Int32 index
+---@param optional Single value
+function m:SetAmbisonicDecoderFloat(index, value) end
 UnityEngine.AudioSource = m
 return m

@@ -18,7 +18,6 @@
 ---@field public right UnityEngine.Vector3
 ---@field public positiveInfinity UnityEngine.Vector3
 ---@field public negativeInfinity UnityEngine.Vector3
-
 local m = { }
 ---public Vector3 .ctor(Single x, Single y)
 ---public Vector3 .ctor(Single x, Single y, Single z)

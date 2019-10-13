@@ -669,7 +669,7 @@ public class ECLProjectManager : EditorWindow
 		}
 	}
 
-	string createCfgBioDataFromJson (string className, string jsonPath)
+	public string createCfgBioDataFromJson (string className, string jsonPath)
 	{
 		Debug.Log (jsonPath);
 		ArrayList list = JSON.DecodeList (File.ReadAllText (Application.dataPath + "/" + jsonPath));
@@ -677,7 +677,9 @@ public class ECLProjectManager : EditorWindow
 			Debug.LogError ("Json decode error==" + jsonPath);
 			return "";
 		}
-		string outVerFile = getCfgBioDataPath (className);
+        genCfgLuaTips(className, (ArrayList)(list[0]));
+
+        string outVerFile = getCfgBioDataPath (className);
 		Directory.CreateDirectory (Path.GetDirectoryName (outVerFile));
 		ArrayList _list = null;
 		for (int i = 1; i < list.Count; i++) {
@@ -695,17 +697,36 @@ public class ECLProjectManager : EditorWindow
 		return outVerFile;
 	}
 
-	string getCfgBioDataPath (string className)
-	{
-		string outVerFile = "Assets/" + data.name + "/upgradeRes4Publish/priority/cfg/" + className + ".cfg";
-		return outVerFile;
-	}
+    void genCfgLuaTips(string className, ArrayList list)
+    {
+        string outFile = getCfgLuaClassPath(className);
+        Directory.CreateDirectory(Path.GetDirectoryName(outFile));
+        string str = "---@class " + className;
+        for(int i=0; i < list.Count; i++)
+        {
+            str = str + "\n---@field public "+ list[i];
+        }
+        File.WriteAllText(outFile, str);
+    }
 
-	/// <summary>
-	/// 取得最后一次更新后的版本信息
-	/// </summary>
-	/// <returns>The last upgrade ver.</returns>
-	public static Hashtable getLastUpgradeVer ()
+    string getCfgBioDataPath(string className)
+    {
+        string outVerFile = "Assets/" + data.name + "/upgradeRes4Publish/priority/cfg/" + className + ".cfg";
+        return outVerFile;
+    }
+
+    string getCfgLuaClassPath(string className)
+    {
+        string basePath = Path.GetDirectoryName(data.cfgFolderStr);
+        string outVerFile = basePath+"/cfgLuaTip/ " + className + ".lua";
+        return outVerFile;
+    }
+
+    /// <summary>
+    /// 取得最后一次更新后的版本信息
+    /// </summary>
+    /// <returns>The last upgrade ver.</returns>
+    public static Hashtable getLastUpgradeVer ()
 	{
 		string path = Application.dataPath + "/" + ver4Upgrade;
 		return fileToMap (path);
@@ -916,6 +937,25 @@ public class ECLProjectManager : EditorWindow
 		}
 		return retVal;
 	}
+
+
+    public void genCfgData()
+    {
+        Hashtable tmpCfgdataVer = null;
+        if (!String.IsNullOrEmpty(data.cfgFolderStr))
+        {
+            tmpCfgdataVer = ECLCreateVerCfg.create2Map(data.cfgFolderStr);
+        }
+        tmpCfgdataVer = tmpCfgdataVer == null ? new Hashtable() : tmpCfgdataVer;
+
+        string path = "";
+        foreach (DictionaryEntry cell in tmpCfgdataVer)
+        {
+            path = cell.Key.ToString();
+            string className = Path.GetFileNameWithoutExtension(path);
+            Debug.Log(createCfgBioDataFromJson(className, path));
+        }
+    }
 
     public void refreshAllAssetbundlesSkipCollect()
     {

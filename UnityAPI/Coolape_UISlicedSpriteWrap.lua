@@ -1,6 +1,5 @@
 ---@class Coolape.UISlicedSprite : UISprite
 ---@field public mCenter UIWidget
-
 local m = { }
 ---public UISlicedSprite .ctor()
 ---@return UISlicedSprite

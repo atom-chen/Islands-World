@@ -1,6 +1,5 @@
 ---@class Coolape.MapEx
 ---@field public map System.Collections.Hashtable
-
 local m = { }
 ---public MapEx .ctor()
 ---public MapEx .ctor(Hashtable map)

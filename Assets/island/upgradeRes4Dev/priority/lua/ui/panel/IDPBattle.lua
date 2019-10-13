@@ -1,12 +1,12 @@
 ﻿---@class WrapBattleUnitData 战斗单元的数据包装
 ---@field public type IDConst.UnitType
 ---@field public id System.Int32
----@field public name System.Int32
----@field public icon System.Int32
----@field public num System.Int32
+---@field public name String
+---@field public icon String
+---@field public num bio
 
 -- xx界面
-local IDPBattle = {}
+IDPBattle = {}
 
 local csSelf = nil
 local transform = nil
@@ -16,6 +16,8 @@ local uiobjs = {}
 
 -- 初始化，只会调用一次
 function IDPBattle.init(csObj)
+	---@type Coolape.CLPanelLua
+	IDPBattle.csSelf = csObj
     csSelf = csObj
     transform = csObj.transform
     --[[
@@ -72,13 +74,16 @@ function IDPBattle.initUnitCell(cell, data)
     cell:init(data, IDPBattle.onClickUnitCell)
 end
 
+---@param cell Coolape.CLCellLua
 function IDPBattle.onClickUnitCell(cell)
 	local data = cell.luaTable.getData()
+	IDPBattle.selectedUnit = cell
 	IDLBattle.setSelectedUnit(data)
 end
 
 -- 关闭页面
 function IDPBattle.hide()
+	IDPBattle.selectedUnit = nil
     CLUIDrag4World.removeCanClickPanel(csSelf.name)
 end
 
@@ -102,6 +107,10 @@ function IDPBattle.uiEventDelegate(go)
         -- net:send(NetProtoIsland.send.stopAttack)
         IDUtl.chgScene(GameMode.map)
     end
+end
+
+function IDPBattle.onDeployBattleUnit(data)
+	IDPBattle.selectedUnit.luaTable.show(nil, data)
 end
 
 -- 当按了返回键时，关闭自己（返值为true时关闭）

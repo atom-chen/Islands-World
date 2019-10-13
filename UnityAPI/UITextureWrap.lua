@@ -7,7 +7,6 @@
 ---@field public uvRect UnityEngine.Rect
 ---@field public drawingDimensions UnityEngine.Vector4
 ---@field public fixedAspect System.Boolean
-
 local m = { }
 ---public UITexture .ctor()
 ---@return UITexture

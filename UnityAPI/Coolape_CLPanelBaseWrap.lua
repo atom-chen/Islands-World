@@ -16,7 +16,6 @@
 ---@field public isFinishLoad System.Boolean
 ---@field public isFinishInit System.Boolean
 ---@field public depth System.Int32
-
 local m = { }
 ---public Int32 SortByName(UITweener a, UITweener b)
 ---@return number

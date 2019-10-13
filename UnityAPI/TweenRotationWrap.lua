@@ -4,7 +4,6 @@
 ---@field public quaternionLerp System.Boolean
 ---@field public cachedTransform UnityEngine.Transform
 ---@field public value UnityEngine.Quaternion
-
 local m = { }
 ---public TweenRotation .ctor()
 ---@return TweenRotation

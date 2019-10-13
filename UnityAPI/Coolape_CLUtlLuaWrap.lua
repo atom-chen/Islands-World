@@ -1,6 +1,5 @@
 ---@class Coolape.CLUtlLua
 ---@field public FileBytesCacheMap System.Collections.Hashtable
-
 local m = { }
 ---public CLUtlLua .ctor()
 ---@return CLUtlLua

@@ -13,7 +13,6 @@
 ---@field public uploadProgress System.Single
 ---@field public url System.String
 ---@field public keepWaiting System.Boolean
-
 local m = { }
 ---public WWW .ctor(String url)
 ---public WWW .ctor(String url, WWWForm form)

@@ -1,10 +1,10 @@
 ---@class UIFollowTarget : UnityEngine.MonoBehaviour
 ---@field public target UnityEngine.Transform
+---@field public targetPosition UnityEngine.Vector3
 ---@field public mGameCamera UnityEngine.Camera
 ---@field public mUICamera UnityEngine.Camera
 ---@field public offsetPos UnityEngine.Vector3
 ---@field public disableIfInvisible System.Boolean
-
 local m = { }
 ---public UIFollowTarget .ctor()
 ---@return UIFollowTarget
@@ -24,5 +24,9 @@ function m:getViewPos() end
 ---@param optional Transform target
 ---@param optional Vector3 offset
 function m:setTarget(target, offset) end
+---public Void setTargetPosition(Vector3 targetPosition, Vector3 offset)
+---@param optional Vector3 targetPosition
+---@param optional Vector3 offset
+function m:setTargetPosition(targetPosition, offset) end
 UIFollowTarget = m
 return m
