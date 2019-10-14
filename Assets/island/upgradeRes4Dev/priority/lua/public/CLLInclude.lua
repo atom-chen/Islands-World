@@ -379,6 +379,8 @@ do
     require("toolkit.CLLUpdateUpgrader")
     require("toolkit.CLLVerManager")
     require("toolkit.BitUtl")
+    ---@type CLQuickSort
+    CLQuickSort = require("toolkit.CLQuickSort")
     -------------------------------------------------------
     -- 全局变量
     __version__ = Application.version -- "1.0"

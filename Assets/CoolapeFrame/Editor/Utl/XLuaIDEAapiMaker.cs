@@ -18,7 +18,7 @@ using System.Linq;
 static public class XLuaIDEAapiMaker
 {
 	#region member
-	private static string m_apiDir = Application.dataPath + "/../UnityAPI";
+	private static string m_apiDir = Path.Combine(Path.GetDirectoryName(Application.dataPath), "UnityAPI");
 
 	private static Dictionary<string, int> m_nameCounter = new Dictionary<string, int> ();
 
