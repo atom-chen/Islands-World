@@ -6,6 +6,7 @@ IDLCameraMgr.smoothFollow = nil
 local csSelf = CameraMgr.self
 
 local profiles = {}
+local profileAssets = {}
 
 -- 初始化，只会调用一次
 function IDLCameraMgr.init()
@@ -44,8 +45,10 @@ function IDLCameraMgr.getProfile(name, callback)
             CLAssetType.assetBundle,
             function(_name, assets, orgs)
                 if assets then
-                    profile = assets.mainAsset
-                    profiles[name] = assets
+                    -- profile = assets.mainAsset
+                    profile = assets:LoadAsset(name, typeof(CS.UnityEngine.Rendering.PostProcessing.PostProcessProfile))
+                    profileAssets[name] = assets
+                    profiles[name] = profile
                     if callback then
                         callback(profile)
                     end
@@ -55,15 +58,16 @@ function IDLCameraMgr.getProfile(name, callback)
         )
     else
         if callback then
-            callback(profile.mainAsset)
+            callback(profile)
         end
     end
 end
 
 function IDLCameraMgr.clean()
-    for k, v in pairs(profiles) do
+    for k, v in pairs(profileAssets) do
         v:Unload(true)
     end
+    profileAssets = {}
     profiles = {}
 end
 

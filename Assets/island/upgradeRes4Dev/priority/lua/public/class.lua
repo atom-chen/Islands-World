@@ -1,3 +1,21 @@
+---@class ClassBase
+---@field public super ClassBase
+local m = {}
+function m.new()
+end
+function m:ctor(...)
+end
+---@public 取得父类的实例（在多重继承情况下，需要取得父类的实例时调用）
+---@param selfClass table 注意不能传self.class，因为self可能是子类
+function m:getBase(selfClass)
+end
+
+---@public 包装函数给c#用
+function m:wrapFunc(func)
+end
+function m:wrapFunction4CS(func)
+end
+
 ---@public 创建类
 ---使用例：
 --[[
@@ -83,19 +101,20 @@ function class(classname, super)
             instance:ctor(...)
             return instance
         end
-
     else
         -- inherited from Lua Object
         if super then
             --cls = clone(super)
             cls = {}
-            setmetatable(cls, { __index = super })
+            setmetatable(cls, {__index = super})
 
             cls.super = super
             cls.__lev = super.__lev + 1
         else
-            cls = { ctor = function()
-            end }
+            cls = {
+                ctor = function()
+                end
+            }
             cls.__lev = 1
         end
 
@@ -108,7 +127,7 @@ function class(classname, super)
         function cls:getBase(selfClass)
             local obj = self
 
-            while(obj) do
+            while (obj) do
                 if obj.__lev == selfClass.__lev then
                     return obj.super
                 else
@@ -118,8 +137,12 @@ function class(classname, super)
         end
 
         ---@public 包装函数给c#用
+        function cls:wrapFunc(func)
+            return self:wrapFunction4CS(func)
+        end
+        ---@public 包装函数给c#用
         function cls:wrapFunction4CS(func)
-            return { instance = self, func = func }
+            return {instance = self, func = func}
         end
 
         function cls.new(...)

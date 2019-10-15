@@ -25,7 +25,7 @@
 
 require("public.class")
 -- 角色基础相关
----@class IDRoleBase
+---@class IDRoleBase:ClassBase
 IDRoleBase = class("IDRoleBase")
 
 ---@param csSelf Coolape.CLUnit
@@ -43,10 +43,12 @@ function IDRoleBase:ctor(csSelf)
     self.serverData = nil       -- 服务器数据
     self.attr = nil             -- 属性
     self.isFinishInited = false
+    self.idDead = false
 end
 
 function IDRoleBase:init (selfObj, id, star, lev, _isOffense, other)
     self:__init(selfObj, other)
+    self.idDead = false
     self.isOffense = _isOffense
     self.id = id
 

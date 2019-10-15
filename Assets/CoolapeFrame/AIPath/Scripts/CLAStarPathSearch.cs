@@ -624,7 +624,6 @@ namespace Coolape
                     CLAStarNode node = nodesMap[i];
                     if (node.isObstruct)
                     {
-                        Debug.LogError(node.index);
                         //显示障碍格子
                         pos = node.position;
                         Gizmos.color = Color.red;

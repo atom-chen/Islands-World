@@ -26,7 +26,7 @@
 IDLBattle = {}
 ---@type IDPreloadPrefab
 local IDPreloadPrefab = require("public.IDPreloadPrefab")
----@type IDLBattleSeacher
+---@type IDLBattleSearcher
 local IDLBattleSearcher = require("battle.IDLBattleSearcher")
 ---@class BattleData 战场数据
 ---@field type IDConst.BattleType
@@ -105,6 +105,17 @@ function IDLBattle.onClickSomeObj(obg, pos)
     IDLBattle.deployBattleUnit()
 end
 
+---@public 开始战斗
+function IDLBattle.begain()
+    local buildings = city.getBuildings()
+    ---@param v IDLBuilding
+    for k, v in pairs(buildings) do
+        if v.begainAttack then
+            v:begainAttack()
+        end
+    end
+end
+
 function IDLBattle.deployBattleUnit()
     if IDLBattle.currSelectedUnit == nil then
         CLAlert.add(LGet("MsgSelectBattleUnit"), Color.yellow, 1)
@@ -122,12 +133,15 @@ function IDLBattle.deployBattleUnit()
     if (not city.astar4Ocean:isObstructNode(pos)) or IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
         if IDLBattle.isFirstDeployShip then
             -- 首次投放战斗单元，的处理
+
             IDLBattle.isFirstDeployShip = false
             if IDLBattle.mData.type == IDConst.BattleType.pvp then
                 SoundEx.playMainMusic("BattleSound1")
             elseif IDLBattle.mData.type == IDConst.BattleType.pvp then
                 SoundEx.playMainMusic("npc")
             end
+            -- 战斗正式开始
+            IDLBattle.begain()
         end
 
         if
@@ -192,9 +206,19 @@ function IDLBattle.onLoadShip(name, ship, orgs)
     pos = Vector3(offsetx + pos.x, pos.y, offsetz + pos.z)
     ship.transform.position = pos
     IDLBattle.offShips[ship.instanceID] = ship.luaTable
+    IDLBattle.someOneJoin(ship.luaTable)
+end
+
+---@type
+function IDLBattle.someOneJoin(unit)
+    IDLBattleSearcher.refreshUnit(unit)
 end
 
 function IDLBattle.onPressRole(isPress, role, pos)
+end
+
+function IDLBattle.searchTarget(unit)
+    return IDLBattleSearcher.searchTarget(unit)
 end
 
 function IDLBattle.clean()

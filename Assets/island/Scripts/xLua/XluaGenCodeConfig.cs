@@ -185,6 +185,7 @@ public static class XluaGenCodeConfig
         typeof(CLAStarPathSearch),
         typeof(CLSeeker),
         typeof(CLSeekerByRay),
+        typeof(InvokeEx),
 
 		//==========================
 		typeof(MirrorReflection),

@@ -24,7 +24,7 @@
 --]]
 require("public.class")
 -- 建筑基础相关
----@class IDLUnitBase
+---@class IDLUnitBase:ClassBase
 IDLUnitBase = class("IDLUnitBase")
 
 ---@param csSelf MyUnit
@@ -48,6 +48,7 @@ function IDLUnitBase:ctor(csSelf)
     self.gridIndex = -1 -- 所在格子的index
     self.oldindex = -1
     self.isFinishInited = false
+    self.isDead = false
 end
 
 function IDLUnitBase:__init(selfObj, other)
@@ -68,7 +69,8 @@ function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self:__init(selfObj, other)
     self.isOffense = _isOffense
     self.id = id
-
+    self.isDead = false
+    self.instanceID = self.csSelf.instanceID
     -- 取得属性配置
     ---@type IDDBBuilding
     self.serverData = other.serverData
@@ -90,7 +92,9 @@ function IDLUnitBase:loadShadow()
         CLUIOtherObjPool.borrowObjAsyn(
             shadowName,
             function(name, obj, orgs)
-                if (not self.gameObject.activeInHierarchy) or self.shadow ~= nil then
+                if (not self.gameObject.activeInHierarchy) 
+                or (not self.csSelf.mbody.gameObject.activeInHierarchy)
+                or self.shadow ~= nil then
                     CLUIOtherObjPool.returnObj(obj)
                     SetActive(obj, false)
                     return
@@ -112,18 +116,22 @@ function IDLUnitBase:loadShadow()
     end
 end
 
-function IDLUnitBase:clean()
-    self:_clean()
-end
-function IDLUnitBase:_clean()
-    self.canClick = true
-    self.isJump = false
-
+function IDLUnitBase:hideShadow()
     if self.shadow then
         CLUIOtherObjPool.returnObj(self.shadow.gameObject)
         SetActive(self.shadow.gameObject, false)
         self.shadow = nil
     end
+end
+
+function IDLUnitBase:clean()
+    self:_clean()
+end
+
+function IDLUnitBase:_clean()
+    self.canClick = true
+    self.isJump = false
+    self:hideShadow()
 end
 
 -- 可以放下
