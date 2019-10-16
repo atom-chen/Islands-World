@@ -93,60 +93,63 @@ namespace Coolape
 			}
 		}
 
-		public virtual void doFire (CLUnit attacker, CLUnit target, Vector3 orgPos, Vector3 dir, object attr, object data, object callbak)
-		{
-			this.attr = attr;
-			this.data = data;
-			this.attacker = attacker;
-			this.target = target;
-			onFinishCallback = callbak;
+        public virtual void doFire(CLUnit attacker, CLUnit target, Vector3 orgPos, Vector3 dir, object attr, object data, object callbak)
+        {
+            this.attr = attr;
+            this.data = data;
+            this.attacker = attacker;
+            this.target = target;
+            onFinishCallback = callbak;
 
-			int SpeedRandomFactor = MapEx.getBytes2Int (attr, "SpeedRandomFactor");
-//			int SpeedRandomFactor = NumEx.bio2Int (MapEx.getBytes (attr, "SpeedRandomFactor"));
-			speed = MapEx.getBytes2Int(attr, "Speed")/10.0f;
-//			speed = (NumEx.bio2Int (MapEx.getBytes (attr, "Speed"))) / 10.0f;
-			if (SpeedRandomFactor > 0) {
-				speed = speed + attacker.fakeRandom (-SpeedRandomFactor, SpeedRandomFactor) / 100.0f;
-			}
-			high = MapEx.getBytes2Int (attr, "High")/10.0f;
-//			high = NumEx.bio2Int (MapEx.getBytes (attr, "High"));
-			if (MapEx.getBool (attr, "IsHighOffset")) {
-				high = high * (1.0f + attacker.fakeRandom (-200, 200) / 1000.0f);
-			}
-			bool isZeroY = high > 0 ? true : false;
+            int SpeedRandomFactor = MapEx.getBytes2Int(attr, "SpeedRandomFactor");
+            //			int SpeedRandomFactor = NumEx.bio2Int (MapEx.getBytes (attr, "SpeedRandomFactor"));
+            speed = MapEx.getBytes2Int(attr, "Speed") / 10.0f;
+            //			speed = (NumEx.bio2Int (MapEx.getBytes (attr, "Speed"))) / 10.0f;
+            if (SpeedRandomFactor > 0) {
+                speed = speed + attacker.fakeRandom(-SpeedRandomFactor, SpeedRandomFactor) / 100.0f;
+            }
+            high = MapEx.getBytes2Int(attr, "High") / 10.0f;
+            //			high = NumEx.bio2Int (MapEx.getBytes (attr, "High"));
+            if (MapEx.getBool(attr, "IsHighOffset")) {
+                high = high * (1.0f + attacker.fakeRandom(-200, 200) / 1000.0f);
+            }
+            bool isZeroY = high > 0 ? true : false;
 
-			float dis = MapEx.getBytes2Int (attr, "Range")/10.0f;
-//			float dis = NumEx.bio2Int (MapEx.getBytes (attr, "Range")) / 10.0f;
-			isFollow = MapEx.getBool (attr, "IsFollow");
-			isMulHit = MapEx.getBool (attr, "IsMulHit");
-			needRotate = MapEx.getBool (attr, "NeedRotate");
-			dir.y = 0;
-			Utl.RotateTowards (transform, dir);
+            float dis = MapEx.getBytes2Int(attr, "Range") / 10.0f;
+            //			float dis = NumEx.bio2Int (MapEx.getBytes (attr, "Range")) / 10.0f;
+            isFollow = MapEx.getBool(attr, "IsFollow");
+            isMulHit = MapEx.getBool(attr, "IsMulHit");
+            needRotate = MapEx.getBool(attr, "NeedRotate");
+            dir.y = 0;
+            Utl.RotateTowards(transform, dir);
 
-			origin = orgPos;
-			transform.position = origin;
-			Vector3 toPos = Vector3.zero;
-			if (target != null && dis <= 0) {
-				toPos = target.transform.position;
-			} else {
-				toPos = origin + dir.normalized * dis;
-				toPos.y = 0;
-			}
-			int PosRandomFactor = MapEx.getBytes2Int (attr, "PosRandomFactor");
-//			int PosRandomFactor = NumEx.bio2Int (MapEx.getBytes (attr, "PosRandomFactor"));
-			if (PosRandomFactor > 0) {
-				toPos.x += attacker.fakeRandom (-PosRandomFactor, PosRandomFactor) / 100.0f;
-				toPos.y += attacker.fakeRandom (-PosRandomFactor, PosRandomFactor) / 100.0f;
-			}
+            origin = orgPos;
+            transform.position = origin;
+            Vector3 toPos = Vector3.zero;
+            if (target != null && dis <= 0) {
+                toPos = target.transform.position;
+            } else {
+                toPos = origin + dir.normalized * dis;
+                toPos.y = 0;
+            }
+            int PosRandomFactor = MapEx.getBytes2Int(attr, "PosRandomFactor");
+            //			int PosRandomFactor = NumEx.bio2Int (MapEx.getBytes (attr, "PosRandomFactor"));
+            if (PosRandomFactor > 0) {
+                toPos.x += attacker.fakeRandom(-PosRandomFactor, PosRandomFactor) / 100.0f;
+                toPos.y += attacker.fakeRandom(-PosRandomFactor, PosRandomFactor) / 100.0f;
+            }
 
-			if (isZeroY) {
-				toPos.y = 0;
-			}
-			if (MapEx.getBool (attr, "CheckTrigger")) {
-				boxCollider.enabled = true;
-			} else {
-				boxCollider.enabled = false;
-			}
+            if (isZeroY) {
+                toPos.y = 0;
+            }
+
+            if (boxCollider != null) { 
+                if (MapEx.getBool(attr, "CheckTrigger")) {
+                    boxCollider.enabled = true;
+                } else {
+                    boxCollider.enabled = false;
+                }
+            }
 			haveCollider = (boxCollider != null && boxCollider.enabled);
 
 			v3Diff = toPos - origin;
@@ -168,7 +171,7 @@ namespace Coolape
 			curveTime2 = 0;
 			isStoped = false;
 			isFireNow = true;
-			RotateButtle ();
+			RotateBullet ();
 			CancelInvoke ("timeOut");
 			int stayTime = MapEx.getBytes2Int (attr, "MaxStayTime");
 //			int stayTime = NumEx.bio2Int (MapEx.getBytes (attr, "MaxStayTime"));
@@ -180,7 +183,7 @@ namespace Coolape
 		RaycastHit hitInfor;
 		float magnitude = 1f;
 
-		public virtual void RotateButtle ()
+		public virtual void RotateBullet ()
 		{
 			if (needRotate) {
 				curveTime2 += Time.fixedDeltaTime * speed * 10 * magnitude;

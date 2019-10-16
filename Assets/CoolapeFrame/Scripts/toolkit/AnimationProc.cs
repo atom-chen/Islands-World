@@ -35,7 +35,7 @@ namespace Coolape
 		Animation animation {
 			get {
 				if (_animation != null) {
-					_animation = GetComponent<Animation> ();
+					_animation = GetComponentInChildren<Animation> ();
 				}
 				return _animation;
 			}
@@ -68,7 +68,7 @@ namespace Coolape
 				hideFrame = Mathf.FloorToInt (timeOut / Time.fixedDeltaTime);
 			}
 			if (animation != null) {
-				animation.Play ();
+                animation.Play ();
 			}
 			canFixedUpdate = true;
 		}

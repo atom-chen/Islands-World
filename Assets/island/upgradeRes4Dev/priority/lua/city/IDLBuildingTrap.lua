@@ -33,13 +33,13 @@ function IDLBuildingTrap:idel()
 end
 
 function IDLBuildingTrap:show()
-    SetActive(self.csSelf.mbody.gameObject, true)
+    SetActive(self.body.gameObject, true)
     self:loadShadow()
 end
 
 ---@public 把自己隐藏起来
 function IDLBuildingTrap:hide()
-    SetActive(self.csSelf.mbody.gameObject, false)
+    SetActive(self.body.gameObject, false)
     self:hideAttackRang()
     self:hideShadow()
 end

@@ -25,6 +25,7 @@ end
 
 function IDRShip:__init(selfObj, other)
     self:getBase(IDRShip).__init(self, selfObj, other)
+    ---@type Coolape.CLSeekerByRay
     self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
     if self.seeker == nil then
         self.seeker = self.csSelf:GetComponent("CLSeeker")
@@ -49,7 +50,7 @@ end
 
 function IDRShip:onArrived()
     if self.state == RoleState.walkAround then
-        self.csSelf:invoke4Lua(self:wrapFunction4CS(self.dogoAround), NumEx.NextInt(20, 60) / 10)
+        self.csSelf:invoke4Lua(self.dogoAround, NumEx.NextInt(20, 60) / 10)
     elseif self.state == RoleState.backDockyard then
         self.dockyard:onShipBack(self)
     end
@@ -78,8 +79,8 @@ end
 
 function IDRShip:chgState(state)
     if self.state == RoleState.walkAround then
-        self.csSelf:cancelInvoke4Lua(self:wrapFunction4CS(self.dogoAround))
-        self.csSelf:cancelInvoke4Lua(self:wrapFunction4CS(self.backtoDockyard))
+        self.csSelf:cancelInvoke4Lua(self.dogoAround)
+        self.csSelf:cancelInvoke4Lua(self.backtoDockyard)
     end
     self.state = state
 end
@@ -89,7 +90,7 @@ function IDRShip:goAround(dockyard)
     self.dockyard = dockyard
     self:chgState(RoleState.walkAround)
     self:dogoAround()
-    self.csSelf:invoke4Lua(self:wrapFunction4CS(self.backtoDockyard), NumEx.NextInt(600, 1800) / 10)
+    self.csSelf:invoke4Lua(self.backtoDockyard, NumEx.NextInt(600, 1800) / 10)
 end
 
 function IDRShip:backtoDockyard()

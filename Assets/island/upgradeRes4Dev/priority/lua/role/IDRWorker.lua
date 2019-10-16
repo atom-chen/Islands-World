@@ -1,6 +1,6 @@
 ﻿require("role.IDRoleBase")
 -- 工人
----@class IDRWorker
+---@class IDRWorker:IDRoleBase
 IDRWorker = class("IDRWorker", IDRoleBase)
 
 function IDRWorker:__init(selfObj, other)
@@ -161,13 +161,13 @@ end
 function IDRWorker:working()
     Utl.RotateTowards(self.transform, self.transform.position, self.target.transform.position)
     self:playAction("attack")
-    self.csSelf:invoke4Lua(self:wrapFunction4CS(self.gotoWork), self.target, NumEx.NextInt(30, 80) / 10)
+    self.csSelf:invoke4Lua(self.gotoWork, self.target, NumEx.NextInt(30, 80) / 10)
 end
 
 -- 结束工作
 function IDRWorker:finishWork()
     self.state = IDConst.RoleState.idel
-    self.csSelf:cancelInvoke4Lua(self:wrapFunction4CS(self.gotoWork))
+    self.csSelf:cancelInvoke4Lua(self.gotoWork)
     self.target = nil
     self:goHome()
 end

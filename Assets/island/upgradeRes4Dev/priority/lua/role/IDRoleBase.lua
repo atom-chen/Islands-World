@@ -113,7 +113,7 @@ function IDRoleBase:playAction(actionName, onCompleteMotion)
         return
     end
     if onCompleteMotion == nil then
-        onCompleteMotion = ActCBtoList(100, self:wrapFunction4CS(self.onActionFinish))
+        onCompleteMotion = ActCBtoList(100, self:wrapFunc(self.onActionFinish))
     end
     self.action:setAction(getAction(actionName), onCompleteMotion)
 end

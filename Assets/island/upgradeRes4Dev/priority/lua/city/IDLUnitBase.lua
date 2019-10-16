@@ -59,6 +59,7 @@ function IDLUnitBase:__init(selfObj, other)
     self.csSelf = selfObj
     self.transform = selfObj.transform
     self.gameObject = selfObj.gameObject
+    --- @type UnityEngine.Transform
     self.body = selfObj.mbody
     self.tweenScale = getCC(self.transform, "body", "TweenScale")
     self.door = getChild(self.transform, "door")
@@ -70,6 +71,7 @@ function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self.isOffense = _isOffense
     self.id = id
     self.isDead = false
+    self.csSelf.isDead = false
     self.instanceID = self.csSelf.instanceID
     -- 取得属性配置
     ---@type IDDBBuilding

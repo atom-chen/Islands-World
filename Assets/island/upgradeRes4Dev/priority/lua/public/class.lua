@@ -142,12 +142,21 @@ function class(classname, super)
         end
         ---@public 包装函数给c#用
         function cls:wrapFunction4CS(func)
-            return {instance = self, func = func}
+            if func == nil then
+                return nil
+            end
+            local infor = self.__wrapFuncMap[func]
+            if infor == nil then
+                infor = {instance = self, func = func}
+                self.__wrapFuncMap[func] = infor
+            end
+            return infor
         end
 
         function cls.new(...)
             local instance = setmetatable({}, cls)
             instance.class = cls
+            instance.__wrapFuncMap = {} -- 包装函数缓存
             instance:ctor(...)
             return instance
         end

@@ -630,8 +630,9 @@ function IDMainCity.clean()
     end
     buildings = {}
 
+    ---@param v IDRWorker
     for k, v in pairs(buildingsWithWorkers) do
-        v.luaTable.clean()
+        v.csSelf:clean()
         CLRolePool.returnObj(v)
         SetActive(v.gameObject, false)
     end

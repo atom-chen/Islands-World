@@ -5,9 +5,14 @@ require("city.IDLBuilding")
 IDLBuildingDefense = class("IDLBuildingDefense", IDLBuilding)
 
 function IDLBuildingDefense:__init(selfObj, other)
+    if self.isFinishInited then
+        return
+    end
     self:getBase(IDLBuildingDefense).__init(self, selfObj, other)
-    -- 炮口
-    self.cannon = self.csSelf.mbody:Find("cannon")
+    ---@type TweenRotation
+    self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
+    ---@type Coolape.CLEjector 发射器
+    self.ejector = getCC(self.csSelf.mbody, "pao/pao_sz/cannon", "CLEjector")
 end
 
 function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)
@@ -35,9 +40,6 @@ function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)
         self.bulletAttr = DBCfg.getBulletByID(Bullets)
     end
 
-    if self.bodyRotate == nil then
-        self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
-    end
     if GameModeSub.city == IDWorldMap.mode then
         self:idel()
     end
@@ -48,6 +50,7 @@ function IDLBuildingDefense:idel()
     if self.bodyRotate == nil then
         return
     end
+    self.bodyRotate.duration = 0.5
     self.bodyRotate.from = self.bodyRotate.transform.localEulerAngles
     self.bodyRotate.to = Vector3(0, 0, NumEx.NextInt(0, 360))
     self.bodyRotate.duration = NumEx.NextInt(3, 8) / 5
@@ -145,10 +148,10 @@ end
 
 function IDLBuildingDefense:begainAttack()
     self.csSelf:cancelInvoke4Lua(self.idel)
-    self:attack()
+    self:doAttack()
 end
 
-function IDLBuildingDefense:attack()
+function IDLBuildingDefense:doAttack()
     if GameMode.battle ~= MyCfg.mode or self.isDead then
         return
     end
@@ -162,34 +165,55 @@ function IDLBuildingDefense:attack()
             self.target = IDLBattle.searchTarget(self)
         end
     end
-    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.attack), bio2number(self.attr.AttackSpeedMS) / 1000)
+    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
 
     if self.target then
-        printe("================")
         self.csSelf.mTarget = self.target.csSelf
         local dir = self.target.transform.position - self.transform.position
         -- 炮面向目标
-        Utl.RotateTowards(self.transform, dir)
+        self:lookatTarget(self.target)
+        SoundEx.playSound(self.attr.AttackSound, 1, 3)
         self:fire(self.target)
     end
 end
 
 ---@public 开炮
 function IDLBuildingDefense:fire(target)
-    CLBulletBase.fire(
-        self.csSelf,
-        self.target.csSelf,
-        self.cannon.position,
-        self.bulletAttr,
-        nil,
-        function()
-        end
-    )
+    local dir = target.transform.position - self.transform.position
+    SetActive(self.ejector.gameObject, true)
+    self.ejector:fire(self.csSelf, self.target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
+end
+
+---@public
+---@param bullet Coolape.CLBulletBase
+function IDLBuildingDefense:onBulletHit(bullet)
+    ---@type DBCFBulletData
+    local bulletAttr = bullet.attr
+    CLEffect.play(bulletAttr.HitEffect, bullet.transform.position)
+end
+
+-- 炮口面向目标
+function IDLBuildingDefense:lookatTarget(target, callback)
+    local v1 = Vector2(self.bodyRotate.transform.position.x, self.bodyRotate.transform.transform.position.z)
+    local v2 = Vector2(target.transform.position.x, target.transform.position.z)
+    local toAn = MyUtl.calculateAngle(v1, v2)
+
+    self.bodyRotate.duration = 0.2
+    self.bodyRotate.from = self.bodyRotate.transform.localEulerAngles
+    self.bodyRotate.to = Vector3(0, 0, toAn)
+    -- if (needCallback) then
+    --     self.bodyRotate.onFinished = onFinishCannonLookAt
+    -- else
+    --     self.bodyRotate.onFinished = nil
+    -- end
+    self.bodyRotate:Reset()
+    self.bodyRotate:Play(true)
 end
 
 function IDLBuildingDefense:clean()
     self.target = nil
     self.csSelf:cancelInvoke4Lua()
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doAttack))
     self:getBase(IDLBuildingDefense).clean(self)
     self:hideAttackRang()
 end

@@ -2,6 +2,7 @@
 do
     local IDPBuildShip = {}
 
+    ---@type Coolape.CLPanelLua
     local csSelf = nil
     local transform = nil
     local uiobjs = {}
@@ -207,6 +208,10 @@ do
         if roleAttr == nil then
             CLUIOtherObjPool.borrowObjAsyn("AttrUIPoc",
                     function(name, go, orgs)
+                        if (not csSelf.gameObject.activeInHierarchy) or roleAttr then
+                            CLUIOtherObjPool.returnObj(go)
+                            SetActive(go, false)
+                        end
                         roleAttr = go:GetComponent("CLCellLua")
                         roleAttr.transform.parent = uiobjs.AttrRoot
                         roleAttr.transform.localScale = Vector3.one
@@ -250,6 +255,10 @@ do
         if uiobjs.sliderNum == nil then
             CLUIOtherObjPool.borrowObjAsyn("SliderNumber",
                     function(name, go, orgs)
+                        if (not csSelf.gameObject.activeInHierarchy) or uiobjs.sliderNum then
+                            CLUIOtherObjPool.returnObj(go)
+                            SetActive(go, false)
+                        end
                         uiobjs.sliderNum = go:GetComponent("CLCellLua")
                         uiobjs.sliderNum.transform.parent = uiobjs.NumRoot
                         uiobjs.sliderNum.transform.localScale = Vector3.one

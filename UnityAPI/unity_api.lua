@@ -128,6 +128,7 @@ Coolape_CLAStarPathSearch = Coolape.CLAStarPathSearch
 Coolape_CLSeeker = Coolape.CLSeeker
 Coolape_CLSeekerByRay = Coolape.CLSeekerByRay
 Coolape_InvokeEx = Coolape.InvokeEx
+Coolape_CLEjector = Coolape.CLEjector
 Coolape_GridBase = Coolape.GridBase
 Coolape_CLSmoothFollow = Coolape.CLSmoothFollow
 UnityEngine_ScriptableObject = UnityEngine.ScriptableObject

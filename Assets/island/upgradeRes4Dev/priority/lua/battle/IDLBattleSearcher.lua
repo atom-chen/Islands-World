@@ -93,6 +93,7 @@ function IDLBattleSearcher.sortGridCells(building, min, max, cells)
             return a.dis < b.dis
         end
     )
+
     return list
 end
 
@@ -151,7 +152,7 @@ end
 function IDLBattleSearcher.searchTarget(unit)
     if unit.isBuilding then
         -- 说明是建筑的防御设施
-        return IDLBattleSearcher.searchRole4Def(unit)
+        return IDLBattleSearcher.buildingSearchRole4Def(unit)
     else
         -- 说明是角色
     end
@@ -159,12 +160,12 @@ end
 
 ---@public 防御设施寻敌人
 ---@param building IDLBuilding
-function IDLBattleSearcher.searchRole4Def(building)
+function IDLBattleSearcher.buildingSearchRole4Def(building)
     local cells = buildingsRange[building.instanceID]
     local taget, preferedTarget
     local PreferedTargetType = bio2number(building.attr.PreferedTargetType)
     ---@param v BuildingRangeInfor
-    for i, v in ipairs(cells) do
+    for i, v in ipairs(cells or {}) do
         local map = offense[v.index]
         if map then
             ---@param role IDRoleBase

@@ -22,7 +22,7 @@
 -- //           游戏大卖       公司腾飞
 -- //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 --]]
----@public 战斗逻辑
+---@class IDLBattle  战斗逻辑
 IDLBattle = {}
 ---@type IDPreloadPrefab
 local IDPreloadPrefab = require("public.IDPreloadPrefab")
@@ -35,7 +35,9 @@ local IDLBattleSearcher = require("battle.IDLBattleSearcher")
 
 ---@type WrapBattleUnitData
 IDLBattle.currSelectedUnit = nil
+---@type Coolape.CLBaseLua
 local csSelf = nil
+---@type UnityEngine.Transform
 local transform = nil
 ---@type IDMainCity
 local city = nil -- 城池对象
@@ -48,14 +50,22 @@ IDLBattle.isFirstDeployShip = true
 local EachDeployNum = 3
 -- 进攻舰船
 IDLBattle.offShips = {}
+local __isInited = false
 
 --------------------------------------------
 function IDLBattle._init()
-    local cs = GameObject("battleRoot"):AddComponent(typeof(CLBaseLua))
-    csSelf = cs
-    IDLBattle.csSelf = cs
-    IDLBattle.gameObject = cs.gameObject
-    IDLBattle.transform = cs.transform
+    if __isInited then
+        return
+    end
+    __isInited = true
+    local go = GameObject("battleRoot")
+    csSelf = go:AddComponent(typeof(CLBaseLua))
+    ---@type Coolape.CLBaseLua
+    IDLBattle.csSelf = csSelf
+    IDLBattle.csSelf.luaTable = IDLBattle
+
+    IDLBattle.gameObject = csSelf.gameObject
+    IDLBattle.transform = csSelf.transform
     transform = IDLBattle.transform
     IDLBattle.transform.parent = MyMain.self.transform
     IDLBattle.transform.localPosition = Vector3.zero
@@ -67,6 +77,7 @@ end
 ---@param callback 回调
 ---@param progressCB 进度回调
 function IDLBattle.init(data, callback, progressCB)
+    IDLBattle._init()
     IDLBattle.mData = data
     -- 先暂停资源释放
     CLAssetsManager.self:pause()
@@ -141,7 +152,7 @@ function IDLBattle.deployBattleUnit()
                 SoundEx.playMainMusic("npc")
             end
             -- 战斗正式开始
-            IDLBattle.begain()
+            IDLBattle.csSelf:invoke4Lua(IDLBattle.begain, 1)
         end
 
         if
@@ -218,6 +229,7 @@ function IDLBattle.onPressRole(isPress, role, pos)
 end
 
 function IDLBattle.searchTarget(unit)
+    printe("IDLBattle.searchTarget")
     return IDLBattleSearcher.searchTarget(unit)
 end
 

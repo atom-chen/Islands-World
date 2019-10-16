@@ -334,6 +334,8 @@ do
     CLSmoothFollow = CS.Coolape.CLSmoothFollow
     ---@type Coolape.uvAn
     uvAn = CS.Coolape.uvAn
+    ---@type Coolape.CLEjector
+    CLEjector = CS.Coolape.CLEjector
     -------------------------------------------------------
     --
     ---@type MyMain
@@ -352,6 +354,8 @@ do
     MyUnit = CS.MyUnit
     ---@type SFourWayArrow
     SFourWayArrow = CS.SFourWayArrow
+    ---@type MyUtl
+    MyUtl = CS.MyUtl
 
     ---@type CameraMgr
     CameraMgr = CS.CameraMgr
