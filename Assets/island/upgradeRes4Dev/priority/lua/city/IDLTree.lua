@@ -1,6 +1,6 @@
 ﻿require("city.IDLUnitBase")
----@class IDLTree
-IDLTree = class("IDLTree", IDLUnitBase)
+---@class IDLTree:IDLBuilding
+IDLTree = class("IDLTree", IDLBuilding)
 
 function IDLTree:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()

@@ -4,6 +4,7 @@
 ---@field public name String
 ---@field public icon String
 ---@field public num bio
+---@field public lev bio
 
 -- xx界面
 IDPBattle = {}
@@ -16,8 +17,8 @@ local uiobjs = {}
 
 -- 初始化，只会调用一次
 function IDPBattle.init(csObj)
-	---@type Coolape.CLPanelLua
-	IDPBattle.csSelf = csObj
+    ---@type Coolape.CLPanelLua
+    IDPBattle.csSelf = csObj
     csSelf = csObj
     transform = csObj.transform
     --[[
@@ -65,6 +66,8 @@ function IDPBattle.showShips()
             cellData = shipMap[shipId]
             cellData.num = number2bio(bio2number(v.num) + bio2number(cellData.num))
         end
+        --//TODO:需要根据科技来设置等级
+        cellData.lev = number2bio(1)
     end
 
     CLUIUtl.resetList4Lua(uiobjs.unitGrid, uiobjs.unitGridPrefab, shipMap, IDPBattle.initUnitCell)
@@ -76,14 +79,14 @@ end
 
 ---@param cell Coolape.CLCellLua
 function IDPBattle.onClickUnitCell(cell)
-	local data = cell.luaTable.getData()
-	IDPBattle.selectedUnit = cell
-	IDLBattle.setSelectedUnit(data)
+    local data = cell.luaTable.getData()
+    IDPBattle.selectedUnit = cell
+    IDLBattle.setSelectedUnit(data)
 end
 
 -- 关闭页面
 function IDPBattle.hide()
-	IDPBattle.selectedUnit = nil
+    IDPBattle.selectedUnit = nil
     CLUIDrag4World.removeCanClickPanel(csSelf.name)
 end
 
@@ -110,7 +113,7 @@ function IDPBattle.uiEventDelegate(go)
 end
 
 function IDPBattle.onDeployBattleUnit(data)
-	IDPBattle.selectedUnit.luaTable.show(nil, data)
+    IDPBattle.selectedUnit.luaTable.show(nil, data)
 end
 
 -- 当按了返回键时，关闭自己（返值为true时关闭）

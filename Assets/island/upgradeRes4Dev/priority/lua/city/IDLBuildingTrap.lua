@@ -48,32 +48,48 @@ end
 function IDLBuildingTrap:showAttackRang()
     -- 触发半径
     local lev = self.serverData and bio2number(self.serverData.lev) or 1
-    local TriggerRadius = DBCfg.getGrowingVal(
-        bio2number(self.attr.TriggerRadiusMin), 
-        bio2number(self.attr.TriggerRadiusMax), 
-        bio2number(self.attr.TriggerRadiusCurve), 
-        lev / bio2number(self.attr.MaxLev))
-        TriggerRadius = TriggerRadius/100
+    local TriggerRadius =
+        DBCfg.getGrowingVal(
+        bio2number(self.attr.TriggerRadiusMin),
+        bio2number(self.attr.TriggerRadiusMax),
+        bio2number(self.attr.TriggerRadiusCurve),
+        lev / bio2number(self.attr.MaxLev)
+    )
+    TriggerRadius = TriggerRadius / 100
 
     if TriggerRadius > 0 then
         if self.attackMinRang == nil then
-            self:loadRang(Color.blue, TriggerRadius, function(rangObj)
-                self.attackMinRang = rangObj
-            end)
+            self:loadRang(
+                Color.blue,
+                TriggerRadius,
+                function(rangObj)
+                    self.attackMinRang = rangObj
+                end
+            )
         else
             SetActive(self.attackMinRang.gameObject, true)
         end
     end
 
     local lev = self.serverData and bio2number(self.serverData.lev) or 1
-    local MaxAttackRange = DBCfg.getGrowingVal(bio2number(self.attr.AttackRangeMin), bio2number(self.attr.AttackRangeMax), bio2number(self.attr.AttackRangeCurve), lev / bio2number(self.attr.MaxLev))
+    local MaxAttackRange =
+        DBCfg.getGrowingVal(
+        bio2number(self.attr.AttackRangeMin),
+        bio2number(self.attr.AttackRangeMax),
+        bio2number(self.attr.AttackRangeCurve),
+        lev / bio2number(self.attr.MaxLev)
+    )
     MaxAttackRange = MaxAttackRange / 100
     -- 最远攻击范围
     if MaxAttackRange > 0 then
         if self.attackMaxRang == nil then
-            self:loadRang(Color.white, MaxAttackRange, function(rangObj)
-                self.attackMaxRang = rangObj
-            end)
+            self:loadRang(
+                Color.white,
+                MaxAttackRange,
+                function(rangObj)
+                    self.attackMaxRang = rangObj
+                end
+            )
         else
             SetActive(self.attackMaxRang.gameObject, true)
         end

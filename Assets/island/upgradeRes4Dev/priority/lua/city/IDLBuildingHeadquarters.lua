@@ -28,7 +28,7 @@ end
 
 ---@public 显示隐藏（可能为连带做一些其它的处理）
 function IDLBuildingHeadquarters:SetActive(active)
-    -- self:getBase(IDLBuilding).SetActive(self, active)
+    -- self:getBase(IDLBuildingHeadquarters).SetActive(self, active)
     if active then
         -- self:loadFloor()
         self:upgrading()

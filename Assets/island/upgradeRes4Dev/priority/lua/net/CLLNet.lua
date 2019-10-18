@@ -93,12 +93,14 @@ function CLLNet.dispatchGame(map)
             CLPanelManager.topPanel:procNetwork("outofNetConnect", -9999, "outofNetConnect", nil)
 
             -- 处理断线处理
+            --[[//TODO:先屏掉
             if GameMode.none ~= MyCfg.mode then
                 local ok, result = pcall(procOffLine)
                 if not ok then
                     printe(result)
                 end
             end
+            ]]
         end
     else
         local dispatchInfor = NetProtoIsland.dispatch[map[0]]

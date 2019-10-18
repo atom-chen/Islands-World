@@ -51,6 +51,7 @@ local EachDeployNum = 3
 -- 进攻舰船
 IDLBattle.offShips = {}
 local __isInited = false
+IDLBattle.isDebug = false
 
 --------------------------------------------
 function IDLBattle._init()
@@ -81,19 +82,23 @@ function IDLBattle.init(data, callback, progressCB)
     IDLBattle.mData = data
     -- 先暂停资源释放
     CLAssetsManager.self:pause()
+    IDWorldMap.addFinishEnterCityCallback(IDLBattle.onEnterCity)
     -- 加载城
     IDMainCity.init(
         IDLBattle.mData.targetCity,
         function()
             city = IDMainCity
             grid = city.grid
-            -- 初始化寻敌器
-            IDLBattleSearcher.init(city)
             -- 预加载进攻方兵种
             IDLBattle.prepareSoliders(IDLBattle.mData.offShips, callback, progressCB)
         end,
         progressCB
     )
+end
+
+function IDLBattle.onEnterCity()
+    -- 初始化寻敌器
+    IDLBattleSearcher.init(city)
 end
 
 ---@public 预加载进攻方兵种
@@ -112,7 +117,10 @@ function IDLBattle.onClickOcean()
     IDLBattle.deployBattleUnit()
 end
 ---@public 通知战场，玩家点击了我
-function IDLBattle.onClickSomeObj(obg, pos)
+function IDLBattle.onClickSomeObj(obj, pos)
+    if IDLBattle.isDebug and obj.isBuilding then
+        IDLBattleSearcher.debugBuildingAttackRange(obj)
+    end
     IDLBattle.deployBattleUnit()
 end
 
@@ -220,22 +228,29 @@ function IDLBattle.onLoadShip(name, ship, orgs)
     IDLBattle.someOneJoin(ship.luaTable)
 end
 
----@type
+---public 有单位加入战场
+---@param unit IDLUnitBase
 function IDLBattle.someOneJoin(unit)
     IDLBattleSearcher.refreshUnit(unit)
+end
+
+---public 有单位死掉了
+---@param unit IDLUnitBase
+function IDLBattle.someOneDead(unit)
+    --//TODO: 有单位死掉了
 end
 
 function IDLBattle.onPressRole(isPress, role, pos)
 end
 
 function IDLBattle.searchTarget(unit)
-    printe("IDLBattle.searchTarget")
     return IDLBattleSearcher.searchTarget(unit)
 end
 
 function IDLBattle.clean()
     IDLBattle.isFirstDeployShip = true
     IDLBattle.currSelectedUnit = nil
+    IDWorldMap.rmFinishEnterCityCallback(IDLBattle.onEnterCity)
     -- 恢复资源释放
     CLAssetsManager.self:regain()
 
@@ -251,6 +266,9 @@ function IDLBattle.clean()
     if city then
         city.clean()
         city = nil
+    end
+    if IDLBattleSearcher then
+        IDLBattleSearcher.clean()
     end
 end
 

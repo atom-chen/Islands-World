@@ -97,14 +97,22 @@ function IDRShip:backtoDockyard()
     self:chgState(RoleState.backDockyard)
     if self.dockyard then
         local toPos = self.dockyard.door.position
-        self.seeker:seekAsyn(toPos)
+        if self.attr.IsFlying then
+            self.seeker:seek(toPos)
+        else
+            self.seeker:seekAsyn(toPos)
+        end
     end
 end
 
 function IDRShip:dogoAround()
     local index = NumEx.NextInt(0, IDMainCity.grid.grid.NumberOfCells)
     local toPos = IDMainCity.grid.grid:GetCellCenter(index)
-    self.seeker:seekAsyn(toPos)
+    if self.attr.IsFlying then
+        self.seeker:seek(toPos)
+    else
+        self.seeker:seekAsyn(toPos)
+    end
 end
 
 function IDRShip:clean()

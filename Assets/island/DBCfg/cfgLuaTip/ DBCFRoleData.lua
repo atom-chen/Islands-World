@@ -18,8 +18,12 @@
 ---@field public ArsenalLev
 ---@field public TechTypeID
 ---@field public TechlevLimit
----@field public Damage
----@field public Hitpoints
+---@field public DamageMin
+---@field public DamageMax
+---@field public DamageCurve
+---@field public HPMin
+---@field public HPMax
+---@field public HPCurve
 ---@field public Hidden
 ---@field public IsFlying
 ---@field public FlyHeigh
@@ -34,6 +38,8 @@
 ---@field public DamageRadius
 ---@field public AttackEffect
 ---@field public AttackSound
+---@field public DeadSound
+---@field public DeadEffect
 ---@field public AirTargets
 ---@field public GroundTargets
 ---@field public Bullets

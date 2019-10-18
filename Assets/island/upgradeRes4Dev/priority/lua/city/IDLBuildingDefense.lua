@@ -155,20 +155,24 @@ function IDLBuildingDefense:doAttack()
     if GameMode.battle ~= MyCfg.mode or self.isDead then
         return
     end
-    if self.target == nil or self.target.idDead then
+    local target = self.target
+    if target == nil or target.isDead then
         -- 重新寻敌
-        self.target = IDLBattle.searchTarget(self)
+        target = IDLBattle.searchTarget(self)
     else
-        local dis = Vector3.Distance(self.transform.position, self.target.transform.position)
-        if dis > self.MaxAttackRange or dis < self.MinAttackRange then
+        local dis = Vector3.Distance(self.transform.position, target.transform.position)
+        -- dis减掉0.6，是因为寻敌时用的网格的index来计算的距离，因为可有可以对象在网格边上的情况
+        if (dis - 0.6) > self.MaxAttackRange or dis < self.MinAttackRange then
             -- 重新寻敌
-            self.target = IDLBattle.searchTarget(self)
+            target = IDLBattle.searchTarget(self)
         end
     end
     InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
 
-    if self.target then
-        self.csSelf.mTarget = self.target.csSelf
+    -- 设置目标
+    self:setTarget(target)
+
+    if target then
         local dir = self.target.transform.position - self.transform.position
         -- 炮面向目标
         self:lookatTarget(self.target)
@@ -177,7 +181,22 @@ function IDLBuildingDefense:doAttack()
     end
 end
 
+---@public 设置攻击目标
+---@param target IDRoleBase
+function IDLBuildingDefense:setTarget(target)
+    if self.target == target then
+        return
+    end
+    self.target = target
+    if target then
+        self.csSelf.mTarget = target.csSelf
+    else
+        self.csSelf.mTarget = nil
+    end
+end
+
 ---@public 开炮
+---@param target IDRoleBase
 function IDLBuildingDefense:fire(target)
     local dir = target.transform.position - self.transform.position
     SetActive(self.ejector.gameObject, true)
@@ -189,31 +208,50 @@ end
 function IDLBuildingDefense:onBulletHit(bullet)
     ---@type DBCFBulletData
     local bulletAttr = bullet.attr
+    ---@type IDRoleBase
+    local target = bullet.target and bullet.target.luaTable or nil
     CLEffect.play(bulletAttr.HitEffect, bullet.transform.position)
+    SoundEx.playSound(bulletAttr.HitSFX, 1, 2)
+    if bulletAttr.IsScreenShake then
+    end
+    if target and (not target.isDead) then
+        local dis = Vector3.Distance(bullet.transform.position, bullet.target.transform.position)
+        if dis <= 0.5 then
+            -- 半格范围内都算击中目标
+            target:onHurt(self:getDamage(), self)
+        end
+    end
 end
 
--- 炮口面向目标
-function IDLBuildingDefense:lookatTarget(target, callback)
-    local v1 = Vector2(self.bodyRotate.transform.position.x, self.bodyRotate.transform.transform.position.z)
-    local v2 = Vector2(target.transform.position.x, target.transform.position.z)
-    local toAn = MyUtl.calculateAngle(v1, v2)
+---@public 取得伤害值
+function IDLBuildingDefense:getDamage()
+    ---//TODO:可能还需要处理一些伤害加成等
+    return bio2number(self.data.damage)
+end
 
-    self.bodyRotate.duration = 0.2
-    self.bodyRotate.from = self.bodyRotate.transform.localEulerAngles
-    self.bodyRotate.to = Vector3(0, 0, toAn)
-    -- if (needCallback) then
-    --     self.bodyRotate.onFinished = onFinishCannonLookAt
-    -- else
-    --     self.bodyRotate.onFinished = nil
-    -- end
-    self.bodyRotate:Reset()
-    self.bodyRotate:Play(true)
+---@public 炮口面向目标
+---@param target IDRoleBase
+function IDLBuildingDefense:lookatTarget(target, imm, callback)
+    self.bodyRotate.enabled = false
+    local toAngel = Utl.getAngle(self.transform.position, target.transform.position)
+    if imm then
+        self.bodyRotate.transform.localEulerAngles = Vector3(0, 0, toAngel.y)
+    else
+        self.bodyRotate.duration = 0.2
+        self.bodyRotate.from = self.bodyRotate.transform.localEulerAngles
+        self.bodyRotate.to = Vector3(0, 0, toAngel.y)
+        self.bodyRotate:ResetToBeginning()
+        self.bodyRotate:Play(true)
+        if callback then
+            self.csSelf:invoke4Lua(callback, 0.2)
+        end
+    end
 end
 
 function IDLBuildingDefense:clean()
-    self.target = nil
-    self.csSelf:cancelInvoke4Lua()
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doAttack))
+    self:setTarget(nil)
+    self.csSelf:cancelInvoke4Lua()
     self:getBase(IDLBuildingDefense).clean(self)
     self:hideAttackRang()
 end

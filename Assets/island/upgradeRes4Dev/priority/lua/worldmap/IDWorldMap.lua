@@ -8,6 +8,8 @@ local transform = nil
 local gameObject
 local cellSize = 10
 local ConstCreenSize = 10
+-- 完成进城时的回调
+IDWorldMap.finishEnterCityCallbacks = {}
 ---@type CLGrid
 IDWorldMap.grid = nil
 IDWorldMap.mode = GameModeSub.none
@@ -477,6 +479,24 @@ function IDWorldMap.onClickSelfCity()
     IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
 end
 
+---@public 添加进城的回调
+function IDWorldMap.addFinishEnterCityCallback(func)
+    IDWorldMap.finishEnterCityCallbacks[func] = func
+end
+---@public remove进城的回调
+function IDWorldMap.rmFinishEnterCityCallback(func)
+    IDWorldMap.finishEnterCityCallbacks[func] = nil
+end
+
+---@public 处理当进城后的回调
+function IDWorldMap.finisEnterCity()
+    for k,func in pairs(IDWorldMap.finishEnterCityCallbacks) do
+        if func then
+            func()
+        end
+    end
+end
+
 IDWorldMap.popupEvent = {
     ---@public 进入的城
     enterCity = function(cellIndex)
@@ -486,7 +506,7 @@ IDWorldMap.popupEvent = {
             Vector2(smoothFollow.distance, smoothFollow.height),
             Vector2(10, 15),
             3,
-            nil,
+            IDWorldMap.finisEnterCity,
             IDWorldMap.scaleGround
         )
         lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
@@ -583,6 +603,7 @@ end
 
 ---@public 离开世界后的清理
 function IDWorldMap.clean()
+    IDWorldMap.finishEnterCityCallbacks = {}
     IDWorldMap.cleanPages()
     if IDWorldMap.mapTileSize then
         CLThingsPool.returnObj(IDWorldMap.mapTileSize)

@@ -25,11 +25,13 @@ function IDLBuildingStore:showStoreState()
     end
     local stored = bio2number(self.serverData.val)
 
-    local maxStore = DBCfg.getGrowingVal(
-            bio2number(self.attr.ComVal1Min),
-            bio2number(self.attr.ComVal1Max),
-            bio2number(self.attr.ComVal1Curve),
-            bio2number(self.serverData.lev) / bio2number(self.attr.MaxLev))
+    local maxStore =
+        DBCfg.getGrowingVal(
+        bio2number(self.attr.ComVal1Min),
+        bio2number(self.attr.ComVal1Max),
+        bio2number(self.attr.ComVal1Curve),
+        bio2number(self.serverData.lev) / bio2number(self.attr.MaxLev)
+    )
     if stored >= maxStore then
         -- 说明已经满了
         self:showFullHud()
@@ -40,25 +42,33 @@ end
 
 function IDLBuildingStore:showFullHud()
     if self.tipHud == nil then
-        CLUIOtherObjPool.borrowObjAsyn("TipHud",
-                function(name, obj, orgs)
-                    if (not self.gameObject.activeInHierarchy) or self.tipHud ~= nil then
-                        CLUIOtherObjPool.returnObj(obj)
-                        SetActive(obj, false)
-                        return
-                    end
-                    self.tipHud = obj:GetComponent("CLCellLua")
-                    self.tipHud.transform.parent = MyCfg.self.hud3dRoot
-                    self.tipHud.transform.localScale = Vector3.one
-                    self.tipHud.transform.localEulerAngles = Vector3.zero
-                    SetActive(self.tipHud.gameObject, true)
-                    self.tipHud:init({ target = self.csSelf, data = self.serverData,
-                                       offset = Vector3(0, 2, 0), label = "Full",
-                                       bgColor = Color.red })
-                end)
+        CLUIOtherObjPool.borrowObjAsyn(
+            "TipHud",
+            function(name, obj, orgs)
+                if (not self.gameObject.activeInHierarchy) or self.tipHud ~= nil then
+                    CLUIOtherObjPool.returnObj(obj)
+                    SetActive(obj, false)
+                    return
+                end
+                self.tipHud = obj:GetComponent("CLCellLua")
+                self.tipHud.transform.parent = MyCfg.self.hud3dRoot
+                self.tipHud.transform.localScale = Vector3.one
+                self.tipHud.transform.localEulerAngles = Vector3.zero
+                SetActive(self.tipHud.gameObject, true)
+                self.tipHud:init(
+                    {
+                        target = self.csSelf,
+                        data = self.serverData,
+                        offset = Vector3(0, 2, 0),
+                        label = "Full",
+                        bgColor = Color.red
+                    }
+                )
+            end
+        )
     else
         SetActive(self.tipHud.gameObject, true)
-        self.tipHud:init({ target = self.csSelf, data = self.serverData, offset = Vector3(0, 2, 0) })
+        self.tipHud:init({target = self.csSelf, data = self.serverData, offset = Vector3(0, 2, 0)})
     end
 end
 

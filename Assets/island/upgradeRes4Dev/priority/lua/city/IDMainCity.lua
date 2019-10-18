@@ -9,15 +9,17 @@ local IDLGridTileSide = require("city.IDLGridTileSide")
 IDMainCity = class("IDMainCity")
 ---@type Coolape.CLBaseLua
 local csSelf
+---@type UnityEngine.Transform
 local transform
 ---@type CLGrid
 IDMainCity.grid = nil
----@type SimpleAI.Grid
+---@type Coolape.GridBase
 local grid
 local tiles = {}
 local buildings = {}
 local gridState4Tile = {}
 local gridState4Building = {}
+IDMainCity.chgModeCallbacks = {}
 ---@type IDDBCity
 IDMainCity.cityData = nil -- 城的数据
 IDMainCity.selectedUnit = nil
@@ -166,6 +168,8 @@ end
 function IDMainCity.init(cityData, onFinishCallback, onProgress)
     _init()
 
+    -- 先把主城的缩放还原，保证加载时的各种设置正确
+    IDMainCity.transform.localScale = Vector3.one
     if cityData then
         IDMainCity.cityData = cityData
     else
@@ -291,9 +295,17 @@ end
 
 function IDMainCity.onScaleScreen(delta, offset)
     --drag4World:procScaler(offset)
-
     IDMainCity.scaleCity()
     IDMainCity.scaleHeadquarters()
+end
+
+---@public 添加改变模式的回调
+function IDMainCity.addChgModeCallback(func)
+    IDMainCity.chgModeCallbacks[func] = func
+end
+---@public remove改变模式的回调
+function IDMainCity.rmChgModeCallback(func)
+    IDMainCity.chgModeCallbacks[func] = nil
 end
 
 ---@public 改变在大地图的子模式
@@ -343,6 +355,11 @@ function IDMainCity.onChgMode(oldMode, curMode)
         -- else
         --     v:SetActive(isShowBuilding)
         -- end
+    end
+    for k, v in pairs(IDMainCity.chgModeCallbacks) do
+        if v then
+            v(oldMode, curMode)
+        end
     end
 end
 
@@ -615,6 +632,7 @@ function IDMainCity.clean()
     if csSelf == nil then
         return
     end
+    IDMainCity.chgModeCallbacks = {}
     IDMainCity.onClickOcean()
 
     for k, v in pairs(tiles) do
@@ -1120,9 +1138,6 @@ function IDMainCity.setSelected(unit, selected)
 end
 
 function IDMainCity.setOtherUnitsColiderState(target, activeCollider)
-    if GameMode.battle == MyCfg.mode then
-        return
-    end
     for k, v in pairs(buildings) do
         if v ~= target then
             v:setCollider(activeCollider)

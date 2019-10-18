@@ -42,8 +42,9 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
                 bio2number(b.attr.AttackRangeCurve),
                 bio2number(b.serverData.lev) / bio2number(b.attr.MaxLev)
             )
+            local size = IDLBattleSearcher.calculateSize(MaxAttackRange)
             -- 取得可攻击范围内的格子
-            local cells = grid:getOwnGrids(b.gridIndex, MaxAttackRange)
+            local cells = grid:getOwnGrids(b.gridIndex, size)
 
             local MinAttackRange = bio2Int(b.attr.MinAttackRange) / 100
             -- 按照离建筑的远近排序
@@ -97,9 +98,39 @@ function IDLBattleSearcher.sortGridCells(building, min, max, cells)
     return list
 end
 
+---@param building IDLBuilding
+function IDLBattleSearcher.debugBuildingAttackRange(building)
+    for k, obj in ipairs(IDLBattleSearcher._debugRangs or {}) do
+        CLThingsPool.returnObj(obj)
+        SetActive(obj, false)
+    end
+    IDLBattleSearcher._debugRangs = {}
+
+    local cells = buildingsRange[building.instanceID]
+    -- local cellList = grid:getOwnGrids(building.gridIndex, 20*2)
+    -- cells = {}
+    -- for i=0, cellList.Count -1 do
+    --     table.insert(cells, {index =cellList[i]})
+    -- end
+
+    for i, v in ipairs(cells or {}) do
+        CLThingsPool.borrowObjAsyn(
+            "MapTileSize",
+            function(name, obj, orgs)
+                obj.transform.position = grid.grid:GetCellCenter(v.index)
+                obj.transform.localScale = Vector3.one * 0.1
+                obj.transform.localEulerAngles = Vector3.zero
+                SetActive(obj, true)
+                table.insert(IDLBattleSearcher._debugRangs, obj)
+            end
+        )
+    end
+end
+
 ---@public 要取得圆的范围，因此取得了圆的外切正方形的边长
 function IDLBattleSearcher.calculateSize(r)
-    return NumEx.getIntPart(math.sqrt(2 * (r * r)) + 0.5)
+    return r * 2
+    -- return NumEx.getIntPart(math.sqrt(2 * (r * r)) + 0.5)
 end
 
 ---@public 刷新舰船的位置
@@ -162,7 +193,7 @@ end
 ---@param building IDLBuilding
 function IDLBattleSearcher.buildingSearchRole4Def(building)
     local cells = buildingsRange[building.instanceID]
-    local taget, preferedTarget
+    local target, preferedTarget
     local PreferedTargetType = bio2number(building.attr.PreferedTargetType)
     ---@param v BuildingRangeInfor
     for i, v in ipairs(cells or {}) do
@@ -170,9 +201,10 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
         if map then
             ---@param role IDRoleBase
             for role, v2 in pairs(map) do
-                if role and (not role.idDead) then
-                    if not taget then
-                        taget = role
+                if role and (not role.isDead) then
+                    -- //TODO:可攻击地面、飞行单位否？
+                    if not target then
+                        target = role
                     end
                     if PreferedTargetType > 0 then
                         -- 有优先攻击类型
@@ -181,13 +213,14 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
                             return PreferedTargetType
                         end
                     else
-                        return taget
+                        return target
                     end
                 end
             end
         end
     end
-    return preferedTarget or taget
+    
+    return preferedTarget or target
 end
 
 ---@public 角色寻敌
@@ -207,6 +240,12 @@ function IDLBattleSearcher.clean()
     offense = {}
     defense = {}
     rolesIndex = {}
+
+    for k, obj in ipairs(IDLBattleSearcher._debugRangs or {}) do
+        CLThingsPool.returnObj(obj)
+        SetActive(obj, false)
+    end
+    IDLBattleSearcher._debugRangs = {}
 end
 
 --------------------------------------------

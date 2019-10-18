@@ -22,35 +22,40 @@
 //           游戏大卖       公司腾飞
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 --]]
-
 require("public.class")
 -- 角色基础相关
----@class IDRoleBase:ClassBase
-IDRoleBase = class("IDRoleBase")
+---@class IDRoleBase:IDLUnitBase
+IDRoleBase = class("IDRoleBase", IDLUnitBase)
 
 ---@param csSelf Coolape.CLUnit
 function IDRoleBase:ctor(csSelf)
+    self:getBase(IDRoleBase).ctor(self, csSelf)
     ---@type Coolape.CLUnit
-    self.csSelf = csSelf        -- cs对象
+    self.csSelf = csSelf -- cs对象
     ---@type UnityEngine.Transform
     self.transform = nil
     ---@type UnityEngine.GameObject
     self.gameObject = nil
-    self.isOffense = false      -- 是进攻方
+    self.isOffense = false -- 是进攻方
     self.id = 0
 
     ---@type WrapBattleUnitData
-    self.serverData = nil       -- 服务器数据
-    self.attr = nil             -- 属性
+    self.serverData = nil -- 服务器数据
+    self.attr = nil -- 属性
     self.isFinishInited = false
-    self.idDead = false
+    self.isDead = false
 end
 
-function IDRoleBase:init (selfObj, id, star, lev, _isOffense, other)
-    self:__init(selfObj, other)
-    self.idDead = false
+function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
+    self:getBase(IDRoleBase).init(self, selfObj, id, star, lev, _isOffense, other)
+    self.csSelf.isOffense = _isOffense
     self.isOffense = _isOffense
     self.id = id
+    self.csSelf.id = id
+    self.isDead = false
+    self.csSelf.isDead = false
+    self.instanceID = self.gameObject:GetInstanceID()
+    self.csSelf.instanceID = self.instanceID
 
     -- 初始化
     self.csSelf.RandomFactor = self.csSelf:initRandomFactor()
@@ -62,13 +67,29 @@ function IDRoleBase:init (selfObj, id, star, lev, _isOffense, other)
     end
     ---@type DBCFRoleData
     self.attr = DBCfg.getRoleByID(id)
+
+    if GameMode.battle == MyCfg.mode then
+        -- 初始化数据
+        ---@type UnitData4Battle
+        self.data = {}
+        self.data.HP =
+            DBCfg.getGrowingVal(
+            bio2number(self.attr.HPMin),
+            bio2number(self.attr.HPMax),
+            bio2number(self.attr.HPCurve),
+            bio2number(self.serverData.lev) / bio2number(self.attr.MaxLev)
+        )
+        self.data.curHP = number2bio(self.data.HP)
+        self.data.HP = number2bio(self.data.HP)
+    end
+
     self:loadShadow()
 end
 function IDRoleBase:__init(selfObj, other)
     if self.isFinishInited then
         return
     end
-    self.isFinishInited = true
+    self:getBase(IDRoleBase).__init(self, selfObj, other)
     self.csSelf = selfObj
     self.transform = selfObj.transform
     self.gameObject = selfObj.gameObject
@@ -89,20 +110,22 @@ function IDRoleBase:loadShadow()
             return
         end
         local shadowName = joinStr("shadow", shadowType)
-        CLUIOtherObjPool.borrowObjAsyn(shadowName,
-                function(name, obj, orgs)
-                    if (not self.gameObject.activeInHierarchy) or self.shadow ~= nil then
-                        CLUIOtherObjPool.returnObj(obj)
-                        SetActive(obj, false)
-                        return
-                    end
-                    self.shadow = obj.transform;
-                    self.shadow.parent = MyCfg.self.shadowRoot
-                    self.shadow.localEulerAngles = Vector3.zero
-                    self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
-                    self.shadow.position = self.transform.position + Vector3.up * 0.01
-                    SetActive(self.shadow.gameObject, true)
-                end)
+        CLUIOtherObjPool.borrowObjAsyn(
+            shadowName,
+            function(name, obj, orgs)
+                if (not self.gameObject.activeInHierarchy) or self.shadow ~= nil then
+                    CLUIOtherObjPool.returnObj(obj)
+                    SetActive(obj, false)
+                    return
+                end
+                self.shadow = obj.transform
+                self.shadow.parent = MyCfg.self.shadowRoot
+                self.shadow.localEulerAngles = Vector3.zero
+                self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
+                self.shadow.position = self.transform.position + Vector3.up * 0.01
+                SetActive(self.shadow.gameObject, true)
+            end
+        )
     end
 end
 
@@ -137,7 +160,54 @@ function IDRoleBase:idel()
     self:playAction("idel")
 end
 
+---@public 被击中
+---@param damage number 伤害值
+---@param attacker IDLUnitBase 攻击方
+function IDRoleBase:onHurt(damage, attacker)
+    -- self:getBase(IDRoleBase).onHurt(self, damage, attacker)
+    local curHP = bio2number(self.data.curHP)
+    curHP = curHP - damage
+    if curHP < 0 then
+        curHP = 0
+    end
+    self.data.curHP = number2bio(curHP)
+    -- //TODO:显示扣血效果
+    if curHP <= 0 then
+        self:onDead()
+    end
+end
+
+function IDRoleBase:iamDie()
+    CLEffect.play(self.attr.DeadEffect, self.transform.position)
+    if self.attr.DeadSound then
+        SoundEx.playSound(self.attr.DeadSound, 1, 1)
+        SetActive(self.gameObject, false)
+        IDLBattle.someOneDead(self)
+    else
+        self:playDeadSund(0)
+    end
+end
+
+---@public 播放死亡音效，播完后再通知战场
+function IDRoleBase:playDeadSund(i)
+    if i == 0 then
+        SoundEx.playSound("heavy_die_01", 1, 1)
+        self.csSelf:invoke4Lua(self.playDeadSund, i + 1, 0.2)
+    elseif i == 1 then
+        Utl.playSound("heavy_die_03", 1, 1)
+        self.csSelf:invoke4Lua(self.playDeadSund, i + 1, 0.2)
+    elseif i == 2 then
+        Utl.playSound("heavy_die_04", 1, 1)
+        self.csSelf:invoke4Lua(self.playDeadSund, i + 1, 0.2)
+    elseif i == 3 then
+        Utl.playSound("heavy_die_02", 1, 1)
+        SetActive(self.gameObject, false)
+        IDLBattle.someOneDead(self)
+    end
+end
+
 function IDRoleBase:clean()
+    self:getBase(IDRoleBase).clean(self)
     if self.shadow then
         CLUIOtherObjPool.returnObj(self.shadow.gameObject)
         SetActive(self.shadow.gameObject, false)
