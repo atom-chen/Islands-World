@@ -146,7 +146,7 @@ function IDLBattleSearcher.refreshUnit(unit)
             offense[oldIndex] = map
         end
         local map = offense[index] or {}
-        map[unit] = index
+        map[unit] = unit
         offense[index] = map
     else
         local oldIndex = rolesIndex[unit]
@@ -157,7 +157,7 @@ function IDLBattleSearcher.refreshUnit(unit)
             defense[oldIndex] = map
         end
         local map = defense[index] or {}
-        map[unit] = index
+        map[unit] = unit
         defense[index] = map
     end
     -- 最后再更新舰船的位置
@@ -186,6 +186,7 @@ function IDLBattleSearcher.searchTarget(unit)
         return IDLBattleSearcher.buildingSearchRole4Def(unit)
     else
         -- 说明是角色
+        IDLBattleSearcher.searchTarget4Role(unit)
     end
 end
 
@@ -229,13 +230,42 @@ end
 
 ---@public 角色寻敌
 ---@param role IDRoleBase
-function IDLBattleSearcher.search4Role(role)
+function IDLBattleSearcher.searchTarget4Role(role)
     if role.isOffense then
         -- 取得角色的index
         -- 取得离角色最近的目标，注意要考虑优先攻击目标
     else
         --//TODO:防守方的舰船寻敌
     end
+end
+
+---@public 取得范围内的所有目标
+---@param pos UnityEngine.Vector3
+---@param r number 半径
+function IDLBattleSearcher.getTargesInRange(isOffense, pos, r)
+    pos.y = 0
+    local index = grid.grid:GetCellIndex(pos)
+    local cells = grid:getOwnGrids(index, r * 2)
+    local list = nil
+    if isOffense then
+        list = defense
+    else
+        list = offense
+    end
+    local ret = {}
+    local m, index2
+    for i = 0, cells.Count - 1 do
+        index2 = cells[i]
+        if IDLBattleSearcher.getDistance(index, index2) <= r then
+            m = list[index2]
+            if m then
+                for k, v in pairs(m) do
+                    table.insert(ret, v)
+                end
+            end
+        end
+    end
+    return ret
 end
 
 ---@param unit IDLUnitBase

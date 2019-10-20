@@ -210,9 +210,18 @@ function IDLBuildingDefense:onBulletHit(bullet)
 end
 
 ---@public 取得伤害值
-function IDLBuildingDefense:getDamage()
-    ---//TODO:可能还需要处理一些伤害加成等
-    return bio2number(self.data.damage)
+---@param target IDRoleBase
+function IDLBuildingDefense:getDamage(target)
+    if target == nil then
+        return 0
+    end
+    local damage = bio2number(self.data.damage)
+    local gid = bio2number(target.attr.GID)
+    if bio2number(self.attr.PreferedTargetType) == gid then
+        -- 优先攻击目标的伤害加成
+        damage = damage * bio2number(self.attr.PreferedTargetDamageMod)
+    end
+    return math.floor(damage)
 end
 
 ---@public 炮口面向目标
@@ -228,7 +237,7 @@ function IDLBuildingDefense:lookatTarget(target, imm, callback)
         self.bodyRotate.to = Vector3(0, 0, toAngel.y)
         if abs(self.bodyRotate.from.z - self.bodyRotate.to.z) < 0.01 then
             if callback then
-                callback()
+                Utl.doCallback(callback)
             end
         else
             self.bodyRotate:ResetToBeginning()

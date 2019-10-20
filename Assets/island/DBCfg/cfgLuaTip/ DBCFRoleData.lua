@@ -35,7 +35,7 @@
 ---@field public AttackSpeedMS
 ---@field public PreferedTargetDamageMod
 ---@field public PreferedTargetType
----@field public DamageRadius
+---@field public DamageAffectRang
 ---@field public AttackEffect
 ---@field public AttackSound
 ---@field public DeadSound

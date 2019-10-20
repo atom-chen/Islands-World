@@ -40,6 +40,10 @@ function IDLUnitBase:ctor(csSelf)
     self.transform = nil
     ---@type UnityEngine.GameObject
     self.gameObject = nil
+    ---@type UnitData4Battle
+    self.data = nil
+    ---@type Coolape.CLCellLua
+    self.lifebar = nil
 end
 
 function IDLUnitBase:__init(selfObj, other)
@@ -75,11 +79,61 @@ end
 ---@param damage number 伤害值
 ---@param attacker IDLUnitBase 攻击方
 function IDLUnitBase:onHurt(damage, attacker)
-    printe("must override [onHurt] function!")
+    local curHP = bio2number(self.data.curHP)
+    curHP = curHP - damage
+    if curHP < 0 then
+        curHP = 0
+    elseif curHP > bio2number(self.data.HP) then
+        curHP = bio2number(self.data.HP)
+    end
+    self.data.curHP = number2bio(curHP)
+    -- 显示扣血效果
+    self:showLifebar(damage)
+    if curHP <= 0 then
+        self:onDead()
+    end
+end
+
+---@public 显示扣血效果
+function IDLUnitBase:showLifebar(damage)
+    local data = {damage = damage, unit = self, offset = Vector3.up * 0.2}
+    if self.lifebar == nil then
+        CLUIOtherObjPool.borrowObjAsyn(
+            "LifebarHud",
+            function(name, obj, orgs)
+                ---@type UnityEngine.GameObject
+                local go = obj
+                if self.lifebar then
+                    CLUIOtherObjPool.returnObj(obj)
+                    SetActive(obj, false)
+                else
+                    self.lifebar = go:GetComponent("CLCellLua")
+                    self.lifebar.transform.parent = MyCfg.self.hud3dRoot
+                    self.lifebar.transform.localScale = Vector3.one
+                    self.lifebar.transform.localEulerAngles = Vector3.zero
+                    SetActive(self.lifebar.gameObject, true)
+                end
+                self.lifebar:init(data, nil)
+            end
+        )
+    else
+        self.lifebar:init(data, nil)
+    end
+    self.csSelf:cancelInvoke4Lua(self.hideLifebar)
+    self.csSelf:invoke4Lua(self.hideLifebar, 2)
+end
+
+function IDLUnitBase:hideLifebar()
+    if self.lifebar then
+        CLUIOtherObjPool.returnObj(self.lifebar.gameObject)
+        SetActive(self.lifebar.gameObject, false)
+        self.lifebar = nil
+    end
 end
 
 ---@public 取得伤害值
-function IDLUnitBase:getDamage()
+---@param target 目标
+function IDLUnitBase:getDamage(target)
     printe("must override [getDamage] function!")
 end
 
@@ -105,6 +159,7 @@ end
 
 function IDLUnitBase:_clean()
     self.csSelf:cancelInvoke4Lua()
+    self:hideLifebar()
 end
 
 return IDLUnitBase

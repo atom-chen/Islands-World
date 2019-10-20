@@ -226,7 +226,7 @@ function IDLBattle.onLoadShip(name, ship, orgs)
     end
     SetActive(ship.gameObject, true)
     ship:init(serverData.id, 0, 1, true, {serverData = serverData})
-    local hight = bio2number(ship.luaTable.attr.FlyHeigh)/10
+    local hight = bio2number(ship.luaTable.attr.FlyHeigh) / 10
     local offsetx = ship:fakeRandom(-10, 10) / 10
     local offsetz = ship:fakeRandom2(-10, 10) / 10
     pos = Vector3(offsetx + pos.x, hight, offsetz + pos.z)
@@ -279,15 +279,24 @@ function IDLBattle.onBulletHit(bullet)
         -- 震屏
         SScreenShakes.play(nil, 0)
     end
-    if target and (not target.isDead) then
-        local dis = Vector3.Distance(bullet.transform.position, bullet.target.transform.position)
-        if dis <= 0.5 then
-            -- 半格范围内都算击中目标
-            target:onHurt(attacker:getDamage(), attacker)
-            -- 波及范围内单位
-            local DamageRadius = bio2number(attacker.attr.DamageRadius)/100
-            if DamageRadius > 0 then
-                --//TODO: 波及范围内单位
+    local pos = bullet.transform.position
+    -- 波及范围内单位
+    local DamageAffectRang = bio2number(attacker.attr.DamageAffectRang) / 100
+    if DamageAffectRang > 0 then
+        --//波及范围内单位
+        local list = IDLBattleSearcher.getTargesInRange(attacker.isOffense, pos, DamageAffectRang)
+        ---@param unit IDLUnitBase
+        for i, unit in ipairs(list) do
+            local damage = attacker:getDamage(unit)
+            unit:onHurt(damage, attacker)
+        end
+    else
+        if target and (not target.isDead) then
+            local dis = Vector3.Distance(pos, bullet.target.transform.position)
+            if dis <= 0.5 then
+                -- 半格范围内都算击中目标
+                local damage = attacker:getDamage(target)
+                target:onHurt(damage, attacker)
             end
         end
     end

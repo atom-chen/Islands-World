@@ -33,8 +33,8 @@ function m.New() end
 ---@param optional Object data
 ---@param optional Object callbak
 function m:doFire(attacker, target, orgPos, dir, attr, data, callbak) end
----public Void RotateButtle()
-function m:RotateButtle() end
+---public Void RotateBullet()
+function m:RotateBullet() end
 ---public Void FixedUpdate()
 function m:FixedUpdate() end
 ---public Void resetTarget()

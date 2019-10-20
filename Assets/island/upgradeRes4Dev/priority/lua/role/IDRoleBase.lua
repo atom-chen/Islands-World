@@ -82,6 +82,15 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
         )
         self.data.curHP = number2bio(self.data.HP)
         self.data.HP = number2bio(self.data.HP)
+
+        self.data.damage =
+            DBCfg.getGrowingVal(
+            bio2number(self.attr.DamageMin),
+            bio2number(self.attr.DamageMax),
+            bio2number(self.attr.DamageCurve),
+            bio2number(self.serverData.lev) / bio2number(self.attr.MaxLev)
+        )
+        self.data.damage = number2bio(self.data.damage)
     end
 
     self:loadShadow()
@@ -167,17 +176,7 @@ end
 ---@param damage number 伤害值
 ---@param attacker IDLUnitBase 攻击方
 function IDRoleBase:onHurt(damage, attacker)
-    -- self:getBase(IDRoleBase).onHurt(self, damage, attacker)
-    local curHP = bio2number(self.data.curHP)
-    curHP = curHP - damage
-    if curHP < 0 then
-        curHP = 0
-    end
-    self.data.curHP = number2bio(curHP)
-    -- //TODO:显示扣血效果
-    if curHP <= 0 then
-        self:onDead()
-    end
+    self:getBase(IDRoleBase).onHurt(self, damage, attacker)
 end
 
 function IDRoleBase:iamDie()

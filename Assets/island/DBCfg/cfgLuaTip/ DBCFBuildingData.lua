@@ -44,7 +44,7 @@
 ---@field public DamageMin
 ---@field public DamageMax
 ---@field public DamageCurve
----@field public DamageRadius
+---@field public DamageAffectRang
 ---@field public Hidden
 ---@field public IsFlying
 ---@field public CanDrag

@@ -5,7 +5,7 @@ do
     local localReq = require
     function require(path)
         local ret, result = pcall(localReq, path)
-         --("toolkit.KKWhiteList")
+        --("toolkit.KKWhiteList")
         if not ret then
             print("err:" .. result)
             return nil
@@ -373,6 +373,8 @@ do
 
     ---@type ShipTrail
     ShipTrail = CS.ShipTrail
+    ---@type HUDText
+    HUDText = CS.HUDText
     -------------------------------------------------------
     -- require
     require("toolkit.CLLPrintEx")
