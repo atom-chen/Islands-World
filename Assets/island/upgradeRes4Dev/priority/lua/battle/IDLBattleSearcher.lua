@@ -5,7 +5,7 @@ local IDLBattleSearcher = {}
 ---@field public index number 网格的index
 ---@field public dis number 距离
 
--- 建筑攻击范围数据 key=IDLBuilding, val = BuildingRangeInfor
+-- 建筑攻击范围数据 key=IDLBuilding.instanceID, val = BuildingRangeInfor
 local buildingsRange = {}
 -- 建筑数据，是从城市里取的原始数据
 local buildings = {}
@@ -195,6 +195,8 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
     local cells = buildingsRange[building.instanceID]
     local target, preferedTarget
     local PreferedTargetType = bio2number(building.attr.PreferedTargetType)
+    local AirTargets = building.attr.AirTargets
+    local GroundTargets = building.attr.GroundTargets
     ---@param v BuildingRangeInfor
     for i, v in ipairs(cells or {}) do
         local map = offense[v.index]
@@ -202,24 +204,26 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
             ---@param role IDRoleBase
             for role, v2 in pairs(map) do
                 if role and (not role.isDead) then
-                    -- //TODO:可攻击地面、飞行单位否？
-                    if not target then
-                        target = role
-                    end
-                    if PreferedTargetType > 0 then
-                        -- 有优先攻击类型
-                        if bio2Int(role.attr.GID) == PreferedTargetType then
-                            PreferedTargetType = role
-                            return PreferedTargetType
+                    -- 可攻击地面、飞行单位否？
+                    if (role.attr.IsFlying and AirTargets) or ((not role.attr.IsFlying) and GroundTargets) then
+                        if not target then
+                            target = role
                         end
-                    else
-                        return target
+                        if PreferedTargetType > 0 then
+                            -- 有优先攻击类型
+                            if bio2Int(role.attr.GID) == PreferedTargetType then
+                                PreferedTargetType = role
+                                return PreferedTargetType
+                            end
+                        else
+                            return target
+                        end
                     end
                 end
             end
         end
     end
-    
+
     return preferedTarget or target
 end
 
@@ -231,6 +235,30 @@ function IDLBattleSearcher.search4Role(role)
         -- 取得离角色最近的目标，注意要考虑优先攻击目标
     else
         --//TODO:防守方的舰船寻敌
+    end
+end
+
+---@param unit IDLUnitBase
+function IDLBattleSearcher.someOneDead(unit)
+    if unit.isBuilding then
+        ---@type IDLBuilding
+        local b = unit
+        buildingsRange[unit.instanceID] = nil
+        buildings[bio2number(b.serverData.idx)] = nil
+    else
+        if unit.isOffense then
+            local index = rolesIndex[unit]
+            -- 先清除掉旧的数据
+            local map = offense[index] or {}
+            map[unit] = nil
+            offense[index] = map
+        else
+            local index = rolesIndex[unit]
+            -- 先清除掉旧的数据
+            local map = defense[index] or {}
+            map[unit] = nil
+            defense[index] = map
+        end
     end
 end
 

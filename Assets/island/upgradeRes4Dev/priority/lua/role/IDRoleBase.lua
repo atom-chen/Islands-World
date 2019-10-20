@@ -65,6 +65,7 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
     if other then
         self.serverData = other.serverData
     end
+    self.isRole = true
     ---@type DBCFRoleData
     self.attr = DBCfg.getRoleByID(id)
 
@@ -122,7 +123,9 @@ function IDRoleBase:loadShadow()
                 self.shadow.parent = MyCfg.self.shadowRoot
                 self.shadow.localEulerAngles = Vector3.zero
                 self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
-                self.shadow.position = self.transform.position + Vector3.up * 0.01
+                local pos = self.transform.position
+                pos.y = 0
+                self.shadow.position = pos + Vector3.up * 0.01
                 SetActive(self.shadow.gameObject, true)
             end
         )
@@ -179,12 +182,12 @@ end
 
 function IDRoleBase:iamDie()
     CLEffect.play(self.attr.DeadEffect, self.transform.position)
-    if self.attr.DeadSound then
+    if isNilOrEmpty(self.attr.DeadSound) then
+        self:playDeadSund(0)
+    else
         SoundEx.playSound(self.attr.DeadSound, 1, 1)
         SetActive(self.gameObject, false)
         IDLBattle.someOneDead(self)
-    else
-        self:playDeadSund(0)
     end
 end
 
@@ -194,13 +197,13 @@ function IDRoleBase:playDeadSund(i)
         SoundEx.playSound("heavy_die_01", 1, 1)
         self.csSelf:invoke4Lua(self.playDeadSund, i + 1, 0.2)
     elseif i == 1 then
-        Utl.playSound("heavy_die_03", 1, 1)
+        SoundEx.playSound("heavy_die_03", 1, 1)
         self.csSelf:invoke4Lua(self.playDeadSund, i + 1, 0.2)
     elseif i == 2 then
-        Utl.playSound("heavy_die_04", 1, 1)
+        SoundEx.playSound("heavy_die_04", 1, 1)
         self.csSelf:invoke4Lua(self.playDeadSund, i + 1, 0.2)
     elseif i == 3 then
-        Utl.playSound("heavy_die_02", 1, 1)
+        SoundEx.playSound("heavy_die_02", 1, 1)
         SetActive(self.gameObject, false)
         IDLBattle.someOneDead(self)
     end

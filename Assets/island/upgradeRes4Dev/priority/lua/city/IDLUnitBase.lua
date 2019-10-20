@@ -78,6 +78,11 @@ function IDLUnitBase:onHurt(damage, attacker)
     printe("must override [onHurt] function!")
 end
 
+---@public 取得伤害值
+function IDLUnitBase:getDamage()
+    printe("must override [getDamage] function!")
+end
+
 ---@public 死掉了
 function IDLUnitBase:onDead()
     if self.isDead then

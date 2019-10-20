@@ -47,9 +47,10 @@ local grid
 IDLBattle.mData = nil -- 战斗方数据
 IDLBattle.isFirstDeployShip = true
 -- 一次部署的数量
-local EachDeployNum = 3
+local EachDeployNum = 1
 -- 进攻舰船
 IDLBattle.offShips = {}
+IDLBattle.defShips = {}
 local __isInited = false
 IDLBattle.isDebug = false
 
@@ -135,6 +136,7 @@ function IDLBattle.begain()
     end
 end
 
+---@public 投放兵
 function IDLBattle.deployBattleUnit()
     if IDLBattle.currSelectedUnit == nil then
         CLAlert.add(LGet("MsgSelectBattleUnit"), Color.yellow, 1)
@@ -167,7 +169,7 @@ function IDLBattle.deployBattleUnit()
             IDLBattle.currSelectedUnit.type == IDConst.UnitType.ship or
                 IDLBattle.currSelectedUnit.type == IDConst.UnitType.pet
          then
-            IDLBattle.deployShip(IDLBattle.currSelectedUnit, pos)
+            IDLBattle.deployShip(IDLBattle.currSelectedUnit, pos, true)
         elseif IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
         --//TODO: 技能释放
         end
@@ -179,7 +181,7 @@ end
 ---@public 部署舰船
 ---@param shipData WrapBattleUnitData
 ---@param pos UnityEngine.Vector3
-function IDLBattle.deployShip(shipData, pos)
+function IDLBattle.deployShip(shipData, pos, isOffense)
     CLEffect.play("EffectDeploy", pos)
     SoundEx.playSound("water_craft_place_01", 1, 2)
 
@@ -198,7 +200,11 @@ function IDLBattle.deployShip(shipData, pos)
     end
     -- 加载舰船
     for i = 1, deployNum do
-        CLRolePool.borrowObjAsyn(IDUtl.getRolePrefabName(id), IDLBattle.onLoadShip, {serverData = shipData, pos = pos})
+        CLRolePool.borrowObjAsyn(
+            IDUtl.getRolePrefabName(id),
+            IDLBattle.onLoadShip,
+            {serverData = shipData, pos = pos, isOffense = isOffense}
+        )
     end
 end
 
@@ -206,6 +212,7 @@ end
 function IDLBattle.onLoadShip(name, ship, orgs)
     local serverData = orgs.serverData
     local pos = orgs.pos
+    local isOffense = orgs.isOffense
     ship.transform.parent = transform
     ship.transform.localScale = Vector3.one
     -- ship.transform.localEulerAngles = Vector3.zero
@@ -219,12 +226,16 @@ function IDLBattle.onLoadShip(name, ship, orgs)
     end
     SetActive(ship.gameObject, true)
     ship:init(serverData.id, 0, 1, true, {serverData = serverData})
-
+    local hight = bio2number(ship.luaTable.attr.FlyHeigh)/10
     local offsetx = ship:fakeRandom(-10, 10) / 10
     local offsetz = ship:fakeRandom2(-10, 10) / 10
-    pos = Vector3(offsetx + pos.x, pos.y, offsetz + pos.z)
+    pos = Vector3(offsetx + pos.x, hight, offsetz + pos.z)
     ship.transform.position = pos
-    IDLBattle.offShips[ship.instanceID] = ship.luaTable
+    if isOffense then
+        IDLBattle.offShips[ship.instanceID] = ship.luaTable
+    else
+        IDLBattle.defShips[ship.instanceID] = ship.luaTable
+    end
     IDLBattle.someOneJoin(ship.luaTable)
 end
 
@@ -237,10 +248,49 @@ end
 ---public 有单位死掉了
 ---@param unit IDLUnitBase
 function IDLBattle.someOneDead(unit)
-    --//TODO: 有单位死掉了
+    IDLBattleSearcher.someOneDead(unit)
+    if unit.isRole then
+        if unit.isOffense then
+            IDLBattle.offShips[unit.instanceID] = nil
+        else
+            IDLBattle.defShips[unit.instanceID] = nil
+        end
+        unit.csSelf:clean()
+        CLRolePool.returnObj(unit.csSelf)
+        SetActive(unit.gameObject, false)
+    end
 end
 
 function IDLBattle.onPressRole(isPress, role, pos)
+end
+
+---@public 通用子弹击中效果
+---@param bullet Coolape.CLBulletBase
+function IDLBattle.onBulletHit(bullet)
+    ---@type DBCFBulletData
+    local bulletAttr = bullet.attr
+    ---@type IDLUnitBase
+    local attacker = bullet.attacker.luaTable
+    ---@type IDRoleBase
+    local target = bullet.target and bullet.target.luaTable or nil
+    CLEffect.play(bulletAttr.HitEffect, bullet.transform.position)
+    SoundEx.playSound(bulletAttr.HitSFX, 1, 2)
+    if bulletAttr.IsScreenShake then
+        -- 震屏
+        SScreenShakes.play(nil, 0)
+    end
+    if target and (not target.isDead) then
+        local dis = Vector3.Distance(bullet.transform.position, bullet.target.transform.position)
+        if dis <= 0.5 then
+            -- 半格范围内都算击中目标
+            target:onHurt(attacker:getDamage(), attacker)
+            -- 波及范围内单位
+            local DamageRadius = bio2number(attacker.attr.DamageRadius)/100
+            if DamageRadius > 0 then
+                --//TODO: 波及范围内单位
+            end
+        end
+    end
 end
 
 function IDLBattle.searchTarget(unit)
@@ -261,6 +311,14 @@ function IDLBattle.clean()
         SetActive(v.gameObject, false)
     end
     IDLBattle.offShips = {}
+
+    ---@param v IDRoleBase
+    for k, v in pairs(IDLBattle.defShips) do
+        v.csSelf:clean() -- 只能过能csSelf调用clean,不然要死循环
+        CLRolePool.returnObj(v.csSelf)
+        SetActive(v.gameObject, false)
+    end
+    IDLBattle.defShips = {}
 
     -- 城市清理
     if city then

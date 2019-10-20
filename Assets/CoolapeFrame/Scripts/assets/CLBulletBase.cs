@@ -120,7 +120,7 @@ namespace Coolape
             isFollow = MapEx.getBool(attr, "IsFollow");
             isMulHit = MapEx.getBool(attr, "IsMulHit");
             needRotate = MapEx.getBool(attr, "NeedRotate");
-            dir.y = 0;
+            //dir.y = 0;
             Utl.RotateTowards(transform, dir);
 
             origin = orgPos;
@@ -130,7 +130,7 @@ namespace Coolape
                 toPos = target.transform.position;
             } else {
                 toPos = origin + dir.normalized * dis;
-                toPos.y = 0;
+                //toPos.y = 0;
             }
             int PosRandomFactor = MapEx.getBytes2Int(attr, "PosRandomFactor");
             //			int PosRandomFactor = NumEx.bio2Int (MapEx.getBytes (attr, "PosRandomFactor"));
@@ -139,9 +139,9 @@ namespace Coolape
                 toPos.y += attacker.fakeRandom(-PosRandomFactor, PosRandomFactor) / 100.0f;
             }
 
-            if (isZeroY) {
-                toPos.y = 0;
-            }
+            //if (isZeroY) {
+            //    toPos.y = 0;
+            //}
 
             if (boxCollider != null) { 
                 if (MapEx.getBool(attr, "CheckTrigger")) {
@@ -164,7 +164,7 @@ namespace Coolape
 				highV3 = new Vector3 (0, high, 0);
 			}
 
-			magnitude = v3Diff.magnitude == 0 ? 1 : 1.0f / v3Diff.magnitude;
+			magnitude = v3Diff.magnitude <= 0.00001f ? 1 : 1.0f / v3Diff.magnitude;
 
 			hitTarget = null;
 			curveTime = 0;

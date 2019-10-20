@@ -17,6 +17,7 @@ end
 
 ---@param other table = {index=网格位置 ,serverData=服务器数据（不是必须）}
 function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
+    self.isBuilding = true
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuilding).init(self, selfObj, id, star, lev, _isOffense, other)
 
@@ -62,8 +63,6 @@ function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
     end
 
     self:loadShadow()
-
-    self.isBuilding = true
     self:loadFloor()
     self:upgrading()
 end

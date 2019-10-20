@@ -3,7 +3,7 @@ require("city.IDLBuilding")
 
 ---@class IDLBuildingDefense:IDLBuilding
 IDLBuildingDefense = class("IDLBuildingDefense", IDLBuilding)
-
+local abs = math.abs
 function IDLBuildingDefense:__init(selfObj, other)
     if self.isFinishInited then
         return
@@ -175,9 +175,7 @@ function IDLBuildingDefense:doAttack()
     if target then
         local dir = self.target.transform.position - self.transform.position
         -- 炮面向目标
-        self:lookatTarget(self.target)
-        SoundEx.playSound(self.attr.AttackSound, 1, 3)
-        self:fire(self.target)
+        self:lookatTarget(self.target, false, self:wrapFunc(self.fire))
     end
 end
 
@@ -197,30 +195,18 @@ end
 
 ---@public 开炮
 ---@param target IDRoleBase
-function IDLBuildingDefense:fire(target)
-    local dir = target.transform.position - self.transform.position
+function IDLBuildingDefense:fire()
+    local target = self.target
+    local dir = target.transform.position - self.ejector.transform.position
     SetActive(self.ejector.gameObject, true)
     self.ejector:fire(self.csSelf, self.target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
+    SoundEx.playSound(self.attr.AttackSound, 1, 3)
 end
 
 ---@public
 ---@param bullet Coolape.CLBulletBase
 function IDLBuildingDefense:onBulletHit(bullet)
-    ---@type DBCFBulletData
-    local bulletAttr = bullet.attr
-    ---@type IDRoleBase
-    local target = bullet.target and bullet.target.luaTable or nil
-    CLEffect.play(bulletAttr.HitEffect, bullet.transform.position)
-    SoundEx.playSound(bulletAttr.HitSFX, 1, 2)
-    if bulletAttr.IsScreenShake then
-    end
-    if target and (not target.isDead) then
-        local dis = Vector3.Distance(bullet.transform.position, bullet.target.transform.position)
-        if dis <= 0.5 then
-            -- 半格范围内都算击中目标
-            target:onHurt(self:getDamage(), self)
-        end
-    end
+    IDLBattle.onBulletHit(bullet)
 end
 
 ---@public 取得伤害值
@@ -237,13 +223,19 @@ function IDLBuildingDefense:lookatTarget(target, imm, callback)
     if imm then
         self.bodyRotate.transform.localEulerAngles = Vector3(0, 0, toAngel.y)
     else
-        self.bodyRotate.duration = 0.2
+        self.bodyRotate.duration = 0.1
         self.bodyRotate.from = self.bodyRotate.transform.localEulerAngles
         self.bodyRotate.to = Vector3(0, 0, toAngel.y)
-        self.bodyRotate:ResetToBeginning()
-        self.bodyRotate:Play(true)
-        if callback then
-            self.csSelf:invoke4Lua(callback, 0.2)
+        if abs(self.bodyRotate.from.z - self.bodyRotate.to.z) < 0.01 then
+            if callback then
+                callback()
+            end
+        else
+            self.bodyRotate:ResetToBeginning()
+            self.bodyRotate:Play(true)
+            if callback then
+                self.csSelf:invoke4Lua(callback, 0.1)
+            end
         end
     end
 end

@@ -187,7 +187,7 @@ namespace Coolape
                 }
                 else
                 {
-                    Debug.LogError("propNames is null =====");
+                    Debug.LogWarning("propNames is null ====="  + matName);
                     pool.finishSetPrefab(mat);
                     Utl.doCallback(cb, mat, args);
                 }

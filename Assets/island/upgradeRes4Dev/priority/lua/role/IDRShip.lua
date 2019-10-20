@@ -39,6 +39,7 @@ end
 
 function IDRShip:onMoving()
     if self.shadow then
+        --//TODO:影子的坐标处理还有点总是
         self.tmpPos = self.transform.position
         self.tmpPos.y = 0
         self.shadow.position = self.tmpPos
