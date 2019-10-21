@@ -10,6 +10,7 @@
 ---@field public SpreadRadius
 ---@field public PosRandomFactor
 ---@field public IsFollow
+---@field public RefreshTargetMSec
 ---@field public IsMulHit
 ---@field public NeedRotate
 ---@field public CheckTrigger

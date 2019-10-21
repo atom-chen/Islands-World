@@ -94,7 +94,7 @@ function IDPMain.procNetwork(cmd, succ, msg, paras)
             IDMainCity.onBuildingChg(paras.building)
             local attr = DBCfg.getBuildingByID(bio2number(paras.building.attrid))
             if
-                bio2number(attr.ID) == IDConst.headquartersBuildingID or
+                bio2number(attr.ID) == IDConst.BuildingID.headquartersBuildingID or
                     (attr and bio2number(attr.GID) == IDConst.BuildingGID.resource)
              then
                 -- 刷新数据

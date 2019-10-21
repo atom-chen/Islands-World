@@ -39,7 +39,7 @@ function _cell.show(go, data)
     if bio2number(serverData.state) == IDConst.BuildingState.upgrade then
         CLUIUtl.setSpriteFit(uiobjs.spriteIcon, "icon_build", 80)
     elseif bio2number(serverData.state) == IDConst.BuildingState.working then
-        if bio2number(serverData.attrid) == IDConst.dockyardBuildingID then
+        if bio2number(serverData.attrid) == IDConst.BuildingID.dockyardBuildingID then
             local shipID = bio2number(serverData.val)
             CLUIUtl.setSpriteFit(uiobjs.spriteIcon, joinStr("roleIcon_", shipID), 80)
         end

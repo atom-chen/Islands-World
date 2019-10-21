@@ -50,7 +50,7 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
             -- 按照离建筑的远近排序
             local list = IDLBattleSearcher.sortGridCells(b, MinAttackRange, MaxAttackRange, cells)
             buildingsRange[b.instanceID] = list
-        elseif bio2Int(b.attr.GID) == IDConst.BuildingGID.trap or bio2Int(b.attr.ID) == IDConst.dockyardBuildingID then -- 陷阱\造船厂，主要处理触发半径
+        elseif bio2Int(b.attr.GID) == IDConst.BuildingGID.trap or bio2Int(b.attr.ID) == IDConst.BuildingID.dockyardBuildingID then -- 陷阱\造船厂，主要处理触发半径
             local triggerR =
                 DBCfg.getGrowingVal(
                 bio2number(b.attr.TriggerRadiusMin) / 100,
@@ -136,6 +136,7 @@ end
 ---@public 刷新舰船的位置
 ---@param unit IDRoleBase
 function IDLBattleSearcher.refreshUnit(unit)
+    --//TODO:注意所有移动的战斗单元需要定时刷新
     local index = grid.grid:GetCellIndex(unit.transform.position)
     if unit.isOffense then
         local oldIndex = rolesIndex[unit]
@@ -196,17 +197,17 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
     local cells = buildingsRange[building.instanceID]
     local target, preferedTarget
     local PreferedTargetType = bio2number(building.attr.PreferedTargetType)
-    local AirTargets = building.attr.AirTargets
-    local GroundTargets = building.attr.GroundTargets
+    -- local AirTargets = building.attr.AirTargets
+    -- local GroundTargets = building.attr.GroundTargets
     ---@param v BuildingRangeInfor
     for i, v in ipairs(cells or {}) do
         local map = offense[v.index]
         if map then
             ---@param role IDRoleBase
             for role, v2 in pairs(map) do
-                if role and (not role.isDead) then
+                if role then
                     -- 可攻击地面、飞行单位否？
-                    if (role.attr.IsFlying and AirTargets) or ((not role.attr.IsFlying) and GroundTargets) then
+                    if IDLBattleSearcher.isTarget(building, role) then
                         if not target then
                             target = role
                         end
@@ -239,15 +240,68 @@ function IDLBattleSearcher.searchTarget4Role(role)
     end
 end
 
----@public 取得范围内的所有目标
+---@param attacker IDLUnitBase
+---@param unit IDLUnitBase
+function IDLBattleSearcher.isTarget(attacker, unit)
+    if attacker.isBuilding then
+        ---@type IDLBuilding
+        local b = attacker
+        -- 可攻击地面、飞行单位否？
+        if
+            ((unit.attr.IsFlying and b.attr.AirTargets) or 
+            ((not unit.attr.IsFlying) and b.attr.GroundTargets)) and
+                (not unit.isDead)
+        then
+            return true
+        else
+            return false
+        end
+    else
+        return (not unit.isDead)
+    end
+end
+
+---@public 取得范围内的最优目标
+---@param attacker IDLUnitBase
 ---@param pos UnityEngine.Vector3
 ---@param r number 半径
-function IDLBattleSearcher.getTargesInRange(isOffense, pos, r)
+function IDLBattleSearcher.getTarget(attacker, pos, r)
     pos.y = 0
     local index = grid.grid:GetCellIndex(pos)
     local cells = grid:getOwnGrids(index, r * 2)
     local list = nil
-    if isOffense then
+    if attacker.isOffense then
+        list = defense
+    else
+        list = offense
+    end
+    local m, index2
+    for i = 0, cells.Count - 1 do
+        index2 = cells[i]
+        if IDLBattleSearcher.getDistance(index, index2) <= r then
+            m = list[index2]
+            if m then
+                for k, v in pairs(m) do
+                    if IDLBattleSearcher.isTarget(attacker, v) then
+                        return v
+                    end
+                end
+            end
+        end
+    end
+    return nil
+end
+
+---@public 取得范围内的所有目标
+---@param attacker IDLUnitBase
+---@param pos UnityEngine.Vector3
+---@param r number 半径
+function IDLBattleSearcher.getTargetsInRange(attacker, pos, r)
+    pos.y = 0
+    local index = grid.grid:GetCellIndex(pos)
+    local cells = grid:getOwnGrids(index, r * 2)
+    local list = nil
+    if attacker.isOffense then
         list = defense
     else
         list = offense
@@ -259,8 +313,11 @@ function IDLBattleSearcher.getTargesInRange(isOffense, pos, r)
         if IDLBattleSearcher.getDistance(index, index2) <= r then
             m = list[index2]
             if m then
+                ---@param v IDLUnitBase
                 for k, v in pairs(m) do
-                    table.insert(ret, v)
+                    if IDLBattleSearcher.isTarget(attacker, v) then
+                        table.insert(ret, v)
+                    end
                 end
             end
         end

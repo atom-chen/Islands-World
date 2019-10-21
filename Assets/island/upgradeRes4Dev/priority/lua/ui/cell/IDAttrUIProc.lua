@@ -66,7 +66,7 @@ do
 
         local attrid = bio2number(attr.ID)
         local gid = bio2number(attr.GID)
-        if attrid == IDConst.headquartersBuildingID then
+        if attrid == IDConst.BuildingID.headquartersBuildingID then
             -- 主基地
             local headOpenAtrr = DBCfg.getHeadquartersLevsDataByLev(bio2number(serverData.lev))
             -- 地块数量
@@ -158,7 +158,7 @@ do
 
         local attrid = bio2number(attr.ID)
         local gid = bio2number(attr.GID)
-        if bio2number(attr.ID) == IDConst.headquartersBuildingID then
+        if bio2number(attr.ID) == IDConst.BuildingID.headquartersBuildingID then
             -- 主基地
             -- 地块数量
             local headOpenAtrr = DBCfg.getHeadquartersLevsDataByLev(bio2number(serverData.lev))

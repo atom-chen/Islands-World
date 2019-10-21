@@ -257,8 +257,8 @@ namespace Coolape
 
 				rot = Quaternion.Slerp (rot, toTarget, turningSpeed * Time.fixedDeltaTime);
 				Vector3 euler = rot.eulerAngles;
-				euler.z = 0;
-				euler.x = 0;
+				//euler.z = 0;
+				//euler.x = 0;
 				rot = Quaternion.Euler (euler);
 
 				transform.rotation = rot;

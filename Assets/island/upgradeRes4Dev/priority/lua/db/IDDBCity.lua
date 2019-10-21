@@ -35,7 +35,7 @@ end
 function IDDBCity:initDockyardShips()
     ---@param v IDDBBuilding
     for k, v in pairs(self.buildings) do
-        if bio2number(v.attrid) == IDConst.dockyardBuildingID then
+        if bio2number(v.attrid) == IDConst.BuildingID.dockyardBuildingID then
             -- 取得造船厂的航船数据
             net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(v.idx)))
         end
@@ -73,7 +73,7 @@ function IDDBCity:getRes()
     for k, v in pairs(self.buildings) do
         b = v
         id = bio2number(b.attrid)
-        if id == IDConst.foodStorageBuildingID then
+        if id == IDConst.BuildingID.foodStorageBuildingID then
             food = food + bio2number(b.val)
             if attrfood == nil then
                 attrfood = DBCfg.getBuildingByID(id)
@@ -86,7 +86,7 @@ function IDDBCity:getRes()
                     bio2number(attrfood.ComVal1Curve),
                     bio2number(b.lev) / bio2number(attrfood.MaxLev)
                 )
-        elseif id == IDConst.goldStorageBuildingID then
+        elseif id == IDConst.BuildingID.goldStorageBuildingID then
             gold = gold + bio2number(b.val)
             if attrgold == nil then
                 attrgold = DBCfg.getBuildingByID(id)
@@ -99,7 +99,7 @@ function IDDBCity:getRes()
                     bio2number(attrgold.ComVal1Curve),
                     bio2number(b.lev) / bio2number(attrgold.MaxLev)
                 )
-        elseif id == IDConst.oildStorageBuildingID then
+        elseif id == IDConst.BuildingID.oildStorageBuildingID then
             oil = oil + bio2number(b.val)
             if attroil == nil then
                 attroil = DBCfg.getBuildingByID(id)
@@ -112,7 +112,7 @@ function IDDBCity:getRes()
                     bio2number(attroil.ComVal1Curve),
                     bio2number(b.lev) / bio2number(attroil.MaxLev)
                 )
-        elseif id == IDConst.headquartersBuildingID then
+        elseif id == IDConst.BuildingID.headquartersBuildingID then
             -- 主基地
             food = food + bio2number(b.val)
             gold = gold + bio2number(b.val2)
@@ -135,7 +135,7 @@ function IDDBCity:onBuildingChg(data)
     ---@type IDDBBuilding
     local b = IDDBBuilding.new(data)
     self.buildings[bio2number(b.idx)] = b
-    if bio2number(b.attrid) == IDConst.dockyardBuildingID then
+    if bio2number(b.attrid) == IDConst.BuildingID.dockyardBuildingID then
         -- 取得造船厂的航船数据
         net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(b.idx)))
     end

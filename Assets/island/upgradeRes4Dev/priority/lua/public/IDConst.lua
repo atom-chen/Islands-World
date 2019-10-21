@@ -1,14 +1,20 @@
----@public 常量
+---@class IDConst 常量
+IDConst = {}
 IDConst = {
+    baseRes = number2bio(50000) -- 基础资源量
+}
+
+IDConst.BuildingID = {
     headquartersBuildingID = 1, --主基地
     dockyardBuildingID = 2, -- 造船厂
     foodStorageBuildingID = 7,
-    goldStorageBuildingID = 11,
     oildStorageBuildingID = 9,
+    goldStorageBuildingID = 11,
+    MortarDefenseID = 16, --烈焰式火箭炮
     activityCenterBuildingID = 38, -- 活动中心
-    MailBoxBuildingID = 39, -- 邮箱
-    baseRes = number2bio(50000) -- 基础资源量
+    MailBoxBuildingID = 39 -- 邮箱
 }
+
 IDConst.BuildingState = {
     normal = 0, --正常
     upgrade = 1, --升级中

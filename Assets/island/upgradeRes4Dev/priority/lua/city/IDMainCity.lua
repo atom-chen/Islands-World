@@ -349,7 +349,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
 
     ---@param v IDLBuilding
     for k, v in pairs(buildings) do
-        -- if v.id == IDConst.headquartersBuildingID then
+        -- if v.id == IDConst.BuildingID.headquartersBuildingID then
         -- 主基地跳过,但是也需要处理
         v:SetActive(isShowBuilding)
         -- else
@@ -489,7 +489,7 @@ function IDMainCity.loadBuildings(cb)
     local list = {}
     for idx, v in pairs(bs) do
         dbBuilding = v
-        if bio2number(dbBuilding.attrid) == IDConst.headquartersBuildingID then
+        if bio2number(dbBuilding.attrid) == IDConst.BuildingID.headquartersBuildingID then
             -- 要先加载主基地，因为其它建筑可能要用到
             table.insert(list, 1, v)
         else
@@ -564,7 +564,7 @@ function IDMainCity.onLoadBuilding(name, obj, param)
         buildingsCount[bio2number(d.attrid)] =
             buildingsCount[bio2number(d.attrid)] and (buildingsCount[bio2number(d.attrid)] + 1) or 1
 
-        if bio2number(d.attrid) == IDConst.headquartersBuildingID then
+        if bio2number(d.attrid) == IDConst.BuildingID.headquartersBuildingID then
             -- 说明是主基地
             IDMainCity.Headquarters = buildingLua
         end
@@ -843,7 +843,7 @@ function IDMainCity.prepareData4PopupMenu(building)
 
             -- 升级加速
             if
-                attrid ~= IDConst.activityCenterBuildingID and attrid ~= IDConst.MailBoxBuildingID and
+                attrid ~= IDConst.BuildingID.activityCenterBuildingID and attrid ~= IDConst.BuildingID.MailBoxBuildingID and
                     attrgid ~= IDConst.BuildingGID.tree
              then
                 -- 活动中心、邮箱 不需要升级

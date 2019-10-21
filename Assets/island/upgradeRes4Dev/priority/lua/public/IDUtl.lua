@@ -4,6 +4,7 @@ require("city.IDLBuildingHeadquarters")
 require("city.IDLBuildingRes")
 require("city.IDLBuildingStore")
 require("city.IDLBuildingDefense")
+require("city.IDLBuildingDefenseMissile2")
 require("city.IDLBuildingDockyard")
 require("city.IDLBuildingTrap")
 require("city.IDLTree")
@@ -189,10 +190,10 @@ function IDUtl.newBuildingLua(bAttr)
     local buildingLua
     local id = bio2number(bAttr.ID)
     local gid = bio2number(bAttr.GID)
-    if id == IDConst.headquartersBuildingID then
+    if id == IDConst.BuildingID.headquartersBuildingID then
         buildingLua = IDLBuildingHeadquarters.new()
     elseif gid == IDConst.BuildingGID.com or gid == IDConst.BuildingGID.spec then
-        if id == IDConst.dockyardBuildingID then
+        if id == IDConst.BuildingID.dockyardBuildingID then
             buildingLua = IDLBuildingDockyard.new()
         else
             -- 建筑
@@ -208,7 +209,11 @@ function IDUtl.newBuildingLua(bAttr)
         end
     elseif gid == IDConst.BuildingGID.defense then
         -- 防御建筑
-        buildingLua = IDLBuildingDefense.new()
+        if id == IDConst.BuildingID.MortarDefenseID then
+            buildingLua = IDLBuildingDefenseMissile2.new()
+        else
+            buildingLua = IDLBuildingDefense.new()
+        end
     elseif gid == IDConst.BuildingGID.trap then
         -- 陷阱建筑
         buildingLua = IDLBuildingTrap.new()

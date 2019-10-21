@@ -43,13 +43,16 @@ namespace Coolape
 		public float slowdownDistance = 0;
 		public float arriveDistance = 0.3f;
 		public float turningSpeed = 1;
-		float minMoveScale = 0.05F;
+        public int RefreshTargetMSec = 0;
+
+        float minMoveScale = 0.05F;
 		float curveTime = 0;
 		float curveTime2 = 0;
 		Vector3 v3Diff = Vector3.zero;
 		Vector3 v3Diff2 = Vector3.zero;
 		Vector3 subDiff = Vector3.zero;
 		Vector3 subDiff2 = Vector3.zero;
+        long lastResetTargetTime = 0;
 		public float speed = 1;
 		public float high = 0;
 		Vector3 highV3 = Vector3.zero;
@@ -120,6 +123,8 @@ namespace Coolape
             isFollow = MapEx.getBool(attr, "IsFollow");
             isMulHit = MapEx.getBool(attr, "IsMulHit");
             needRotate = MapEx.getBool(attr, "NeedRotate");
+            RefreshTargetMSec = MapEx.getBytes2Int(attr, "RefreshTargetMSec");
+            lastResetTargetTime = DateEx.nowMS;
             //dir.y = 0;
             Utl.RotateTowards(transform, dir);
 
@@ -213,22 +218,26 @@ namespace Coolape
 					}
 				}
 
-				if (subDiff.magnitude > 0.01) {
+				if (needRotate && subDiff.magnitude > 0.001f) {
 					Utl.RotateTowards (transform, origin + subDiff - transform.position);
 				}
 				transform.position = origin + subDiff;
-				if (curveTime >= 1) {
+				if (curveTime >= 1f) {
 					hitTarget = null;
 					onFinishFire (true);
 				}
 			} else {
-				if (target == null || target.isDead) {
-					resetTarget ();
+				if (target == null || target.isDead ||
+                    (RefreshTargetMSec > 0 && 
+                    (DateEx.nowMS - lastResetTargetTime >= RefreshTargetMSec))
+                    ){
+                    lastResetTargetTime = DateEx.nowMS;
+                    resetTarget ();
 				}
 				subDiff = CalculateVelocity (transform.position);
 				if (!isMulHit) {
 					if (Physics.Raycast (transform.position, v3Diff, out hitInfor, 1f)) {
-						OnTriggerEnter (hitInfor.collider);
+                        OnTriggerEnter (hitInfor.collider);
 					}
 				}
 				//Rotate towards targetDirection (filled in by CalculateVelocity)
@@ -278,17 +287,14 @@ namespace Coolape
 			dir = mToPos - fromPos;
 			targetDist = dir.magnitude;
 			this.targetDirection = dir;
-//		Debug.Log(currentWaypointIndex +"       " +  (vPath.Count-1)  + "         " + targetDist +"              "+ endReachedDistance);
-			if (!isFollow || target == null) {
-				if (targetDist <= arriveDistance) {
-					if (!isStoped) {
-						onFinishFire (true);
-					}
-					//Send a move request, this ensures gravity is applied
-					return Vector3.zero;
+            if (targetDist <= arriveDistance) {
+				if (!isStoped) {
+                    onFinishFire (true);
 				}
+				//Send a move request, this ensures gravity is applied
+				return Vector3.zero;
 			}
-			forward = Vector3.zero;
+			//forward = Vector3.zero;
 			forward = transform.forward;//  + dir.y * Vector3.up;
 		
 			dot = Vector3.Dot (dir.normalized, forward);

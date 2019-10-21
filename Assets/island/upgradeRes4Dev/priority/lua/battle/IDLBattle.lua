@@ -28,6 +28,8 @@ IDLBattle = {}
 local IDPreloadPrefab = require("public.IDPreloadPrefab")
 ---@type IDLBattleSearcher
 local IDLBattleSearcher = require("battle.IDLBattleSearcher")
+---@type IDLBattleSearcher
+IDLBattle.searcher = IDLBattleSearcher
 ---@class BattleData 战场数据
 ---@field type IDConst.BattleType
 ---@field targetCity IDDBCity 目标城
@@ -271,6 +273,7 @@ function IDLBattle.onBulletHit(bullet)
     local bulletAttr = bullet.attr
     ---@type IDLUnitBase
     local attacker = bullet.attacker.luaTable
+    --//TODO:有一种可能就是当子弹击中目标时，发射子弹的对象已经死掉并且又被从对象池时取出来重新使用。不过好像这种情况在这个游戏里不太可能出理，先不考虑
     ---@type IDRoleBase
     local target = bullet.target and bullet.target.luaTable or nil
     CLEffect.play(bulletAttr.HitEffect, bullet.transform.position)
@@ -284,7 +287,7 @@ function IDLBattle.onBulletHit(bullet)
     local DamageAffectRang = bio2number(attacker.attr.DamageAffectRang) / 100
     if DamageAffectRang > 0 then
         --//波及范围内单位
-        local list = IDLBattleSearcher.getTargesInRange(attacker.isOffense, pos, DamageAffectRang)
+        local list = IDLBattleSearcher.getTargetsInRange(attacker, pos, DamageAffectRang)
         ---@param unit IDLUnitBase
         for i, unit in ipairs(list) do
             local damage = attacker:getDamage(unit)
