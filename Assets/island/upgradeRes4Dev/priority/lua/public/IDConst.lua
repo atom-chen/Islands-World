@@ -11,6 +11,8 @@ IDConst.BuildingID = {
     oildStorageBuildingID = 9,
     goldStorageBuildingID = 11,
     MortarDefenseID = 16, --烈焰式火箭炮
+    ThunderboltID = 17,--电磁塔
+    DestroyerRocketID = 18,
     activityCenterBuildingID = 38, -- 活动中心
     MailBoxBuildingID = 39 -- 邮箱
 }

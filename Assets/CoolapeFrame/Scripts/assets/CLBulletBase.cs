@@ -53,7 +53,8 @@ namespace Coolape
 		Vector3 subDiff = Vector3.zero;
 		Vector3 subDiff2 = Vector3.zero;
         long lastResetTargetTime = 0;
-		public float speed = 1;
+        long lastResetToPosTime = 0;
+        public float speed = 1;
 		public float high = 0;
 		Vector3 highV3 = Vector3.zero;
 		//角度偏移量
@@ -125,6 +126,7 @@ namespace Coolape
             needRotate = MapEx.getBool(attr, "NeedRotate");
             RefreshTargetMSec = MapEx.getBytes2Int(attr, "RefreshTargetMSec");
             lastResetTargetTime = DateEx.nowMS;
+            lastResetToPosTime = DateEx.nowMS;
             //dir.y = 0;
             Utl.RotateTowards(transform, dir);
 
@@ -280,10 +282,28 @@ namespace Coolape
 
 		Vector3 CalculateVelocity (Vector3 fromPos)
 		{
-			mToPos = Vector3.zero;
-			if (isFollow && target != null) {
-				mToPos = target.transform.position;
-			}
+			//mToPos = Vector3.zero;
+			if (isFollow){
+                if (target != null)
+                {
+                    mToPos = target.transform.position;
+                }
+                else
+                {
+                    if (RefreshTargetMSec > 0 &&
+                    (DateEx.nowMS - lastResetToPosTime >= RefreshTargetMSec)
+                    ){
+                        lastResetToPosTime = DateEx.nowMS;
+                        int x = attacker.fakeRandom(-10, 10);
+                        int z = attacker.fakeRandom2(-10, 10);
+                        mToPos = transform.position + new Vector3(x, 0, z);
+                    }
+                    else
+                    {
+                        mToPos = Vector3.zero;
+                    }
+                }
+            }
 			dir = mToPos - fromPos;
 			targetDist = dir.magnitude;
 			this.targetDirection = dir;
@@ -311,7 +331,7 @@ namespace Coolape
 			onFinishFire (true);
 		}
 
-		public void stop ()
+		public virtual void stop ()
 		{
 			if (isStoped) {
 				return;

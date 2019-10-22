@@ -43,7 +43,7 @@ function IDLBuildingDockyard:buildShip()
 end
 ---@public 显示舰船停泊在港口
 function IDLBuildingDockyard:showShipsInPort()
-    if self.serverData == nil then
+    if self.serverData == nil or MyCfg.mode == GameMode.battle then
         return
     end
     local shipsMap = IDDBCity.curCity:getShipsByDockyardId(bio2number(self.serverData.idx))

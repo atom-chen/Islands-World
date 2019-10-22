@@ -863,7 +863,7 @@ function IDMainCity.prepareData4PopupMenu(building)
 
             if building == IDMainCity.Headquarters then
             -- 说明是主基地
-            --//TODO:
+            --//TODO:说明是主基地
             end
             if attrid == 6 or attrid == 8 or attrid == 10 then
             -- 收集

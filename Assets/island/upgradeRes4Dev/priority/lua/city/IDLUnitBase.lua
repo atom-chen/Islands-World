@@ -131,6 +131,11 @@ function IDLUnitBase:hideLifebar()
     end
 end
 
+---@public 寻敌
+function IDLUnitBase:doSearchTarget()
+    printe("must override [doSearchTarget] function!")
+end
+
 ---@public 取得伤害值
 ---@param target 目标
 function IDLUnitBase:getDamage(target)

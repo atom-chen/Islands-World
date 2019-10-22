@@ -288,10 +288,21 @@ function IDLBattle.onBulletHit(bullet)
     if DamageAffectRang > 0 then
         --//波及范围内单位
         local list = IDLBattleSearcher.getTargetsInRange(attacker, pos, DamageAffectRang)
-        ---@param unit IDLUnitBase
-        for i, unit in ipairs(list) do
-            local damage = attacker:getDamage(unit)
-            unit:onHurt(damage, attacker)
+        if list and #list > 0 then
+            ---@param unit IDLUnitBase
+            for i, unit in ipairs(list) do
+                local damage = attacker:getDamage(unit)
+                unit:onHurt(damage, attacker)
+            end
+        else
+            if target and (not target.isDead) then
+                local dis = Vector3.Distance(pos, bullet.target.transform.position)
+                if dis <= 0.5 then
+                    -- 半格范围内都算击中目标
+                    local damage = attacker:getDamage(target)
+                    target:onHurt(damage, attacker)
+                end
+            end
         end
     else
         if target and (not target.isDead) then
@@ -305,8 +316,10 @@ function IDLBattle.onBulletHit(bullet)
     end
 end
 
-function IDLBattle.searchTarget(unit)
-    return IDLBattleSearcher.searchTarget(unit)
+---@public 寻敌
+---@param targetsNum number 目标数量
+function IDLBattle.searchTarget(unit, targetsNum)
+    return IDLBattleSearcher.searchTarget(unit, targetsNum)
 end
 
 function IDLBattle.clean()

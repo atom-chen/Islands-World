@@ -155,6 +155,10 @@ function IDLBuildingDefense:doAttack()
     if GameMode.battle ~= MyCfg.mode or self.isDead then
         return
     end
+    self:doSearchTarget()
+end
+
+function IDLBuildingDefense:doSearchTarget()
     local target = self.target
     if target == nil or target.isDead then
         -- 重新寻敌
@@ -173,7 +177,6 @@ function IDLBuildingDefense:doAttack()
     self:setTarget(target)
 
     if target then
-        local dir = self.target.transform.position - self.transform.position
         -- 炮面向目标
         self:lookatTarget(self.target, false, self:wrapFunc(self.fire))
     end
@@ -197,7 +200,6 @@ end
 ---@param target IDRoleBase
 function IDLBuildingDefense:fire()
     local target = self.target
-    local dir = target.transform.position - self.ejector.transform.position
     SetActive(self.ejector.gameObject, true)
     self.ejector:fire(self.csSelf, self.target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
     SoundEx.playSound(self.attr.AttackSound, 1, 3)

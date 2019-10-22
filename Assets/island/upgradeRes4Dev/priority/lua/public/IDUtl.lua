@@ -5,6 +5,8 @@ require("city.IDLBuildingRes")
 require("city.IDLBuildingStore")
 require("city.IDLBuildingDefense")
 require("city.IDLBuildingDefenseMissile2")
+require("city.IDLBuildingDefenseLightning")
+require("city.IDLBuildingDefenseLightning2")
 require("city.IDLBuildingDockyard")
 require("city.IDLBuildingTrap")
 require("city.IDLTree")
@@ -211,6 +213,10 @@ function IDUtl.newBuildingLua(bAttr)
         -- 防御建筑
         if id == IDConst.BuildingID.MortarDefenseID then
             buildingLua = IDLBuildingDefenseMissile2.new()
+        elseif id == IDConst.BuildingID.ThunderboltID then
+            buildingLua = IDLBuildingDefenseLightning.new()
+        elseif id == IDConst.BuildingID.DestroyerRocketID then
+            buildingLua = IDLBuildingDefenseLightning2.new()
         else
             buildingLua = IDLBuildingDefense.new()
         end

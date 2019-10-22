@@ -50,7 +50,10 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
             -- 按照离建筑的远近排序
             local list = IDLBattleSearcher.sortGridCells(b, MinAttackRange, MaxAttackRange, cells)
             buildingsRange[b.instanceID] = list
-        elseif bio2Int(b.attr.GID) == IDConst.BuildingGID.trap or bio2Int(b.attr.ID) == IDConst.BuildingID.dockyardBuildingID then -- 陷阱\造船厂，主要处理触发半径
+        elseif
+            bio2Int(b.attr.GID) == IDConst.BuildingGID.trap or
+                bio2Int(b.attr.ID) == IDConst.BuildingID.dockyardBuildingID
+         then -- 陷阱\造船厂，主要处理触发半径
             local triggerR =
                 DBCfg.getGrowingVal(
                 bio2number(b.attr.TriggerRadiusMin) / 100,
@@ -181,24 +184,26 @@ function IDLBattleSearcher.getDistance(index1, index2)
 end
 
 ---@public 寻敌
-function IDLBattleSearcher.searchTarget(unit)
+---@param targetsNum number 目标数量
+function IDLBattleSearcher.searchTarget(unit, targetsNum)
     if unit.isBuilding then
         -- 说明是建筑的防御设施
-        return IDLBattleSearcher.buildingSearchRole4Def(unit)
+        return IDLBattleSearcher.buildingSearchRole4Def(unit, targetsNum)
     else
         -- 说明是角色
-        IDLBattleSearcher.searchTarget4Role(unit)
+        IDLBattleSearcher.searchTarget4Role(unit, targetsNum)
     end
 end
 
 ---@public 防御设施寻敌人
 ---@param building IDLBuilding
-function IDLBattleSearcher.buildingSearchRole4Def(building)
+---@param targetsNum number 目标数量默认是1个
+function IDLBattleSearcher.buildingSearchRole4Def(building, targetsNum)
+    targetsNum = targetsNum or 1
+
     local cells = buildingsRange[building.instanceID]
-    local target, preferedTarget
+    local targets, targetsPrefered = {}, {}
     local PreferedTargetType = bio2number(building.attr.PreferedTargetType)
-    -- local AirTargets = building.attr.AirTargets
-    -- local GroundTargets = building.attr.GroundTargets
     ---@param v BuildingRangeInfor
     for i, v in ipairs(cells or {}) do
         local map = offense[v.index]
@@ -208,17 +213,38 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
                 if role then
                     -- 可攻击地面、飞行单位否？
                     if IDLBattleSearcher.isTarget(building, role) then
-                        if not target then
-                            target = role
-                        end
+                        table.insert(targets, role)
+
                         if PreferedTargetType > 0 then
                             -- 有优先攻击类型
                             if bio2Int(role.attr.GID) == PreferedTargetType then
-                                PreferedTargetType = role
-                                return PreferedTargetType
+                                table.insert(targetsPrefered, role)
                             end
-                        else
-                            return target
+                        end
+                    end
+                end
+
+                -- 处理跳出
+                if targetsNum == 1 then
+                    if PreferedTargetType > 0 then
+                        -- 有优先目标类型
+                        if targetsPrefered[1] then
+                            return targetsPrefered[1]
+                        end
+                    else
+                        if targets[i] then
+                            return targets[i]
+                        end
+                    end
+                else
+                    if PreferedTargetType > 0 then
+                        -- 有优先目标类型
+                        if #targetsPrefered >= targetsNum then
+                            return targetsPrefered
+                        end
+                    else
+                        if #targets >= targetsNum then
+                            return targets
                         end
                     end
                 end
@@ -226,7 +252,32 @@ function IDLBattleSearcher.buildingSearchRole4Def(building)
         end
     end
 
-    return preferedTarget or target
+    if targetsNum == 1 then
+        return targetsPrefered[1] or targets[1]
+    else
+        if PreferedTargetType > 0 then
+            if #targetsPrefered < targetsNum and #targets <= targetsNum then
+                -- targets是包含targetsPrefered的
+                return targets
+            elseif #targetsPrefered < targetsNum and #targets > targetsNum then
+                ---@param role IDRoleBase
+                for i, role in ipairs(targets) do
+                    if bio2number(role.attr.GID) ~= PreferedTargetType then
+                        -- 说明之前是没有加入到优先目标列表里的
+                        table.insert(targetsPrefered, role)
+                    end
+                    if #targetsPrefered == targetsNum then
+                        return targetsPrefered
+                    end
+                end
+            else
+                -- 其它情况不存在，因为上面的for循环里已经处理了
+                printe("居然print到这里了！！！这种是情况不存在，因为上面的for循环里已经处理了！bug！bug！")
+            end
+        else
+            return targets
+        end
+    end
 end
 
 ---@public 角色寻敌
@@ -242,22 +293,47 @@ end
 
 ---@param attacker IDLUnitBase
 ---@param unit IDLUnitBase
-function IDLBattleSearcher.isTarget(attacker, unit)
+---@param onlyOnGroundOrSky 只找地面上或天空的单，1：地面，2：天空，其它值则都可以
+function IDLBattleSearcher.isTarget(attacker, unit, onlyOnGroundOrSky)
+    if unit.isDead then
+        return false
+    end
     if attacker.isBuilding then
         ---@type IDLBuilding
         local b = attacker
         -- 可攻击地面、飞行单位否？
-        if
-            ((unit.attr.IsFlying and b.attr.AirTargets) or 
-            ((not unit.attr.IsFlying) and b.attr.GroundTargets)) and
-                (not unit.isDead)
-        then
-            return true
+        if onlyOnGroundOrSky == 1 then
+            -- 只找地面单元
+            if unit.attr.IsFlying then
+                return false
+            else
+                if b.attr.GroundTargets then
+                    return true
+                else
+                    return false
+                end
+            end
+        elseif onlyOnGroundOrSky == 2 then
+            -- 只找飞行单元
+            if unit.attr.IsFlying then
+                if b.attr.AirTargets then
+                    return true
+                else
+                    return false
+                end
+            else
+                return false
+            end
         else
-            return false
+            -- 都可以
+            if ((unit.attr.IsFlying and b.attr.AirTargets) or ((not unit.attr.IsFlying) and b.attr.GroundTargets)) then
+                return true
+            else
+                return false
+            end
         end
     else
-        return (not unit.isDead)
+        return true
     end
 end
 
@@ -266,7 +342,7 @@ end
 ---@param pos UnityEngine.Vector3
 ---@param r number 半径
 function IDLBattleSearcher.getTarget(attacker, pos, r)
-    pos.y = 0
+    local onlyOnGroundOrSky = pos.y <= 1 and 1 or 2
     local index = grid.grid:GetCellIndex(pos)
     local cells = grid:getOwnGrids(index, r * 2)
     local list = nil
@@ -282,7 +358,7 @@ function IDLBattleSearcher.getTarget(attacker, pos, r)
             m = list[index2]
             if m then
                 for k, v in pairs(m) do
-                    if IDLBattleSearcher.isTarget(attacker, v) then
+                    if IDLBattleSearcher.isTarget(attacker, v, onlyOnGroundOrSky) then
                         return v
                     end
                 end
@@ -297,7 +373,7 @@ end
 ---@param pos UnityEngine.Vector3
 ---@param r number 半径
 function IDLBattleSearcher.getTargetsInRange(attacker, pos, r)
-    pos.y = 0
+    local onlyOnGroundOrSky = pos.y <= 1 and 1 or 2
     local index = grid.grid:GetCellIndex(pos)
     local cells = grid:getOwnGrids(index, r * 2)
     local list = nil
@@ -315,7 +391,7 @@ function IDLBattleSearcher.getTargetsInRange(attacker, pos, r)
             if m then
                 ---@param v IDLUnitBase
                 for k, v in pairs(m) do
-                    if IDLBattleSearcher.isTarget(attacker, v) then
+                    if IDLBattleSearcher.isTarget(attacker, v, onlyOnGroundOrSky) then
                         table.insert(ret, v)
                     end
                 end
