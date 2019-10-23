@@ -251,6 +251,7 @@ end
 ---@param unit IDLUnitBase
 function IDLBattle.someOneDead(unit)
     IDLBattleSearcher.someOneDead(unit)
+    -- 应该只需要return移动的战斗单元就可以了,建筑是通过城市来做释放处理的
     if unit.isRole then
         if unit.isOffense then
             IDLBattle.offShips[unit.instanceID] = nil

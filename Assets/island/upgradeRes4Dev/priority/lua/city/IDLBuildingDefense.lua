@@ -9,8 +9,10 @@ function IDLBuildingDefense:__init(selfObj, other)
         return
     end
     self:getBase(IDLBuildingDefense).__init(self, selfObj, other)
-    ---@type TweenRotation
-    self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
+    if not self.bodyRotate then
+        ---@type TweenRotation
+        self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
+    end
     ---@type Coolape.CLEjector 发射器
     self.ejector = getCC(self.csSelf.mbody, "pao/pao_sz/cannon", "CLEjector")
 end
@@ -75,31 +77,31 @@ function IDLBuildingDefense:showAttackRang()
     -- 最小攻击范围
     local MinAttackRange = self.MinAttackRange
     if MinAttackRange > 0 then
-        if self.attackMinRang == nil then
+        if self.attackMinRangObj == nil then
             self:loadRang(
                 Color.red,
                 MinAttackRange,
                 function(rangObj)
-                    self.attackMinRang = rangObj
+                    self.attackMinRangObj = rangObj
                 end
             )
         else
-            SetActive(self.attackMinRang.gameObject, true)
+            SetActive(self.attackMinRangObj.gameObject, true)
         end
     end
     -- 最远攻击范围
     local MaxAttackRange = self.MaxAttackRange
     if MaxAttackRange > 0 then
-        if self.attackMaxRang == nil then
+        if self.attackMaxRangObj == nil then
             self:loadRang(
                 Color.white,
                 MaxAttackRange,
                 function(rangObj)
-                    self.attackMaxRang = rangObj
+                    self.attackMaxRangObj = rangObj
                 end
             )
         else
-            SetActive(self.attackMaxRang.gameObject, true)
+            SetActive(self.attackMaxRangObj.gameObject, true)
         end
     end
 end
@@ -127,15 +129,15 @@ function IDLBuildingDefense:loadRang(color, r, callback)
 end
 
 function IDLBuildingDefense:hideAttackRang()
-    if self.attackMaxRang then
-        CLUIOtherObjPool.returnObj(self.attackMaxRang.gameObject)
-        SetActive(self.attackMaxRang.gameObject, false)
-        self.attackMaxRang = nil
+    if self.attackMaxRangObj then
+        CLUIOtherObjPool.returnObj(self.attackMaxRangObj.gameObject)
+        SetActive(self.attackMaxRangObj.gameObject, false)
+        self.attackMaxRangObj = nil
     end
-    if self.attackMinRang then
-        CLUIOtherObjPool.returnObj(self.attackMinRang.gameObject)
-        SetActive(self.attackMinRang.gameObject, false)
-        self.attackMinRang = nil
+    if self.attackMinRangObj then
+        CLUIOtherObjPool.returnObj(self.attackMinRangObj.gameObject)
+        SetActive(self.attackMinRangObj.gameObject, false)
+        self.attackMinRangObj = nil
     end
 end
 
@@ -155,9 +157,17 @@ function IDLBuildingDefense:doAttack()
     if GameMode.battle ~= MyCfg.mode or self.isDead then
         return
     end
+
     self:doSearchTarget()
+    if self.target then
+        -- 炮面向目标
+        self:lookatTarget(self.target, false, self:wrapFunc(self.fire))
+    end
+    -- 再次攻击
+    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
 end
 
+---@public 寻敌，并设置目标
 function IDLBuildingDefense:doSearchTarget()
     local target = self.target
     if target == nil or target.isDead then
@@ -171,15 +181,9 @@ function IDLBuildingDefense:doSearchTarget()
             target = IDLBattle.searchTarget(self)
         end
     end
-    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
 
     -- 设置目标
     self:setTarget(target)
-
-    if target then
-        -- 炮面向目标
-        self:lookatTarget(self.target, false, self:wrapFunc(self.fire))
-    end
 end
 
 ---@public 设置攻击目标
@@ -201,7 +205,8 @@ end
 function IDLBuildingDefense:fire()
     local target = self.target
     SetActive(self.ejector.gameObject, true)
-    self.ejector:fire(self.csSelf, self.target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
+    self.ejector:fire(self.csSelf, target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
+    SoundEx.playSound(self.attr.AttackEffect, 1, 3)
     SoundEx.playSound(self.attr.AttackSound, 1, 3)
 end
 

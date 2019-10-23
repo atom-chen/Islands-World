@@ -4,6 +4,7 @@ require("city.IDLBuildingDefense")
 ---@class IDLBuildingTrap:IDLBuildingDefense
 IDLBuildingTrap = class("IDLBuildingTrap", IDLBuildingDefense)
 
+---@param selfObj MyUnit
 function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
     self.isTrap = true
     if self.bodyRotate == nil then
@@ -12,6 +13,16 @@ function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
     end
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuildingTrap).init(self, selfObj, id, star, lev, _isOffense, other)
+    -- 触发半径
+    self.TriggerRadius =
+        DBCfg.getGrowingVal(
+        bio2number(self.attr.TriggerRadiusMin),
+        bio2number(self.attr.TriggerRadiusMax),
+        bio2number(self.attr.TriggerRadiusCurve),
+        lev / bio2number(self.attr.MaxLev)
+    )
+    self.TriggerRadius = self.TriggerRadius / 100
+
     if MyCfg.mode == GameMode.battle then
         self:hide()
     else
@@ -46,16 +57,13 @@ end
 
 ---@public 显示攻击范围
 function IDLBuildingTrap:showAttackRang()
+    if MyCfg.mode == GameMode.battle then
+        -- 战斗中不能显示陷阱的范围，不然就穿邦了
+        return
+    end
     -- 触发半径
     local lev = self.serverData and bio2number(self.serverData.lev) or 1
-    local TriggerRadius =
-        DBCfg.getGrowingVal(
-        bio2number(self.attr.TriggerRadiusMin),
-        bio2number(self.attr.TriggerRadiusMax),
-        bio2number(self.attr.TriggerRadiusCurve),
-        lev / bio2number(self.attr.MaxLev)
-    )
-    TriggerRadius = TriggerRadius / 100
+    local TriggerRadius = self.TriggerRadius
 
     if TriggerRadius > 0 then
         if self.attackMinRang == nil then
@@ -107,6 +115,48 @@ function IDLBuildingTrap:hideAttackRang()
         SetActive(self.attackMinRang.gameObject, false)
         self.attackMinRang = nil
     end
+end
+
+function IDLBuildingTrap:doAttack()
+    if GameMode.battle ~= MyCfg.mode or self.isDead then
+        return
+    end
+    self:doSearchTarget()
+    if self.target then
+        self:show()
+        -- 显示一会再爆
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.fire), 0.3)
+    else
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
+    end
+end
+
+---@public 是否触发了
+function IDLBuildingTrap:isTriggered()
+    local target = IDLBattle.searchTarget(self)
+    return target and true or false
+end
+
+function IDLBuildingTrap:fire()
+    -- 取得目标
+    local targets = IDLBattle.searcher.getTargetsInRange(self, self.transform.position, self.MaxAttackRange)
+
+    -- 自爆
+    -- //TODO:陷阱的配置表时还没有音效
+    SoundEx.playSound(self.attr.AttackSound, 1, 3)
+    CLEffect.play(self.attr.AttackEffect, self.transform.position)
+    self:onDead()
+
+    ---@param target IDLUnitBase
+    for i, target in ipairs(targets) do
+        target:onHurt(self:getDamage(target), self)
+    end
+end
+
+function IDLBuildingTrap:iamDie()
+    SetActive(self.gameObject, false)
+    self:hide()
+    IDLBattle.someOneDead(self)
 end
 
 function IDLBuildingTrap:clean()

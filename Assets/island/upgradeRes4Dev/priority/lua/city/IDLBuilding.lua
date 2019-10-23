@@ -17,24 +17,20 @@ end
 
 ---@param other table = {index=网格位置 ,serverData=服务器数据（不是必须）}
 function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
+    self.isDead = false
     self.isBuilding = true
+
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuilding).init(self, selfObj, id, star, lev, _isOffense, other)
 
-    self.isOffense = false -- 是进攻方
-    self.tweenScale = nil
-    self.size = 1 -- 占格子
-    self.gridIndex = -1 -- 所在格子的index
-    self.oldindex = -1
-    self.isDead = false
 
     -- 取得属性配置
     ---@type IDDBBuilding
     self.serverData = other.serverData
     ---@type DBCFBuildingData
     self.attr = DBCfg.getBuildingByID(id)
-    self.size = bio2Int(self.attr.Size)
     -- 占格子
+    self.size = bio2Int(self.attr.Size)
     self.gridIndex = other.index
     -- 所在格子的index
     self.oldindex = self.gridIndex
@@ -450,6 +446,12 @@ end
 ---@param damage number 伤害值
 ---@param attacker IDLUnitBase 攻击方
 function IDLBuilding:onHurt(damage, attacker)
+end
+
+function IDLBuilding:iamDie()
+    CLEffect.play("BombBuilding", self.transform.position)
+    SetActive(self.gameObject, false)
+    IDLBattle.someOneDead(self)
 end
 
 function IDLBuilding:clean()

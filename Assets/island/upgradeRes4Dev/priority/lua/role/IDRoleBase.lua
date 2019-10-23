@@ -182,6 +182,7 @@ function IDRoleBase:onHurt(damage, attacker)
 end
 
 function IDRoleBase:iamDie()
+    -- //TODO:可以考虑在同一网格中只能有1到2个死亡特效，因为有可能很多舰船士兵都在同一时间段死掉
     CLEffect.play(self.attr.DeadEffect, self.transform.position)
     if isNilOrEmpty(self.attr.DeadSound) then
         self:playDeadSund(0)

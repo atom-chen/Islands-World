@@ -440,7 +440,7 @@ function IDWorldMap.hideOnClickShow()
     if isDragOcean then
         SetActive(IDWorldMap.mapTileSize, false)
     end
-    --//TODO：隐藏主UI，当视野更广
+    --//TODO:隐藏主UI，当视野更广
 end
 
 ---@public 点击了海面
