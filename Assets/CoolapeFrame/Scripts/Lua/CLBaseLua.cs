@@ -339,10 +339,24 @@ namespace Coolape
 					if (!isPause) {
                         if(isClassLua && func is LuaFunction) {
 							//func.Call (luaTable, orgs);
-                            Utl.doCallback(func, luaTable, orgs);
+                            if(orgs == null)
+                            {
+                                Utl.doCallback(func, luaTable);
+                            }
+                            else
+                            {
+                                Utl.doCallback(func, luaTable, orgs);
+                            }
 						} else {
-							//func.Call (orgs);
-                            Utl.doCallback(func, orgs);
+                            //func.Call (orgs);
+                            if (orgs == null)
+                            {
+                                Utl.doCallback(func);
+                            }
+                            else
+                            {
+                                Utl.doCallback(func, orgs);
+                            }
                         }
 					} else {
 						//ArrayList list = new ArrayList ();
@@ -369,18 +383,43 @@ namespace Coolape
 		public virtual void regain ()
 		{
 			isPause = false;
-            object f = null;
+            object func = null;
+            object orgs = null;
             NewList invokeList = null;
 			try {
 				while (invokeFuncs.Count > 0) {
                     invokeList = (NewList)(invokeFuncs.Dequeue ());
-					f = invokeList [0];
-                    Utl.doCallback(f, invokeList[1]);
+                    func = invokeList [0];
+                    orgs = invokeList[1];
+                    if (isClassLua && func is LuaFunction)
+                    {
+                        //func.Call (luaTable, orgs);
+                        if (orgs == null)
+                        {
+                            Utl.doCallback(func, luaTable);
+                        }
+                        else
+                        {
+                            Utl.doCallback(func, luaTable, orgs);
+                        }
+                    }
+                    else
+                    {
+                        //func.Call (orgs);
+                        if (orgs == null)
+                        {
+                            Utl.doCallback(func);
+                        }
+                        else
+                        {
+                            Utl.doCallback(func, orgs);
+                        }
+                    }
                     ObjPool.listPool.returnObject(invokeList);
                     invokeList = null;
                 }
 			} catch (System.Exception e) {
-                Debug.LogError ("["+gameObject.name + "]"+ f != null ? f.ToString() : "" + "==" + e);
+                Debug.LogError ("["+gameObject.name + "]"+ func != null ? func.ToString() : "" + "==" + e);
 			}
 		}
 

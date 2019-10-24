@@ -25,6 +25,7 @@ IDMainCity.cityData = nil -- 城的数据
 IDMainCity.selectedUnit = nil
 IDMainCity.newBuildUnit = nil
 IDMainCity.ExtendTile = nil
+local isInitGridNodes = true
 local finishCallback, progressCallback
 ---@type MirrorReflection
 local ocean
@@ -75,7 +76,7 @@ local function _init()
     -- 波浪的处理
     local uvWave = csSelf.gameObject:AddComponent(typeof(CS.Wave))
     IDMainCity.gridTileSidePorc = IDLGridTileSide
-    IDLGridTileSide.init(grid, uvWave)
+    IDLGridTileSide.init(IDMainCity.grid, uvWave)
 
     CLThingsPool.borrowObjAsyn(
         "FourWayArrow",
@@ -202,7 +203,8 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     IDMainCity.grid.showGrid = false
     IDMainCity.grid.showGridRange = true
     IDMainCity.grid:showRect()
-    IDMainCity.grid:init()
+    IDMainCity.grid:init(isInitGridNodes)
+    isInitGridNodes = false
 
     if not IDMainCity.astar4Ocean.isIninted then
         IDMainCity.astar4Ocean.numRows = size * 2
@@ -555,7 +557,7 @@ function IDMainCity.onLoadBuilding(name, obj, param)
             buildingLua = unit.luaTable
         end
 
-        buildingLua:init(unit, bio2number(d.attrid), 0, bio2number(d.lev), true, {index = index, serverData = d})
+        buildingLua:init(unit, bio2number(d.attrid), 0, bio2number(d.lev), false, {index = index, serverData = d})
 
         local attr = DBCfg.getBuildingByID(bio2number(d.attrid))
         IDMainCity.refreshGridState(index, bio2number(attr.Size), true, gridState4Building)

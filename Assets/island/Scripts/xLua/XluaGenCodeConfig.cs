@@ -195,6 +195,7 @@ public static class XluaGenCodeConfig
         typeof(CLGrid),
         typeof(Coolape.GridBase),
         typeof(CLSmoothFollow),
+        typeof(CLAStarNode),
 
         typeof(MyUnit),
         typeof(SFourWayArrow),

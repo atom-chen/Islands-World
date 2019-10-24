@@ -37,14 +37,15 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
         if bio2Int(b.attr.GID) == IDConst.BuildingGID.defense then -- 防御炮
             local MaxAttackRange =
                 DBCfg.getGrowingVal(
-                bio2number(b.attr.AttackRangeMin) / 100,
-                bio2number(b.attr.AttackRangeMax) / 100,
+                bio2number(b.attr.AttackRangeMin),
+                bio2number(b.attr.AttackRangeMax),
                 bio2number(b.attr.AttackRangeCurve),
                 bio2number(b.serverData.lev) / bio2number(b.attr.MaxLev)
             )
+            MaxAttackRange = MaxAttackRange/100
             local size = IDLBattleSearcher.calculateSize(MaxAttackRange)
             -- 取得可攻击范围内的格子
-            local cells = grid:getOwnGrids(b.gridIndex, size)
+            local cells = grid:getOwnGrids(b.gridIndex, NumEx.getIntPart(size))
 
             local MinAttackRange = bio2Int(b.attr.MinAttackRange) / 100
             -- 按照离建筑的远近排序
@@ -56,17 +57,18 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
          then -- 陷阱\造船厂，主要处理触发半径
             local triggerR =
                 DBCfg.getGrowingVal(
-                bio2number(b.attr.TriggerRadiusMin) / 100,
-                bio2number(b.attr.TriggerRadiusMax) / 100,
+                bio2number(b.attr.TriggerRadiusMin),
+                bio2number(b.attr.TriggerRadiusMax),
                 bio2number(b.attr.TriggerRadiusCurve),
                 bio2number(b.serverData.lev) / bio2number(b.attr.MaxLev)
             )
+            triggerR = triggerR/100
             local size = IDLBattleSearcher.calculateSize(triggerR)
             -- 取得可攻击范围内的格子
-            local cells = grid:getOwnGrids(b.gridIndex, size)
+            local cells = grid:getOwnGrids(b.gridIndex, NumEx.getIntPart(size))
 
             -- 按照离建筑的远近排序
-            local list = IDLBattleSearcher.sortGridCells(b, 0, 0, cells)
+            local list = IDLBattleSearcher.sortGridCells(b, 0, triggerR, cells)
             buildingsRange[b.instanceID] = list
         end
     end
@@ -110,12 +112,6 @@ function IDLBattleSearcher.debugBuildingAttackRange(building)
     IDLBattleSearcher._debugRangs = {}
 
     local cells = buildingsRange[building.instanceID]
-    -- local cellList = grid:getOwnGrids(building.gridIndex, 20*2)
-    -- cells = {}
-    -- for i=0, cellList.Count -1 do
-    --     table.insert(cells, {index =cellList[i]})
-    -- end
-
     for i, v in ipairs(cells or {}) do
         CLThingsPool.borrowObjAsyn(
             "MapTileSize",
@@ -344,7 +340,7 @@ end
 function IDLBattleSearcher.getTarget(attacker, pos, r)
     local onlyOnGroundOrSky = pos.y <= 1 and 1 or 2
     local index = grid.grid:GetCellIndex(pos)
-    local cells = grid:getOwnGrids(index, r * 2)
+    local cells = grid:getOwnGrids(index, NumEx.getIntPart(r * 2))
     local list = nil
     if attacker.isOffense then
         list = defense
@@ -375,7 +371,7 @@ end
 function IDLBattleSearcher.getTargetsInRange(attacker, pos, r)
     local onlyOnGroundOrSky = pos.y <= 1 and 1 or 2
     local index = grid.grid:GetCellIndex(pos)
-    local cells = grid:getOwnGrids(index, r * 2)
+    local cells = grid:getOwnGrids(index, NumEx.getIntPart(r * 2))
     local list = nil
     if attacker.isOffense then
         list = defense

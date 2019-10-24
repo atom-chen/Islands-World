@@ -11,8 +11,8 @@ function IDLBuildingDefenseMissile2:doSearchTarget()
     self:setTarget(self.targets[1])
 end
 
-function IDLBuildingDefenseMissile2:fire()
-    local target = self.target
+function IDLBuildingDefenseMissile2:fire(target)
+    target = target or self.target
 	SetActive(self.ejector.gameObject, true)
 	-- 发射两个导弹
 	self.ejector:fire(0, 1, 1, 0, 0, self.csSelf, target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))

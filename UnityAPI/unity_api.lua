@@ -131,6 +131,7 @@ Coolape_InvokeEx = Coolape.InvokeEx
 Coolape_CLEjector = Coolape.CLEjector
 Coolape_GridBase = Coolape.GridBase
 Coolape_CLSmoothFollow = Coolape.CLSmoothFollow
+Coolape_CLAStarNode = Coolape.CLAStarNode
 UnityEngine_ScriptableObject = UnityEngine.ScriptableObject
 UnityEngine_Rendering_PostProcessing_PostProcessLayer = UnityEngine.Rendering.PostProcessing.PostProcessLayer
 UnityEngine_Rendering_PostProcessing_PostProcessVolume = UnityEngine.Rendering.PostProcessing.PostProcessVolume

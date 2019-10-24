@@ -11,6 +11,7 @@
 ---@field public slowdownDistance System.Single
 ---@field public arriveDistance System.Single
 ---@field public turningSpeed System.Single
+---@field public RefreshTargetMSec System.Int32
 ---@field public speed System.Single
 ---@field public high System.Single
 ---@field public angleOffset System.Int32

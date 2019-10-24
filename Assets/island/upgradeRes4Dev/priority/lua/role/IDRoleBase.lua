@@ -32,20 +32,11 @@ IDRoleBase = class("IDRoleBase", IDLUnitBase)
 ---@param csSelf Coolape.CLUnit
 function IDRoleBase:ctor(csSelf)
     self:getBase(IDRoleBase).ctor(self, csSelf)
-    ---@type Coolape.CLUnit
-    self.csSelf = csSelf -- cs对象
-    ---@type UnityEngine.Transform
-    self.transform = nil
-    ---@type UnityEngine.GameObject
-    self.gameObject = nil
-    self.isOffense = false -- 是进攻方
-    self.id = 0
 
     ---@type WrapBattleUnitData
     self.serverData = nil -- 服务器数据
+    ---@type DBCFRoleData
     self.attr = nil -- 属性
-    self.isFinishInited = false
-    self.isDead = false
 end
 
 function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
@@ -102,9 +93,6 @@ function IDRoleBase:__init(selfObj, other)
         return
     end
     self:getBase(IDRoleBase).__init(self, selfObj, other)
-    self.csSelf = selfObj
-    self.transform = selfObj.transform
-    self.gameObject = selfObj.gameObject
     self.body = selfObj.mbody
     if self.body and (not self.body:IsNull()) then
         self.action = self.body:GetComponent("CLRoleAction")

@@ -28,12 +28,6 @@ function IDLBuildingDefenseLightning2:doSearchTarget()
     self:setTarget(self.targets[1])
 end
 
-function IDLBuildingDefenseLightning2:fire(target)
-    SetActive(self.ejector.gameObject, true)
-    self.ejector:fire(self.csSelf, target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
-    SoundEx.playSound(self.attr.AttackSound, 1, 3)
-end
-
 ---@param bullet Coolape.CLBulletBase
 function IDLBuildingDefenseLightning2:onBulletHit(bullet)
     local target = bullet.target.luaTable

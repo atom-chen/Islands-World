@@ -14,16 +14,20 @@
 ---@field public grid Coolape.GridBase
 ---@field public originPos UnityEngine.Vector3
 ---@field public lineName System.String
+---@field public nodesMap System.Collections.Generic.Dictionary2System.Int32Coolape.CLAStarNode
 local m = { }
 ---public CLGrid .ctor()
 ---@return CLGrid
 function m.New() end
 ---public Void Start()
 function m:Start() end
----public Void init()
----public Void init(Vector3 origin)
+---public Void init(Boolean isInitNodes)
+---public Void init(Vector3 origin, Boolean isInitNodes)
 ---@param Vector3 origin
-function m:init(origin) end
+---@param optional Boolean isInitNodes
+function m:init(origin, isInitNodes) end
+---public Void initNodes()
+function m:initNodes() end
 ---public Void show()
 function m:show() end
 ---public Void onSetPrefab(Object[] paras)

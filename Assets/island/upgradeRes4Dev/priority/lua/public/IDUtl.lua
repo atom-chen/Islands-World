@@ -9,6 +9,7 @@ require("city.IDLBuildingDefenseLightning")
 require("city.IDLBuildingDefenseLightning2")
 require("city.IDLBuildingDockyard")
 require("city.IDLBuildingTrap")
+require("city.IDLBuildingTrapAirBomb")
 require("city.IDLTree")
 require("role.IDRoleBase")
 require("role.IDRWorker")
@@ -222,7 +223,11 @@ function IDUtl.newBuildingLua(bAttr)
         end
     elseif gid == IDConst.BuildingGID.trap then
         -- 陷阱建筑
-        buildingLua = IDLBuildingTrap.new()
+        if id == IDConst.BuildingID.AirBombID then
+            buildingLua = IDLBuildingTrapAirBomb.new()
+        else
+            buildingLua = IDLBuildingTrap.new()
+        end
     elseif gid == IDConst.BuildingGID.tree then
         -- 树
         buildingLua = IDLTree.new()

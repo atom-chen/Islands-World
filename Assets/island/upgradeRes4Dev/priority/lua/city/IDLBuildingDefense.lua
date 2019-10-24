@@ -22,6 +22,7 @@ function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)
     self:getBase(IDLBuildingDefense).init(self, selfObj, id, star, lev, _isOffense, other)
     ---@type IDRoleBase 攻击目标
     self.target = nil
+    self.csSelf.mTarget = nil
 
     -- 最远攻击距离
     local lev = self.serverData and bio2number(self.serverData.lev) or 1
@@ -82,7 +83,12 @@ function IDLBuildingDefense:showAttackRang()
                 Color.red,
                 MinAttackRange,
                 function(rangObj)
-                    self.attackMinRangObj = rangObj
+                    if self.attackMinRangObj then
+                        CLUIOtherObjPool.returnObj(rangObj)
+                        SetActive(rangObj, false)
+                    else
+                        self.attackMinRangObj = rangObj
+                    end
                 end
             )
         else
@@ -97,7 +103,12 @@ function IDLBuildingDefense:showAttackRang()
                 Color.white,
                 MaxAttackRange,
                 function(rangObj)
-                    self.attackMaxRangObj = rangObj
+                    if self.attackMaxRangObj then
+                        CLUIOtherObjPool.returnObj(rangObj)
+                        SetActive(rangObj, false)
+                    else
+                        self.attackMaxRangObj = rangObj
+                    end
                 end
             )
         else
@@ -202,11 +213,15 @@ end
 
 ---@public 开炮
 ---@param target IDRoleBase
-function IDLBuildingDefense:fire()
-    local target = self.target
+function IDLBuildingDefense:fire(target)
+    target = target or self.target
+    if target == nil then
+        printe("why the target is nil ?")
+        return
+    end
     SetActive(self.ejector.gameObject, true)
     self.ejector:fire(self.csSelf, target.csSelf, self.bulletAttr, nil, self:wrapFunc(self.onBulletHit))
-    SoundEx.playSound(self.attr.AttackEffect, 1, 3)
+    CLEffect.play(self.attr.AttackEffect, self.transform.position)
     SoundEx.playSound(self.attr.AttackSound, 1, 3)
 end
 
@@ -242,15 +257,19 @@ function IDLBuildingDefense:lookatTarget(target, imm, callback)
         self.bodyRotate.duration = 0.1
         self.bodyRotate.from = self.bodyRotate.transform.localEulerAngles
         self.bodyRotate.to = Vector3(0, 0, toAngel.y)
-        if abs(self.bodyRotate.from.z - self.bodyRotate.to.z) < 0.01 then
+        if abs(self.bodyRotate.from.z - self.bodyRotate.to.z) < 1 then
             if callback then
-                Utl.doCallback(callback)
+                Utl.doCallback(callback, target)
             end
         else
             self.bodyRotate:ResetToBeginning()
             self.bodyRotate:Play(true)
             if callback then
-                self.csSelf:invoke4Lua(callback, 0.1)
+                if abs(self.bodyRotate.from.z - self.bodyRotate.to.z) < 10 then
+                    Utl.doCallback(callback, target)
+                else
+                    self.csSelf:invoke4Lua(callback, target, 0.1)
+                end
             end
         end
     end
@@ -262,6 +281,7 @@ function IDLBuildingDefense:clean()
     self.csSelf:cancelInvoke4Lua()
     self:getBase(IDLBuildingDefense).clean(self)
     self:hideAttackRang()
+    self.target = nil
 end
 
 --------------------------------------------

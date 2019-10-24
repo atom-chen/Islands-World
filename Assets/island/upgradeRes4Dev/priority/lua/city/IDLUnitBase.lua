@@ -44,6 +44,10 @@ function IDLUnitBase:ctor(csSelf)
     self.data = nil
     ---@type Coolape.CLCellLua
     self.lifebar = nil
+    self.isOffense = false -- 是进攻方
+    self.id = 0
+    self.isFinishInited = false
+    self.isDead = false
 end
 
 function IDLUnitBase:__init(selfObj, other)

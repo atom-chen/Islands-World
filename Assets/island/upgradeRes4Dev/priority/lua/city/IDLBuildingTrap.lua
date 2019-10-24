@@ -13,6 +13,10 @@ function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
     end
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuildingTrap).init(self, selfObj, id, star, lev, _isOffense, other)
+    -- 是否已经触发了
+    self.isTrigered = false
+
+    local lev = self.serverData and bio2number(self.serverData.lev) or 1
     -- 触发半径
     self.TriggerRadius =
         DBCfg.getGrowingVal(
@@ -61,80 +65,63 @@ function IDLBuildingTrap:showAttackRang()
         -- 战斗中不能显示陷阱的范围，不然就穿邦了
         return
     end
-    -- 触发半径
-    local lev = self.serverData and bio2number(self.serverData.lev) or 1
-    local TriggerRadius = self.TriggerRadius
 
+    -- 触发半径
+    local TriggerRadius = self.TriggerRadius
     if TriggerRadius > 0 then
-        if self.attackMinRang == nil then
+        if self.attackMinRangObj == nil then
             self:loadRang(
                 Color.blue,
                 TriggerRadius,
                 function(rangObj)
-                    self.attackMinRang = rangObj
+                    if self.attackMinRangObj then
+                        CLUIOtherObjPool.returnObj(rangObj)
+                        SetActive(rangObj, false)
+                    else
+                        self.attackMinRangObj = rangObj
+                    end
                 end
             )
         else
-            SetActive(self.attackMinRang.gameObject, true)
+            SetActive(self.attackMinRangObj.gameObject, true)
         end
     end
 
-    local lev = self.serverData and bio2number(self.serverData.lev) or 1
-    local MaxAttackRange =
-        DBCfg.getGrowingVal(
-        bio2number(self.attr.AttackRangeMin),
-        bio2number(self.attr.AttackRangeMax),
-        bio2number(self.attr.AttackRangeCurve),
-        lev / bio2number(self.attr.MaxLev)
-    )
-    MaxAttackRange = MaxAttackRange / 100
+    local MaxAttackRange = self.MaxAttackRange
     -- 最远攻击范围
     if MaxAttackRange > 0 then
-        if self.attackMaxRang == nil then
+        if self.attackMaxRangObj == nil then
             self:loadRang(
                 Color.white,
                 MaxAttackRange,
                 function(rangObj)
-                    self.attackMaxRang = rangObj
+                    if self.attackMaxRangObj then
+                        CLUIOtherObjPool.returnObj(rangObj)
+                        SetActive(rangObj, false)
+                    else
+                        self.attackMaxRangObj = rangObj
+                    end
                 end
             )
         else
-            SetActive(self.attackMaxRang.gameObject, true)
+            SetActive(self.attackMaxRangObj.gameObject, true)
         end
     end
 end
 
-function IDLBuildingTrap:hideAttackRang()
-    if self.attackMaxRang then
-        CLUIOtherObjPool.returnObj(self.attackMaxRang.gameObject)
-        SetActive(self.attackMaxRang.gameObject, false)
-        self.attackMaxRang = nil
-    end
-    if self.attackMinRang then
-        CLUIOtherObjPool.returnObj(self.attackMinRang.gameObject)
-        SetActive(self.attackMinRang.gameObject, false)
-        self.attackMinRang = nil
-    end
-end
-
 function IDLBuildingTrap:doAttack()
-    if GameMode.battle ~= MyCfg.mode or self.isDead then
+    if GameMode.battle ~= MyCfg.mode or self.isDead or self.isTrigered then
         return
     end
     self:doSearchTarget()
     if self.target then
+        self.isTrigered = true
         self:show()
         -- 显示一会再爆
-        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.fire), 0.3)
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.fire), bio2number(self.attr.AttackSpeedMS) / 1000)
     else
         InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
     end
-end
-
----@public 是否触发了
-function IDLBuildingTrap:isTriggered()
-    local target = IDLBattle.searchTarget(self)
-    return target and true or false
 end
 
 function IDLBuildingTrap:fire()
