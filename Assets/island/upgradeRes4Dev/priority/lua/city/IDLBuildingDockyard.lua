@@ -67,6 +67,12 @@ function IDLBuildingDockyard:onLoadShip(name, ship, shipAttrId)
     ship.transform.localPosition = Vector3.zero
     ship.transform.localScale = Vector3.one * 0.6
     ship.transform.localEulerAngles = Vector3.zero
+    
+    if ship.luaTable == nil then
+        ship.luaTable = IDUtl.newRoleLua(shipAttrId)
+        ship:initGetLuaFunc()
+    end
+    ship:init(shipAttrId, 0, 1, true, {})
     SetActive(ship.gameObject, true)
 end
 

@@ -57,7 +57,7 @@ function IDWorldMap.__init()
     IDWorldMap.grid.numGroundCols = worldsize
     IDWorldMap.grid.cellSize = cellSize
     IDWorldMap.grid.transform.localPosition = Vector3(-worldsize * cellSize / 2, 0, -worldsize * cellSize / 2)
-    IDWorldMap.grid:Start()
+    IDWorldMap.grid:init(false)
 
     IDWorldMap.fogOfWarInfluence = GameObject("fogOfWarInfluence"):AddComponent(typeof(FogOfWarInfluence))
     IDWorldMap.fogOfWarInfluence.transform.parent = transform

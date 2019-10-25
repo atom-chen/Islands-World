@@ -23,7 +23,6 @@ function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
     self:getBase(IDLBuilding).init(self, selfObj, id, star, lev, _isOffense, other)
 
-
     -- 取得属性配置
     ---@type IDDBBuilding
     self.serverData = other.serverData
@@ -282,7 +281,12 @@ function IDLBuilding:_uiEventDelegate(go)
     if (goName == "body") then
         if (self.isJump) then
             self.isJump = false
-            self.tweenScale:Play(true)
+            self.csSelf:invoke4Lua(
+                function()
+                    self.tweenScale:Play(true)
+                end,
+                0.02
+            )
         end
     end
 end

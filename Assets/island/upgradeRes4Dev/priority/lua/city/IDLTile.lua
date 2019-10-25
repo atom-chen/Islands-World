@@ -24,6 +24,7 @@ function cell.show(go, data)
     cell.isDraged = false
     cell.canClick = true
     cell.isSelected = false
+    cell.initSides()
 end
 
 function cell.getPosIndex()
@@ -59,7 +60,7 @@ function cell.OnPress(go, isPress)
     else
         if (isPress) then
             IDMainCity.setOtherUnitsColiderState(cell, false)
-            CLUIDrag4World.self.enabled = false  --不可托动屏幕
+            CLUIDrag4World.self.enabled = false --不可托动屏幕
         else
             cell.isDraged = false
 
@@ -76,10 +77,11 @@ function cell.OnPress(go, isPress)
                 IDLCameraMgr.setPostProcessingProfile("normal")
                 NGUITools.SetLayer(cell.gameObject, LayerMask.NameToLayer("Tile"))
             end
+            cell.initSides()
             -- 通知主城有释放建筑
             IDMainCity.onReleaseTile(cell, moved)
             --cell.csSelf:invoke4Lua("setScreenCanDrag", 0.2)
-            CLUIDrag4World.self.enabled = true  --可托动屏幕
+            CLUIDrag4World.self.enabled = true --可托动屏幕
         end
     end
 end
@@ -129,11 +131,11 @@ function cell.OnDrag(go, delta)
         --IDLBuildingSize.show(cell.size, isOK and Color.green or Color.red, newPos)
         --IDLBuildingSize.setLayer("Top")
         if (isOK) then
-            SFourWayArrow.setMatToon(Color.white)
             --cell.csSelf:setMatToon()
+            SFourWayArrow.setMatToon(Color.white)
         else
-            SFourWayArrow.setMatToon(Color.red)
             --csSelf:setMatOutLine()
+            SFourWayArrow.setMatToon(Color.red)
         end
         if (index ~= cell.oldindex) then
             cell.oldindex = index
@@ -157,7 +159,12 @@ function cell.uiEventDelegate(go)
     if (goName == cell.csSelf.name) then
         if (cell.isJump) then
             cell.isJump = false
-            cell.tweenScale:Play(true)
+            cell.csSelf:invoke4Lua(
+                function()
+                    cell.tweenScale:Play(true)
+                end,
+                0.02
+            )
         end
     end
 end
@@ -182,10 +189,9 @@ function cell.setCollider(val)
     cell.canClick = val
 end
 
----@public 取得四边的index
-function cell.getSidesIndex()
+function cell.initSides()
     local grid = IDMainCity.getGrid()
-    local index = grid:GetCellIndex(cell.transform.position)
+    local index = cell.gridIndex
     local x = grid:GetColumn(index)
     local y = grid:GetRow(index)
     local left1 = grid:GetCellIndex(x - 2, y)
@@ -200,20 +206,25 @@ function cell.getSidesIndex()
     local leftDown = grid:GetCellIndex(x - 2, y - 2)
     local rightUp = grid:GetCellIndex(x + 1, y + 1)
     local rightDown = grid:GetCellIndex(x + 1, y - 2)
-    return left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown
+    cell.sides = {left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown}
 end
 
+---@public 取得四边的index //TODO:可以缓存一下，不需要每次都计算
+function cell.getSidesIndex()
+    return cell.sides
+end
+
+--//TODO:可以缓存一下，不需要每次都计算
 function cell.getSidesAngleIndex()
-    local grid = IDMainCity.getGrid()
-    local index = grid:GetCellIndex(cell.transform.position)
-    local x = grid:GetColumn(index)
-    local y = grid:GetRow(index)
-    local leftUp = grid:GetCellIndex(x - 2, y + 1)
-    local leftDown = grid:GetCellIndex(x - 2, y - 2)
-    local rightUp = grid:GetCellIndex(x + 1, y + 1)
-    local rightDown = grid:GetCellIndex(x + 1, y - 2)
-    return leftUp, leftDown, rightUp, rightDown
+    -- local grid = IDMainCity.getGrid()
+    -- local index = grid:GetCellIndex(cell.transform.position)
+    -- local x = grid:GetColumn(index)
+    -- local y = grid:GetRow(index)
+    -- local leftUp = grid:GetCellIndex(x - 2, y + 1)
+    -- local leftDown = grid:GetCellIndex(x - 2, y - 2)
+    -- local rightUp = grid:GetCellIndex(x + 1, y + 1)
+    -- local rightDown = grid:GetCellIndex(x + 1, y - 2)
+    return cell.sides[9], cell.sides[10], cell.sides[11], cell.sides[12] --leftUp, leftDown, rightUp, rightDown
 end
-
 
 return cell

@@ -221,13 +221,16 @@ function IDLGridTileSide.set4Sides(i)
         if cache.onProgressCB then
             cache.onProgressCB(count * 2, cache.__tmpCount)
         end
-
+        if type(i) == "table" then
+            printe(dump(i))
+        end
         local tile = cache.tileList[i + 5]
         IDLGridTileSide.procOneCellSide(tile, IDLGridTileSide.set4Sides, i + 5)
     end
 end
 
 ---@public 处理一个地块的四边，left,right,up,down
+---@param tile IDLTile
 function IDLGridTileSide.procOneCellSide(tile, callback, orgs, imm)
     if tile == nil then
         return
@@ -240,8 +243,9 @@ function IDLGridTileSide.procOneCellSide(tile, callback, orgs, imm)
             return
         end
     end
+    local sides =tile.getSidesIndex()
     local left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown =
-        tile.getSidesIndex()
+    sides[1],sides[2],sides[3],sides[4],sides[5],sides[6],sides[7],sides[8],sides[9],sides[10],sides[11],sides[12]
     if imm then
         IDLGridTileSide.setLeftSide(left1, nil, nil, imm)
         IDLGridTileSide.setLeftSide(left2, nil, nil, imm)
@@ -1147,7 +1151,7 @@ function IDLGridTileSide.onLoadSide(name, obj, orgs)
     local param = orgs[4]
     if obj == nil then
         if callback then
-            callback(orgs)
+            callback(param)
         end
         printe("get tile side is nil. ==" .. name)
         return
@@ -1156,7 +1160,7 @@ function IDLGridTileSide.onLoadSide(name, obj, orgs)
         CLThingsPool.returnObj(obj)
         SetActive(obj, false)
         if callback then
-            callback(orgs)
+            callback(param)
         end
         return
     end

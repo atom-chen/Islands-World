@@ -157,6 +157,11 @@ function IDLUnitBase:onDead()
     self:iamDie()
 end
 
+---@public 冰冻
+function IDLUnitBase:frozen(sec)
+    printe("must override [frozen] function!")
+end
+
 ---@public 我死掉了，处理死掉的效果
 function IDLUnitBase:iamDie()
     printe("must override [iamDie] function!")

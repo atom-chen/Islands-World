@@ -23,7 +23,7 @@ function IDLBuildingTrapAirBomb:fire()
         self:doAttack()
         return
     end
-    self.tweenPos:flyout(self.target.transform.position, 1, 0, nil, self:wrapFunc(self.onArrive), true)
+    self.tweenPos:flyout(self.target.transform.position, 1.4, 0, nil, self:wrapFunc(self.onArrive), true)
 end
 
 function IDLBuildingTrapAirBomb:onArrive()

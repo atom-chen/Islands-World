@@ -39,6 +39,22 @@ function IDRoleBase:ctor(csSelf)
     self.attr = nil -- 属性
 end
 
+---@param selfObj MyUnit
+function IDRoleBase:__init(selfObj, other)
+    if self.isFinishInited then
+        return
+    end
+    self:getBase(IDRoleBase).__init(self, selfObj, other)
+    self.body = selfObj.mbody
+    if self.body and (not self.body:IsNull()) then
+        self.action = self.body:GetComponent("CLRoleAction")
+    end
+    ---@type Coolape.CLRoleAvata
+    self.avata = selfObj:GetComponent("CLRoleAvata")
+    ---@type Coolape.CLSharedAssets
+    self.assets = selfObj:GetComponent("CLSharedAssets")
+end
+
 function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
     self:getBase(IDRoleBase).init(self, selfObj, id, star, lev, _isOffense, other)
     self.csSelf.isOffense = _isOffense
@@ -85,18 +101,32 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
         )
         self.data.damage = number2bio(self.data.damage)
     end
-
+    
     self:loadShadow()
+    SetActive(self.body.gameObject, false)
+    self.assets:init(self:wrapFunc(self.dress) , IDConst.dressMode.normal)
 end
-function IDRoleBase:__init(selfObj, other)
-    if self.isFinishInited then
+
+-- function IDRoleBase:uiEventDelegate(go)
+--     -- 进入这个方法，说明资源加载好了
+--     self:dress(IDConst.dressMode.normal)
+-- end
+
+---@public 换装
+---@param mode  IDConst.dressMode
+function IDRoleBase:dress(mode)
+    if self.avata == nil then
         return
     end
-    self:getBase(IDRoleBase).__init(self, selfObj, other)
-    self.body = selfObj.mbody
-    if self.body and (not self.body:IsNull()) then
-        self.action = self.body:GetComponent("CLRoleAction")
+    if mode == IDConst.dressMode.ice then
+        self.avata:switch2xx("body", "2", self:wrapFunc(self.onFinishDress))
+    else
+        self.avata:switch2xx("body", "1", self:wrapFunc(self.onFinishDress))
     end
+end
+
+function IDRoleBase:onFinishDress()
+    SetActive(self.body.gameObject, true)
 end
 
 ---@public 加载影子
@@ -197,6 +227,12 @@ function IDRoleBase:playDeadSund(i)
         SetActive(self.gameObject, false)
         IDLBattle.someOneDead(self)
     end
+end
+
+---@public 冰冻
+function IDRoleBase:frozen(sec)
+    self:dress(IDConst.dressMode.ice)
+    --//TODO:
 end
 
 function IDRoleBase:clean()

@@ -39,10 +39,10 @@ public class CLGrid : UIEventListener
     LineRenderer linePrefab;
 
     // Use this for initialization
-    public void Start()
-    {
-        init(true);
-    }
+    //public void Start()
+    //{
+    //    init(true);
+    //}
     public void init(bool isInitNodes)
     {
         init(transform.position, isInitNodes);

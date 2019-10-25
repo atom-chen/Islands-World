@@ -82,4 +82,10 @@ IDConst.BattleType = {
     pve = 2 -- 副本
 }
 
+---@public 换装的类型
+IDConst.dressMode = {
+    normal = 1,
+    ice = 2
+}
+
 return IDConst
