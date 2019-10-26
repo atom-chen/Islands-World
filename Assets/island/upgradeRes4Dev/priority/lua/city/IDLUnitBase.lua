@@ -48,6 +48,8 @@ function IDLUnitBase:ctor(csSelf)
     self.id = 0
     self.isFinishInited = false
     self.isDead = false
+    -- 状态
+    self.state = IDConst.RoleState.idel
 end
 
 function IDLUnitBase:__init(selfObj, other)
@@ -62,6 +64,7 @@ end
 
 function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self:__init(selfObj, other)
+    self.state = IDConst.RoleState.idel
     self.csSelf.isOffense = _isOffense
     self.isOffense = _isOffense
     self.id = id

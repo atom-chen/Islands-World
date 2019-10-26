@@ -37,6 +37,8 @@ function IDRoleBase:ctor(csSelf)
     self.serverData = nil -- 服务器数据
     ---@type DBCFRoleData
     self.attr = nil -- 属性
+    -- 冰冻时间
+    self.frozenTime = 0
 end
 
 ---@param selfObj MyUnit
@@ -47,12 +49,19 @@ function IDRoleBase:__init(selfObj, other)
     self:getBase(IDRoleBase).__init(self, selfObj, other)
     self.body = selfObj.mbody
     if self.body and (not self.body:IsNull()) then
+        ---@type Coolape.CLRoleAction
         self.action = self.body:GetComponent("CLRoleAction")
     end
     ---@type Coolape.CLRoleAvata
     self.avata = selfObj:GetComponent("CLRoleAvata")
     ---@type Coolape.CLSharedAssets
     self.assets = selfObj:GetComponent("CLSharedAssets")
+
+    ---@type Coolape.CLSeeker
+    self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
+    if self.seeker == nil then
+        self.seeker = self.csSelf:GetComponent("CLSeeker")
+    end
 end
 
 function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
@@ -101,10 +110,10 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
         )
         self.data.damage = number2bio(self.data.damage)
     end
-    
+    self:regain()
     self:loadShadow()
     SetActive(self.body.gameObject, false)
-    self.assets:init(self:wrapFunc(self.dress) , IDConst.dressMode.normal)
+    self.assets:init(self:wrapFunc(self.dress), IDConst.dressMode.normal)
 end
 
 -- function IDRoleBase:uiEventDelegate(go)
@@ -231,8 +240,42 @@ end
 
 ---@public 冰冻
 function IDRoleBase:frozen(sec)
+    --//TODO:注意冰冻会不会影响其它的处理
+    self.state = IDConst.RoleState.frozen
+    local leftTime = self.frozenTime - DateEx.nowMS
+    if leftTime >= sec * 1000 then
+        return
+    end
+    self.frozenTime = DateEx.nowMS + sec * 1000
     self:dress(IDConst.dressMode.ice)
-    --//TODO:
+    self:pause()
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.unFrozen))
+    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.unFrozen), sec)
+end
+
+---@public 解除冰冻
+function IDRoleBase:unFrozen()
+    self.state = IDConst.RoleState.idel
+    self:dress(IDConst.dressMode.normal)
+    self:regain()
+end
+
+function IDRoleBase:pause()
+    if self.action then
+        self.action.enabled = false
+    end
+    if self.seeker then
+        self.seeker.enabled = false
+    end
+end
+
+function IDRoleBase:regain()
+    if self.action then
+        self.action.enabled = true
+    end
+    if self.seeker then
+        self.seeker.enabled = true
+    end
 end
 
 function IDRoleBase:clean()
@@ -242,6 +285,8 @@ function IDRoleBase:clean()
         SetActive(self.shadow.gameObject, false)
         self.shadow = nil
     end
+
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.unFrozen))
 end
 
 --------------------------------------------

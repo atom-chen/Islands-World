@@ -5,7 +5,6 @@ IDRWorker = class("IDRWorker", IDRoleBase)
 
 function IDRWorker:__init(selfObj, other)
     self:getBase(IDRWorker).__init(self, selfObj, other)
-    self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
 end
 
 -- 初始化，只调用一次

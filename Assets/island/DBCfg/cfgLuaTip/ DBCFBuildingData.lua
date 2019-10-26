@@ -45,6 +45,7 @@
 ---@field public DamageMax
 ---@field public DamageCurve
 ---@field public DamageAffectRang
+---@field public DamageKeepTime
 ---@field public Hidden
 ---@field public IsFlying
 ---@field public CanDrag

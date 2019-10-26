@@ -127,6 +127,7 @@ end
 function IDLBuildingTrap:fire()
     -- 取得目标
     local targets = IDLBattle.searcher.getTargetsInRange(self, self.transform.position, self.MaxAttackRange)
+    self.targets = targets
 
     -- 自爆
     -- //TODO:陷阱的配置表时还没有音效

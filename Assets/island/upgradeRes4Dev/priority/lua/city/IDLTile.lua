@@ -209,21 +209,12 @@ function cell.initSides()
     cell.sides = {left1, left2, right1, right2, up1, up2, down1, down2, leftUp, leftDown, rightUp, rightDown}
 end
 
----@public 取得四边的index //TODO:可以缓存一下，不需要每次都计算
+---@public 取得四边的index
 function cell.getSidesIndex()
     return cell.sides
 end
 
---//TODO:可以缓存一下，不需要每次都计算
 function cell.getSidesAngleIndex()
-    -- local grid = IDMainCity.getGrid()
-    -- local index = grid:GetCellIndex(cell.transform.position)
-    -- local x = grid:GetColumn(index)
-    -- local y = grid:GetRow(index)
-    -- local leftUp = grid:GetCellIndex(x - 2, y + 1)
-    -- local leftDown = grid:GetCellIndex(x - 2, y - 2)
-    -- local rightUp = grid:GetCellIndex(x + 1, y + 1)
-    -- local rightDown = grid:GetCellIndex(x + 1, y - 2)
     return cell.sides[9], cell.sides[10], cell.sides[11], cell.sides[12] --leftUp, leftDown, rightUp, rightDown
 end
 

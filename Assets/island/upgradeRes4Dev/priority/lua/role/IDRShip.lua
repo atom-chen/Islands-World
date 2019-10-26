@@ -25,11 +25,6 @@ end
 
 function IDRShip:__init(selfObj, other)
     self:getBase(IDRShip).__init(self, selfObj, other)
-    ---@type Coolape.CLSeekerByRay
-    self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
-    if self.seeker == nil then
-        self.seeker = self.csSelf:GetComponent("CLSeeker")
-    end
     self.tmpPos = nil
 end
 
@@ -39,7 +34,7 @@ end
 
 function IDRShip:onMoving()
     if self.shadow then
-        --//TODO:影子的坐标处理还有点总是
+        --//TODO:影子的坐标处理还有点问题
         self.tmpPos = self.transform.position
         self.tmpPos.y = 0
         self.shadow.position = self.tmpPos

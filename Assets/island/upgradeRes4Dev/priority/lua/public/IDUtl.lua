@@ -10,6 +10,8 @@ require("city.IDLBuildingDefenseLightning2")
 require("city.IDLBuildingDockyard")
 require("city.IDLBuildingTrap")
 require("city.IDLBuildingTrapAirBomb")
+require("city.IDLBuildingTrapFrozen")
+require("city.IDLBuildingTrapIceStorm")
 require("city.IDLTree")
 require("role.IDRoleBase")
 require("role.IDRWorker")
@@ -225,6 +227,10 @@ function IDUtl.newBuildingLua(bAttr)
         -- 陷阱建筑
         if id == IDConst.BuildingID.AirBombID then
             buildingLua = IDLBuildingTrapAirBomb.new()
+        elseif id == IDConst.BuildingID.FrozenMineID then
+            buildingLua = IDLBuildingTrapFrozen.new()
+        elseif id == IDConst.BuildingID.IceStormID then
+            buildingLua = IDLBuildingTrapIceStorm.new()
         else
             buildingLua = IDLBuildingTrap.new()
         end

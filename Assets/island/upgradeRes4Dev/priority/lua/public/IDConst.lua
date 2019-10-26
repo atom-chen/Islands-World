@@ -13,7 +13,9 @@ IDConst.BuildingID = {
     MortarDefenseID = 16, --烈焰式火箭炮
     ThunderboltID = 17, --电磁塔
     DestroyerRocketID = 18, -- 地狱之门
-    AirBombID = 20, --放空气球
+    AirBombID = 20, -- 放空气球
+    FrozenMineID = 22, -- 冰冻地雷
+    IceStormID = 23, -- 风暴控制器
     activityCenterBuildingID = 38, -- 活动中心
     MailBoxBuildingID = 39 -- 邮箱
 }
@@ -65,7 +67,8 @@ IDConst.ResType = {
 IDConst.RoleState = {
     idel = 1,
     working = 2,
-    dead = 3
+    dead = 3,
+    frozen = 4, -- 冰冻
 }
 
 ---@public 属性类型
