@@ -5,14 +5,14 @@ require("city.IDLBuildingTrap")
 IDLBuildingTrapIceStorm = class("IDLBuildingTrapIceStorm", IDLBuildingTrap)
 
 function IDLBuildingTrapIceStorm:__init(selfObj, other)
-    if self.isFinishInited then
-        return
-    end
-    self:getBase(IDLBuildingTrapIceStorm).__init(self, selfObj, other)
-    ---@type Coolape.MyTween
-    self.tweenPos = self.gameObject:GetComponent("MyTween")
+    if self:getBase(IDLBuildingTrapIceStorm).__init(self, selfObj, other) then
+        ---@type Coolape.MyTween
+        self.tweenPos = self.gameObject:GetComponent("MyTween")
 
-    self.spin = self.csSelf:GetComponent("Spin")
+        self.spin = self.csSelf:GetComponent("Spin")
+        return true
+    end
+    return false
 end
 
 function IDLBuildingTrapIceStorm:doAttack()

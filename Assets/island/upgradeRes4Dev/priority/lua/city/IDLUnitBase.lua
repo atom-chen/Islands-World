@@ -48,18 +48,22 @@ function IDLUnitBase:ctor(csSelf)
     self.id = 0
     self.isFinishInited = false
     self.isDead = false
+    -- 暂停状态
+    self.isPause = false
     -- 状态
     self.state = IDConst.RoleState.idel
 end
 
+---@return boolean 返回true表示可以处理init,否则不需要处理（保证__init只调用一次）
 function IDLUnitBase:__init(selfObj, other)
     if self.isFinishInited then
-        return
+        return false
     end
     self.isFinishInited = true
     self.csSelf = selfObj
     self.transform = selfObj.transform
     self.gameObject = selfObj.gameObject
+    return true
 end
 
 function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
@@ -73,6 +77,7 @@ function IDLUnitBase:init(selfObj, id, star, lev, _isOffense, other)
     self.csSelf.isDead = false
     self.instanceID = self.gameObject:GetInstanceID()
     self.csSelf.instanceID = self.instanceID
+    self.isPause = false
 end
 
 function IDLUnitBase:setCollider(val)
@@ -168,6 +173,14 @@ end
 ---@public 我死掉了，处理死掉的效果
 function IDLUnitBase:iamDie()
     printe("must override [iamDie] function!")
+end
+
+function IDLUnitBase:pause()
+    self.isPause = true
+end
+
+function IDLUnitBase:regain()
+    self.isPause = false
 end
 
 function IDLUnitBase:clean()

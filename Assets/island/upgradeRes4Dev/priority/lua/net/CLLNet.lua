@@ -92,8 +92,8 @@ function CLLNet.dispatchGame(map)
             InvokeEx.cancelInvoke(CLLNet.heart)
             CLPanelManager.topPanel:procNetwork("outofNetConnect", -9999, "outofNetConnect", nil)
 
-            -- 处理断线处理
-            --[[//TODO:先屏掉
+        -- 处理断线处理
+        --[[//TODO:先屏掉
             if GameMode.none ~= MyCfg.mode then
                 local ok, result = pcall(procOffLine)
                 if not ok then
@@ -150,8 +150,17 @@ function CLLNet.dispatch(map)
     end
 end
 
+---@public 缓存数据
 function CLLNet.cacheData(cmd, data)
-    if cmd == NetProtoIsland.cmds.login then
+    local func = CLLNet.cacheDataFunc[cmd]
+    if func then
+        func(cmd, data)
+    end
+end
+---@public 缓存数据的方法
+CLLNet.cacheDataFunc = {
+    ---@param data NetProtoIsland.RC_login
+    [NetProtoIsland.cmds.login] = function(cmd, data)
         NetProtoIsland.__sessionID = bio2number(data.session)
         ---@type NetProtoIsland.ST_player
         local player = data.player
@@ -165,44 +174,55 @@ function CLLNet.cacheData(cmd, data)
         -- 初始化时间
         local systime = bio2number(data.systime)
         DateEx.init(systime)
-    elseif cmd == NetProtoIsland.cmds.onPlayerChg then
+    end,
+    ---@param data NetProtoIsland.RC_onPlayerChg
+    [NetProtoIsland.cmds.onPlayerChg] = function(cmd, data)
         IDDBPlayer.myself = IDDBPlayer.new(data.player)
-    elseif cmd == NetProtoIsland.cmds.newBuilding then
+    end,
+    [NetProtoIsland.cmds.newBuilding] = function(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onBuildingChg(data.building)
         end
-    elseif cmd == NetProtoIsland.cmds.newTile then
+    end,
+    [NetProtoIsland.cmds.newTile] = function(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onTileChg(data.tile)
         end
-    elseif cmd == NetProtoIsland.cmds.moveTile then
+    end,
+    [NetProtoIsland.cmds.moveTile] = function(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onTileChg(data.tile)
         end
-    elseif cmd == NetProtoIsland.cmds.onBuildingChg then
+    end,
+    [NetProtoIsland.cmds.onBuildingChg] = function(cmd, data)
         -- 当有建筑变化
         if IDDBCity.curCity then
             IDDBCity.curCity:onBuildingChg(data.building)
         end
-    elseif cmd == NetProtoIsland.cmds.rmTile then
+    end,
+    [NetProtoIsland.cmds.rmTile] = function(cmd, data)
         if IDDBCity.curCity then
             local idx = bio2number(data.idx)
             IDDBCity.curCity.tiles[idx] = nil
         end
-    elseif cmd == NetProtoIsland.cmds.rmBuilding then
+    end,
+    [NetProtoIsland.cmds.rmBuilding] = function(cmd, data)
         if IDDBCity.curCity then
             local idx = bio2number(data.idx)
             IDDBCity.curCity.buildings[idx] = nil
         end
-    elseif cmd == NetProtoIsland.cmds.getMapDataByPageIdx then
+    end,
+    [NetProtoIsland.cmds.getMapDataByPageIdx] = function(cmd, data)
         if IDDBWorldMap then
             IDDBWorldMap.onGetMapPageData(data.mapPage)
         end
-    elseif cmd == NetProtoIsland.cmds.getShipsByBuildingIdx then
+    end,
+    [NetProtoIsland.cmds.getShipsByBuildingIdx] = function(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onGetShips4Dockyard(data.dockyardShips)
         end
-    elseif cmd == NetProtoIsland.cmds.sendNetCfg then
+    end,
+    [NetProtoIsland.cmds.sendNetCfg] = function(cmd, data)
         -- 初始化时间
         local systime = bio2number(data.systime)
         DateEx.init(systime)
@@ -211,14 +231,16 @@ function CLLNet.cacheData(cmd, data)
         if netSerialize then
             netSerialize.setCfg(data.netCfg)
         end
-    elseif cmd == NetProtoIsland.cmds.onMapCellChg then
+    end,
+    [NetProtoIsland.cmds.onMapCellChg] = function(cmd, data)
         IDDBWorldMap.onMapCellChg(data.mapCell)
-    elseif cmd == NetProtoIsland.cmds.onMyselfCityChg then
+    end,
+    [NetProtoIsland.cmds.onMyselfCityChg] = function(cmd, data)
         if IDDBCity.curCity then
             IDDBCity.curCity:onMyselfCityChg(data.city)
         end
     end
-end
+}
 
 -- 心跳
 function CLLNet.heart()

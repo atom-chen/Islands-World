@@ -4,7 +4,7 @@
 IDRWorker = class("IDRWorker", IDRoleBase)
 
 function IDRWorker:__init(selfObj, other)
-    self:getBase(IDRWorker).__init(self, selfObj, other)
+    return self:getBase(IDRWorker).__init(self, selfObj, other)
 end
 
 -- 初始化，只调用一次

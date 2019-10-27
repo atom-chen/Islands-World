@@ -5,16 +5,16 @@ require("city.IDLBuilding")
 IDLBuildingDefense = class("IDLBuildingDefense", IDLBuilding)
 local abs = math.abs
 function IDLBuildingDefense:__init(selfObj, other)
-    if self.isFinishInited then
-        return
+    if self:getBase(IDLBuildingDefense).__init(self, selfObj, other) then
+        if not self.bodyRotate then
+            ---@type TweenRotation
+            self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
+        end
+        ---@type Coolape.CLEjector 发射器
+        self.ejector = getCC(self.csSelf.mbody, "pao/pao_sz/cannon", "CLEjector")
+        return true
     end
-    self:getBase(IDLBuildingDefense).__init(self, selfObj, other)
-    if not self.bodyRotate then
-        ---@type TweenRotation
-        self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
-    end
-    ---@type Coolape.CLEjector 发射器
-    self.ejector = getCC(self.csSelf.mbody, "pao/pao_sz/cannon", "CLEjector")
+    return false
 end
 
 function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)
@@ -169,10 +169,12 @@ function IDLBuildingDefense:doAttack()
         return
     end
 
-    self:doSearchTarget()
-    if self.target then
-        -- 炮面向目标
-        self:lookatTarget(self.target, false, self:wrapFunc(self.fire))
+    if not self.isPause then
+        self:doSearchTarget()
+        if self.target then
+            -- 炮面向目标
+            self:lookatTarget(self.target, false, self:wrapFunc(self.fire))
+        end
     end
     -- 再次攻击
     InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)

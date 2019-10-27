@@ -4,15 +4,15 @@ require("city.IDLBuildingTrap")
 ---@class IDLBuildingTrapAirBomb:IDLBuildingTrap
 IDLBuildingTrapAirBomb = class("IDLBuildingTrapAirBomb", IDLBuildingTrap)
 
-function IDLBuildingTrapAirBomb:__init(csSelfObj)
-    if self.isFinishInited then
-        return
-    end
+function IDLBuildingTrapAirBomb:__init(csSelfObj, other)
     ---@type IDLBuildingTrap
     local base = self:getBase(IDLBuildingTrapAirBomb)
-    base.__init(self, csSelfObj)
-    ---@type Coolape.MyTween
-    self.tweenPos = self.gameObject:GetComponent("MyTween")
+    if base.__init(self, csSelfObj, other) then
+        ---@type Coolape.MyTween
+        self.tweenPos = self.gameObject:GetComponent("MyTween")
+        return true
+    end
+    return false
 end
 
 function IDLBuildingTrapAirBomb:fire()

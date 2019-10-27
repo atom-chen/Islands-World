@@ -43,25 +43,25 @@ end
 
 ---@param selfObj MyUnit
 function IDRoleBase:__init(selfObj, other)
-    if self.isFinishInited then
-        return
-    end
-    self:getBase(IDRoleBase).__init(self, selfObj, other)
-    self.body = selfObj.mbody
-    if self.body and (not self.body:IsNull()) then
-        ---@type Coolape.CLRoleAction
-        self.action = self.body:GetComponent("CLRoleAction")
-    end
-    ---@type Coolape.CLRoleAvata
-    self.avata = selfObj:GetComponent("CLRoleAvata")
-    ---@type Coolape.CLSharedAssets
-    self.assets = selfObj:GetComponent("CLSharedAssets")
+    if self:getBase(IDRoleBase).__init(self, selfObj, other) then
+        self.body = selfObj.mbody
+        if self.body and (not self.body:IsNull()) then
+            ---@type Coolape.CLRoleAction
+            self.action = self.body:GetComponent("CLRoleAction")
+        end
+        ---@type Coolape.CLRoleAvata
+        self.avata = selfObj:GetComponent("CLRoleAvata")
+        ---@type Coolape.CLSharedAssets
+        self.assets = selfObj:GetComponent("CLSharedAssets")
 
-    ---@type Coolape.CLSeeker
-    self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
-    if self.seeker == nil then
-        self.seeker = self.csSelf:GetComponent("CLSeeker")
+        ---@type Coolape.CLSeeker
+        self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
+        if self.seeker == nil then
+            self.seeker = self.csSelf:GetComponent("CLSeeker")
+        end
+        return true
     end
+    return false
 end
 
 function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
@@ -261,6 +261,7 @@ function IDRoleBase:unFrozen()
 end
 
 function IDRoleBase:pause()
+    self:getBase(IDRoleBase).pause(self)
     if self.action then
         self.action.enabled = false
     end
@@ -270,6 +271,7 @@ function IDRoleBase:pause()
 end
 
 function IDRoleBase:regain()
+    self:getBase(IDRoleBase).regain(self)
     if self.action then
         self.action.enabled = true
     end

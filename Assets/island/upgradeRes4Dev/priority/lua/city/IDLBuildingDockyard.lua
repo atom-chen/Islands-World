@@ -5,17 +5,17 @@ require("city.IDLBuilding")
 IDLBuildingDockyard = class("IDLBuildingDockyard", IDLBuilding)
 
 function IDLBuildingDockyard:__init(selfObj, other)
-    if self.isFinishInited then
-        return
+    if self:getBase(IDLBuildingDockyard).__init(self, selfObj, other) then
+        self.shipsInPorts = {}
+        self.shipsInOcean = {}
+        self.ports = {}
+        for i = 1, 8 do
+            -- 取得停泊点，并设置为空闲
+            self.ports[i] = {point = getChild(self.transform, joinStr("ports/", i)), isFree = true}
+        end
+        return true
     end
-    self:getBase(IDLBuildingDockyard).__init(self, selfObj, other)
-    self.shipsInPorts = {}
-    self.shipsInOcean = {}
-    self.ports = {}
-    for i = 1, 8 do
-        -- 取得停泊点，并设置为空闲
-        self.ports[i] = {point = getChild(self.transform, joinStr("ports/", i)), isFree = true}
-    end
+    return false
 end
 
 function IDLBuildingDockyard:init(selfObj, id, star, lev, _isOffense, other)
@@ -67,7 +67,7 @@ function IDLBuildingDockyard:onLoadShip(name, ship, shipAttrId)
     ship.transform.localPosition = Vector3.zero
     ship.transform.localScale = Vector3.one * 0.6
     ship.transform.localEulerAngles = Vector3.zero
-    
+
     if ship.luaTable == nil then
         ship.luaTable = IDUtl.newRoleLua(shipAttrId)
         ship:initGetLuaFunc()

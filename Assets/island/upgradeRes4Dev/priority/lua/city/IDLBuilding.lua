@@ -3,16 +3,16 @@
 IDLBuilding = class("IDLBuilding", IDLUnitBase)
 
 function IDLBuilding:__init(selfObj, other)
-    if self.isFinishInited then
-        return
+    if self:getBase(IDLBuilding).__init(self, selfObj, other) then
+        ---@type UnityEngine.Transform
+        self.body = selfObj.mbody
+        ---@type TweenScale
+        self.tweenScale = getCC(self.transform, "body", "TweenScale")
+        ---@type UnityEngine.Transform
+        self.door = getChild(self.transform, "door")
+        return true
     end
-    self:getBase(IDLBuilding).__init(self, selfObj, other)
-    ---@type UnityEngine.Transform
-    self.body = selfObj.mbody
-    ---@type TweenScale
-    self.tweenScale = getCC(self.transform, "body", "TweenScale")
-    ---@type UnityEngine.Transform
-    self.door = getChild(self.transform, "door")
+    return false
 end
 
 ---@param other table = {index=网格位置 ,serverData=服务器数据（不是必须）}

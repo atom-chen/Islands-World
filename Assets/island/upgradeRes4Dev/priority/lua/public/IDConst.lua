@@ -16,6 +16,7 @@ IDConst.BuildingID = {
     AirBombID = 20, -- 放空气球
     FrozenMineID = 22, -- 冰冻地雷
     IceStormID = 23, -- 风暴控制器
+    trapMonsterID = 24, -- 海怪陷阱
     activityCenterBuildingID = 38, -- 活动中心
     MailBoxBuildingID = 39 -- 邮箱
 }
@@ -68,7 +69,7 @@ IDConst.RoleState = {
     idel = 1,
     working = 2,
     dead = 3,
-    frozen = 4, -- 冰冻
+    frozen = 4 -- 冰冻
 }
 
 ---@public 属性类型
