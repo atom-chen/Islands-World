@@ -17,6 +17,7 @@ IDConst.BuildingID = {
     FrozenMineID = 22, -- 冰冻地雷
     IceStormID = 23, -- 风暴控制器
     trapMonsterID = 24, -- 海怪陷阱
+    trapSwirlID = 25, -- 漩涡陷阱
     activityCenterBuildingID = 38, -- 活动中心
     MailBoxBuildingID = 39 -- 邮箱
 }

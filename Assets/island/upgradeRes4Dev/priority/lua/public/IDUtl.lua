@@ -13,6 +13,7 @@ require("city.IDLBuildingTrapAirBomb")
 require("city.IDLBuildingTrapFrozen")
 require("city.IDLBuildingTrapIceStorm")
 require("city.IDLBuildingTrapMonster")
+require("city.IDLBuildingTrapSwirl")
 require("city.IDLTree")
 require("role.IDRoleBase")
 require("role.IDRWorker")
@@ -234,6 +235,8 @@ function IDUtl.newBuildingLua(bAttr)
             buildingLua = IDLBuildingTrapIceStorm.new()
         elseif id == IDConst.BuildingID.trapMonsterID then
             buildingLua = IDLBuildingTrapMonster.new()
+        elseif id == IDConst.BuildingID.trapSwirlID then
+            buildingLua = IDLBuildingTrapSwirl.new()
         else
             buildingLua = IDLBuildingTrap.new()
         end
