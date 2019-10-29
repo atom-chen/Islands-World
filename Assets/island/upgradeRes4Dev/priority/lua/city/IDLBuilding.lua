@@ -12,6 +12,8 @@ function IDLBuilding:__init(selfObj, other)
         self.door = getChild(self.transform, "door")
         return true
     end
+    ---@type UnityEngine.Transform
+    self.shadow = nil
     return false
 end
 
@@ -74,8 +76,8 @@ function IDLBuilding:loadShadow()
             shadowName,
             function(name, obj, orgs)
                 if
-                    (not self.gameObject.activeInHierarchy) or (not self.csSelf.mbody.gameObject.activeInHierarchy) or
-                        self.shadow ~= nil
+                    self.shadow ~= nil or (not self.gameObject.activeInHierarchy) or
+                        (not self.csSelf.mbody.gameObject.activeInHierarchy)
                  then
                     CLUIOtherObjPool.returnObj(obj)
                     SetActive(obj, false)
@@ -94,7 +96,13 @@ function IDLBuilding:loadShadow()
         self.shadow.localEulerAngles = Vector3.zero
         self.shadow.localScale = Vector3.one * bio2number(self.attr.ShadowSize) / 10
         self.shadow.position = self.transform.position + Vector3.up * 0.02
-        SetActive(self.shadow.gameObject, true)
+        if (not self.gameObject.activeInHierarchy) or (not self.csSelf.mbody.gameObject.activeInHierarchy) then
+            CLUIOtherObjPool.returnObj(self.shadow.gameObject)
+            SetActive(self.shadow.gameObject, false)
+            self.shadow = nil
+        else
+            SetActive(self.shadow.gameObject, true)
+        end
     end
 end
 
@@ -430,19 +438,18 @@ end
 
 ---@public 显示隐藏（可能为连带做一些其它的处理）
 function IDLBuilding:SetActive(active)
-    if self.shadow then
-        SetActive(self.shadow.gameObject, active)
-    end
     self:getBase(IDLBuilding).SetActive(self, active)
     if active then
         self:upgrading()
         self:loadFloor()
+        self:loadShadow()
     else
         self:fireWorker(true)
         self:unLoadProgressHud()
         if self.floor then
             SetActive(self.floor, active)
         end
+        self:hideShadow()
     end
 end
 

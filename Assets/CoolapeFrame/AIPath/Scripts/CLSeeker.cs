@@ -298,16 +298,16 @@ namespace Coolape
 
             Utl.doCallback(onMovingCallback);
 
-            if (nextPahtIndex == pathList.Count - 1)
-            {
+            //if (nextPahtIndex == pathList.Count - 1)
+            //{
                 //最后一段路径，即将要到达目的地
-                if (finishOneSubPath ||
-                    Vector3.Distance(mTransform.position, pathList[nextPahtIndex]) <= endReachedDistance)
-                {
-                    stopMove();
-                    Utl.doCallback(onArrivedCallback);
-                }
+            if (finishOneSubPath ||
+                Vector3.Distance(mTransform.position, pathList[pathList.Count - 1]) <= endReachedDistance)
+            {
+                stopMove();
+                Utl.doCallback(onArrivedCallback);
             }
+            //}
             else
             {
                 if (finishOneSubPath)

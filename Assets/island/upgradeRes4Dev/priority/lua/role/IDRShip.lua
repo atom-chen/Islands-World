@@ -61,6 +61,9 @@ end
 
 ---@public 四处转转
 function IDRShip:goAround(dockyard)
+    if MyCfg.mode == GameMode.battle then
+        return
+    end
     self.dockyard = dockyard
     self:chgState(RoleState.walkAround)
     self:dogoAround()
@@ -80,6 +83,9 @@ function IDRShip:backtoDockyard()
 end
 
 function IDRShip:dogoAround()
+    if MyCfg.mode == GameMode.battle then
+        return
+    end
     local index = NumEx.NextInt(0, IDMainCity.grid.grid.NumberOfCells)
     local toPos = IDMainCity.grid.grid:GetCellCenter(index)
     if self.attr.IsFlying then

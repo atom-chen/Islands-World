@@ -24,7 +24,7 @@ function IDLBuildingDockyard:init(selfObj, id, star, lev, _isOffense, other)
     self:showShipsInPort()
     if MyCfg.mode ~= GameMode.battle then
         self:buildShip()
-        self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), 1)
+        self.csSelf:invoke4Lua(self.showShipsInOcean, 1)
     end
 end
 
@@ -88,7 +88,7 @@ end
 
 ---@public 让舰船在海航行
 function IDLBuildingDockyard:showShipsInOcean()
-    self.csSelf:cancelInvoke4Lua(self:wrapFunction4CS(self.showShipsInOcean))
+    self.csSelf:cancelInvoke4Lua(self.showShipsInOcean)
     if self.serverData == nil or MyCfg.mode == GameMode.battle then
         return
     end
@@ -106,7 +106,7 @@ function IDLBuildingDockyard:showShipsInOcean()
                         self:wrapFunction4CS(self.onLoadShipInOcean),
                         shipId
                     )
-                    self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), NumEx.NextInt(30, 70) / 10)
+                    self.csSelf:invoke4Lua(self.showShipsInOcean, NumEx.NextInt(30, 70) / 10)
                     break
                 end
             end
@@ -144,7 +144,7 @@ function IDLBuildingDockyard:onShipBack(ship)
             ship.csSelf:clean()
             SetActive(ship.gameObject, false)
             table.remove(list, i)
-            self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), 5)
+            self.csSelf:invoke4Lua(self.showShipsInOcean, 5)
             break
         end
     end
@@ -153,7 +153,7 @@ end
 function IDLBuildingDockyard:SetActive(active)
     self:getBase(IDLBuildingDockyard).SetActive(self, active)
     if active then
-        self.csSelf:invoke4Lua(self:wrapFunction4CS(self.showShipsInOcean), 5)
+        self.csSelf:invoke4Lua(self.showShipsInOcean, 5)
     else
         self.csSelf:cancelInvoke4Lua()
         for k, list in pairs(self.shipsInOcean) do
@@ -169,8 +169,8 @@ function IDLBuildingDockyard:SetActive(active)
 end
 
 function IDLBuildingDockyard:clean()
-    self.csSelf:cancelInvoke4Lua()
     self:getBase(IDLBuildingDockyard).clean(self)
+    self.csSelf:cancelInvoke4Lua()
     for i, v in ipairs(self.ports) do
         v.isFree = true
     end

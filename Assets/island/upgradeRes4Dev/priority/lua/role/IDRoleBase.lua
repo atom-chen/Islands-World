@@ -102,7 +102,6 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
         end
     else
         if self.seeker then
-            self.seeker.speed = bio2number(self.attr.MoveSpeed) / 100
             self.seeker.mAStarPathSearch = IDMainCity.astar4Ocean
             self.seeker.mAStarPathSearch:addGridStateChgCallback(self:wrapFunction4CS(self.onAstarChgCallback))
         end
@@ -113,6 +112,12 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
             self:wrapFunction4CS(self.onMoving),
             self:wrapFunction4CS(self.onArrived)
         )
+        local speed = bio2number(self.attr.MoveSpeed) / 100
+        speed = speed * (1 + self.csSelf:fakeRandom(-100, 100) / 1000)
+        self.seeker.speed = speed
+        local AttackRange = bio2number(self.attr.AttackRange) / 100
+        AttackRange = AttackRange + 1 * self.csSelf:fakeRandom2(-100, 0) / 500
+        self.seeker.endReachedDistance = AttackRange
     end
 
     self:regain()
@@ -319,14 +324,16 @@ end
 function IDRoleBase:onSearchPath(pathList, canReach)
     if MyCfg.mode == GameMode.battle then
         InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher))
-        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher), 0.25)
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher), 0.1)
     end
 end
 
 ---@public 战斗时，要定时刷新寻敌器的位置
 function IDRoleBase:refresh4Searcher()
-    IDLBattle.searcher.refreshUnit(self)
-    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher), 0.25)
+    if MyCfg.mode == GameMode.battle then
+        IDLBattle.searcher.refreshUnit(self)
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher), 0.1)
+    end
 end
 
 ---@public 当移动过程中的回调
@@ -351,7 +358,11 @@ end
 function IDRoleBase:doAttack()
     self:doSearchTarget()
     if self.target then
-        self.seeker:seek(self.target.transform.position, 1)
+        if self.attr.IsFlying then
+            self.seeker:seek(self.target.transform.position)
+        else
+            self.seeker:seekAsyn(self.target.transform.position)
+        end
     end
 end
 
@@ -379,7 +390,8 @@ end
 function IDRoleBase:clean()
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.unFrozen))
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher))
-
+    
+    self:setTarget(nil)
     if self.seeker then
         self.seeker:stopMove()
         if self.seeker.mAStarPathSearch then
