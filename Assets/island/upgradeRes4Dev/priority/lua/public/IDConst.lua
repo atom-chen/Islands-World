@@ -7,6 +7,7 @@ IDConst = {
 IDConst.BuildingID = {
     headquartersBuildingID = 1, --主基地
     dockyardBuildingID = 2, -- 造船厂
+    AllianceID = 4, -- 联盟港口
     foodStorageBuildingID = 7,
     oildStorageBuildingID = 9,
     goldStorageBuildingID = 11,

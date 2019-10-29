@@ -15,7 +15,6 @@ function IDRWorker:init (csObj, id, star, lev, isOffense, other)
     -- 设置寻路
     --seeker.mAStarPathSearch = IDMainCity.astar4Worker
     --seeker.mAStarPathSearch:addGridStateChgCallback(_cell.onAstarChgCallback)
-    self.seeker:init(self:wrapFunction4CS(self.onSearchPath), self:wrapFunction4CS(self.onMoving), self:wrapFunction4CS(self.onArrived))
     self.state = IDConst.RoleState.idel
     local _building = other.building
     if _building then

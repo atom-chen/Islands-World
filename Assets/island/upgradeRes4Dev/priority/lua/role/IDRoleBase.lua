@@ -86,11 +86,45 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
     self.isRole = true
     ---@type DBCFRoleData
     self.attr = DBCfg.getRoleByID(id)
+    if bio2number(self.attr.Bullets) > 0 then
+        ---@type DBCFBulletData 子弹
+        self.bulletAttr = DBCfg.getBulletByID(bio2number(self.attr.Bullets))
+    end
+
+    self.MaxAttackRange = bio2number(self.attr.AttackRange)
+    self.MinAttackRange = bio2number(self.attr.MinAttackRange)
+    -- 高度
+    self.flyHeigh = bio2number(self.attr.FlyHeigh) / 10
+    -- 寻路相关设置
+    if self.attr.IsFlying then
+        if self.seeker then
+            self.seeker.rayHeight = self.flyHeigh
+        end
+    else
+        if self.seeker then
+            self.seeker.speed = bio2number(self.attr.MoveSpeed) / 100
+            self.seeker.mAStarPathSearch = IDMainCity.astar4Ocean
+            self.seeker.mAStarPathSearch:addGridStateChgCallback(self:wrapFunction4CS(self.onAstarChgCallback))
+        end
+    end
+    if self.seeker then
+        self.seeker:init(
+            self:wrapFunction4CS(self.onSearchPath),
+            self:wrapFunction4CS(self.onMoving),
+            self:wrapFunction4CS(self.onArrived)
+        )
+    end
+
+    self:regain()
+    self:loadShadow()
+    SetActive(self.body.gameObject, false)
+    self.assets:init(self:wrapFunc(self.dress), IDConst.dressMode.normal)
 
     if GameMode.battle == MyCfg.mode then
-        -- 初始化数据
+        -- 战斗时，初始化数据
         ---@type UnitData4Battle
         self.data = {}
+        -- 最大血量
         self.data.HP =
             DBCfg.getGrowingVal(
             bio2number(self.attr.HPMin),
@@ -98,9 +132,10 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
             bio2number(self.attr.HPCurve),
             bio2number(self.serverData.lev) / bio2number(self.attr.MaxLev)
         )
+        -- 当前血量
         self.data.curHP = number2bio(self.data.HP)
         self.data.HP = number2bio(self.data.HP)
-
+        -- 伤害值
         self.data.damage =
             DBCfg.getGrowingVal(
             bio2number(self.attr.DamageMin),
@@ -110,10 +145,6 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
         )
         self.data.damage = number2bio(self.data.damage)
     end
-    self:regain()
-    self:loadShadow()
-    SetActive(self.body.gameObject, false)
-    self.assets:init(self:wrapFunc(self.dress), IDConst.dressMode.normal)
 end
 
 -- function IDRoleBase:uiEventDelegate(go)
@@ -280,15 +311,87 @@ function IDRoleBase:regain()
     end
 end
 
+---@public 当Astar 网格刷新时回调
+function IDRoleBase:onAstarChgCallback()
+end
+
+---@public 当寻路完成
+function IDRoleBase:onSearchPath(pathList, canReach)
+    if MyCfg.mode == GameMode.battle then
+        InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher))
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher), 0.25)
+    end
+end
+
+---@public 战斗时，要定时刷新寻敌器的位置
+function IDRoleBase:refresh4Searcher()
+    IDLBattle.searcher.refreshUnit(self)
+    InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher), 0.25)
+end
+
+---@public 当移动过程中的回调
+function IDRoleBase:onMoving()
+    if self.shadow then
+        self.tmpPos = self.transform.position
+        self.tmpPos.y = 0
+        self.shadow.position = self.tmpPos
+    end
+    local pos = self.transform.position
+    pos.y = self.flyHeigh
+    self.transform.position = pos
+end
+
+---@public 当到达目标时的回调
+function IDRoleBase:onArrived()
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher))
+    self:refresh4Searcher()
+end
+
+---@public 攻击
+function IDRoleBase:doAttack()
+    self:doSearchTarget()
+    if self.target then
+        self.seeker:seek(self.target.transform.position, 1)
+    end
+end
+
+function IDRoleBase:doSearchTarget()
+    local target = self.target
+    if target == nil or target.isDead then
+        -- 重新寻敌
+        target = IDLBattle.searchTarget(self)
+    else
+        local pos1 = self.transform.position
+        pos1.y = 0
+        local pos2 = target.transform.position
+        pos2.y = 0
+        local dis = Vector3.Distance(pos1, pos2)
+        -- dis减掉0.6，是因为寻敌时用的网格的index来计算的距离，因为可有可以对象在网格边上的情况
+        if (dis - 0.6) > self.MaxAttackRange or dis < self.MinAttackRange then
+            -- 重新寻敌
+            target = IDLBattle.searchTarget(self)
+        end
+    end
+    -- 设置目标
+    self:setTarget(target)
+end
+
 function IDRoleBase:clean()
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.unFrozen))
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher))
+
+    if self.seeker then
+        self.seeker:stopMove()
+        if self.seeker.mAStarPathSearch then
+            self.seeker.mAStarPathSearch:removeGridStateChgCallback(self.onAstarChgCallback)
+        end
+    end
     self:getBase(IDRoleBase).clean(self)
     if self.shadow then
         CLUIOtherObjPool.returnObj(self.shadow.gameObject)
         SetActive(self.shadow.gameObject, false)
         self.shadow = nil
     end
-
-    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.unFrozen))
 end
 
 --------------------------------------------

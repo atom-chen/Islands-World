@@ -156,7 +156,6 @@ function IDLBattle.deployBattleUnit()
     if (not city.astar4Ocean:isObstructNode(pos)) or IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
         if IDLBattle.isFirstDeployShip then
             -- 首次投放战斗单元，的处理
-
             IDLBattle.isFirstDeployShip = false
             if IDLBattle.mData.type == IDConst.BattleType.pvp then
                 SoundEx.playMainMusic("BattleSound1")
@@ -177,6 +176,7 @@ function IDLBattle.deployBattleUnit()
         end
     else
         --//TODO: can not place ship
+        CLAlert.add("can not place ship", Color.red, 1)
     end
 end
 
@@ -242,9 +242,10 @@ function IDLBattle.onLoadShip(name, ship, orgs)
 end
 
 ---public 有单位加入战场
----@param unit IDLUnitBase
+---@param unit IDRoleBase
 function IDLBattle.someOneJoin(unit)
     IDLBattleSearcher.refreshUnit(unit)
+    unit:doAttack()
 end
 
 ---public 有单位死掉了

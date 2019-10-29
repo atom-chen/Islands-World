@@ -424,7 +424,7 @@ do
         mapBtwncity = 4 -- 地图与主城之前切换
     }
 
-    -- 角色的状态
+    ---@class RoleState 角色的状态
     RoleState = {
         walkAround = 1,
         idel = 2,

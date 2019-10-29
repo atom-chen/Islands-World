@@ -187,7 +187,11 @@ function IDLBuildingDefense:doSearchTarget()
         -- 重新寻敌
         target = IDLBattle.searchTarget(self)
     else
-        local dis = Vector3.Distance(self.transform.position, target.transform.position)
+        local pos1= self.transform.position
+        pos1.y = 0
+        local pos2 = target.transform.position
+        pos2.y = 0
+        local dis = Vector3.Distance(pos1, pos2)
         -- dis减掉0.6，是因为寻敌时用的网格的index来计算的距离，因为可有可以对象在网格边上的情况
         if (dis - 0.6) > self.MaxAttackRange or dis < self.MinAttackRange then
             -- 重新寻敌
@@ -197,20 +201,6 @@ function IDLBuildingDefense:doSearchTarget()
 
     -- 设置目标
     self:setTarget(target)
-end
-
----@public 设置攻击目标
----@param target IDRoleBase
-function IDLBuildingDefense:setTarget(target)
-    if self.target == target then
-        return
-    end
-    self.target = target
-    if target then
-        self.csSelf.mTarget = target.csSelf
-    else
-        self.csSelf.mTarget = nil
-    end
 end
 
 ---@public 开炮

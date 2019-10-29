@@ -148,6 +148,20 @@ function IDLUnitBase:doSearchTarget()
     printe("must override [doSearchTarget] function!")
 end
 
+---@public 设置攻击目标
+---@param target IDRoleBase
+function IDLUnitBase:setTarget(target)
+    if self.target == target then
+        return
+    end
+    self.target = target
+    if target then
+        self.csSelf.mTarget = target.csSelf
+    else
+        self.csSelf.mTarget = nil
+    end
+end
+
 ---@public 取得伤害值
 ---@param target 目标
 function IDLUnitBase:getDamage(target)

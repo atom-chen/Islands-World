@@ -14,6 +14,7 @@ require("city.IDLBuildingTrapFrozen")
 require("city.IDLBuildingTrapIceStorm")
 require("city.IDLBuildingTrapMonster")
 require("city.IDLBuildingTrapSwirl")
+require("city.IDLBuildingAlliance")
 require("city.IDLTree")
 require("role.IDRoleBase")
 require("role.IDRWorker")
@@ -202,6 +203,9 @@ function IDUtl.newBuildingLua(bAttr)
     elseif gid == IDConst.BuildingGID.com or gid == IDConst.BuildingGID.spec then
         if id == IDConst.BuildingID.dockyardBuildingID then
             buildingLua = IDLBuildingDockyard.new()
+        elseif id == IDConst.BuildingID.AllianceID then
+            -- 联盟港口
+            buildingLua = IDLBuildingAlliance.new()
         else
             -- 建筑
             buildingLua = IDLBuilding.new()

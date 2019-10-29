@@ -16,6 +16,7 @@ local rolesIndex = {}
 local offense = {}
 -- 防守方（舰船），记录的是每个网格上有哪些舰船
 local defense = {}
+local defenseUnits = {}
 -- 距离缓存,key=两个网格的index拼接，val=距离
 local disCache = {}
 
@@ -31,9 +32,12 @@ end
 
 ---@public 包装建筑的数据
 function IDLBattleSearcher.wrapBuildingInfor(_buildings)
-    buildings = _buildings
     ---@param b IDLBuilding
-    for k, b in pairs(buildings) do
+    for k, b in pairs(_buildings) do
+        if not (b.isTrap or b.isTree or bio2number(b.attr.GID) == IDConst.BuildingGID.decorate) then
+            buildings[k] = b
+        end
+
         if bio2Int(b.attr.GID) == IDConst.BuildingGID.defense then -- 防御炮
             local MaxAttackRange =
                 DBCfg.getGrowingVal(
@@ -42,7 +46,7 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
                 bio2number(b.attr.AttackRangeCurve),
                 bio2number(b.serverData.lev) / bio2number(b.attr.MaxLev)
             )
-            MaxAttackRange = MaxAttackRange/100
+            MaxAttackRange = MaxAttackRange / 100
             local size = IDLBattleSearcher.calculateSize(MaxAttackRange)
             -- 取得可攻击范围内的格子
             local cells = grid:getOwnGrids(b.gridIndex, NumEx.getIntPart(size))
@@ -51,10 +55,7 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
             -- 按照离建筑的远近排序
             local list = IDLBattleSearcher.sortGridCells(b, MinAttackRange, MaxAttackRange, cells)
             buildingsRange[b.instanceID] = list
-        elseif
-            bio2Int(b.attr.GID) == IDConst.BuildingGID.trap or
-                bio2Int(b.attr.ID) == IDConst.BuildingID.dockyardBuildingID
-         then -- 陷阱\造船厂，主要处理触发半径
+        elseif bio2Int(b.attr.GID) == IDConst.BuildingGID.trap or bio2Int(b.attr.ID) == IDConst.BuildingID.AllianceID then -- 陷阱\联盟港口，主要处理触发半径
             local triggerR =
                 DBCfg.getGrowingVal(
                 bio2number(b.attr.TriggerRadiusMin),
@@ -62,7 +63,7 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
                 bio2number(b.attr.TriggerRadiusCurve),
                 bio2number(b.serverData.lev) / bio2number(b.attr.MaxLev)
             )
-            triggerR = triggerR/100
+            triggerR = triggerR / 100
             local size = IDLBattleSearcher.calculateSize(triggerR)
             -- 取得可攻击范围内的格子
             local cells = grid:getOwnGrids(b.gridIndex, NumEx.getIntPart(size))
@@ -135,7 +136,7 @@ end
 ---@public 刷新舰船的位置
 ---@param unit IDRoleBase
 function IDLBattleSearcher.refreshUnit(unit)
-    --//TODO:注意所有移动的战斗单元需要定时刷新
+    --//注意所有移动的战斗单元需要定时刷新
     local index = grid.grid:GetCellIndex(unit.transform.position)
     if unit.isOffense then
         local oldIndex = rolesIndex[unit]
@@ -187,7 +188,7 @@ function IDLBattleSearcher.searchTarget(unit, targetsNum)
         return IDLBattleSearcher.buildingSearchRole4Def(unit, targetsNum)
     else
         -- 说明是角色
-        IDLBattleSearcher.searchTarget4Role(unit, targetsNum)
+        return IDLBattleSearcher.searchTarget4Role(unit, targetsNum)
     end
 end
 
@@ -276,15 +277,102 @@ function IDLBattleSearcher.buildingSearchRole4Def(building, targetsNum)
     end
 end
 
----@public 角色寻敌
+---@public 角色寻敌(注意角色只能找一个目标，不可能同时找多个目标)
 ---@param role IDRoleBase
 function IDLBattleSearcher.searchTarget4Role(role)
+    local tempList = {}
+    local dis = 0
+
+    local roleIndex = rolesIndex[role] or -1
+    if roleIndex <= -1 then
+        printe("取得角色的网格index错误，应该是有bug！")
+        return
+    end
+    local PreferedTargetType = bio2number(role.attr.PreferedTargetType)
     if role.isOffense then
         -- 取得角色的index
         -- 取得离角色最近的目标，注意要考虑优先攻击目标
+        ---@param b IDDBBuilding
+        for k, b in pairs(buildings) do
+            if IDLBattleSearcher.isTarget(role, b) then
+                dis = IDLBattleSearcher.getDistance(roleIndex, b.gridIndex)
+                table.insert(tempList, {unit = b, dis = dis})
+            end
+        end
+        if #tempList > 0 then
+            CLQuickSort.quickSort(
+                tempList,
+                function(a, b)
+                    return a.dis < b.dis
+                end
+            )
+            local target, preferedTarget = nil, nil
+            ---@type IDLBuilding
+            local building
+            -- 处理优先攻击目标
+            for i, d in ipairs(tempList) do
+                building = d.unit
+                if target == nil then
+                    target = building
+                end
+                if PreferedTargetType > 0 then
+                    if bio2number(building.attr.GID) == PreferedTargetType then
+                        preferedTarget = building
+                        return preferedTarget
+                    end
+                else
+                    return target
+                end
+            end
+            return (preferedTarget or target)
+        else
+            -- 说明没有建筑目标，再找找舰船目标
+            return IDLBattleSearcher.roleSearch4Role(role, defense)
+        end
     else
-        --//TODO:防守方的舰船寻敌
+        --//防守方的舰船寻敌
+        return IDLBattleSearcher.roleSearch4Role(role, offense)
     end
+end
+
+---@param attacker IDRoleBase
+function IDLBattleSearcher.roleSearch4Role(attacker, shipInfor)
+    local list = {}
+    local dis = 0
+
+    local roleIndex = rolesIndex[attacker] or -1
+    for index, map in pairs(shipInfor) do
+        dis = IDLBattleSearcher.getDistance(index, roleIndex)
+        table.insert(list, {dis = dis, index = index})
+    end
+    CLQuickSort.quickSort(
+        list,
+        function(a, b)
+            return a.dis < b.dis
+        end
+    )
+    local PreferedTargetType = bio2number(attacker.attr.PreferedTargetType)
+    local target, preferedTarget
+    for i, v in ipairs(list) do
+        local map = shipInfor[v.index]
+        ---@param r IDRoleBase
+        for k, r in pairs(map) do
+            if IDLBattleSearcher.isTarget(attacker, r) then
+                if target == nil then
+                    target = r
+                end
+                if PreferedTargetType > 0 then
+                    if bio2number(r.attr.GID) == PreferedTargetType then
+                        preferedTarget = r
+                        return preferedTarget
+                    end
+                else
+                    return target
+                end
+            end
+        end
+    end
+    return preferedTarget or target
 end
 
 ---@param attacker IDLUnitBase
@@ -294,42 +382,38 @@ function IDLBattleSearcher.isTarget(attacker, unit, onlyOnGroundOrSky)
     if unit.isDead then
         return false
     end
-    if attacker.isBuilding then
-        ---@type IDLBuilding
-        local b = attacker
-        -- 可攻击地面、飞行单位否？
-        if onlyOnGroundOrSky == 1 then
-            -- 只找地面单元
-            if unit.attr.IsFlying then
-                return false
-            else
-                if b.attr.GroundTargets then
-                    return true
-                else
-                    return false
-                end
-            end
-        elseif onlyOnGroundOrSky == 2 then
-            -- 只找飞行单元
-            if unit.attr.IsFlying then
-                if b.attr.AirTargets then
-                    return true
-                else
-                    return false
-                end
-            else
-                return false
-            end
+    ---@type IDLBuilding
+    local b = attacker
+    -- 可攻击地面、飞行单位否？
+    if onlyOnGroundOrSky == 1 then
+        -- 只找地面单元
+        if unit.attr.IsFlying then
+            return false
         else
-            -- 都可以
-            if ((unit.attr.IsFlying and b.attr.AirTargets) or ((not unit.attr.IsFlying) and b.attr.GroundTargets)) then
+            if b.attr.GroundTargets then
                 return true
             else
                 return false
             end
         end
+    elseif onlyOnGroundOrSky == 2 then
+        -- 只找飞行单元
+        if unit.attr.IsFlying then
+            if b.attr.AirTargets then
+                return true
+            else
+                return false
+            end
+        else
+            return false
+        end
     else
-        return true
+        -- 都可以
+        if ((unit.attr.IsFlying and b.attr.AirTargets) or ((not unit.attr.IsFlying) and b.attr.GroundTargets)) then
+            return true
+        else
+            return false
+        end
     end
 end
 
@@ -418,12 +502,13 @@ function IDLBattleSearcher.someOneDead(unit)
             map[unit] = nil
             defense[index] = map
         end
+        rolesIndex[unit] = nil
     end
 end
 
 function IDLBattleSearcher.clean()
     buildingsRange = {}
-    buildings = nil
+    buildings = {}
     offense = {}
     defense = {}
     rolesIndex = {}

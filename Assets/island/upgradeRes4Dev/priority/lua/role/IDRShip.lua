@@ -1,6 +1,5 @@
 ﻿require("role.IDRoleBase")
--- 航船
----@class IDRShip:IDRoleBase
+---@class IDRShip:IDRoleBase 航船
 IDRShip = class("IDRShip", IDRoleBase)
 
 function IDRShip:__init(selfObj, other)
@@ -14,43 +13,13 @@ end
 function IDRShip:init(selfObj, id, star, lev, _isOffense, other)
     self:getBase(IDRShip).init(self, selfObj, id, star, lev, _isOffense, other)
     self:chgState(RoleState.idel)
-
-    self.flyHeigh = bio2number(self.attr.FlyHeigh) / 10
-    if self.attr.IsFlying then
-        if self.seeker then
-            self.seeker.rayHeight = self.flyHeigh
-        end
-    else
-        if self.seeker then
-            self.seeker.speed = bio2number(self.attr.MoveSpeed) / 100
-            self.seeker.mAStarPathSearch = IDMainCity.astar4Ocean
-            self.seeker.mAStarPathSearch:addGridStateChgCallback(self:wrapFunction4CS(self.onAstarChgCallback))
-            self.seeker:init(
-                self:wrapFunction4CS(self.onSearchPath),
-                self:wrapFunction4CS(self.onMoving),
-                self:wrapFunction4CS(self.onArrived)
-            )
-        end
-        self:showTrail() --先去掉，因为有gc，为卡顿，后续再想办法
+    if not self.attr.IsFlying then
+        self:showTrail() --//TODO:拖尾还需要优化，因为有gc，为卡顿，后续再想办法
     end
-end
-
-function IDRShip:onSearchPath(pathList, canReach)
-end
-
-function IDRShip:onMoving()
-    if self.shadow then
-        --//TODO:影子的坐标处理还有点问题
-        self.tmpPos = self.transform.position
-        self.tmpPos.y = 0
-        self.shadow.position = self.tmpPos
-    end
-    local pos = self.transform.position
-    pos.y = self.flyHeigh
-    self.transform.position = pos
 end
 
 function IDRShip:onArrived()
+    self:getBase(IDRShip).onArrived(self)
     if self.state == RoleState.walkAround then
         self.csSelf:invoke4Lua(self.dogoAround, NumEx.NextInt(20, 60) / 10)
     elseif self.state == RoleState.backDockyard then
@@ -86,6 +55,7 @@ function IDRShip:chgState(state)
         self.csSelf:cancelInvoke4Lua(self.dogoAround)
         self.csSelf:cancelInvoke4Lua(self.backtoDockyard)
     end
+    ---@type RoleState
     self.state = state
 end
 
@@ -122,7 +92,6 @@ end
 function IDRShip:clean()
     self.csSelf:cancelInvoke4Lua()
     self.dockyard = nil
-    self.seeker:stopMove()
     self:getBase(IDRShip).clean(self)
     if self.trail then
         CLThingsPool.returnObj(self.trail.gameObject)
