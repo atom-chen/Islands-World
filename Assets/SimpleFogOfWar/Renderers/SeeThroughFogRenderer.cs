@@ -70,7 +70,7 @@ namespace SimpleFogOfWar.Renderers
 		public override void Render (Vector3 basePosition, int layer, Camera camera = null)
 		{
 			Graphics.DrawMesh (displayMesh, basePosition, Quaternion.identity, displayMat, layer, camera);
-		}
+        }
 
 		protected override void Initialize (FogOfWarSystem source, Texture displayTexture, int renderQueue = 0)
 		{

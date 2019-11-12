@@ -197,7 +197,7 @@ function IDWorldMap.setGameMode()
         dragSetting.scaleMini = 7
         dragSetting.scaleMax = 20
         dragSetting.scaleHeightMini = 10
-        dragSetting.scaleHeightMax = 50
+        dragSetting.scaleHeightMax = 30
     end
 
     if smoothFollow.height > IDWorldMap.scaleCityHeighMin and smoothFollow.height < IDWorldMap.scaleCityHeighMax then

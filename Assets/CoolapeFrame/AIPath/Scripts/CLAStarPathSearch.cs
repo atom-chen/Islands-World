@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,6 +33,8 @@ namespace Coolape
         public RayDirection rayDirection = RayDirection.Up;
         //自动扫描一次障碍，init后自己用调用
         public bool isAutoScan = true;
+        //缓存路径
+        public bool needCachePaths = false;
         //过滤掉多余的节(当为true时，障碍物的collider尽量和障碍物保持一至大小，因为是通过射线来检测过滤多余的节点)
         public bool isFilterPathByRay = false;
 
@@ -53,15 +57,28 @@ namespace Coolape
         float radius4CheckSphere = 1;
 
         //异步的
-        static ListPool listPool = new ListPool();
+        bool isSearching = false;
+        ListPool listPool = new ListPool();
         Queue<ArrayList> searchQueue = new Queue<ArrayList>();
         Queue<ArrayList> finishSearchQueue = new Queue<ArrayList>();
+        Dictionary<string, float> nodesDisMap = new Dictionary<string, float>();
+        Dictionary<string, List<Vector3>> pathsCache = new Dictionary<string, List<Vector3>>();
 
         public CLAStarPathSearch()
         {
             current = this;
         }
-
+        WaitCallback _threadSearch;
+        WaitCallback threadSearch
+        {
+            get
+            {
+                if (_threadSearch == null) {
+                    _threadSearch = new WaitCallback(doSearchPathAsyn);
+                }
+                return _threadSearch;
+            }
+        }
         // Use this for initialization
         public void Start()
         {
@@ -79,11 +96,14 @@ namespace Coolape
         /// </summary>
         public void init(Vector3 origin)
         {
+            isSearching = false;
             originPos = origin;
             radius4CheckSphere = cellSize / 4;
             grid.init(origin, numRows, numCols, cellSize);
 
             nodesMap.Clear();
+            nodesDisMap.Clear();
+            pathsCache.Clear();
             for (int i = 0; i < grid.NumberOfCells; i++)
             {
                 nodesMap[i] = new CLAStarNode(i, grid.GetCellCenter(i));
@@ -125,6 +145,7 @@ namespace Coolape
         /// </summary>
         public void scan()
         {
+            pathsCache.Clear();
             if (!isIninted)
             {
                 init();
@@ -138,7 +159,7 @@ namespace Coolape
 
         void scanOne(int index)
         {
-            if(!nodesMap.ContainsKey(index))
+            if (!nodesMap.ContainsKey(index))
             {
                 return;
             }
@@ -267,49 +288,84 @@ namespace Coolape
         /// <param name="finishSearchCallback">finish Search Callback</param>
         public void searchPathAsyn(Vector3 from, Vector3 to, object finishSearchCallback)
         {
+
+            bool canReach = false;
+            List<Vector3> vectorList = null;
+            if (getCachePath(from, to, ref vectorList, ref canReach))
+            {
+                Utl.doCallback(finishSearchCallback, canReach, vectorList);
+                return;
+            }
+
             ArrayList list = listPool.borrow();
             list.Add(from);
             list.Add(to);
             list.Add(finishSearchCallback);
             searchQueue.Enqueue(list);
-            if(searchQueue.Count == 1)
+            if (!isSearching)
             {
-                ThreadEx.exec2(new System.Threading.WaitCallback(doSearchPathAsyn));
+                ThreadEx.exec2(threadSearch);
             }
         }
 
         void doSearchPathAsyn(object obj)
         {
-            if (searchQueue.Count == 0) return;
+            if (searchQueue.Count == 0)
+            {
+                isSearching = false;
+                return;
+            }
+            isSearching = true;
             ArrayList list = searchQueue.Dequeue();
             Vector3 from = (Vector3)(list[0]);
             Vector3 to = (Vector3)(list[1]);
             object callback = list[2];
-            List<Vector3> outPath = new List<Vector3>();
-            bool canReach = searchPath(from, to, ref outPath, true);
+            int fromIndex = grid.GetCellIndex(from);
+            int toIndex = grid.GetCellIndex(to);
+
+            List<Vector3> outPath = null;
+            bool isCachePath = false;
+            bool canReach = searchPath(from, to, ref outPath, ref isCachePath, true);
             list.Clear();
             list.Add(callback);
             list.Add(canReach);
             list.Add(outPath);
+            list.Add(isCachePath);
+            list.Add(fromIndex);
+            list.Add(toIndex);
             finishSearchQueue.Enqueue(list);
 
             doSearchPathAsyn(null);
         }
 
-        /// <summary>
-        /// Searchs the path.寻路
-        /// </summary>
-        /// <returns><c>true</c>, if path was searched,可以到达 <c>false</c> otherwise.不可到过</returns>
-        /// <param name="from">From.出发点坐标</param>
-        /// <param name="to">To.目标点坐标</param>
-        /// <param name="vectorList">Vector list.路径点坐标列表</param>
-        public bool searchPath(Vector3 from, Vector3 to, ref List<Vector3> vectorList, bool notPocSoftenPath = false)
+        //缓存数据，方便可以快速找到数据
+        void cachePaths(int fromIndex, int toIndex, List<Vector3> vectorList)
         {
-            if (!isIninted)
+            int rang = 6;
+            List<int> list1 = null;
+            List<int> list2 = null;
+            list1 = grid.getCells(fromIndex, rang);
+            list2 = grid.getCells(toIndex, rang);
+            StringBuilder sb = new StringBuilder();
+            string key = "";
+            for (int i = 0; i < list1.Count; i++)
             {
-                init();
+                for (int j = 0; j < list2.Count; j++)
+                {
+                    if (list1[i] < 0 || list2[j] < 0) continue;
+                    sb.Clear();
+                    key = sb.Append(list1[i]).Append("_").Append(list2[j]).ToString();
+                    pathsCache[key] = vectorList;
+                    sb.Clear();
+                    key = sb.Append(list2[j]).Append("_").Append(list1[i]).ToString();
+                    pathsCache[key] = vectorList;
+                }
             }
+            sb.Clear();
+        }
 
+        public bool getCachePath(Vector3 from, Vector3 to, ref List<Vector3> vectorList, ref bool canReach)
+        {
             if (vectorList == null)
             {
                 vectorList = new List<Vector3>();
@@ -320,19 +376,55 @@ namespace Coolape
             }
             int fromIndex = grid.GetCellIndex(from);
             int toIndex = grid.GetCellIndex(to);
+            string key = fromIndex + "_" + toIndex;
+            List<Vector3> tmpPath = null;
+            if (pathsCache.TryGetValue(key, out tmpPath))
+            {
+                vectorList.Add(from); //把路径的第一个点换成新的起始点
+                for (int i = 1; i < tmpPath.Count; i++)
+                {
+                    vectorList.Add(tmpPath[i]);
+                }
+                int index = grid.GetCellIndex(vectorList[vectorList.Count - 1]);
+                Debug.LogError("get========" + vectorList.Count);
+                if (index == toIndex)
+                {
+                    canReach = true;
+                }
+                else
+                {
+                    canReach = false;
+                }
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Searchs the path.寻路
+        /// </summary>
+        /// <returns><c>true</c>, if path was searched,可以到达 <c>false</c> otherwise.不可到过</returns>
+        /// <param name="from">From.出发点坐标</param>
+        /// <param name="to">To.目标点坐标</param>
+        /// <param name="vectorList">Vector list.路径点坐标列表</param>
+        public bool searchPath(Vector3 from, Vector3 to, ref List<Vector3> vectorList)
+        {
+            bool isCachePath = false;
+            return searchPath(from, to, ref vectorList, ref isCachePath);
+        }
+        public bool searchPath(Vector3 from, Vector3 to, ref List<Vector3> vectorList, ref bool isCachePath, bool notPocSoftenPath = false)
+        {
+            if (!isIninted)
+            {
+                init();
+            }
+            isCachePath = false;
+            int fromIndex = grid.GetCellIndex(from);
+            int toIndex = grid.GetCellIndex(to);
             if (fromIndex < 0 || toIndex < 0)
             {
                 Debug.LogWarning("Can not reach");
                 return false;
             }
-            if (fromIndex == toIndex)
-            {
-                //就在目标点，直接判断为到达
-                vectorList.Add(from);
-                vectorList.Add(to);
-                return true;
-            }
-
             CLAStarNode fromNode = nodesMap[fromIndex];
             if (fromNode.isObstruct)
             {
@@ -344,10 +436,35 @@ namespace Coolape
                     return false;
                 }
             }
-            CLAStarNode toNode = nodesMap[toIndex];
+
+            if (vectorList == null)
+            {
+                vectorList = new List<Vector3>();
+            }
+            else
+            {
+                vectorList.Clear();
+            }
+
+            if (fromIndex == toIndex)
+            {
+                //就在目标点，直接判断为到达
+                vectorList.Add(from);
+                vectorList.Add(to);
+                return true;
+            }
+
+            bool canReach = false;
+            if (getCachePath(from, to, ref vectorList, ref canReach))
+            {
+                isCachePath = true;
+                return canReach;
+            }
 
             // 本次寻路的唯一key，（并发同时处理多个寻路时会用到）
-            string key = fromNode.index + "_" + toNode.index;
+            string key = fromIndex + "_" + toIndex;
+
+            CLAStarNode toNode = nodesMap[toIndex];
 
             List<CLAStarNode> openList = new List<CLAStarNode>();
             Dictionary<int, bool> closedList = new Dictionary<int, bool>();
@@ -365,7 +482,6 @@ namespace Coolape
             float dis4Target = -1;
             float tmpdis4Target = 0;
             int count = openList.Count;
-            bool canReach = false;
             while (count > 0)
             {
                 node = openList[count - 1];
@@ -412,7 +528,6 @@ namespace Coolape
             {
                 softenPath(ref vectorList);
             }
-
             return canReach;
         }
 
@@ -584,18 +699,41 @@ namespace Coolape
         /// <param name="node2">Node2.</param>
         public float distance(CLAStarNode node1, CLAStarNode node2)
         {
-            return Vector3.Distance(node1.position, node2.position);
+            StringBuilder sb = new StringBuilder();
+            string key = sb.Append(node1.index).Append("_").Append(node2.index).ToString();
+            sb.Clear();
+            string key2 = sb.Append(node2.index).Append("_").Append(node1.index).ToString();
+            sb.Clear();
+            float dis = 0;
+            if (nodesDisMap.TryGetValue(key, out dis))
+            {
+                return dis;
+            }
+            dis = Vector3.Distance(node1.position, node2.position);
+            nodesDisMap[key] = dis;
+            nodesDisMap[key2] = dis;
+            return dis;
         }
 
         public virtual void Update()
         {
-            if(finishSearchQueue.Count > 0)
+            if (finishSearchQueue.Count > 0)
             {
                 ArrayList list = finishSearchQueue.Dequeue();
                 object callback = list[0];
                 bool canReach = (bool)(list[1]);
                 List<Vector3> outPath = list[2] as List<Vector3>;
-                softenPath(ref outPath);
+                bool isCachePath = (bool)(list[3]);
+                int fromIndex = (int)(list[4]);
+                int toIndex = (int)(list[5]);
+                if (!isCachePath)
+                {
+                    softenPath(ref outPath);
+                    if (needCachePaths)
+                    {
+                        cachePaths(fromIndex, toIndex, outPath);
+                    }
+                }
                 Utl.doCallback(callback, canReach, outPath);
                 listPool.release(list);
             }

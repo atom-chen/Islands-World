@@ -1802,7 +1802,7 @@ static public class NGUITools
 	static float _rateFringe = 1;
 	public static float rateFringe {
 		get {
-			if (isIphonex ()) {
+			if (isFringe) {
 				return 734f / 812f;
 			} else {
 				return _rateFringe;

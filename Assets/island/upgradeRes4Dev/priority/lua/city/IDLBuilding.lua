@@ -2,6 +2,13 @@
 ---@class IDLBuilding:IDLUnitBase
 IDLBuilding = class("IDLBuilding", IDLUnitBase)
 
+---@param csSelf MyUnit
+function IDLBuilding:ctor(csSelf)
+    self:getBase(IDLBuilding).ctor(self, csSelf)
+    ---@type UnityEngine.Transform
+    self.shadow = nil
+end
+
 function IDLBuilding:__init(selfObj, other)
     if self:getBase(IDLBuilding).__init(self, selfObj, other) then
         ---@type UnityEngine.Transform
@@ -12,8 +19,6 @@ function IDLBuilding:__init(selfObj, other)
         self.door = getChild(self.transform, "door")
         return true
     end
-    ---@type UnityEngine.Transform
-    self.shadow = nil
     return false
 end
 
@@ -59,7 +64,10 @@ function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
         self.data.damage = number2bio(self.data.damage)
     end
 
-    self:loadShadow()
+    if not other.hideShadow then
+        -- 某种情况下是不需要影子的
+        self:loadShadow()
+    end
     self:loadFloor()
     self:upgrading()
 end
@@ -457,11 +465,13 @@ end
 ---@param damage number 伤害值
 ---@param attacker IDLUnitBase 攻击方
 function IDLBuilding:onHurt(damage, attacker)
+    self:getBase(IDLBuilding).onHurt(self, damage, attacker)
 end
 
 function IDLBuilding:iamDie()
     CLEffect.play("BombBuilding", self.transform.position)
     SetActive(self.gameObject, false)
+    self.csSelf:clean()
     IDLBattle.someOneDead(self)
 end
 

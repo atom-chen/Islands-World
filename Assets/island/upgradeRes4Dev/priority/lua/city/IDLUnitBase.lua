@@ -115,6 +115,11 @@ function IDLUnitBase:showLifebar(damage)
             function(name, obj, orgs)
                 ---@type UnityEngine.GameObject
                 local go = obj
+                if (not self.gameObject.activeInHierarchy) or self.isDead then
+                    CLUIOtherObjPool.returnObj(obj)
+                    SetActive(obj, false)
+                    return
+                end
                 if self.lifebar then
                     CLUIOtherObjPool.returnObj(obj)
                     SetActive(obj, false)

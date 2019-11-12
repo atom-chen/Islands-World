@@ -387,6 +387,192 @@ namespace Coolape
         }
 
         /// <summary>
+        /// Gets the circular cells.取得周围的cell的index
+        /// </summary>
+        /// <returns>The circular cells.</returns>
+        /// <param name="centerPos">中心点 postion.</param>
+        /// <param name="r">半径.</param>
+        public List<int> getCircleCells(Vector3 centerPos, int r)
+        {
+            Dictionary<int, bool> map = new Dictionary<int, bool>();
+            float l = Mathf.PI * 2 * r;
+            int n = Mathf.CeilToInt(l / CellSize);
+            float angel = 360.0f / n;
+            Vector3 pos = Vector3.zero;
+            int _index = 0;
+            for (int i=0; i < n; i++) {
+                pos = AngleEx.getCirclePointV3(centerPos, r, i * angel);
+                _index = GetCellIndex(pos);
+                if(_index >= 0 && !map.ContainsKey(_index))
+                {
+                    map[_index] = true;
+                }
+            }
+            List<int> ret = new List<int>();
+            ret.AddRange(map.Keys);
+            return ret;
+        }
+
+        /// <summary>
+        /// Gets the circular cells.取得周围的cell的index
+        /// </summary>
+        /// <returns>The circular cells.</returns>
+        /// <param name="center">中心点index.</param>
+        /// <param name="r">半径.</param>
+        public List<int> getAroundCells(int center, int size)
+        {
+            List<int> ret = new List<int>();
+            if (center < 0)
+            {
+                return ret;
+            }
+
+            int half = size / 2;
+            int numRows = m_numberOfColumns;// m_numberOfRows;
+            if (size % 2 == 0)
+            {
+                int row = half;
+                for (int i = 0; i < half; i++)
+                {
+                    int tpindex = center - row * numRows - i;
+                    if (tpindex / numRows != (center - row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center - i * numRows + half - 1;
+                    if (tpindex / numRows != (center - i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+                for (int i = 1; i < half; i++)
+                {
+                    int tpindex = center - row * numRows + i;
+                    if (tpindex / numRows != (center - row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center + i * numRows + half - 1;
+                    if (tpindex / numRows != (center + i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+
+                row = half - 1;
+                for (int i = 1; i <= half; i++)
+                {
+                    int tpindex = center + row * numRows - i;
+                    if (tpindex / numRows != (center + row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center - i * numRows - half;
+                    if (tpindex / numRows != (center - i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+                for (int i = 0; i < half - 1; i++)
+                {
+                    int tpindex = center + row * numRows + i;
+                    if (tpindex / numRows != (center + row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center + i * numRows - half;
+                    if (tpindex / numRows != (center + i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+            }
+            else
+            {
+                int row = half;
+                for (int i = 0; i < half; i++)
+                {
+                    int tpindex = center - row * numRows - i;
+                    if (tpindex / numRows != (center - row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center - i * numRows + half;
+                    if (tpindex / numRows != (center - i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+                for (int i = 1; i <= half; i++)
+                {
+                    int tpindex = center - row * numRows + i;
+                    if (tpindex / numRows != (center - row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center + i * numRows + half;
+                    if (tpindex / numRows != (center + i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+
+                for (int i = 1; i <= half; i++)
+                {
+                    int tpindex = center + row * numRows - i;
+                    if (tpindex / numRows != (center + row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center - i * numRows - half;
+                    if (tpindex / numRows != (center - i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+                for (int i = 0; i < half; i++)
+                {
+                    int tpindex = center + row * numRows + i;
+                    if (tpindex / numRows != (center + row * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+
+                    tpindex = center + i * numRows - half;
+                    if (tpindex / numRows != (center + i * numRows) / numRows)
+                    {
+                        tpindex = -1;
+                    }
+                    ret.Add(tpindex);
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
         /// Gets the own grids.根据中心点及占用格子size,取得占用格子index数,注意只有在长宽一样的情况时
         /// </summary>
         /// <returns>

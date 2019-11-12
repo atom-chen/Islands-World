@@ -123,7 +123,7 @@ namespace Coolape
         {
             targetPos = toPos;
             canMove = false;
-            pathList.Clear();
+            pathList = null;
             mAStarPathSearch.searchPathAsyn(mTransform.position, toPos, (Callback)onSeekAsynCallback);
         }
 
@@ -156,7 +156,7 @@ namespace Coolape
         {
             targetPos = toPos;
             canMove = false;
-            pathList.Clear();
+            pathList = null;
             bool canReach = mAStarPathSearch.searchPath(mTransform.position, toPos, ref pathList);
 
             //回调的第一个参数是路径，第二个参数是能否到达目标点
@@ -298,16 +298,16 @@ namespace Coolape
 
             Utl.doCallback(onMovingCallback);
 
-            //if (nextPahtIndex == pathList.Count - 1)
-            //{
-                //最后一段路径，即将要到达目的地
-            if (finishOneSubPath ||
-                Vector3.Distance(mTransform.position, pathList[pathList.Count - 1]) <= endReachedDistance)
+            if (nextPahtIndex == pathList.Count - 1)
             {
-                stopMove();
-                Utl.doCallback(onArrivedCallback);
+                //最后一段路径，即将要到达目的地
+                if (finishOneSubPath ||
+                    Vector3.Distance(mTransform.position, pathList[pathList.Count - 1]) <= endReachedDistance)
+                {
+                    stopMove();
+                    Utl.doCallback(onArrivedCallback);
+                }
             }
-            //}
             else
             {
                 if (finishOneSubPath)

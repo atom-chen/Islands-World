@@ -448,18 +448,22 @@ namespace Coolape
                     Debug.LogError("get newstRes is null. url==" + url);
                 }
                 Utl.doCallback(onGetAsset, path, content, originals);
+
+
+                if (autoRealseAB && content != null && type == CLAssetType.assetBundle)
+                {
+                    AssetBundle ab = content as AssetBundle;
+                    if (ab != null)
+                    {
+                        ab.Unload(false);
+                    }
+                }
             }
             catch (System.Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogError(e + "\n" + path);
             }
 
-            if(autoRealseAB && content != null && type == CLAssetType.assetBundle) {
-                AssetBundle ab = content as AssetBundle;
-                if (ab != null) {
-                    ab.Unload(false);
-                }
-            }
 
             if (www != null)
             {

@@ -54,7 +54,7 @@ local EachDeployNum = 1
 IDLBattle.offShips = {}
 IDLBattle.defShips = {}
 local __isInited = false
-IDLBattle.isDebug = false
+IDLBattle.isDebug = true
 
 --------------------------------------------
 function IDLBattle._init()
@@ -263,6 +263,25 @@ function IDLBattle.someOneDead(unit)
         CLRolePool.returnObj(unit.csSelf)
         SetActive(unit.gameObject, false)
     end
+
+    if IDLBattle.needEndBattle() then
+        IDLBattle.endBattle()
+    end
+end
+
+---@public 能否结束战斗
+function IDLBattle.needEndBattle()
+    if not IDLBattleSearcher.hadBuildingAlive() then
+        return true
+    end
+    --//TODO:进攻方是否已经没有可以投放的单元(目前只处理了舰船，后续还有宠物和技能)
+    for k, v in pairs(IDLBattle.mData.offShips) do
+        if bio2Int(v.num) > 0 then
+            return false
+        end
+    end
+    --//TODO:已经投放了的单元是否还有活着的
+    return true
 end
 
 function IDLBattle.onPressRole(isPress, role, pos)
@@ -322,6 +341,11 @@ end
 ---@param targetsNum number 目标数量
 function IDLBattle.searchTarget(unit, targetsNum)
     return IDLBattleSearcher.searchTarget(unit, targetsNum)
+end
+
+---@public 结束战斗
+function IDLBattle.endBattle()
+    --//TODO:end battle
 end
 
 function IDLBattle.clean()

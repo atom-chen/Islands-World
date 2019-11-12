@@ -207,16 +207,16 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     isInitGridNodes = false
 
     if not IDMainCity.astar4Ocean.isIninted then
-        IDMainCity.astar4Ocean.numRows = size * 2
-        IDMainCity.astar4Ocean.numCols = size * 2
-        IDMainCity.astar4Ocean.cellSize = 0.5
+        IDMainCity.astar4Ocean.numRows = size -- size * 2
+        IDMainCity.astar4Ocean.numCols = size -- size * 2
+        IDMainCity.astar4Ocean.cellSize = 1 -- 0.5
         IDMainCity.astar4Ocean.transform.localPosition = Vector3(-size / 2, 0, -size / 2)
         IDMainCity.astar4Ocean:init()
     end
     if not IDMainCity.astar4Tile.isIninted then
-        IDMainCity.astar4Tile.numRows = size * 2
-        IDMainCity.astar4Tile.numCols = size * 2
-        IDMainCity.astar4Tile.cellSize = 0.5
+        IDMainCity.astar4Tile.numRows = size -- size * 2
+        IDMainCity.astar4Tile.numCols = size -- size * 2
+        IDMainCity.astar4Tile.cellSize = 1 -- 0.5
         IDMainCity.astar4Tile.transform.localPosition = Vector3(-size / 2, 0, -size / 2)
         IDMainCity.astar4Tile:init()
     end
@@ -1071,7 +1071,6 @@ function IDMainCity.setSelected(unit, selected)
             end
         end
     else
-        -- //TODO:释放技能范围的圈
         IDMainCity.setOtherUnitsColiderState(nil, true)
         SFourWayArrow.hide()
         IDLBuildingSize.hide()
@@ -1345,11 +1344,21 @@ function IDMainCity.isOnTheLand(center, size)
 end
 
 ---@public 给定的index判断是否在陆地及沙地上
-function IDMainCity.isOnTheLandOrBeach(index)
+function IDMainCity.isIndexOnTheLand(index)
     if gridState4Tile[index] then
         return true
     end
+    return false
+end
+function IDMainCity.isIndexOnTheBeach(index)
     if IDLGridTileSide.isOnTheBeach(index) then
+        return true
+    end
+    return false
+end
+
+function IDMainCity.isOnTheLandOrBeach(index)
+    if IDMainCity.isIndexOnTheBeach(index) or IDMainCity.isIndexOnTheLand(index) then
         return true
     end
     return false

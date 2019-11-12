@@ -7,8 +7,10 @@ local IDLBattleSearcher = {}
 
 -- 建筑攻击范围数据 key=IDLBuilding.instanceID, val = BuildingRangeInfor
 local buildingsRange = {}
--- 建筑数据，是从城市里取的原始数据
+-- 建筑数据，是从城市里取的原始数据 key=idx,value=building
 local buildings = {}
+-- 建筑与海岸的列表，按距离远近排序
+local buildingsWithBeach = {}
 
 -- 每个角色所在网格的index数据。key=角色对象，val=网格的index
 local rolesIndex = {}
@@ -36,6 +38,11 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
     for k, b in pairs(_buildings) do
         if not (b.isTrap or b.isTree or bio2number(b.attr.GID) == IDConst.BuildingGID.decorate) then
             buildings[k] = b
+            -- 把建筑距离海边最近的点找到，以方便当舰船无法到达最近目标时，找一个可以到达的目标
+            local beachInfor = IDLBattleSearcher.getNearestBeach(b)
+            if beachInfor then
+                table.insert(buildingsWithBeach, beachInfor)
+            end
         end
 
         if bio2Int(b.attr.GID) == IDConst.BuildingGID.defense then -- 防御炮
@@ -73,6 +80,31 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
             buildingsRange[b.instanceID] = list
         end
     end
+    -- 把建筑距离海边最近的点找到，以方便当舰船无法到达最近目标时，找一个可以到达的目标
+    CLQuickSort.quickSort(
+        buildingsWithBeach,
+        function(a, b)
+            return IDLBattleSearcher.getDistance(a.index, a.building.gridIndex) <
+                IDLBattleSearcher.getDistance(b.index, b.building.gridIndex)
+        end
+    )
+end
+
+---@public 取得建筑离最近的海岸的信息
+---@param b IDDBBuilding
+function IDLBattleSearcher.getNearestBeach(b)
+    local list
+    if not IDMainCity.isOnTheLandOrBeach(b.gridIndex) then
+        return {building = b, index = b.gridIndex}
+    end
+    for i = 2, 30 do
+        list = grid.grid:getCircleCells(b.transform.position, i)
+        for i = 0, list.Count - 1 do
+            if IDMainCity.isIndexOnTheBeach(list[i]) then
+                return {building = b, index = list[i]}
+            end
+        end
+    end
 end
 
 ---@public 按照离建筑的远近排序
@@ -104,6 +136,7 @@ function IDLBattleSearcher.sortGridCells(building, min, max, cells)
     return list
 end
 
+local range = 1
 ---@param building IDLBuilding
 function IDLBattleSearcher.debugBuildingAttackRange(building)
     for k, obj in ipairs(IDLBattleSearcher._debugRangs or {}) do
@@ -112,12 +145,17 @@ function IDLBattleSearcher.debugBuildingAttackRange(building)
     end
     IDLBattleSearcher._debugRangs = {}
 
-    local cells = buildingsRange[building.instanceID]
-    for i, v in ipairs(cells or {}) do
+    -- local cells = buildingsRange[building.instanceID]
+    range = range + 1
+    local cells = grid.grid:getCircleCells(building.transform.position, range)
+    -- for i, v in ipairs(cells or {}) do
+    for i = 0, cells.Count - 1 do
+        local index = cells[i]
+
         CLThingsPool.borrowObjAsyn(
             "MapTileSize",
             function(name, obj, orgs)
-                obj.transform.position = grid.grid:GetCellCenter(v.index)
+                obj.transform.position = grid.grid:GetCellCenter(index) --grid.grid:GetCellCenter(v.index)
                 obj.transform.localScale = Vector3.one * 0.1
                 obj.transform.localEulerAngles = Vector3.zero
                 SetActive(obj, true)
@@ -172,10 +210,12 @@ function IDLBattleSearcher.getDistance(index1, index2)
     if dis then
         return dis
     else
+        local key2 = joinStr(index2, "_", index1)
         local pos1 = grid.grid:GetCellCenter(index1)
         local pos2 = grid.grid:GetCellCenter(index2)
         dis = Vector3.Distance(pos1, pos2)
         disCache[key] = dis
+        disCache[key2] = dis
         return dis
     end
 end
@@ -277,7 +317,7 @@ function IDLBattleSearcher.buildingSearchRole4Def(building, targetsNum)
     end
 end
 
----@public 角色寻敌(注意角色只能找一个目标，不可能同时找多个目标)
+---@public 角色寻敌(注意角色只能找一个目标，不能同时找多个目标)
 ---@param role IDRoleBase
 function IDLBattleSearcher.searchTarget4Role(role)
     local tempList = {}
@@ -333,6 +373,21 @@ function IDLBattleSearcher.searchTarget4Role(role)
         --//防守方的舰船寻敌
         return IDLBattleSearcher.roleSearch4Role(role, offense)
     end
+end
+
+---@public 取得离海岸最近的建筑
+---@param role IDRoleBase 角色
+---@param order number 取得第x近的建筑
+function IDLBattleSearcher.getNearestBuildingWithBeach(role, order)
+    order = order or 1
+    local _older = 0
+    for i, v in ipairs(buildingsWithBeach) do
+        _older = _older + 1
+        if IDLBattleSearcher.isTarget(role, v.building) and _older == order then
+            return v.building
+        end
+    end
+    return nil
 end
 
 ---@param attacker IDRoleBase
@@ -421,7 +476,7 @@ end
 ---@param attacker IDLUnitBase
 ---@param pos UnityEngine.Vector3
 ---@param r number 半径
-function IDLBattleSearcher.getTarget(attacker, pos, r)
+function IDLBattleSearcher.getTargetInRange(attacker, pos, r)
     local onlyOnGroundOrSky = pos.y <= 1 and 1 or 2
     local index = grid.grid:GetCellIndex(pos)
     local cells = grid:getOwnGrids(index, NumEx.getIntPart(r * 2))
@@ -488,6 +543,12 @@ function IDLBattleSearcher.someOneDead(unit)
         local b = unit
         buildingsRange[unit.instanceID] = nil
         buildings[bio2number(b.serverData.idx)] = nil
+        for i, v in ipairs(buildingsWithBeach) do
+            if v.building == unit then
+                table.remove(buildingsWithBeach, i)
+                break
+            end
+        end
     else
         if unit.isOffense then
             local index = rolesIndex[unit]
@@ -506,12 +567,29 @@ function IDLBattleSearcher.someOneDead(unit)
     end
 end
 
+---@public 取得角色的index坐标
+function IDLBattleSearcher.getRoleIndex(role)
+    return rolesIndex[role]
+end
+
+---@public 是否有建筑还没有死掉，注意不包括陷阱、树、装饰(//TODO:后续可以考虑给装饰加上功能效果，然后可以被摧毁)
+function IDLBattleSearcher.hadBuildingAlive()
+    ---@param b IDLBuilding
+    for k, b in pairs(buildings) do
+        if b and (not b.isDead) then
+            return true
+        end
+    end
+    return false
+end
+
 function IDLBattleSearcher.clean()
     buildingsRange = {}
     buildings = {}
     offense = {}
     defense = {}
     rolesIndex = {}
+    buildingsWithBeach = {}
 
     for k, obj in ipairs(IDLBattleSearcher._debugRangs or {}) do
         CLThingsPool.returnObj(obj)

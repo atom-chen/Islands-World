@@ -174,7 +174,6 @@ public class HUDText : MonoBehaviour
     /// <summary>
     /// Add a new scrolling text entry.
     /// </summary>
-
     public UILabel Add(object obj, Color c, float stayDuration, float scaleOffset = 1)
     {
         if (!enabled) return null;
@@ -198,17 +197,18 @@ public class HUDText : MonoBehaviour
         {
             isNumeric = true;
             val = float.Parse(obj.ToString());
+        } else if (obj is System.Int64)
+        {
+            isNumeric = true;
+            val = float.Parse(obj.ToString());
         }
-
         if (isNumeric && needAddValue)
         {
             if (Mathf.Abs(val) <= 0.0001f) return null;
-
             for (int i = mList.Count; i > 0;)
             {
                 Entry ent = mList[--i];
                 if (ent.time + 1f < time) continue;
-
                 if (ent.val < 0f && val < 0f)
                 {
                     ent.val += val;

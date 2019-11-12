@@ -72,7 +72,7 @@ function IDLBuildingDockyard:onLoadShip(name, ship, shipAttrId)
         ship.luaTable = IDUtl.newRoleLua(shipAttrId)
         ship:initGetLuaFunc()
     end
-    ship:init(shipAttrId, 0, 1, true, {})
+    ship:init(shipAttrId, 0, 1, true, {hideShadow = true})
     SetActive(ship.gameObject, true)
 end
 

@@ -70,6 +70,8 @@ public class ECLAStarPathSearchInspector : Editor
             instance.rayDis4Scan = EditorGUILayout.FloatField(uicontnt, instance.rayDis4Scan);
             uicontnt = new GUIContent("Auto Scan", "自动扫描网格的障碍，其实就是在Start方法中自动调用init和Scan方法");
             instance.isAutoScan = EditorGUILayout.Toggle(uicontnt, instance.isAutoScan);
+            uicontnt = new GUIContent("Need Cache Paths", "把寻路得到的数据缓存起来，可以重复使用");
+            instance.needCachePaths = EditorGUILayout.Toggle(uicontnt, instance.needCachePaths);
             ECLEditorUtl.BeginContents();
             {
                 uicontnt = new GUIContent("Filter Path By Ray", "通过射线检测障碍来过滤掉冗余的点，因此要注意障碍物的collider的高度及大小，以免射线检测不到");

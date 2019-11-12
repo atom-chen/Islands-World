@@ -45,8 +45,8 @@ function _cell.show(go, data)
     else
         -- 加血
         color = Color.green
-	end
-    uiobjs.hudText:Add(-1*mData.damage, color, 0, 1)
+    end
+    uiobjs.hudText:Add(-1 * mData.damage, color, 0, 1)
 end
 
 -- 注意，c#侧不会在调用show时，调用refresh
