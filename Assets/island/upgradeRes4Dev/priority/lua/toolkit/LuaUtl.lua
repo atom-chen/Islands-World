@@ -370,13 +370,11 @@ function doReleaseAllRes()
 
     if CLLNet then
         CLLNet.cancelHeart()
+        CLLNet.stop()
     end
 
-    if net.gameTcp ~= nil then
-        net.gameTcp:stop()
-    end
-    if net.netGameDataQueue then
-        net.netGameDataQueue:Clear()
+    if Net.self.netGameDataQueue then
+        Net.self.netGameDataQueue:Clear()
     end
 
     -- 页面处理

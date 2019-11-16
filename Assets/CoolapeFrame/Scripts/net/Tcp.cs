@@ -84,7 +84,11 @@ namespace Coolape
         /// 当为true表示连接成功，false时表示没有连接成功或连接断开</param>
         public virtual void onConnectStateChg(USocket s, object result)
         {
-            if ((bool)result)
+            ArrayList list = result as ArrayList;
+            bool isConnected = (bool)list[0];
+            int retCode = (int)list[1];
+            string msg = (string)list[2];
+            if (isConnected)
             {
 #if UNITY_EDITOR
                 Debug.Log("connectCallback    success");
@@ -100,18 +104,19 @@ namespace Coolape
                 connected = false;
                 if (!isStopping)
                 {
-                    outofNetConnect();
+                    outofNetConnect(retCode, msg);
                 }
             }
         }
 
-        public void outofNetConnect()
+        public void outofNetConnect(int code, string msg)
         {
             if (isStopping)
                 return;
             if (reConnectTimes < MaxReConnectTimes)
             {
                 reConnectTimes++;
+                Debug.LogWarning("reconnect times=" + reConnectTimes);
                 if (timer != null)
                 {
                     timer.Dispose();
@@ -151,20 +156,28 @@ namespace Coolape
         }
 
         //==========================================
-        public void send(object obj)
+        public bool send(object obj)
         {
             if (socket == null)
             {
                 Debug.LogWarning("Socket is null");
-                return;
+                return false;
             }
             object ret = packMessage(obj);
-
-            if (ret == null || isStopping || !connected)
+            if (isStopping || !connected)
             {
-                return;
+                Debug.LogWarning("isStopping =" + isStopping + "|| !connected=" + !connected);
+                return false;
             }
-            socket.SendAsync(ret as byte[]);
+            if (ret != null)
+            {
+                socket.SendAsync(ret as byte[]);
+            }
+            else
+            {
+                //这种情况可能是在组包的时候就已经发送了，还有种情况就是异常，不过其实不太可能异常，先不处理
+            }
+            return true;
         }
 
         public object packMessage(object obj)

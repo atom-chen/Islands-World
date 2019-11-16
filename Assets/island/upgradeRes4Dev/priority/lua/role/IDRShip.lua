@@ -1,5 +1,5 @@
 ﻿require("role.IDRoleBase")
----@class IDRShip:IDRoleBase 航船
+---@class IDRShip:IDRoleBase 舰船
 IDRShip = class("IDRShip", IDRoleBase)
 
 function IDRShip:__init(selfObj, other)
@@ -11,6 +11,8 @@ function IDRShip:__init(selfObj, other)
 end
 
 function IDRShip:init(selfObj, id, star, lev, _isOffense, other)
+    self.searchBuildingWithBeachTimes = 0 -- 寻找离海岸最近建筑次数
+    self.isLanded = false -- 是否已经登陆过了
     self:getBase(IDRShip).init(self, selfObj, id, star, lev, _isOffense, other)
     self:chgState(RoleState.idel)
     if not self.attr.IsFlying then
@@ -19,11 +21,15 @@ function IDRShip:init(selfObj, id, star, lev, _isOffense, other)
 end
 
 function IDRShip:onArrived()
-    self:getBase(IDRShip).onArrived(self)
-    if self.state == RoleState.walkAround then
-        self.csSelf:invoke4Lua(self.dogoAround, NumEx.NextInt(20, 60) / 10)
-    elseif self.state == RoleState.backDockyard then
-        self.dockyard:onShipBack(self)
+    if self.state == RoleState.landing then
+        self:landingSoldiers()
+    else
+        self:getBase(IDRShip).onArrived(self)
+        if self.state == RoleState.walkAround then
+            self.csSelf:invoke4Lua(self.dogoAround, NumEx.NextInt(20, 60) / 10)
+        elseif self.state == RoleState.backDockyard then
+            self.dockyard:onShipBack(self)
+        end
     end
 end
 
@@ -93,6 +99,82 @@ function IDRShip:dogoAround()
     else
         self.seeker:seekAsyn(toPos)
     end
+end
+
+---@public 当不能寻路到可攻击目标时
+function IDRShip:onCannotReach4AttackTarget()
+    if self:canLand() then
+        self:gotoLandSoldiers()
+    else
+        self:searchCanReachTarget()
+    end
+end
+
+---@public 能否登陆
+function IDRShip:canLand()
+    if bio2number(self.attr.SolderNum) > 0 and (not self.isLanded) and self.state ~= RoleState.landing then
+        return true
+    end
+    return false
+end
+
+function IDRShip:gotoLandSoldiers()
+    if self.target == nil then
+        printe("目标为空，进入这里是不应该的，肯定又bug了，噫？为什么要说又呢？")
+        return
+    end
+    self.state = RoleState.landing
+    ---@type UnityEngine.Vector3
+    local dir = self.target.transform.position - self.transform.position
+    local ray = Ray(self.transform.position, dir)
+    local isHit, hitInfor = Physics.Raycast(ray, 1000, LayerMask.NameToLayer("TileSide").value)
+    if isHit then
+        self.seeker:seekAsyn(hitInfor.point)
+    else
+        printw("居然没有找到海岸，运气真好！（不过确实存在这种情况）")
+        self.seeker:seekAsyn(self.target.transform.position)
+    end
+end
+
+---@public 登陆士兵
+function IDRShip:landingSoldiers()
+    self.isLanded = true
+    self:chgState(RoleState.idel)
+    ---@type WrapBattleUnitData
+    local data = {}
+    data.id = 3
+    data.lev = number2bio(1) -- //TODO:根据科技来得到等级
+    data.num = self.attr.SolderNum
+    data.type = IDConst.UnitType.ship
+    IDLBattle.DeployRole(data, self.transform.position, true, bio2Int(self.attr.SolderNum))
+    self:onFinishLandSoldiers()
+end
+
+---@public 当完成释放登陆士兵的回调
+function IDRShip:onFinishLandSoldiers()
+    self:searchCanReachTarget()
+end
+
+---@public 寻找可以到达的目标
+function IDRShip:searchCanReachTarget()
+    self:getBuildingWithBeach()
+    if self.target then
+        -- 寻路过去
+        if self.attr.IsFlying then
+            self.seeker:seek(self.target.transform.position)
+        else
+            self.seeker:seekAsyn(self.target.transform.position)
+        end
+    end
+end
+
+---@public 取得
+function IDRShip:getBuildingWithBeach()
+    self.searchBuildingWithBeachTimes = self.searchBuildingWithBeachTimes + 1
+    local target = IDLBattle.searcher.getNearestBuildingWithBeach(self, self.searchBuildingWithBeach)
+
+    -- 设置目标
+    self:setTarget(target)
 end
 
 function IDRShip:clean()

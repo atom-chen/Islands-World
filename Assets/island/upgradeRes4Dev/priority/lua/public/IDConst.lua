@@ -32,7 +32,7 @@ IDConst.BuildingState = {
 
 ---@public 建筑类别
 IDConst.BuildingGID = {
-    spec = 0, -- 特殊建筑
+    spec = -1, -- 特殊建筑
     com = 1, -- 基础建筑
     resource = 2, -- 资源建筑
     defense = 3, -- 防御建筑
@@ -47,6 +47,11 @@ IDConst.RoleGID = {
     ship = 101, -- 舰船
     solider = 102, -- 陆战兵
     pet = 103 -- 宠物
+}
+
+IDConst.RoleID = {
+    Barbarian = 3, -- 陆战兵
+    LandCraft = 4, -- 登陆船
 }
 
 ---@public 游戏中各种类型

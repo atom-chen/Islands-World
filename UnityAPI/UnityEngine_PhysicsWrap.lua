@@ -1,0 +1,385 @@
+---@class UnityEngine.Physics
+---@field public IgnoreRaycastLayer System.Int32
+---@field public DefaultRaycastLayers System.Int32
+---@field public AllLayers System.Int32
+---@field public gravity UnityEngine.Vector3
+---@field public defaultContactOffset System.Single
+---@field public sleepThreshold System.Single
+---@field public queriesHitTriggers System.Boolean
+---@field public queriesHitBackfaces System.Boolean
+---@field public bounceThreshold System.Single
+---@field public defaultSolverIterations System.Int32
+---@field public defaultSolverVelocityIterations System.Int32
+---@field public defaultMaxAngularSpeed System.Single
+---@field public defaultPhysicsScene UnityEngine.PhysicsScene
+---@field public autoSimulation System.Boolean
+---@field public autoSyncTransforms System.Boolean
+---@field public reuseCollisionCallbacks System.Boolean
+---@field public interCollisionDistance System.Single
+---@field public interCollisionStiffness System.Single
+---@field public interCollisionSettingsToggle System.Boolean
+---@field public clothGravity UnityEngine.Vector3
+local m = { }
+---public Physics .ctor()
+---@return Physics
+function m.New() end
+---public Void IgnoreCollision(Collider collider1, Collider collider2)
+---public Void IgnoreCollision(Collider collider1, Collider collider2, Boolean ignore)
+---@param Collider collider1
+---@param optional Collider collider2
+---@param optional Boolean ignore
+function m.IgnoreCollision(collider1, collider2, ignore) end
+---public Void IgnoreLayerCollision(Int32 layer1, Int32 layer2)
+---public Void IgnoreLayerCollision(Int32 layer1, Int32 layer2, Boolean ignore)
+---@param Int32 layer1
+---@param optional Int32 layer2
+---@param optional Boolean ignore
+function m.IgnoreLayerCollision(layer1, layer2, ignore) end
+---public Boolean GetIgnoreLayerCollision(Int32 layer1, Int32 layer2)
+---@return bool
+---@param optional Int32 layer1
+---@param optional Int32 layer2
+function m.GetIgnoreLayerCollision(layer1, layer2) end
+---public Boolean GetIgnoreCollision(Collider collider1, Collider collider2)
+---@return bool
+---@param optional Collider collider1
+---@param optional Collider collider2
+function m.GetIgnoreCollision(collider1, collider2) end
+---public Boolean Raycast(Ray ray)
+---public Boolean Raycast(Vector3 origin, Vector3 direction)
+---public Boolean Raycast(Ray ray, Single maxDistance)
+---public Boolean Raycast(Ray ray, RaycastHit& hitInfo)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, Single maxDistance)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo)
+---public Boolean Raycast(Ray ray, Single maxDistance, Int32 layerMask)
+---public Boolean Raycast(Ray ray, RaycastHit& hitInfo, Single maxDistance)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, Single maxDistance, Int32 layerMask)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, Single maxDistance)
+---public Boolean Raycast(Ray ray, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean Raycast(Ray ray, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask)
+---public Boolean Raycast(Ray ray, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 origin
+---@param Vector3 direction
+---@param RaycastHit& hitInfo
+---@param Single maxDistance
+---@param Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.Raycast(origin, direction, hitInfo, maxDistance, layerMask, queryTriggerInteraction) end
+---public Boolean Linecast(Vector3 start, Vector3 ed)
+---public Boolean Linecast(Vector3 start, Vector3 ed, Int32 layerMask)
+---public Boolean Linecast(Vector3 start, Vector3 ed, RaycastHit& hitInfo)
+---public Boolean Linecast(Vector3 start, Vector3 ed, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean Linecast(Vector3 start, Vector3 ed, RaycastHit& hitInfo, Int32 layerMask)
+---public Boolean Linecast(Vector3 start, Vector3 ed, RaycastHit& hitInfo, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 start
+---@param Vector3 ed
+---@param RaycastHit& hitInfo
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.Linecast(start, end, hitInfo, layerMask, queryTriggerInteraction) end
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, Single maxDistance)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit& hitInfo)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, Single maxDistance, Int32 layerMask)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit& hitInfo, Single maxDistance)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask)
+---public Boolean CapsuleCast(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 point1
+---@param Vector3 point2
+---@param Single radius
+---@param Vector3 direction
+---@param optional RaycastHit& hitInfo
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.CapsuleCast(point1, point2, radius, direction, hitInfo, maxDistance, layerMask, queryTriggerInteraction) end
+---public Boolean SphereCast(Ray ray, Single radius)
+---public Boolean SphereCast(Ray ray, Single radius, Single maxDistance)
+---public Boolean SphereCast(Ray ray, Single radius, RaycastHit& hitInfo)
+---public Boolean SphereCast(Vector3 origin, Single radius, Vector3 direction, RaycastHit& hitInfo)
+---public Boolean SphereCast(Ray ray, Single radius, Single maxDistance, Int32 layerMask)
+---public Boolean SphereCast(Ray ray, Single radius, RaycastHit& hitInfo, Single maxDistance)
+---public Boolean SphereCast(Vector3 origin, Single radius, Vector3 direction, RaycastHit& hitInfo, Single maxDistance)
+---public Boolean SphereCast(Ray ray, Single radius, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean SphereCast(Ray ray, Single radius, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask)
+---public Boolean SphereCast(Vector3 origin, Single radius, Vector3 direction, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask)
+---public Boolean SphereCast(Ray ray, Single radius, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean SphereCast(Vector3 origin, Single radius, Vector3 direction, RaycastHit& hitInfo, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 origin
+---@param Single radius
+---@param Vector3 direction
+---@param RaycastHit& hitInfo
+---@param Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.SphereCast(origin, radius, direction, hitInfo, maxDistance, layerMask, queryTriggerInteraction) end
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit& hitInfo)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, Single maxDistance)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit& hitInfo, Quaternion orientation)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, Single maxDistance, Int32 layerMask)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit& hitInfo, Quaternion orientation, Single maxDistance)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit& hitInfo, Quaternion orientation, Single maxDistance, Int32 layerMask)
+---public Boolean BoxCast(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit& hitInfo, Quaternion orientation, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 center
+---@param Vector3 halfExtents
+---@param Vector3 direction
+---@param RaycastHit& hitInfo
+---@param Quaternion orientation
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.BoxCast(center, halfExtents, direction, hitInfo, orientation, maxDistance, layerMask, queryTriggerInteraction) end
+---public RaycastHit[] RaycastAll(Ray ray)
+---public RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction)
+---public RaycastHit[] RaycastAll(Ray ray, Single maxDistance)
+---public RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction, Single maxDistance)
+---public RaycastHit[] RaycastAll(Ray ray, Single maxDistance, Int32 layerMask)
+---public RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction, Single maxDistance, Int32 layerMask)
+---public RaycastHit[] RaycastAll(Ray ray, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 origin
+---@param Vector3 direction
+---@param Single maxDistance
+---@param Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.RaycastAll(origin, direction, maxDistance, layerMask, queryTriggerInteraction) end
+---public Int32 RaycastNonAlloc(Ray ray, RaycastHit[] results)
+---public Int32 RaycastNonAlloc(Ray ray, RaycastHit[] results, Single maxDistance)
+---public Int32 RaycastNonAlloc(Vector3 origin, Vector3 direction, RaycastHit[] results)
+---public Int32 RaycastNonAlloc(Ray ray, RaycastHit[] results, Single maxDistance, Int32 layerMask)
+---public Int32 RaycastNonAlloc(Vector3 origin, Vector3 direction, RaycastHit[] results, Single maxDistance)
+---public Int32 RaycastNonAlloc(Ray ray, RaycastHit[] results, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Int32 RaycastNonAlloc(Vector3 origin, Vector3 direction, RaycastHit[] results, Single maxDistance, Int32 layerMask)
+---public Int32 RaycastNonAlloc(Vector3 origin, Vector3 direction, RaycastHit[] results, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 origin
+---@param Vector3 direction
+---@param RaycastHit[] results
+---@param Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.RaycastNonAlloc(origin, direction, results, maxDistance, layerMask, queryTriggerInteraction) end
+---public RaycastHit[] CapsuleCastAll(Vector3 point1, Vector3 point2, Single radius, Vector3 direction)
+---public RaycastHit[] CapsuleCastAll(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, Single maxDistance)
+---public RaycastHit[] CapsuleCastAll(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, Single maxDistance, Int32 layerMask)
+---public RaycastHit[] CapsuleCastAll(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 point1
+---@param Vector3 point2
+---@param Single radius
+---@param optional Vector3 direction
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.CapsuleCastAll(point1, point2, radius, direction, maxDistance, layerMask, queryTriggerInteraction) end
+---public RaycastHit[] SphereCastAll(Ray ray, Single radius)
+---public RaycastHit[] SphereCastAll(Vector3 origin, Single radius, Vector3 direction)
+---public RaycastHit[] SphereCastAll(Ray ray, Single radius, Single maxDistance)
+---public RaycastHit[] SphereCastAll(Vector3 origin, Single radius, Vector3 direction, Single maxDistance)
+---public RaycastHit[] SphereCastAll(Ray ray, Single radius, Single maxDistance, Int32 layerMask)
+---public RaycastHit[] SphereCastAll(Vector3 origin, Single radius, Vector3 direction, Single maxDistance, Int32 layerMask)
+---public RaycastHit[] SphereCastAll(Ray ray, Single radius, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public RaycastHit[] SphereCastAll(Vector3 origin, Single radius, Vector3 direction, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 origin
+---@param Single radius
+---@param Vector3 direction
+---@param Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.SphereCastAll(origin, radius, direction, maxDistance, layerMask, queryTriggerInteraction) end
+---public Collider[] OverlapCapsule(Vector3 point0, Vector3 point1, Single radius)
+---public Collider[] OverlapCapsule(Vector3 point0, Vector3 point1, Single radius, Int32 layerMask)
+---public Collider[] OverlapCapsule(Vector3 point0, Vector3 point1, Single radius, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 point0
+---@param Vector3 point1
+---@param optional Single radius
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.OverlapCapsule(point0, point1, radius, layerMask, queryTriggerInteraction) end
+---public Collider[] OverlapSphere(Vector3 position, Single radius)
+---public Collider[] OverlapSphere(Vector3 position, Single radius, Int32 layerMask)
+---public Collider[] OverlapSphere(Vector3 position, Single radius, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 position
+---@param Single radius
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.OverlapSphere(position, radius, layerMask, queryTriggerInteraction) end
+---public Void Simulate(Single step)
+---@param optional Single step
+function m.Simulate(step) end
+---public Void SyncTransforms()
+function m.SyncTransforms() end
+---public Boolean ComputePenetration(Collider colliderA, Vector3 positionA, Quaternion rotationA, Collider colliderB, Vector3 positionB, Quaternion rotationB, Vector3& direction, Single& distance)
+---@return bool
+---@param optional Collider colliderA
+---@param optional Vector3 positionA
+---@param optional Quaternion rotationA
+---@param optional Collider colliderB
+---@param optional Vector3 positionB
+---@param optional Quaternion rotationB
+---@param optional Vector3& direction
+---@param optional Single& distance
+function m.ComputePenetration(colliderA, positionA, rotationA, colliderB, positionB, rotationB, direction, distance) end
+---public Vector3 ClosestPoint(Vector3 point, Collider collider, Vector3 position, Quaternion rotation)
+---@return Vector3
+---@param optional Vector3 point
+---@param optional Collider collider
+---@param optional Vector3 position
+---@param optional Quaternion rotation
+function m.ClosestPoint(point, collider, position, rotation) end
+---public Int32 OverlapSphereNonAlloc(Vector3 position, Single radius, Collider[] results)
+---public Int32 OverlapSphereNonAlloc(Vector3 position, Single radius, Collider[] results, Int32 layerMask)
+---public Int32 OverlapSphereNonAlloc(Vector3 position, Single radius, Collider[] results, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 position
+---@param Single radius
+---@param optional Collider[] results
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.OverlapSphereNonAlloc(position, radius, results, layerMask, queryTriggerInteraction) end
+---public Boolean CheckSphere(Vector3 position, Single radius)
+---public Boolean CheckSphere(Vector3 position, Single radius, Int32 layerMask)
+---public Boolean CheckSphere(Vector3 position, Single radius, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 position
+---@param Single radius
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.CheckSphere(position, radius, layerMask, queryTriggerInteraction) end
+---public Int32 CapsuleCastNonAlloc(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit[] results)
+---public Int32 CapsuleCastNonAlloc(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit[] results, Single maxDistance)
+---public Int32 CapsuleCastNonAlloc(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit[] results, Single maxDistance, Int32 layerMask)
+---public Int32 CapsuleCastNonAlloc(Vector3 point1, Vector3 point2, Single radius, Vector3 direction, RaycastHit[] results, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 point1
+---@param Vector3 point2
+---@param Single radius
+---@param optional Vector3 direction
+---@param optional RaycastHit[] results
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.CapsuleCastNonAlloc(point1, point2, radius, direction, results, maxDistance, layerMask, queryTriggerInteraction) end
+---public Int32 SphereCastNonAlloc(Ray ray, Single radius, RaycastHit[] results)
+---public Int32 SphereCastNonAlloc(Vector3 origin, Single radius, Vector3 direction, RaycastHit[] results)
+---public Int32 SphereCastNonAlloc(Ray ray, Single radius, RaycastHit[] results, Single maxDistance)
+---public Int32 SphereCastNonAlloc(Vector3 origin, Single radius, Vector3 direction, RaycastHit[] results, Single maxDistance)
+---public Int32 SphereCastNonAlloc(Ray ray, Single radius, RaycastHit[] results, Single maxDistance, Int32 layerMask)
+---public Int32 SphereCastNonAlloc(Vector3 origin, Single radius, Vector3 direction, RaycastHit[] results, Single maxDistance, Int32 layerMask)
+---public Int32 SphereCastNonAlloc(Ray ray, Single radius, RaycastHit[] results, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---public Int32 SphereCastNonAlloc(Vector3 origin, Single radius, Vector3 direction, RaycastHit[] results, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 origin
+---@param Single radius
+---@param Vector3 direction
+---@param RaycastHit[] results
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.SphereCastNonAlloc(origin, radius, direction, results, maxDistance, layerMask, queryTriggerInteraction) end
+---public Boolean CheckCapsule(Vector3 start, Vector3 ed, Single radius)
+---public Boolean CheckCapsule(Vector3 start, Vector3 ed, Single radius, Int32 layerMask)
+---public Boolean CheckCapsule(Vector3 start, Vector3 ed, Single radius, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 start
+---@param Vector3 ed
+---@param optional Single radius
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.CheckCapsule(start, end, radius, layerMask, queryTriggerInteraction) end
+---public Boolean CheckBox(Vector3 center, Vector3 halfExtents)
+---public Boolean CheckBox(Vector3 center, Vector3 halfExtents, Quaternion orientation)
+---public Boolean CheckBox(Vector3 center, Vector3 halfExtents, Quaternion orientation, Int32 layerMask)
+---public Boolean CheckBox(Vector3 center, Vector3 halfExtents, Quaternion orientation, Int32 layermask, QueryTriggerInteraction queryTriggerInteraction)
+---@return bool
+---@param Vector3 center
+---@param Vector3 halfExtents
+---@param Quaternion orientation
+---@param optional Int32 layermask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.CheckBox(center, halfExtents, orientation, layermask, queryTriggerInteraction) end
+---public Collider[] OverlapBox(Vector3 center, Vector3 halfExtents)
+---public Collider[] OverlapBox(Vector3 center, Vector3 halfExtents, Quaternion orientation)
+---public Collider[] OverlapBox(Vector3 center, Vector3 halfExtents, Quaternion orientation, Int32 layerMask)
+---public Collider[] OverlapBox(Vector3 center, Vector3 halfExtents, Quaternion orientation, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 center
+---@param Vector3 halfExtents
+---@param Quaternion orientation
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.OverlapBox(center, halfExtents, orientation, layerMask, queryTriggerInteraction) end
+---public Int32 OverlapBoxNonAlloc(Vector3 center, Vector3 halfExtents, Collider[] results)
+---public Int32 OverlapBoxNonAlloc(Vector3 center, Vector3 halfExtents, Collider[] results, Quaternion orientation)
+---public Int32 OverlapBoxNonAlloc(Vector3 center, Vector3 halfExtents, Collider[] results, Quaternion orientation, Int32 mask)
+---public Int32 OverlapBoxNonAlloc(Vector3 center, Vector3 halfExtents, Collider[] results, Quaternion orientation, Int32 mask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 center
+---@param Vector3 halfExtents
+---@param Collider[] results
+---@param optional Quaternion orientation
+---@param optional Int32 mask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.OverlapBoxNonAlloc(center, halfExtents, results, orientation, mask, queryTriggerInteraction) end
+---public Int32 BoxCastNonAlloc(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit[] results)
+---public Int32 BoxCastNonAlloc(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit[] results, Quaternion orientation)
+---public Int32 BoxCastNonAlloc(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit[] results, Quaternion orientation, Single maxDistance)
+---public Int32 BoxCastNonAlloc(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit[] results, Quaternion orientation, Single maxDistance, Int32 layerMask)
+---public Int32 BoxCastNonAlloc(Vector3 center, Vector3 halfExtents, Vector3 direction, RaycastHit[] results, Quaternion orientation, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 center
+---@param Vector3 halfExtents
+---@param Vector3 direction
+---@param RaycastHit[] results
+---@param optional Quaternion orientation
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.BoxCastNonAlloc(center, halfExtents, direction, results, orientation, maxDistance, layerMask, queryTriggerInteraction) end
+---public RaycastHit[] BoxCastAll(Vector3 center, Vector3 halfExtents, Vector3 direction)
+---public RaycastHit[] BoxCastAll(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation)
+---public RaycastHit[] BoxCastAll(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, Single maxDistance)
+---public RaycastHit[] BoxCastAll(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, Single maxDistance, Int32 layerMask)
+---public RaycastHit[] BoxCastAll(Vector3 center, Vector3 halfExtents, Vector3 direction, Quaternion orientation, Single maxDistance, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return table
+---@param Vector3 center
+---@param Vector3 halfExtents
+---@param Vector3 direction
+---@param Quaternion orientation
+---@param optional Single maxDistance
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.BoxCastAll(center, halfExtents, direction, orientation, maxDistance, layerMask, queryTriggerInteraction) end
+---public Int32 OverlapCapsuleNonAlloc(Vector3 point0, Vector3 point1, Single radius, Collider[] results)
+---public Int32 OverlapCapsuleNonAlloc(Vector3 point0, Vector3 point1, Single radius, Collider[] results, Int32 layerMask)
+---public Int32 OverlapCapsuleNonAlloc(Vector3 point0, Vector3 point1, Single radius, Collider[] results, Int32 layerMask, QueryTriggerInteraction queryTriggerInteraction)
+---@return number
+---@param Vector3 point0
+---@param Vector3 point1
+---@param optional Single radius
+---@param optional Collider[] results
+---@param optional Int32 layerMask
+---@param optional QueryTriggerInteraction queryTriggerInteraction
+function m.OverlapCapsuleNonAlloc(point0, point1, radius, results, layerMask, queryTriggerInteraction) end
+---public Void RebuildBroadphaseRegions(Bounds worldBounds, Int32 subdivisions)
+---@param optional Bounds worldBounds
+---@param optional Int32 subdivisions
+function m.RebuildBroadphaseRegions(worldBounds, subdivisions) end
+UnityEngine.Physics = m
+return m

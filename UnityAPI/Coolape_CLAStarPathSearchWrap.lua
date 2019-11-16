@@ -10,6 +10,7 @@
 ---@field public rayDis4Scan System.Single
 ---@field public rayDirection Coolape.CLAStarPathSearch.RayDirection
 ---@field public isAutoScan System.Boolean
+---@field public needCachePaths System.Boolean
 ---@field public isFilterPathByRay System.Boolean
 ---@field public isSoftenPath System.Boolean
 ---@field public softenPathType Coolape.CLAIPathUtl.SoftenPathType
@@ -49,13 +50,22 @@ function m:removeGridStateChgCallback(callback) end
 ---@param optional Vector3 to
 ---@param optional Object finishSearchCallback
 function m:searchPathAsyn(from, to, finishSearchCallback) end
----public Boolean searchPath(Vector3 from, Vector3 to, List`1& vectorList, Boolean notPocSoftenPath)
+---public Boolean getCachePath(Vector3 from, Vector3 to, List`1& vectorList, Boolean& canReach)
 ---@return bool
 ---@param optional Vector3 from
 ---@param optional Vector3 to
 ---@param optional List`1& vectorList
+---@param optional Boolean& canReach
+function m:getCachePath(from, to, vectorList, canReach) end
+---public Boolean searchPath(Vector3 from, Vector3 to, List`1& vectorList)
+---public Boolean searchPath(Vector3 from, Vector3 to, List`1& vectorList, Boolean& isCachePath, Boolean notPocSoftenPath)
+---@return bool
+---@param Vector3 from
+---@param Vector3 to
+---@param optional List`1& vectorList
+---@param optional Boolean& isCachePath
 ---@param optional Boolean notPocSoftenPath
-function m:searchPath(from, to, vectorList, notPocSoftenPath) end
+function m:searchPath(from, to, vectorList, isCachePath, notPocSoftenPath) end
 ---public Void softenPath(List`1& vectorList)
 ---@param optional List`1& vectorList
 function m:softenPath(vectorList) end

@@ -19,8 +19,6 @@ local m = { }
 ---public CLGrid .ctor()
 ---@return CLGrid
 function m.New() end
----public Void Start()
-function m:Start() end
 ---public Void init(Boolean isInitNodes)
 ---public Void init(Vector3 origin, Boolean isInitNodes)
 ---@param Vector3 origin

@@ -386,7 +386,6 @@ namespace Coolape
                     vectorList.Add(tmpPath[i]);
                 }
                 int index = grid.GetCellIndex(vectorList[vectorList.Count - 1]);
-                Debug.LogError("get========" + vectorList.Count);
                 if (index == toIndex)
                 {
                     canReach = true;

@@ -59,7 +59,7 @@ do
         local shipList = DBCfg.getRolesByGID(IDConst.RoleGID.ship)
         local dockyardShips = IDDBCity.curCity:getShipsByDockyardId(bio2number(dockyardServerData.idx))
         --if dockyardShips == nil then
-        --    net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(dockyardServerData.idx)))
+        --    CLLNet.send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(dockyardServerData.idx)))
         --end
         dockyardShips = dockyardShips or {}
         local dockyardLev = bio2number(dockyardServerData.lev)
@@ -365,7 +365,7 @@ do
                 end
                 showHotWheel()
                 local cellData = selectedCell.luaTable.getData()
-                net:send(NetProtoIsland.send.buildShip(
+                CLLNet.send(NetProtoIsland.send.buildShip(
                         bio2number(dockyardServerData.idx),
                         bio2number(cellData.attr.ID), num))
             end

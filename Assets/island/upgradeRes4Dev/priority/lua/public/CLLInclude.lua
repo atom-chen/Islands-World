@@ -98,6 +98,8 @@ do
     QualitySettings = CS.UnityEngine.QualitySettings
     ---@type UnityEngine.AudioSource
     AudioSource = CS.UnityEngine.AudioSource
+    ---@type UnityEngine.Physics
+    Physics = CS.UnityEngine.Physics
 
     ---@type UICamera
     UICamera = CS.UICamera
@@ -403,7 +405,6 @@ do
     bio2number = BioUtl.bio2number
     number2bio = BioUtl.number2bio
     LGet = Localization.Get
-    net = Net.self
     hideTopPanel = CLPanelManager.hideTopPanel
     getPanelAsy = CLPanelManager.getPanelAsy
     NetSuccess = Net.SuccessCode
@@ -433,7 +434,8 @@ do
         attack = 5,
         waitAttack = 6,
         dizzy = 7,
-        backDockyard = 8 -- 返回造船厂
+        backDockyard = 8, -- 返回造船厂
+        landing = 9 -- 正在登陆
     }
 
     -- 重载pcall，以便可以自动print error msg

@@ -37,7 +37,7 @@ function IDDBCity:initDockyardShips()
     for k, v in pairs(self.buildings) do
         if bio2number(v.attrid) == IDConst.BuildingID.dockyardBuildingID then
             -- 取得造船厂的航船数据
-            net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(v.idx)))
+            CLLNet.send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(v.idx)))
         end
     end
 end
@@ -137,7 +137,7 @@ function IDDBCity:onBuildingChg(data)
     self.buildings[bio2number(b.idx)] = b
     if bio2number(b.attrid) == IDConst.BuildingID.dockyardBuildingID then
         -- 取得造船厂的航船数据
-        net:send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(b.idx)))
+        CLLNet.send(NetProtoIsland.send.getShipsByBuildingIdx(bio2number(b.idx)))
     end
 end
 

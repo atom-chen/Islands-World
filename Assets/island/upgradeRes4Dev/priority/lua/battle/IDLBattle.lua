@@ -47,7 +47,7 @@ local city = nil -- 城池对象
 local grid
 ---@type BattleData
 IDLBattle.mData = nil -- 战斗方数据
-IDLBattle.isFirstDeployShip = true
+IDLBattle.isFirstDeployRole = true
 -- 一次部署的数量
 local EachDeployNum = 1
 -- 进攻舰船
@@ -154,9 +154,9 @@ function IDLBattle.deployBattleUnit()
     local index = grid:GetCellIndex(pos)
     local cellPos = grid:GetCellCenter(index)
     if (not city.astar4Ocean:isObstructNode(pos)) or IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
-        if IDLBattle.isFirstDeployShip then
+        if IDLBattle.isFirstDeployRole then
             -- 首次投放战斗单元，的处理
-            IDLBattle.isFirstDeployShip = false
+            IDLBattle.isFirstDeployRole = false
             if IDLBattle.mData.type == IDConst.BattleType.pvp then
                 SoundEx.playMainMusic("BattleSound1")
             elseif IDLBattle.mData.type == IDConst.BattleType.pvp then
@@ -170,7 +170,7 @@ function IDLBattle.deployBattleUnit()
             IDLBattle.currSelectedUnit.type == IDConst.UnitType.ship or
                 IDLBattle.currSelectedUnit.type == IDConst.UnitType.pet
          then
-            IDLBattle.deployShip(IDLBattle.currSelectedUnit, pos, true)
+            IDLBattle.DeployRole(IDLBattle.currSelectedUnit, pos, true)
         elseif IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
         --//TODO: 技能释放
         end
@@ -183,23 +183,29 @@ end
 ---@public 部署舰船
 ---@param shipData WrapBattleUnitData
 ---@param pos UnityEngine.Vector3
-function IDLBattle.deployShip(shipData, pos, isOffense)
+function IDLBattle.DeployRole(shipData, pos, isOffense, needDeployNum)
     CLEffect.play("EffectDeploy", pos)
     SoundEx.playSound("water_craft_place_01", 1, 2)
 
-    local num = bio2Int(shipData.num)
     local id = shipData.id
     local deployNum = 0
-    if num >= EachDeployNum then
-        deployNum = EachDeployNum
+    if needDeployNum then
+        deployNum = needDeployNum
     else
-        deployNum = num
+        local num = bio2Int(shipData.num)
+        if num >= EachDeployNum then
+            deployNum = EachDeployNum
+        else
+            deployNum = num
+        end
+        shipData.num = int2Bio(num - deployNum)
+
+        -- 通知ui
+        if IDPBattle and IDPBattle.csSelf and IDPBattle.csSelf.gameObject.activeInHierarchy then
+            IDPBattle.onDeployBattleUnit(shipData)
+        end
     end
-    shipData.num = int2Bio(num - deployNum)
-    -- 通知ui
-    if IDPBattle and IDPBattle.csSelf and IDPBattle.csSelf.gameObject.activeInHierarchy then
-        IDPBattle.onDeployBattleUnit(shipData)
-    end
+
     -- 加载舰船
     for i = 1, deployNum do
         CLRolePool.borrowObjAsyn(
@@ -349,7 +355,7 @@ function IDLBattle.endBattle()
 end
 
 function IDLBattle.clean()
-    IDLBattle.isFirstDeployShip = true
+    IDLBattle.isFirstDeployRole = true
     IDLBattle.currSelectedUnit = nil
     IDWorldMap.rmFinishEnterCityCallback(IDLBattle.onEnterCity)
     -- 恢复资源释放

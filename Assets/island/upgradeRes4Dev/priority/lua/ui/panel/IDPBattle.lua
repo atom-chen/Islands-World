@@ -107,7 +107,7 @@ function IDPBattle.uiEventDelegate(go)
     if goName == "ButtonQuit" then
         IDLBattle.clean()
         --//TODO:强制退出战斗时，通知服务器
-        -- net:send(NetProtoIsland.send.stopAttack)
+        -- CLLNet.send(NetProtoIsland.send.stopAttack)
         IDUtl.chgScene(GameMode.map)
     end
 end

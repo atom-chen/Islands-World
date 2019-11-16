@@ -175,7 +175,7 @@ do
                         uid = __UUID__
                     end
                 end
-                net:send(
+                CLLNet.send(
                     NetProtoIsland.send.login(uid, getChlCode(), Utl.uuid, MyCfg.self.isEditScene or __EditorMode__)
                 )
             elseif cmd == NetProtoIsland.cmds.login then

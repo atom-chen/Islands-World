@@ -97,7 +97,7 @@ function IDLBattleSearcher.getNearestBeach(b)
     if not IDMainCity.isOnTheLandOrBeach(b.gridIndex) then
         return {building = b, index = b.gridIndex}
     end
-    for i = 2, 30 do
+    for i = 2, 20 do
         list = grid.grid:getCircleCells(b.transform.position, i)
         for i = 0, list.Count - 1 do
             if IDMainCity.isIndexOnTheBeach(list[i]) then
@@ -367,7 +367,11 @@ function IDLBattleSearcher.searchTarget4Role(role)
             return (preferedTarget or target)
         else
             -- 说明没有建筑目标，再找找舰船目标
-            return IDLBattleSearcher.roleSearch4Role(role, defense)
+            if bio2number(role.attr.GID) == IDConst.RoleGID.solider then
+                return nil
+            else
+                return IDLBattleSearcher.roleSearch4Role(role, defense)
+            end
         end
     else
         --//防守方的舰船寻敌
@@ -432,11 +436,21 @@ end
 
 ---@param attacker IDLUnitBase
 ---@param unit IDLUnitBase
----@param onlyOnGroundOrSky 只找地面上或天空的单，1：地面，2：天空，其它值则都可以
+---@param onlyOnGroundOrSky number 只找地面上或天空的单 1：地面，2：天空，其它值则都可以
 function IDLBattleSearcher.isTarget(attacker, unit, onlyOnGroundOrSky)
     if unit.isDead then
         return false
     end
+    if bio2number(attacker.attr.GID) == IDConst.RoleGID.solider then
+        -- 士兵
+        if unit.attr.IsFlying then
+            return false
+        else
+            local index = IDMainCity.grid.grid:GetCellIndex(unit.transform.position)
+            return IDMainCity.isIndexOnTheLand(index)
+        end
+    end
+
     ---@type IDLBuilding
     local b = attacker
     -- 可攻击地面、飞行单位否？

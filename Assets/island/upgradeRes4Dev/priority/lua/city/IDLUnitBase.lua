@@ -182,6 +182,7 @@ function IDLUnitBase:onDead()
     self.isDead = true
     self.csSelf.isDead = true
     self:iamDie()
+    IDLBattle.someOneDead(self)
 end
 
 ---@public 冰冻

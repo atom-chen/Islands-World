@@ -19,6 +19,8 @@ require("city.IDLTree")
 require("role.IDRoleBase")
 require("role.IDRWorker")
 require("role.IDRShip")
+require("role.IDRSoldier")
+require("role.IDRShipLandCraft")
 require("worldmap.IDWorldTile")
 
 IDUtl = {}
@@ -261,7 +263,14 @@ function IDUtl.newRoleLua(id)
     if gid == IDConst.RoleGID.worker then
         role = IDRWorker.new()
     elseif gid == IDConst.RoleGID.ship then
-        role = IDRShip.new()
+        if id == 4 then
+            -- 登陆船
+            role = IDRShipLandCraft.new()
+        else
+            role = IDRShip.new()
+        end
+    elseif gid == IDConst.RoleGID.solider then
+        role = IDRSoldier.new()
     else
         role = IDRoleBase.new()
     end

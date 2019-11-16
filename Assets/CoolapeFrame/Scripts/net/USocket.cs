@@ -37,6 +37,18 @@ namespace Coolape
         private bool isClosed = false;
         public bool isActive = false;
         public Timer timeoutCheckTimer;
+        public enum Errors
+        {
+            success = 0,
+            connectTimeout = 1,
+            IPEndPointIsNull = 2,
+            connectFailed = 3,
+            receivebytesLenError = 4,
+            serverClosedConnection = 5,
+            connectionIsClosed = 6,
+            sendAsynException = 7,
+            sendTimeout = 8,
+        }
 
         public USocket(string host, int port)
         {
@@ -110,7 +122,7 @@ namespace Coolape
                 this.onConnectStateChgCallback = onConnectStateChgCallback;
                 if (ipe == null)
                 {
-                    onConnectStateChg(false);
+                    onConnectStateChg(false, Errors.IPEndPointIsNull);
                     return;
                 }
 
@@ -135,23 +147,32 @@ namespace Coolape
             }
             else
             {
-                onConnectStateChg(false);
+                onConnectStateChg(false, Errors.connectTimeout);
             }
         }
 
-        protected void onConnectStateChg(bool connected)
+        protected void onConnectStateChg(bool connected, Errors retCode)
         {
+            string msg = Enum.GetName(typeof(Errors), retCode);
+            Debug.LogWarning("connected=[" + connected + "]" + " retCode=[" + (int)retCode + "]" + " msg=[" + msg +"]");
             if (isClosed)
             {
                 return;
             }
             if (!connected && isActive)
             {
-                close();
+                if (retCode == Errors.serverClosedConnection)
+                {
+                    close();
+                }
             }
-            if (onConnectStateChgCallback != null)
+            if (this.onConnectStateChgCallback != null)
             {
-                onConnectStateChgCallback(this, connected);
+                ArrayList list = new ArrayList();
+                list.Add(connected);
+                list.Add((int)(retCode));
+                list.Add(msg);
+                this.onConnectStateChgCallback(this, list);
             }
         }
 
@@ -165,11 +186,11 @@ namespace Coolape
                 client.mSocket.EndConnect(ar);
                 client.isActive = true;
                 client.failTimes = 0;
-                client.onConnectStateChg(true);
+                client.onConnectStateChg(true, Errors.success);
             }
             else
             {
-                client.onConnectStateChg(false);
+                client.onConnectStateChg(false, Errors.connectFailed);
             }
             if (connectTimeout != null)
             {
@@ -240,13 +261,13 @@ namespace Coolape
                     }
                     else if (bytesRead < 0)
                     {
-                        client.onConnectStateChg(false);
+                        client.onConnectStateChg(false, Errors.receivebytesLenError);
                     }
                     else
                     {
                         // 所有Number据读取完毕.
                         Debug.Log("receive zero=====" + bytesRead);
-                        client.onConnectStateChg(false);
+                        client.onConnectStateChg(false, Errors.serverClosedConnection);
                         return;
                     }
 
@@ -258,7 +279,7 @@ namespace Coolape
                 }
                 else
                 {
-                    client.onConnectStateChg(false);
+                    client.onConnectStateChg(false, Errors.connectionIsClosed);
                 }
             }
             catch (Exception e)
@@ -285,7 +306,7 @@ namespace Coolape
             catch (Exception e)
             {
                 Debug.LogError("socket:" + e);
-                onConnectStateChg(false);
+                onConnectStateChg(false, Errors.sendAsynException);
             }
         }
 
@@ -294,7 +315,7 @@ namespace Coolape
             failTimes++;
             if (failTimes > maxTimeoutTimes)
             {
-                onConnectStateChg(false);
+                onConnectStateChg(false, Errors.sendTimeout);
             }
         }
 
@@ -305,9 +326,12 @@ namespace Coolape
             int bytesSent = client.mSocket.EndSend(ar);
             if (bytesSent <= 0) //发送失败
             {
-                onConnectStateChg(false);
+                sendTimeOut(null);
             }
-            client.failTimes = 0;
+            else
+            {
+                client.failTimes = 0;
+            }
         }
 
     }

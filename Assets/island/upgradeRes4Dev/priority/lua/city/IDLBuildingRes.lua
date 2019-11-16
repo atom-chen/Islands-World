@@ -90,7 +90,7 @@ function IDLBuildingRes:OnClick()
             showHotWheel()
             self:hideCollectHud()
             --self:playCollectResEffect()
-            net:send(NetProtoIsland.send.collectRes(bio2number(self.serverData.idx)))
+            CLLNet.send(NetProtoIsland.send.collectRes(bio2number(self.serverData.idx)))
         else
             CLAlert.add(LGet("MsgCollectResIsFull"), Color.yellow, 1)
         end

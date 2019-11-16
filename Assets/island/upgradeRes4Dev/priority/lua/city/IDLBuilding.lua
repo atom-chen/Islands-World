@@ -22,7 +22,7 @@ function IDLBuilding:__init(selfObj, other)
     return false
 end
 
----@param other table = {index=网格位置 ,serverData=服务器数据（不是必须）}
+---@param other table  {index=网格位置 ,serverData=服务器数据（不是必须）}
 function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
     self.isDead = false
     self.isBuilding = true
@@ -472,7 +472,6 @@ function IDLBuilding:iamDie()
     CLEffect.play("BombBuilding", self.transform.position)
     SetActive(self.gameObject, false)
     self.csSelf:clean()
-    IDLBattle.someOneDead(self)
 end
 
 function IDLBuilding:clean()

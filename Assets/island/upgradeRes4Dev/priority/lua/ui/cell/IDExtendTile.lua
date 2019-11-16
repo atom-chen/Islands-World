@@ -83,7 +83,7 @@ do
         showHotWheel()
         local grid = IDMainCity.grid.grid
         local index = grid:GetCellIndex(d.x, d.y)
-        net:send(NetProtoIsland.send.newTile(index))
+        CLLNet.send(NetProtoIsland.send.newTile(index))
     end
 
     function _cell.getAddtile()

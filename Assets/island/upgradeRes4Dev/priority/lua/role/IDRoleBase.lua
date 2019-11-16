@@ -58,6 +58,8 @@ function IDRoleBase:__init(selfObj, other)
         self.seeker = self.csSelf:GetComponent("CLSeekerByRay")
         if self.seeker == nil then
             self.seeker = self.csSelf:GetComponent("CLSeeker")
+        else
+            self.isSeekbyRay = true
         end
 
         ---@type Coolape.CLEjector 发射器
@@ -100,7 +102,7 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
     -- 高度
     self.flyHeigh = bio2number(self.attr.FlyHeigh) / 10
     -- 寻路相关设置
-    if self.attr.IsFlying then
+    if self.isSeekbyRay then
         if self.seeker then
             self.seeker.rayHeight = self.flyHeigh
             self.seeker.endReachedDistance = 0.2 -- self.MinAttackRange
@@ -260,7 +262,6 @@ function IDRoleBase:iamDie()
     else
         SoundEx.playSound(self.attr.DeadSound, 1, 1)
         SetActive(self.gameObject, false)
-        IDLBattle.someOneDead(self)
     end
 end
 
@@ -278,7 +279,6 @@ function IDRoleBase:playDeadSund(i)
     elseif i == 3 then
         SoundEx.playSound("heavy_die_02", 1, 1)
         SetActive(self.gameObject, false)
-        IDLBattle.someOneDead(self)
     end
 end
 
@@ -338,19 +338,30 @@ function IDRoleBase:onSearchPath(pathList, canReach)
             return
         end
         -- 最新计算能否到达
-        local pos2 = self.target.transform.position
-        pos2.y = 0
-        local dis = Vector3.Distance(pathList[pathList.Count - 1], pos2)
-        if dis <= self.MaxAttackRange then
-            -- 说明是可以到达的
-            self.seeker:startMove()
+        if pathList == nil or pathList.Count <= 0 then
+            self:onCannotReach4AttackTarget()
         else
-            --//TODO: 可以登陆士兵，而且虽然不能到达，但是其它远一点的目标可能可以到达，这是一个难点感觉是需要多次寻路才能知道
-            printe("可以登陆士兵")
+            local pos2 = self.target.transform.position
+            pos2.y = 0
+            local dis = Vector3.Distance(pathList[pathList.Count - 1], pos2)
+            if self.target.isBuilding then
+                dis = dis - self.target.size / 2
+            end
+            if dis <= self.MaxAttackRange then
+                -- 说明是可以到达的
+                self.seeker:startMove()
+            else
+                self:onCannotReach4AttackTarget()
+            end
         end
     else
         self.seeker:startMove()
     end
+end
+
+---@public 不可攻击目标
+function IDRoleBase:onCannotReach4AttackTarget()
+    printw("//TODO:不可攻击目标")
 end
 
 ---@public 战斗时，要定时刷新寻敌器的位置
@@ -390,6 +401,9 @@ function IDRoleBase:checkArrived()
             index2 = self.target.gridIndex
         end
         local dis = IDLBattle.searcher.getDistance(index1, index2)
+        if self.target.isBuilding then
+            dis = dis - self.target.size / 2
+        end
         if dis <= self.MaxAttackRange then
             return true
         end
@@ -418,24 +432,37 @@ function IDRoleBase:doAttack()
         local pos2 = self.target.transform.position
         pos2.y = 0
         local dis = Vector3.Distance(pos1, pos2)
+        if self.target.isBuilding then
+            dis = dis - self.target.size / 2
+        end
         if dis <= self.MaxAttackRange and dis >= self.MinAttackRange then
             -- 可以直接攻击到
             self:startFire(self.target)
         else
-            -- 寻路过去
-            if self.attr.IsFlying then
-                self.seeker:seek(self.target.transform.position)
-            else
-                self.seeker:seekAsyn(self.target.transform.position)
-            end
+            self:searchPath(self.target.transform.position)
         end
     else
         if self.isOffense then
             --//TODO:已经找不到目标了，可以自动消失了
+            self:onDead()
         else
             -- 防守方如果找不到敌人，那就等着，可能还会有新的加入
             InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doAttack), bio2number(self.attr.AttackSpeedMS) / 1000)
         end
+    end
+end
+
+---@public 开始寻路
+function IDRoleBase:searchPath(toPos)
+    -- 寻路过去
+    if self.isSeekbyRay then
+        local endReachedDistance = self.MaxAttackRange
+        if self.target.isBuilding then
+            endReachedDistance = endReachedDistance + self.target.size / 2
+        end
+        self.seeker:seek(toPos, endReachedDistance)
+    else
+        self.seeker:seekAsyn(toPos)
     end
 end
 

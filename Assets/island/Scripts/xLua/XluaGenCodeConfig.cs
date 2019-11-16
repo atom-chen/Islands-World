@@ -62,6 +62,7 @@ public static class XluaGenCodeConfig
         typeof(BoxCollider),
         typeof(QualitySettings),
         typeof(AudioSource),
+        typeof(Physics),
 
 		//NGUI
 		typeof(UICamera),
@@ -118,6 +119,8 @@ public static class XluaGenCodeConfig
         typeof(CLUtlLua),
         typeof(CLMainBase),
         typeof(Net),
+        typeof(Tcp),
+        typeof(USocket),
         typeof(Net.NetWorkType),
         typeof(CLCfgBase),
         typeof(CLPathCfg),

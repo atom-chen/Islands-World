@@ -26,13 +26,13 @@ function IDDBWorldMap.getDataByPageIdx(pageIdx)
     end
     if mapPageData[pageIdx] == nil or mapPageCacheTime[pageIdx] == nil then
         -- 没有数据，发送服务器
-        net:send(NetProtoIsland.send.getMapDataByPageIdx(pageIdx))
+        CLLNet.send(NetProtoIsland.send.getMapDataByPageIdx(pageIdx))
         return
     end
     local timeOut = mapPageCacheTime[pageIdx]
     if DateEx.nowMS - timeOut > 0 then
         --说明已经超时了
-        net:send(NetProtoIsland.send.getMapDataByPageIdx(pageIdx))
+        CLLNet.send(NetProtoIsland.send.getMapDataByPageIdx(pageIdx))
         return
     end
 

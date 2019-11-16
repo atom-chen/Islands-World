@@ -186,11 +186,11 @@ do
         if goName == "ButtonUpgrade" then
             -- 升级
             showHotWheel()
-            net:send(NetProtoIsland.send.upLevBuilding(bio2number(serverData.idx)))
+            CLLNet.send(NetProtoIsland.send.upLevBuilding(bio2number(serverData.idx)))
         elseif goName == "ButtonUpgradeImm" then
             -- 立即升级
             showHotWheel()
-            net:send(NetProtoIsland.send.upLevBuildingImm(bio2number(serverData.idx)))
+            CLLNet.send(NetProtoIsland.send.upLevBuildingImm(bio2number(serverData.idx)))
         end
     end
 

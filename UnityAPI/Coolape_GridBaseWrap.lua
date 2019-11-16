@@ -111,6 +111,16 @@ function m:LeftDownIndex(index) end
 ---@return number
 ---@param optional Int32 index
 function m:RightDownIndex(index) end
+---public List`1 getCircleCells(Vector3 centerPos, Int32 r)
+---@return List`1
+---@param optional Vector3 centerPos
+---@param optional Int32 r
+function m:getCircleCells(centerPos, r) end
+---public List`1 getAroundCells(Int32 center, Int32 size)
+---@return List`1
+---@param optional Int32 center
+---@param optional Int32 size
+function m:getAroundCells(center, size) end
 ---public List`1 getCells(Int32 center, Int32 size)
 ---@return List`1
 ---@param optional Int32 center

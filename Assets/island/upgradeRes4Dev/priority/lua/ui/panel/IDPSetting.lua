@@ -2,14 +2,14 @@
 do
     local IDPSetting = {}
 
-    local csSelf = nil;
-    local transform = nil;
+    local csSelf = nil
+    local transform = nil
     local uiobjs = {}
 
     -- 初始化，只会调用一次
     function IDPSetting.init(csObj)
-        csSelf = csObj;
-        transform = csObj.transform;
+        csSelf = csObj
+        transform = csObj.transform
         --[[
         上的组件：getChild(transform, "offset", "Progress BarHong"):GetComponent("UISlider");
         --]]
@@ -29,7 +29,7 @@ do
 
     -- 当加载好通用框的回调
     function IDPSetting.onShowFrame(cs)
-        csSelf.frameObj:init({ title = LGet("Setting"), panel = csSelf, hideClose = false, hideTitle = false })
+        csSelf.frameObj:init({title = LGet("Setting"), panel = csSelf, hideClose = false, hideTitle = false})
     end
 
     -- 刷新
@@ -41,7 +41,7 @@ do
     end
 
     -- 网络请求的回调；cmd：指命，succ：成功失败，msg：消息；paras：服务器下行数据
-    function IDPSetting.procNetwork (cmd, succ, msg, paras)
+    function IDPSetting.procNetwork(cmd, succ, msg, paras)
         --[[
         if(succ == NetSuccess) then
           if(cmd == "xxx") then
@@ -51,8 +51,8 @@ do
     end
 
     -- 处理ui上的事件，例如点击等
-    function IDPSetting.uiEventDelegate( go )
-        local goName = go.name;
+    function IDPSetting.uiEventDelegate(go)
+        local goName = go.name
         if goName ~= "hidden" then
             uiobjs.clickHiddenTimes = 0
         end
@@ -77,14 +77,18 @@ do
                 uiobjs.clickHiddenTimes = 0
                 getPanelAsy("PanelDebugMgr", onLoadedPanelTT)
             end
+        elseif goName == "ButtonQuit" then
+            if CLLNet then
+                CLLNet.stop()
+            end
         end
     end
 
     -- 当按了返回键时，关闭自己（返值为true时关闭）
-    function IDPSetting.hideSelfOnKeyBack( )
-        return true;
+    function IDPSetting.hideSelfOnKeyBack()
+        return true
     end
 
     --------------------------------------------
-    return IDPSetting;
+    return IDPSetting
 end

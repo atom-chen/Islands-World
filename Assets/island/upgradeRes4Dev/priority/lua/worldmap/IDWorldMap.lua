@@ -515,12 +515,12 @@ IDWorldMap.popupEvent = {
     attack = function(cellIndex)
         IDUtl.hidePopupMenus()
         showHotWheel()
-        net:send(NetProtoIsland.send.attack(cellIndex, IDWorldMap.doAttack, cellIndex))
+        CLLNet.send(NetProtoIsland.send.attack(cellIndex, IDWorldMap.doAttack, cellIndex))
     end,
     ---@public 搬迁
     moveCity = function(cellIndex)
         IDUtl.hidePopupMenus()
-        net:send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.doMoveCity, cellIndex))
+        CLLNet.send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.doMoveCity, cellIndex))
     end
 }
 

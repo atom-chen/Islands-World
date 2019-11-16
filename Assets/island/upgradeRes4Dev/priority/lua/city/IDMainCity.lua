@@ -890,7 +890,7 @@ end
 function IDMainCity.removeTile(tile)
     local idx = bio2number(tile.mData.idx)
     showHotWheel()
-    net:send(NetProtoIsland.send.rmTile(idx))
+    CLLNet.send(NetProtoIsland.send.rmTile(idx))
 end
 
 function IDMainCity.showBuildingDetail(data)
@@ -904,7 +904,7 @@ end
 function IDMainCity.removeBuilding(data)
     local idx = bio2number(data.serverData.idx)
     showHotWheel()
-    net:send(NetProtoIsland.send.rmBuilding(idx))
+    CLLNet.send(NetProtoIsland.send.rmBuilding(idx))
 end
 
 -- 加速
@@ -922,7 +922,7 @@ function IDMainCity.speedUpBuild(data)
         string.format(LGet("MsgUseDiamSpeedUp"), diam),
         function()
             showHotWheel()
-            net:send(NetProtoIsland.send.upLevBuildingImm(bio2number(data.serverData.idx)))
+            CLLNet.send(NetProtoIsland.send.upLevBuildingImm(bio2number(data.serverData.idx)))
         end,
         nil
     )
@@ -936,7 +936,7 @@ end
 ---@param building IDLBuilding
 function IDMainCity.doCreateBuilding(building)
     showHotWheel()
-    net:send(NetProtoIsland.send.newBuilding(building.id, building.gridIndex))
+    CLLNet.send(NetProtoIsland.send.newBuilding(building.id, building.gridIndex))
 end
 
 function IDMainCity.onfinsihCreateBuilding(d)
@@ -997,7 +997,7 @@ function IDMainCity.onReleaseBuilding(building, hadMoved)
             IDMainCity.astar4Ocean:scanRange(building.transform.position, 6)
             -- 修改数据
             d.pos = number2bio(gidx)
-            net:send(NetProtoIsland.send.moveBuilding(bio2number(d.idx), gidx))
+            CLLNet.send(NetProtoIsland.send.moveBuilding(bio2number(d.idx), gidx))
         end
     end
 end
@@ -1029,7 +1029,7 @@ function IDMainCity.onReleaseTile(tile, hadMoved)
             )
 
             -- 通知服务器
-            net:send(
+            CLLNet.send(
                 NetProtoIsland.send.moveTile(
                     bio2number(d.idx),
                     gidx,
