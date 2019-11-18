@@ -423,13 +423,8 @@ function IDLBuilding:employWorker()
             self,
             function(worker)
                 self.worker = worker
-                --self.worker:init(0, 0, 0, true, {})
-                --self.worker.luaTable.gotoWork(self)
             end
         )
-    else
-        --self.worker:init(0, 0, 0, true, {})
-        --self.worker.luaTable.gotoWork(self)
     end
 end
 
@@ -459,6 +454,25 @@ function IDLBuilding:SetActive(active)
         end
         self:hideShadow()
     end
+end
+
+---@public 返回自己可被攻击的点坐标
+---@param attacker IDRoleBase
+function IDLBuilding:getAttackPoint(attacker)
+    local r = self.size / 2
+    ---@type UnityEngine.Vector3
+    local dir = attacker.transform.position - self.transform.position
+    -- local topos = self.transform.position + dir.normalized * r
+
+    -- local offsetx = attacker.csSelf:fakeRandom(-10, 10) / 10
+    -- local offsetz = attacker.csSelf:fakeRandom2(-10, 10) / 10
+    -- topos.x = topos.x + offsetx
+    -- topos.z = topos.z + offsetz
+
+    local angle = MyUtl.calculateAngle(attacker.transform.position, self.transform.position)
+    angle = angle + attacker.csSelf:fakeRandom(-45, 45)
+    local topos = AngleEx.getCirclePointV3(self.transform.position, r, angle)
+    return topos
 end
 
 ---@public 被击中

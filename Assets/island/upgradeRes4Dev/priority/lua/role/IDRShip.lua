@@ -140,14 +140,56 @@ end
 function IDRShip:landingSoldiers()
     self.isLanded = true
     self:chgState(RoleState.idel)
+    self:doLandingSoldier({i = 1, max = bio2Int(self.attr.SolderNum)})
+end
+
+function IDRShip:doLandingSoldier(param)
+    local i, max = param.i, param.max
     ---@type WrapBattleUnitData
     local data = {}
     data.id = 3
     data.lev = number2bio(1) -- //TODO:根据科技来得到等级
-    data.num = self.attr.SolderNum
+    data.num = 1
     data.type = IDConst.UnitType.ship
-    IDLBattle.DeployRole(data, self.transform.position, true, bio2Int(self.attr.SolderNum))
-    self:onFinishLandSoldiers()
+
+    CLRolePool.borrowObjAsyn(
+        IDUtl.getRolePrefabName(3),
+        function(name, ship, orgs)
+            local serverData = orgs.serverData
+            local pos = orgs.pos
+            local isOffense = orgs.isOffense
+            ship.transform.parent = IDLBattle.transform
+            ship.transform.localScale = Vector3.one
+            ship.transform.localEulerAngles = self.transform.localEulerAngles
+            if ship.luaTable == nil then
+                ---@type IDRSoldier
+                ship.luaTable = IDUtl.newRoleLua(serverData.id)
+                ship:initGetLuaFunc()
+            end
+            SetActive(ship.gameObject, true)
+            ship:init(serverData.id, 0, 1, true, {serverData = serverData})
+            ship.transform.position = pos
+
+            local toPos = self.transform.forward * 1 + self.transform.position
+            local hight = 0
+            local offsetx = ship:fakeRandom(-10, 10) / 20
+            local offsetz = ship:fakeRandom2(-10, 10) / 20
+            toPos = Vector3(offsetx + toPos.x, hight, offsetz + toPos.z)
+            ship.luaTable:jumpTo(
+                toPos,
+                function()
+                    IDLBattle.someOneJoin(ship.luaTable)
+                end
+            )
+        end,
+        {serverData = data, pos = self.transform.position, isOffense = self.isOffense}
+    )
+    if i == max then
+        self:onFinishLandSoldiers()
+    else
+        param.i = param.i + 1
+        InvokeEx.invokeByFixedUpdate(self:wrapFunc(self.doLandingSoldier), param, 0.5)
+    end
 end
 
 ---@public 当完成释放登陆士兵的回调
@@ -178,6 +220,7 @@ function IDRShip:getBuildingWithBeach()
 end
 
 function IDRShip:clean()
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doLandingSoldier))
     self.csSelf:cancelInvoke4Lua()
     self.dockyard = nil
     self:getBase(IDRShip).clean(self)

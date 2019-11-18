@@ -1367,7 +1367,11 @@ end
 ---@public 取得数据
 function IDMainCity.getPosOffset(index)
     if IDLGridTileSide.isOnTheBeach(index) then
-        return Vector3.zero
+        if IDLGridTileSide.isFourSide(index) then
+            return IDMainCity.offset4Tile
+        else
+            return Vector3.zero
+        end
     end
     if gridState4Tile[index] then
         return IDMainCity.offset4Tile

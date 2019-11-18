@@ -281,6 +281,7 @@ end
 function IDUtl.getRolePrefabName(id)
     local attr = DBCfg.getRoleByID(id)
     if attr then
+        --//TODO:当是登陆士兵的时候，还要考虑使用 AniInstancing
         return attr.PrefabName
     end
 end

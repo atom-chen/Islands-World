@@ -239,17 +239,17 @@ function IDLBattle.onLoadShip(name, ship, orgs)
     local offsetz = ship:fakeRandom2(-10, 10) / 10
     pos = Vector3(offsetx + pos.x, hight, offsetz + pos.z)
     ship.transform.position = pos
-    if isOffense then
-        IDLBattle.offShips[ship.instanceID] = ship.luaTable
-    else
-        IDLBattle.defShips[ship.instanceID] = ship.luaTable
-    end
     IDLBattle.someOneJoin(ship.luaTable)
 end
 
 ---public 有单位加入战场
 ---@param unit IDRoleBase
 function IDLBattle.someOneJoin(unit)
+    if unit.isOffense then
+        IDLBattle.offShips[unit.instanceID] = unit
+    else
+        IDLBattle.defShips[unit.instanceID] = unit
+    end
     IDLBattleSearcher.refreshUnit(unit)
     unit:doAttack()
 end

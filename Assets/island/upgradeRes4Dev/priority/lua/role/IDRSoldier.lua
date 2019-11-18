@@ -2,17 +2,21 @@ require("role.IDRoleBase")
 ---@class IDRSoldier:IDRoleBase 士兵
 IDRSoldier = class("IDRSoldier", IDRoleBase)
 
+---@param selfObj MyUnit
+function IDRSoldier:__init(selfObj, other)
+    if self:getBase(IDRSoldier).__init(self, selfObj, other) then
+        ---@type Coolape.MyTween
+        self.tween = self.gameObject:GetComponent("MyTween")
+    end
+    return false
+end
 function IDRSoldier:init(selfObj, id, star, lev, _isOffense, other)
     self:getBase(IDRSoldier).init(self, selfObj, id, star, lev, _isOffense, other)
     self.isSeekUseRay = false
     self.seeker.endReachedDistance = self.MinAttackRange
     self.seeker.mAStarPathSearch = IDMainCity.astar4Tile
     self.seeker.mAStarPathSearch:addGridStateChgCallback(self:wrapFunction4CS(self.onAstarChgCallback))
-end
-
-function IDRSoldier:onSearchPath(pathList, canReach)
-    self:getBase(IDRSoldier).onSearchPath(self, pathList, canReach)
-    self:playAction("run")
+    self.grid = IDMainCity.grid.grid
 end
 
 function IDRSoldier:searchPath(toPos)
@@ -32,9 +36,43 @@ function IDRSoldier:onCannotReach4AttackTarget()
     self.seeker:seek(self.target.transform.position, endReachedDistance)
 end
 
+function IDRSoldier:onSearchPath(pathList, canReach)
+    self:getBase(IDRSoldier).onSearchPath(self, pathList, canReach)
+    self.currIndex = self.grid:GetCellIndex(self.transform.position)
+    self.oldIndex = self.currIndex
+    self:runOrSwim()
+end
+
 function IDRSoldier:onMoving()
-    self:playAction("run")
     self:getBase(IDRSoldier).onMoving(self)
+
+    self.currIndex = self.grid:GetCellIndex(self.transform.position)
+    local tmpPos = self.transform.position
+    tmpPos.y = IDMainCity.getPosOffset(self.currIndex).y
+    self.transform.position = tmpPos
+    self:repositionShadow()
+
+    if self.currIndex ~= self.oldIndex then
+        self:runOrSwim()
+        self.oldIndex = self.currIndex
+    end
+end
+
+---@public 刷新影子的位置
+function IDRSoldier:repositionShadow()
+    if self.shadow then
+        self.tmpPos = self.transform.position
+        self.shadow.position = self.tmpPos
+    end
+end
+
+---@public 走还是游泳
+function IDRSoldier:runOrSwim()
+    if IDMainCity.isOnTheLandOrBeach(self.currIndex) then
+        self:playAction("run")
+    else
+        --//TODO:在水里，可以游泳，但是只是在水里一会，超过时间就会死掉
+    end
 end
 
 function IDRSoldier:onArrived()
@@ -59,6 +97,11 @@ function IDRSoldier:onFinsihFire(act)
         local damage = self:getDamage(self.target)
         self.target:onHurt(damage, self)
     end
+end
+
+---@public 跳过去
+function IDRSoldier:jumpTo(pos, callback)
+    self.tween:flyout(pos, 0.8, 1, nil, callback, true)
 end
 
 return IDRSoldier

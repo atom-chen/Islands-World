@@ -153,6 +153,11 @@ function IDLUnitBase:doSearchTarget()
     printe("must override [doSearchTarget] function!")
 end
 
+---@public 返回自己可攻击的点坐标
+function IDLUnitBase:getAttackPoint(attacker)
+    return self.transform.position
+end
+
 ---@public 设置攻击目标
 ---@param target IDRoleBase
 function IDLUnitBase:setTarget(target)

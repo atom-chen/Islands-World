@@ -4,6 +4,11 @@ using UnityEngine;
 
 public static class MyUtl
 {
+    public static float calculateAngle(Vector3 fromPos, Vector3 toPos)
+    {
+        return calculateAngle(new Vector2(fromPos.x, fromPos.z), new Vector2(toPos.x, toPos.z));
+    }
+
     public static float calculateAngle(Vector2 fromPos, Vector2 toPos)
     {
         float Angle = 0.0f;

@@ -123,7 +123,8 @@ namespace Coolape
         {
             targetPos = toPos;
             canMove = false;
-            pathList = null;
+            stopMove();
+            pathList.Clear();
             mAStarPathSearch.searchPathAsyn(mTransform.position, toPos, (Callback)onSeekAsynCallback);
         }
 
@@ -156,7 +157,8 @@ namespace Coolape
         {
             targetPos = toPos;
             canMove = false;
-            pathList = null;
+            stopMove();
+            pathList.Clear();
             bool canReach = mAStarPathSearch.searchPath(mTransform.position, toPos, ref pathList);
 
             //回调的第一个参数是路径，第二个参数是能否到达目标点

@@ -374,11 +374,7 @@ end
 
 ---@public 当移动过程中的回调
 function IDRoleBase:onMoving()
-    if self.shadow then
-        self.tmpPos = self.transform.position
-        self.tmpPos.y = 0
-        self.shadow.position = self.tmpPos
-    end
+    self:repositionShadow()
     local pos = self.transform.position
     pos.y = self.flyHeigh
     self.transform.position = pos
@@ -387,6 +383,15 @@ function IDRoleBase:onMoving()
             self.seeker:stopMove()
             self:onArrived()
         end
+    end
+end
+
+---@public 刷新影子的位置
+function IDRoleBase:repositionShadow()
+    if self.shadow then
+        self.tmpPos = self.transform.position
+        self.tmpPos.y = 0
+        self.shadow.position = self.tmpPos
     end
 end
 
@@ -439,7 +444,7 @@ function IDRoleBase:doAttack()
             -- 可以直接攻击到
             self:startFire(self.target)
         else
-            self:searchPath(self.target.transform.position)
+            self:searchPath(self.target:getAttackPoint(self))
         end
     else
         if self.isOffense then
@@ -464,26 +469,6 @@ function IDRoleBase:searchPath(toPos)
     else
         self.seeker:seekAsyn(toPos)
     end
-end
-
----@public 取得寻路的目标点
----@param target IDLUnitBase
-function IDRoleBase:getTargetPos(target)
-    target = target or self.target
-    if target == nil then
-        printe("如果target是nil，肯定有bug")
-        return Vector3.zero
-    end
-
-    local endDistance = self.MaxAttackRange
-    local pos1 = target.transform.position
-    pos1.y = 0
-    local pos2 = self.transform.position
-    pos2.y = 0
-    ---@type UnityEngine.Vector3
-    local dir = pos2 - pos1
-    local toPos = pos1 + dir.normalized * endDistance
-    return toPos
 end
 
 function IDRoleBase:doSearchTarget()

@@ -66,15 +66,21 @@ end
 
 function IDRWorker:onMoving()
     self.currIndex = self.grid:GetCellIndex(self.transform.position)
-    local v = self.transform.position
-    v.y = IDMainCity.getPosOffset(self.currIndex).y
-    self.transform.position = v
-    if self.shadow then
-        self.shadow.transform.position = v
-    end
+    local tmpPos = self.transform.position
+    tmpPos.y = IDMainCity.getPosOffset(self.currIndex).y
+    self.transform.position = tmpPos
+    self:repositionShadow()
     if self.currIndex ~= self.oldIndex then
         self:showShip(self.currIndex)
         self.oldIndex = self.currIndex
+    end
+end
+
+---@public 刷新影子的位置
+function IDRWorker:repositionShadow()
+    if self.shadow then
+        self.tmpPos = self.transform.position
+        self.shadow.position = self.tmpPos
     end
 end
 
