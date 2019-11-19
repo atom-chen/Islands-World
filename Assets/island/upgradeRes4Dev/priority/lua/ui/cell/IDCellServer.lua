@@ -25,7 +25,7 @@ do
         mData = data;
         uiobjs.Label.text = mData.name
         local stateDesc = ""
-        local status = bio2number(mData.status)
+        local status = mData.status
         if status == 2 then
             stateDesc = joinStr("[00ffff]", LGet("StateCrowded"),"[-]")
         elseif status == 3 then

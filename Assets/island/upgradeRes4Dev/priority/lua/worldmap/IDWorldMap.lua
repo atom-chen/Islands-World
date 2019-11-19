@@ -461,6 +461,7 @@ function IDWorldMap.onClickOcean()
         if MyCfg.self.fogOfWar:GetVisibility(cellPos) == FogOfWarSystem.FogVisibility.Visible then
             -- 当可见时，才弹出菜单
             local label = joinStr("Pos:", index)
+            printe(joinStr("Pos:", index))
             IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
         end
     end

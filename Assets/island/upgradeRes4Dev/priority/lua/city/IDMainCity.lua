@@ -272,7 +272,7 @@ function IDMainCity.onMoveCity()
     transform.position = IDWorldMap.grid.grid:GetCellCenter(gridIndex)
     local newWorldPos = transform.position + IDMainCity.grid.transform.localPosition
     IDMainCity.grid:clean()
-    IDMainCity.grid:init(newWorldPos)
+    IDMainCity.grid:init(newWorldPos, false)
 
     newWorldPos = transform.position + IDMainCity.astar4Ocean.transform.localPosition
     IDMainCity.astar4Ocean:init(newWorldPos)
@@ -394,7 +394,7 @@ function IDMainCity.scaleHeadquarters()
     local minVal = scaleCityHeighMin
 
     local diffVal = maxVal - minVal
-    local baseBuildingDiff = 13.33 - 1
+    local baseBuildingDiff = 10 - 1 --13.33 - 1
     local cityRootDiff = 0.15 - 1
 
     local fromPos = grid:GetCellCenter(IDMainCity.Headquarters.gridIndex) + IDMainCity.offset4Building

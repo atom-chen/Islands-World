@@ -1,5 +1,5 @@
 do
-    ---@class NetProtoUsermgr
+    ---@class NetProtoUsermgr 网络协议
     NetProtoUsermgr = {}
     local table = table
     require("bio.BioUtl")
@@ -68,6 +68,8 @@ do
   --==================================
   --==================================
     ---@class NetProtoUsermgr.ST_retInfor 返回信息
+    ---@field public msg string 返回消息
+    ---@field public code number 返回值
     NetProtoUsermgr.ST_retInfor = {
         toMap = function(m)
             local r = {}
@@ -79,12 +81,20 @@ do
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.msg = m[10] --  string
-            r.code = m[11] --  int
+            r.msg = m[10] or m["10"] --  string
+            r.code = m[11] or m["11"] --  int
             return r;
         end,
     }
     ---@class NetProtoUsermgr.ST_server 服务器
+    ---@field public idx number id
+    ---@field public port number 端口
+    ---@field public name string 名称
+    ---@field public host string ip地址
+    ---@field public iosVer string 客户端ios版本
+    ---@field public androidVer string 客户端android版本
+    ---@field public isnew useData 新服
+    ---@field public status number 状态 1:正常; 2:爆满; 3:维护
     NetProtoUsermgr.ST_server = {
         toMap = function(m)
             local r = {}
@@ -102,18 +112,19 @@ do
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.idx = m[12] --  int
-            r.port = m[15] --  int
-            r.name = m[14] --  string
-            r.host = m[16] --  string
-            r.iosVer = m[17] --  string
-            r.androidVer = m[18] --  string
-            r.isnew = m[19] --  boolean
-            r.status = m[13] --  int
+            r.idx = m[12] or m["12"] --  int
+            r.port = m[15] or m["15"] --  int
+            r.name = m[14] or m["14"] --  string
+            r.host = m[16] or m["16"] --  string
+            r.iosVer = m[17] or m["17"] --  string
+            r.androidVer = m[18] or m["18"] --  string
+            r.isnew = m[19] or m["19"] --  boolean
+            r.status = m[13] or m["13"] --  int
             return r;
         end,
     }
     ---@class NetProtoUsermgr.ST_userInfor 用户信息
+    ---@field public idx number 唯一标识
     NetProtoUsermgr.ST_userInfor = {
         toMap = function(m)
             local r = {}
@@ -124,7 +135,7 @@ do
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.idx = m[12] --  int
+            r.idx = m[12] or m["12"] --  int
             return r;
         end,
     }
@@ -203,6 +214,11 @@ do
     }
     --==============================
     NetProtoUsermgr.recive = {
+    ---@class NetProtoUsermgr.RC_registAccount
+    ---@field public retInfor NetProtoUsermgr.ST_retInfor 返回信息
+    ---@field public userInfor NetProtoUsermgr.ST_userInfor 用户信息
+    ---@field public serverid  服务器id int
+    ---@field public systime  系统时间 long
     registAccount = function(map)
         local ret = {}
         ret.cmd = "registAccount"
@@ -213,6 +229,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoUsermgr.RC_getServers
+    ---@field public retInfor NetProtoUsermgr.ST_retInfor 返回信息
+    ---@field public servers NetProtoUsermgr.ST_server Array List 服务器列表
     getServers = function(map)
         local ret = {}
         ret.cmd = "getServers"
@@ -221,6 +240,9 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoUsermgr.RC_getServerInfor
+    ---@field public retInfor NetProtoUsermgr.ST_retInfor 返回信息
+    ---@field public server NetProtoUsermgr.ST_server 服务器信息
     getServerInfor = function(map)
         local ret = {}
         ret.cmd = "getServerInfor"
@@ -229,6 +251,8 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoUsermgr.RC_setEnterServer
+    ---@field public retInfor NetProtoUsermgr.ST_retInfor 返回信息
     setEnterServer = function(map)
         local ret = {}
         ret.cmd = "setEnterServer"
@@ -236,6 +260,11 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoUsermgr.RC_loginAccount
+    ---@field public retInfor NetProtoUsermgr.ST_retInfor 返回信息
+    ---@field public userInfor NetProtoUsermgr.ST_userInfor 用户信息
+    ---@field public serverid  服务器id int
+    ---@field public systime  系统时间 long
     loginAccount = function(map)
         local ret = {}
         ret.cmd = "loginAccount"
@@ -246,6 +275,11 @@ do
         doCallback(map, ret)
         return ret
     end,
+    ---@class NetProtoUsermgr.RC_loginAccountChannel
+    ---@field public retInfor NetProtoUsermgr.ST_retInfor 返回信息
+    ---@field public userInfor NetProtoUsermgr.ST_userInfor 用户信息
+    ---@field public serverid  服务器id int
+    ---@field public systime  系统时间 long
     loginAccountChannel = function(map)
         local ret = {}
         ret.cmd = "loginAccountChannel"

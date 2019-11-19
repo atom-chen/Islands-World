@@ -53,6 +53,8 @@ function CLLNet.onResponsedUsermgr(content, orgs)
             if callback then
                 callback(data)
             else
+                -- 因为账号服务器返回的数据中int没有转成bio，为了兼容，在这里转
+                data.retInfor.code = number2bio(data.retInfor.code)
                 CLLNet.dispatch(data)
             end
         end

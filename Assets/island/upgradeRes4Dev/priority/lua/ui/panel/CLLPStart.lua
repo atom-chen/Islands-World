@@ -147,7 +147,7 @@ do
     -- 连接服务器相关处理
     function CLLPStart.connectServer()
         showHotWheel()
-        Net.self:connect(selectedServer.host, bio2number(selectedServer.port))
+        Net.self:connect(selectedServer.host, selectedServer.port)
     end
 
     -- 处理网络接口
@@ -163,7 +163,7 @@ do
             elseif cmd == NetProtoIsland.cmds.sendNetCfg then
                 -- 服务器通知的网络相关配置，可以发送请求了
                 showHotWheel()
-                local uid = bio2Int(user.idx)
+                local uid = user.idx
                 if CLCfgBase.self.isEditMode then
                     if not isNilOrEmpty(MyCfg.self.default_UID) then
                         uid = MyCfg.self.default_UID

@@ -73,7 +73,7 @@ do
     function CLLPLogin.setServer(data)
         server = data
         uiobjs.LabelServerName.text = server.name or LGet("None")
-        local status = bio2number(server.status)
+        local status = server.status
         local stateDesc
         if status == 2 then
             stateDesc = joinStr("[00ffff]", LGet("StateCrowded"), "[-]")
@@ -139,10 +139,10 @@ do
             Prefs.setLastLoginBtn(btnName)
         end
         user = d.userInfor
-        NetProtoUsermgr.__sessionID = bio2Int(d.userInfor.idx)
+        NetProtoUsermgr.__sessionID = d.userInfor.idx
 
         -- 取得服务器
-        oldServerIdx = bio2number(d.serverid)
+        oldServerIdx = d.serverid
         if oldServerIdx > 0 then
             showHotWheel()
             CLLNet.httpPostUsermgr(NetProtoUsermgr.send.getServerInfor(oldServerIdx))
@@ -176,14 +176,14 @@ do
             getPanelAsy("PanelServers", onLoadedPanelTT, { CLLPLogin.setServer, server })
         elseif goName == "ButtonEntry" then
             SetActive(uiobjs.ButtonEntry, false)
-            CLLNet.httpPostUsermgr(NetProtoUsermgr.send.getServerInfor(bio2number(server.idx)),
+            CLLNet.httpPostUsermgr(NetProtoUsermgr.send.getServerInfor(server.idx),
                     function(content)
                         if content == nil then
                             SetActive(uiobjs.ButtonEntry, true)
                             return
                         end
                         local server = content.server
-                        local state = bio2number(server.status)
+                        local state = server.status
                         if state == 3 then
                             -- 服务器停服了
                             CLUIUtl.showConfirm(joinStr("[B75605]", Localization.Get("MsgServerIsMaintain"), "[-]"), nil)
@@ -191,9 +191,9 @@ do
                             return
                         end
                         hideTopPanel(csSelf)
-                        if oldServerIdx ~= bio2number(server.idx) then
+                        if oldServerIdx ~= server.idx then
                             -- 保存所选的服务器
-                            CLLNet.httpPostUsermgr(NetProtoUsermgr.send.setEnterServer(bio2number(server.idx), bio2number(user.idx), CLCfgBase.self.appUniqueID))
+                            CLLNet.httpPostUsermgr(NetProtoUsermgr.send.setEnterServer(server.idx, user.idx, CLCfgBase.self.appUniqueID))
                         end
                         Utl.doCallback(finishCallback, user, server)
                     end)
