@@ -24,7 +24,7 @@ function IDDBCity:setBaseData(d)
     self._data = d
     self.idx = d.idx -- 唯一标识 int int
     self.name = d.name -- 名称 string
-    self.stat = d.status -- 状态 1:正常; int int
+    self.status = d.status -- 状态 1:正常; int int
     self.lev = d.lev -- 等级 int int
     self.pos = d.pos -- 城所在世界grid的index int int
     self.pidx = d.pidx -- 玩家idx int int

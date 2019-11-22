@@ -1,5 +1,5 @@
 do
-    ---@class NetProtoIsland
+    ---@class NetProtoIsland 网络协议
     NetProtoIsland = {}
     local table = table
     require("bio.BioUtl")
@@ -203,35 +203,44 @@ do
     }
     ---@class NetProtoIsland.ST_mapCell 大地图地块数据
     ---@field public idx number 网格index
+    ---@field public pageIdx number 所在屏的index
+    ---@field public val2 number 值2
+    ---@field public lev number 等级
     ---@field public val1 number 值1
     ---@field public cidx number 主城idx
     ---@field public val3 number 值3
+    ---@field public state number 状态  1:正常; int
+    ---@field public name string 名称
     ---@field public type number 地块类型 1：玩家，2：npc
-    ---@field public val2 number 值2
-    ---@field public pageIdx number 所在屏的index
     NetProtoIsland.ST_mapCell = {
         toMap = function(m)
             local r = {}
             if m == nil then return r end
             r[16] = m.idx  -- 网格index int
+            r[13] = m.pageIdx  -- 所在屏的index int
+            r[22] = m.val2  -- 值2 int
+            r[24] = m.lev  -- 等级 int
             r[29] = m.val1  -- 值1 int
             r[18] = m.cidx  -- 主城idx int
             r[21] = m.val3  -- 值3 int
+            r[28] = m.state  -- 状态  1:正常; int int
+            r[35] = m.name  -- 名称 string
             r[30] = m.type  -- 地块类型 1：玩家，2：npc int
-            r[22] = m.val2  -- 值2 int
-            r[13] = m.pageIdx  -- 所在屏的index int
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
             r.idx = m[16] --  int
+            r.pageIdx = m[13] --  int
+            r.val2 = m[22] --  int
+            r.lev = m[24] --  int
             r.val1 = m[29] --  int
             r.cidx = m[18] --  int
             r.val3 = m[21] --  int
+            r.state = m[28] --  int
+            r.name = m[35] --  string
             r.type = m[30] --  int
-            r.val2 = m[22] --  int
-            r.pageIdx = m[13] --  int
             return r;
         end,
     }
@@ -261,8 +270,8 @@ do
     ---@field public idx number 唯一标识 int
     ---@field public tiles table 地块信息 key=idx, map
     ---@field public name string 名称
-    ---@field public status number 状态 1:正常; int
     ---@field public buildings table 建筑信息 key=idx, map
+    ---@field public status number 状态 1:正常; int
     ---@field public lev number 等级 int
     ---@field public pos number 城所在世界grid的index int
     ---@field public pidx number 玩家idx int
@@ -273,8 +282,8 @@ do
             r[16] = m.idx  -- 唯一标识 int int
             r[34] = NetProtoIsland._toMap(NetProtoIsland.ST_tile, m.tiles)  -- 地块信息 key=idx, map
             r[35] = m.name  -- 名称 string
-            r[37] = m.status  -- 状态 1:正常; int int
             r[36] = NetProtoIsland._toMap(NetProtoIsland.ST_building, m.buildings)  -- 建筑信息 key=idx, map
+            r[37] = m.status  -- 状态 1:正常; int int
             r[24] = m.lev  -- 等级 int int
             r[19] = m.pos  -- 城所在世界grid的index int int
             r[38] = m.pidx  -- 玩家idx int int
@@ -286,8 +295,8 @@ do
             r.idx = m[16] --  int
             r.tiles = NetProtoIsland._parseMap(NetProtoIsland.ST_tile, m[34])  -- 地块信息 key=idx, map
             r.name = m[35] --  string
-            r.status = m[37] --  int
             r.buildings = NetProtoIsland._parseMap(NetProtoIsland.ST_building, m[36])  -- 建筑信息 key=idx, map
+            r.status = m[37] --  int
             r.lev = m[24] --  int
             r.pos = m[19] --  int
             r.pidx = m[38] --  int

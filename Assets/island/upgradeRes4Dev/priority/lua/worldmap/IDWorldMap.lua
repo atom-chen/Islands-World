@@ -201,13 +201,13 @@ function IDWorldMap.setGameMode()
     end
 
     if smoothFollow.height > IDWorldMap.scaleCityHeighMin and smoothFollow.height < IDWorldMap.scaleCityHeighMax then
-        if IDWorldMap.mode == GameModeSub.map then
-            IDWorldMap.cleanPages()
-        end
         if IDWorldMap.mode ~= GameModeSub.mapBtwncity and MyCfg.mode == GameMode.map then
             IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.mapBtwncity)
-            IDWorldMap.grid:hideRect()
+            if IDWorldMap.mode == GameModeSub.map then
+                IDWorldMap.cleanPages()
+            end
             IDWorldMap.mode = GameModeSub.mapBtwncity
+            IDWorldMap.grid:hideRect()
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
             if IDPMain then
@@ -218,8 +218,9 @@ function IDWorldMap.setGameMode()
     elseif smoothFollow.height > IDWorldMap.scaleCityHeighMax then
         if IDWorldMap.mode ~= GameModeSub.map and MyCfg.mode == GameMode.map then
             IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.map)
-            IDWorldMap.grid:showRect()
             IDWorldMap.mode = GameModeSub.map
+            IDWorldMap.refreshPagesData()
+            IDWorldMap.grid:showRect()
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
             if IDPMain then
@@ -230,8 +231,12 @@ function IDWorldMap.setGameMode()
     else
         if IDWorldMap.mode ~= GameModeSub.city then
             IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.city)
-            IDWorldMap.grid:hideRect()
+            if IDWorldMap.mode == GameModeSub.map then
+                -- 可能出现直接从map跳到city的情况
+                IDWorldMap.cleanPages()
+            end
             IDWorldMap.mode = GameModeSub.city
+            IDWorldMap.grid:hideRect()
             dragSetting.viewRadius = 65
             dragSetting.viewCenter = grid:GetCellCenter(bio2number(IDDBCity.curCity.pos))
             if IDPMain then
@@ -266,6 +271,7 @@ end
 
 function IDWorldMap.onDragMove(delta)
     IDWorldMap.oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
+
     if MyCfg.mode == GameMode.map then
         -- 取得屏幕中心点下的地块
         local lastHit =
@@ -283,6 +289,11 @@ function IDWorldMap.onDragMove(delta)
                 IDWorldMap.refreshPagesData()
             end
         end
+    end
+
+    ---@param v IDWorldMapPage
+    for k, v in pairs(pages) do
+        v:onScaleScreen(delta)
     end
 end
 
@@ -344,6 +355,9 @@ function IDWorldMap.getAroundPage()
     end
     local screenSize = ConstCreenSize * IDWorldMap.grid.cellSize
     local centerPos = grid:GetCellCenter(centerPageIdx)
+    -- center
+    local index = grid:GetCellIndex(centerPos)
+    ret[index] = index
     -- left
     local pos = centerPos + Vector3(-1, 0, 0) * screenSize
     local index = grid:GetCellIndex(pos)
@@ -381,7 +395,6 @@ end
 
 ---@public 加载9屏
 function IDWorldMap.loadPagesData()
-    IDWorldMap.loadMapPageData(centerPageIdx)
     local pageIndexs = IDWorldMap.getAroundPage()
     for i, v in pairs(pageIndexs) do
         IDWorldMap.loadMapPageData(v)
@@ -461,7 +474,6 @@ function IDWorldMap.onClickOcean()
         if MyCfg.self.fogOfWar:GetVisibility(cellPos) == FogOfWarSystem.FogVisibility.Visible then
             -- 当可见时，才弹出菜单
             local label = joinStr("Pos:", index)
-            printe(joinStr("Pos:", index))
             IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
         end
     end
@@ -491,7 +503,7 @@ end
 
 ---@public 处理当进城后的回调
 function IDWorldMap.finisEnterCity()
-    for k,func in pairs(IDWorldMap.finishEnterCityCallbacks) do
+    for k, func in pairs(IDWorldMap.finishEnterCityCallbacks) do
         if func then
             func()
         end

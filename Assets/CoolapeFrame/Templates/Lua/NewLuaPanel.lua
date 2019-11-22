@@ -2,8 +2,11 @@
 do
   local #SCRIPTNAME# = {}
 
-  local csSelf = nil;
-  local transform = nil;
+    ---@type Coolape.CLPanelLua
+    local csSelf = nil
+    ---@type UnityEngine.Transform
+    local transform = nil
+    local uiobjs = {}
 
   -- 初始化，只会调用一次
   function #SCRIPTNAME#.init(csObj)

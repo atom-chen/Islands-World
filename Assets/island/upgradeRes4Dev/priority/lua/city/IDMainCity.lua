@@ -321,6 +321,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         isShowTile = true
         IDMainCity.setOtherUnitsColiderState(nil, true)
         IDMainCity.grid:showRect()
+        IDMainCity.Headquarters:hideHud4WorldMap()
     elseif curMode == GameModeSub.mapBtwncity then
         preGameMode = oldMode
         isShowBuilding = false
@@ -328,6 +329,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
         IDMainCity.grid:hideRect()
+        IDMainCity.Headquarters:showHud4WorldMap()
     elseif curMode == GameModeSub.map then
         preGameMode = oldMode
         isShowBuilding = false
@@ -338,6 +340,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         if IDMainCity.Headquarters and GameMode.battle ~= MyCfg.mode then
             IDMainCity.Headquarters:setCollider(true)
         end
+        IDMainCity.Headquarters:showHud4WorldMap()
         IDMainCity.grid:hideRect()
     end
     for k, v in pairs(tiles) do

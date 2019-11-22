@@ -72,12 +72,13 @@ function IDWorldMapPage:loadEachCell(orgs)
     if i > #cells then
         return
     end
-    ---@type IDDBMapCell
+    ---@type NetProtoIsland.ST_mapCell
     local d = cells[i]
     local params = {i = i + 1, cells = cells}
     self:doLoadEachCell(d, self:wrapFunction4CS(self.loadEachCell), params)
 end
 
+---@param d NetProtoIsland.ST_mapCell
 function IDWorldMapPage:doLoadEachCell(d, callback, orgs)
     local idx = bio2number(d.idx)
     if idx == bio2number(IDDBCity.curCity.pos) then
@@ -112,16 +113,18 @@ function IDWorldMapPage:doLoadEachCell(d, callback, orgs)
 end
 
 function IDWorldMapPage:onLoadOneMapTile(name, obj, params)
-    if GameMode.map ~= MyCfg.mode then
+    local callback = params.callback
+    local orgs = params.orgs
+    ---@type NetProtoIsland.ST_mapCell
+    local d = params.data
+    local mapType = bio2number(d.type)
+    local index = bio2number(d.idx)
+
+    if GameMode.map ~= MyCfg.mode or IDWorldMap.mode ~= GameModeSub.map or self.mapCells[index] then
         CLThings4LuaPool.returnObj(obj)
         SetActive(obj.gameObject, false)
         return
     end
-    local callback = params.callback
-    local orgs = params.orgs
-    ---@type IDDBMapCell
-    local d = params.data
-    local mapType = bio2number(d.type)
     local cell = obj
     ---@type IDWorldTile
     local cellLua = cell.luaTable
@@ -129,19 +132,19 @@ function IDWorldMapPage:onLoadOneMapTile(name, obj, params)
         cellLua = IDUtl.newMapTileLua(mapType)
         cell.luaTable = cellLua
     end
-    local index = bio2number(d.idx)
     SetActive(obj.gameObject, true)
+    obj.transform.parent = IDWorldMap.transform
+    obj.transform.localScale = Vector3.one
+    obj.transform.localEulerAngles = Vector3.zero
+    obj.transform.position = IDWorldMap.grid.grid:GetCellCenter(index)
     cellLua:init(obj, index, mapType, d)
-    cellLua.transform.parent = IDWorldMap.transform
-    cellLua.transform.localScale = Vector3.one
-    cellLua.transform.localEulerAngles = Vector3.zero
-    cellLua.transform.position = IDWorldMap.grid.grid:GetCellCenter(index)
     self.mapCells[index] = cellLua
     Utl.doCallback(callback, orgs)
 end
 
 ---@public 当缩放屏幕时
 function IDWorldMapPage:onScaleScreen(delta, offset)
+    ---@param v IDWorldTile
     for k, v in pairs(self.mapCells) do
         v:onScaleScreen(delta, offset)
     end
@@ -150,10 +153,12 @@ end
 function IDWorldMapPage:clean()
     InvokeEx.cancelInvoke(self:wrapFunction4CS(self.loadEachCell))
     InvokeEx.cancelInvoke(self:wrapFunction4CS(self.checkDataTimeout))
-    for k, v in pairs(self.mapCells) do
-        v:clean()
-        CLThings4LuaPool.returnObj(v.csSelf)
-        SetActive(v.gameObject, false)
+    if self.mapCells then
+        for k, v in pairs(self.mapCells) do
+            v:clean()
+            CLThings4LuaPool.returnObj(v.csSelf)
+            SetActive(v.gameObject, false)
+        end
     end
     self.mapCells = {}
 end

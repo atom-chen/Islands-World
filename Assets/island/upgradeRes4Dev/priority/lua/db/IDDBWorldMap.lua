@@ -1,19 +1,18 @@
 ﻿-- 世界地图数据
-require("public.class")
+-- require("public.class")
 IDDBWorldMap = {}
 --------------------------------------------
----@class IDDBMapCell 地块
-IDDBMapCell = class("IDDBMapCell")
-function IDDBMapCell:ctor(d)
-    self._data = d
-    self.idx = d.idx -- 网格index
-    self.type = d.type --地块类型 1：玩家，2：npc
-    self.cidx = d.cidx--主城idx
-    self.pageIdx = d.pageIdx--所在屏的index
-    self.val1 = d.val1--值1
-    self.val2 = d.val2--值2
-    self.val3 = d.val3--值3
-end
+-- IDDBMapCell = class("IDDBMapCell")
+-- function IDDBMapCell:ctor(d)
+--     self._data = d
+--     self.idx = d.idx -- 网格index
+--     self.type = d.type --地块类型 1：玩家，2：npc
+--     self.cidx = d.cidx--主城idx
+--     self.pageIdx = d.pageIdx--所在屏的index
+--     self.val1 = d.val1--值1
+--     self.val2 = d.val2--值2
+--     self.val3 = d.val3--值3
+-- end
 --------------------------------------------
 local mapPageData = {}  -- key:pageIdx, value = list
 local mapPageCacheTime = {} -- key:pageIdx, value = timeOut
@@ -40,13 +39,15 @@ function IDDBWorldMap.getDataByPageIdx(pageIdx)
 end
 
 ---@public 取得一屏数据
+---@param data NetProtoIsland.ST_mapPage
 function IDDBWorldMap.onGetMapPageData(data)
     local pageIdx = bio2number(data.pageIdx)
     local cells = data.cells
 
     local cellmap = {}
+    ---@type NetProtoIsland.ST_mapCell
     for i, v in ipairs(cells) do
-        cellmap[bio2number(v.idx)] = IDDBMapCell.new(v)
+        cellmap[bio2number(v.idx)] = v
     end
     mapPageData[pageIdx] = { list = cells, map = cellmap }
     mapPageCacheTime[pageIdx] = DateEx.nowMS + IDDBWorldMap.ConstTimeOutSec * 1000

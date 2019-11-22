@@ -1,8 +1,9 @@
 ﻿-- xx界面
 do
     local IDPSetting = {}
-
+    ---@type Coolape.CLPanelLua
     local csSelf = nil
+    ---@type UnityEngine.Transform
     local transform = nil
     local uiobjs = {}
 

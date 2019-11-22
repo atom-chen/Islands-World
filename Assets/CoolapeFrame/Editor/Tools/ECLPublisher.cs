@@ -1158,6 +1158,9 @@ public class ECLPublisher : EditorWindow
         if (currChlData.buildTargetGroup == BuildTargetGroup.Android)
         {
             PlayerSettings.Android.bundleVersionCode = currChlData.mBundleVersionCode;
+        } else if (currChlData.buildTargetGroup == BuildTargetGroup.iOS)
+        {
+            PlayerSettings.iOS.buildNumber = currChlData.mBundleVersionCode + "";
         }
 
         resetScriptingDefineSymbols();
