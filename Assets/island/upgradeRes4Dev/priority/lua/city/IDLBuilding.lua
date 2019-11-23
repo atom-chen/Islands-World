@@ -456,7 +456,7 @@ function IDLBuilding:SetActive(active)
     end
 end
 
----@public 返回自己可被攻击的点坐标
+---@public 返回自己可被攻击的点坐标 //TODO:这个函数里算出来的点是有问题的
 ---@param attacker IDRoleBase
 function IDLBuilding:getAttackPoint(attacker)
     local r = self.size / 2

@@ -193,3 +193,4 @@ Attack=攻击
 MoveCity=搬迁
 Quit=退出
 MsgSelectBattleUnit=请选择可投放的战斗单元！
+MsgCannotPlaceOnthePoint=不能在此投放兵力！

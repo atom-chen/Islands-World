@@ -47,6 +47,7 @@ local prefabSides = {}
 
 -- 初始化，只会调用一次
 ---@param grid CLGrid
+---@param waveUvAn Wave
 function IDLGridTileSide.init(grid, waveUvAn)
     prefabSides = {}
     for k, v in pairs(SidesName) do
@@ -1290,6 +1291,10 @@ function IDLGridTileSide.isOnTheBeach(index)
         return true
     end
     return false
+end
+
+function IDLGridTileSide.getTileSides()
+    return tileSides
 end
 
 function IDLGridTileSide.clean()

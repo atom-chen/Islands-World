@@ -54,7 +54,7 @@ local EachDeployNum = 1
 IDLBattle.offShips = {}
 IDLBattle.defShips = {}
 local __isInited = false
-IDLBattle.isDebug = true
+IDLBattle.isDebug = false
 
 --------------------------------------------
 function IDLBattle._init()
@@ -102,6 +102,9 @@ end
 function IDLBattle.onEnterCity()
     -- 初始化寻敌器
     IDLBattleSearcher.init(city)
+    IDMainCity.showDeployRange()
+    -- 不要雾
+    MyCfg.self.fogOfWar.enabled = false
 end
 
 ---@public 预加载进攻方兵种
@@ -150,10 +153,10 @@ function IDLBattle.deployBattleUnit()
     end
     local pos = MyMainCamera.lastHit.point
     pos.y = 0
-    local grid = grid.grid
-    local index = grid:GetCellIndex(pos)
-    local cellPos = grid:GetCellCenter(index)
-    if (not city.astar4Ocean:isObstructNode(pos)) or IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
+    -- local grid = grid.grid
+    -- local index = grid:GetCellIndex(pos)
+    -- local cellPos = grid:GetCellCenter(index)
+    if IDMainCity.canDeploy(pos) or IDLBattle.currSelectedUnit.type == IDConst.UnitType.skill then
         if IDLBattle.isFirstDeployRole then
             -- 首次投放战斗单元，的处理
             IDLBattle.isFirstDeployRole = false
@@ -165,6 +168,8 @@ function IDLBattle.deployBattleUnit()
             -- 战斗正式开始
             IDLBattle.csSelf:invoke4Lua(IDLBattle.begain, 1)
         end
+        -- 隐藏投兵区域
+        IDMainCity.hideDeployRange()
 
         if
             IDLBattle.currSelectedUnit.type == IDConst.UnitType.ship or
@@ -175,8 +180,10 @@ function IDLBattle.deployBattleUnit()
         --//TODO: 技能释放
         end
     else
-        --//TODO: can not place ship
-        CLAlert.add("can not place ship", Color.red, 1)
+        CLAlert.add(LGet("MsgCannotPlaceOnthePoint"), Color.red, 1)
+        --//TODO:SoundEx.playSound("", 1, 1)
+        IDMainCity.showDeployRange()
+        csSelf:invoke4Lua(IDMainCity.hideDeployRange, 3)
     end
 end
 
@@ -355,6 +362,8 @@ function IDLBattle.endBattle()
 end
 
 function IDLBattle.clean()
+    -- 雾
+    MyCfg.self.fogOfWar.enabled = true
     IDLBattle.isFirstDeployRole = true
     IDLBattle.currSelectedUnit = nil
     IDWorldMap.rmFinishEnterCityCallback(IDLBattle.onEnterCity)

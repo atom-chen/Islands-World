@@ -43,6 +43,13 @@ IDMainCity.Headquarters = nil -- 主基地
 --IDMainCity.shadowRoot = nil
 --IDMainCity.tileShadowRoot = nil
 IDMainCity.fogOfWarInfluence = nil
+
+-- 不可投兵的格子的边缘格子
+local cannotDeploySideCells = {}
+local needshowTileRedCells = {}
+local tilesRed = {}
+local tilesRedRoot
+
 local seabed
 local buildingsCount = {} -- 每种建筑的数量统计
 local idelWorkers = CLLQueue.new() -- 空闲工人
@@ -66,6 +73,9 @@ local function _init()
     transform.localPosition = Vector3.zero
     transform.localScale = Vector3.one
     IDMainCity.transform = transform
+    tilesRedRoot = GameObject("tilesRedRoot").transform
+    tilesRedRoot.parent = transform
+    tilesRedRoot.localPosition = Vector3.zero
 
     local go = GameObject("grid")
     go.transform.parent = transform
@@ -249,6 +259,9 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
             IDMainCity.loadBuildings(
                 function()
                     IDMainCity.onChgMode(GameModeSub.city, GameModeSub.map)
+                    if GameMode.battle == MyCfg.mode then
+                        IDMainCity.setCannotDeploySideCells()
+                    end
                     IDMainCity.onScaleScreen()
                     finishCallback()
                 end
@@ -563,7 +576,7 @@ function IDMainCity.onLoadBuilding(name, obj, param)
         buildingLua:init(unit, bio2number(d.attrid), 0, bio2number(d.lev), false, {index = index, serverData = d})
 
         local attr = DBCfg.getBuildingByID(bio2number(d.attrid))
-        IDMainCity.refreshGridState(index, bio2number(attr.Size), true, gridState4Building)
+        IDMainCity.refreshGridState(index, bio2number(attr.Size), bio2number(d.idx), gridState4Building)
         buildings[bio2number(d.idx)] = buildingLua
         -- 统计每种建筑的数据
         buildingsCount[bio2number(d.attrid)] =
@@ -652,6 +665,13 @@ function IDMainCity.clean()
         SetActive(v.csSelf.gameObject, false)
     end
     buildings = {}
+
+    for k, v in pairs(tilesRed) do
+        CLThingsPool.returnObj(v)
+        SetActive(v, false)
+    end
+    tilesRed = {}
+    IDMainCity.isLoadedTilesRed = false
 
     ---@param v IDRWorker
     for k, v in pairs(buildingsWithWorkers) do
@@ -942,6 +962,7 @@ function IDMainCity.doCreateBuilding(building)
     CLLNet.send(NetProtoIsland.send.newBuilding(building.id, building.gridIndex))
 end
 
+---@param d NetProtoIsland.ST_building
 function IDMainCity.onfinsihCreateBuilding(d)
     ---@type IDDBBuilding
     local b = IDDBCity.curCity.buildings[bio2number(d.idx)]
@@ -959,7 +980,12 @@ function IDMainCity.onfinsihCreateBuilding(d)
         -- 统计每种建筑的数据
         buildingsCount[bio2number(b.attrid)] =
             buildingsCount[bio2number(b.attrid)] and (buildingsCount[bio2number(b.attrid)] + 1) or 1
-        IDMainCity.refreshGridState(bio2number(b.pos), IDMainCity.newBuildUnit.size, true, gridState4Building)
+        IDMainCity.refreshGridState(
+            bio2number(b.pos),
+            IDMainCity.newBuildUnit.size,
+            bio2number(b.idx),
+            gridState4Building
+        )
         IDMainCity.newBuildUnit = nil
         IDMainCity.onClickOcean()
     end
@@ -1070,7 +1096,7 @@ function IDMainCity.setSelected(unit, selected)
             if isTile then
                 IDMainCity.refreshGridState(cell.gridIndex, cell.size, false, gridState4Tile)
             else
-                IDMainCity.refreshGridState(cell.gridIndex, cell.size, false, gridState4Building)
+                IDMainCity.refreshGridState(cell.gridIndex, cell.size, nil, gridState4Building)
             end
         end
     else
@@ -1096,7 +1122,12 @@ function IDMainCity.setSelected(unit, selected)
                 if isTile then
                     IDMainCity.refreshGridState(cell.gridIndex, cell.size, true, gridState4Tile)
                 else
-                    IDMainCity.refreshGridState(cell.gridIndex, cell.size, true, gridState4Building)
+                    IDMainCity.refreshGridState(
+                        cell.gridIndex,
+                        cell.size,
+                        bio2number(cell.serverData.idx),
+                        gridState4Building
+                    )
                 end
             end
         else
@@ -1126,7 +1157,12 @@ function IDMainCity.setSelected(unit, selected)
                 if isTile then
                     IDMainCity.refreshGridState(cell.gridIndex, cell.size, true, gridState4Tile)
                 else
-                    IDMainCity.refreshGridState(cell.gridIndex, cell.size, true, gridState4Building)
+                    IDMainCity.refreshGridState(
+                        cell.gridIndex,
+                        cell.size,
+                        bio2number(cell.serverData.idx),
+                        gridState4Building
+                    )
                 end
             end
         end
@@ -1142,6 +1178,7 @@ function IDMainCity.setSelected(unit, selected)
 end
 
 function IDMainCity.setOtherUnitsColiderState(target, activeCollider)
+    ---@param v IDLBuilding
     for k, v in pairs(buildings) do
         if v ~= target then
             v:setCollider(activeCollider)
@@ -1176,7 +1213,7 @@ function IDMainCity.isSizeInFreeCell(index, size, canOnLand, canOnWater)
         if (not grid:IsInBounds(cellIndex)) then
             return false
         end
-        if (gridState4Building[cellIndex] == true) then
+        if (gridState4Building[cellIndex]) then
             return false
         end
         if (not canOnLand) and gridState4Tile[cellIndex] == true then
@@ -1265,7 +1302,7 @@ function IDMainCity.onBuildingChg(data)
         printe("get building serverdata is nil")
         return
     end
-    ---@type MyUnit
+    ---@type IDLBuilding
     local building = buildings[idx]
     if building == nil then
         printw("get building is nil")
@@ -1439,7 +1476,7 @@ function IDMainCity.doRemoveBuilding(idx)
         local id = bio2number(building.attr.ID)
         buildingsCount[id] = buildingsCount[id] - 1
         local index2 = grid:GetCellIndex(building.transform.position)
-        IDMainCity.refreshGridState(index2, building.size, false, gridState4Building)
+        IDMainCity.refreshGridState(index2, building.size, nil, gridState4Building)
         building.csSelf:clean()
         CLThingsPool.returnObj(building.gameObject)
         SetActive(building.gameObject, false)
@@ -1558,5 +1595,132 @@ end
 function IDMainCity.getTiles()
     return tiles
 end
+
+---@public 能否投兵
+---@param pos UnityEngine.Vector3
+function IDMainCity.canDeploy(pos)
+    local index = grid:GetCellIndex(pos)
+    if not (IDMainCity.isOnTheLandOrBeach(index) or gridState4Building[index]) then
+        if cannotDeploySideCells[index] then
+            return false
+        else
+            return true
+        end
+    end
+    return false
+end
+
+---@public 是否是不可以投兵的边缘网格
+function IDMainCity.isCannotDeploySide(index)
+    if not IDMainCity.isOnTheLandOrBeach(index) then
+        local idx = gridState4Building[index]
+        if idx then
+            ---@type IDLBuildingTrap
+            local b = buildings[idx]
+            if b and b.isTrap then
+                -- 正好是在陷阱，也是可以的
+                return true
+            end
+        else
+            -- 说明是在海里，记录一下
+            return true
+        end
+    end
+    return false
+end
+
+---@public 设置不可投兵网格
+function IDMainCity.setCannotDeploySideCells()
+    cannotDeploySideCells = {}
+    needshowTileRedCells = {}
+    local sides = IDLGridTileSide.getTileSides()
+    for index, obj in pairs(sides) do
+        ---@type Coolape.CLAStarNode
+        local node = IDMainCity.grid.nodesMap[index]
+        needshowTileRedCells[node.index] = node.index
+
+        ---@type System.Collections.ArrayList
+        local aroundList = node.aroundList
+        for i = 0, aroundList.Count - 1 do
+            ---@type Coolape.CLAStarNode
+            local _node = aroundList[i]
+            if cannotDeploySideCells[_node.index] == nil and needshowTileRedCells[_node.index] == nil then
+                if IDMainCity.isCannotDeploySide(_node.index) then
+                    cannotDeploySideCells[_node.index] = _node.index
+                end
+            end
+        end
+    end
+
+    ---@param b IDLBuilding
+    for k, b in pairs(buildings) do
+        if
+            not (IDMainCity.isOnTheLandOrBeach(b.gridIndex) or bio2number(b.attr.GID) == IDConst.BuildingGID.trap or
+                bio2number(b.attr.GID) == IDConst.BuildingGID.tree)
+         then
+            -- 说明这个建筑是在海里，注意陷阱和树skip
+            local size = b.size
+            if math.fmod(size, 2) == 0 then
+                size = size + 2
+            else
+                size = size + 2
+            end
+            ---@type System.Collections.ArrayList
+            local cells = grid:getCells(b.gridIndex, size)
+            for i = 0, cells.Count - 1 do
+                local index2 = cells[i]
+                if cannotDeploySideCells[index2] == nil and needshowTileRedCells[index2] == nil then
+                    if IDMainCity.isCannotDeploySide(index2) then
+                        cannotDeploySideCells[index2] = index2
+                    else
+                        needshowTileRedCells[index2] = index2
+                    end
+                end
+            end
+        end
+    end
+end
+
+function IDMainCity.hideDeployRange()
+    SetActive(tilesRedRoot.gameObject, false)
+end
+
+function IDMainCity.showDeployRange()
+    SetActive(tilesRedRoot.gameObject, true)
+    if IDMainCity.isLoadedTilesRed then
+        return
+    end
+    IDMainCity.isLoadedTilesRed = true
+    for index, _ in pairs(needshowTileRedCells) do
+        CLThingsPool.borrowObjAsyn(
+            "Tiles.tile_red",
+            function(name, obj, index)
+                ---@type UnityEngine.GameObject
+                local go = obj
+                go.transform.parent = tilesRedRoot
+                go.transform.position = grid:GetCellCenter(index)
+                SetActive(go, true)
+                tilesRed[index] = go
+            end,
+            index
+        )
+    end
+
+    for index, _ in pairs(cannotDeploySideCells) do
+        CLThingsPool.borrowObjAsyn(
+            "Tiles.tile_red",
+            function(name, obj, index)
+                ---@type UnityEngine.GameObject
+                local go = obj
+                go.transform.parent = tilesRedRoot
+                go.transform.position = grid:GetCellCenter(index)
+                SetActive(go, true)
+                tilesRed[index] = go
+            end,
+            index
+        )
+    end
+end
+
 --===========================
 return IDMainCity

@@ -211,6 +211,7 @@ public static class XluaGenCodeConfig
         typeof(SimpleFogOfWar.FogOfWarInfluence),
         typeof(MyUtl),
         typeof(HUDText),
+        typeof(Wave),
     };
 
 	//C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface
