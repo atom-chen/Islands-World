@@ -406,6 +406,7 @@ function IDWorldMap.loadMapPageData(pageIdx)
     if pageIdx < 0 then
         return
     end
+    ---@type IDWorldMapPage
     local mapPage = pages[pageIdx] or freePages:deQueue()
     mapPage:init(pageIdx)
     pages[pageIdx] = mapPage
@@ -456,6 +457,25 @@ function IDWorldMap.hideOnClickShow()
     --//TODO:隐藏主UI，当视野更广
 end
 
+---@param tile IDWorldTile
+function IDWorldMap.onClickTile(tile)
+    isDragOcean = false
+    local index = tile.gidx
+    local cellPos = grid:GetCellCenter(index)
+    if MyCfg.mode == GameMode.map then
+        if IDWorldMap.mapTileSize then
+            IDWorldMap.mapTileSize.transform.position = tile.transform.position
+            IDWorldMap.mapTileSize.transform.localScale = Vector3.one * tile.size
+            SetActive(IDWorldMap.mapTileSize, true)
+        end
+        if MyCfg.self.fogOfWar:GetVisibility(tile.transform.position) == FogOfWarSystem.FogVisibility.Visible then
+            -- 当可见时，才弹出菜单
+            local label = joinStr("Pos:", index)
+            IDUtl.showPopupMenus(tile, cellPos, {popupMenus.attack}, label, index)
+        end
+    end
+end
+
 ---@public 点击了海面
 function IDWorldMap.onClickOcean()
     if IDWorldMap.mode == GameModeSub.city then
@@ -469,6 +489,7 @@ function IDWorldMap.onClickOcean()
     if MyCfg.mode == GameMode.map then
         if IDWorldMap.mapTileSize then
             IDWorldMap.mapTileSize.transform.position = cellPos
+            IDWorldMap.mapTileSize.transform.localScale = Vector3.one
             SetActive(IDWorldMap.mapTileSize, true)
         end
         if MyCfg.self.fogOfWar:GetVisibility(cellPos) == FogOfWarSystem.FogVisibility.Visible then
@@ -533,7 +554,9 @@ IDWorldMap.popupEvent = {
     ---@public 搬迁
     moveCity = function(cellIndex)
         IDUtl.hidePopupMenus()
-        CLLNet.send(NetProtoIsland.send.moveCity(cellIndex, IDWorldMap.doMoveCity, cellIndex))
+        CLLNet.send(
+            NetProtoIsland.send.moveCity(bio2number(IDDBCity.curCity.idx), cellIndex, IDWorldMap.doMoveCity, cellIndex)
+        )
     end
 }
 
@@ -596,12 +619,15 @@ function IDWorldMap.doAttack(cellIndex, retData)
 end
 
 ---@public 当地图块有变化时的推送
-function IDWorldMap.onMapCellChg(mapCell)
+function IDWorldMap.onMapCellChg(mapCell, isRemove)
+    if IDWorldMap.mode ~= GameModeSub.map then
+        return
+    end
     local pageIdx = bio2number(mapCell.pageIdx)
     ---@type IDWorldMapPage
     local page = pages[pageIdx]
     if page then
-        page:refreshOneCell(mapCell)
+        page:refreshOneCell(mapCell, isRemove)
     end
 end
 

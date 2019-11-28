@@ -51,6 +51,8 @@ public class ECLSeekerInspector : Editor
             instance.movingBy = (CLSeeker.MovingBy)EditorGUILayout.EnumPopup(uicontnt, instance.movingBy);
             uicontnt = new GUIContent("Moving Unscaled Time", "移动时忽略时间的缩放");
             instance.unscaledTime = EditorGUILayout.Toggle(uicontnt, instance.unscaledTime);
+            uicontnt = new GUIContent("is Moving", "正在移动");
+            EditorGUILayout.Toggle(uicontnt, instance.canMove);
             uicontnt = new GUIContent("Debug Show Path", "显示路径");
             instance.showPath = EditorGUILayout.Toggle(uicontnt, instance.showPath);
         }

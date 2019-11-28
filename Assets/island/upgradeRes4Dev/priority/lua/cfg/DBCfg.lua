@@ -12,17 +12,15 @@ if (CLCfgBase.self.isEditMode) then
 end
 local priorityPath = joinStr(CLPathCfg.persistentDataPath, "/", CLPathCfg.self.basePath, upgradeRes, "/priority/")
 local cfgBasePath = joinStr(priorityPath, "cfg/")
-local cfgWorldBasePath = joinStr(priorityPath, "worldMap/")
 
--- 大地图
-local cfgMapPath = joinStr(cfgWorldBasePath)
 -- 全局变量定义
 local CfgPath = {
     Cfg = joinStr(cfgBasePath, "DBCFCfgData.cfg"),
     Building = joinStr(cfgBasePath, "DBCFBuildingData.cfg"),
     HeadquartersLevsData = joinStr(cfgBasePath, "DBCFHeadquartersLevsData.cfg"),
     Role = joinStr(cfgBasePath, "DBCFRoleData.cfg"),
-    Bullet = joinStr(cfgBasePath, "DBCFBulletData.cfg")
+    Bullet = joinStr(cfgBasePath, "DBCFBulletData.cfg"),
+    MapTile = joinStr(cfgBasePath, "DBCFMapTileData.cfg")
 }
 DBCfg.CfgPath = CfgPath
 

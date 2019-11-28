@@ -2,6 +2,7 @@
 ---@field public target UnityEngine.Transform
 ---@field public offset UnityEngine.Vector3
 ---@field public data NetProtoIsland.ST_mapCell
+---@field public attr DBCFMapTileData
 
 -- 大地图块hud
 local _cell = {}
@@ -31,7 +32,12 @@ end
 function _cell.show(go, data)
 	mData = data
 	uiobjs.followTarget:setTarget(mData.target, mData.offset or Vector3.zero)
-	uiobjs.LabelName.text = mData.data.name
+	local gid = bio2Int(mData.attr.GID)
+	if gid == IDConst.WorldmapCellType.user then
+		uiobjs.LabelName.text = mData.data.name
+	else
+		uiobjs.LabelName.text = LGet(mData.attr.Name)
+	end
 end
 
 -- 取得数据

@@ -289,13 +289,13 @@ namespace Coolape
         public void searchPathAsyn(Vector3 from, Vector3 to, object finishSearchCallback)
         {
 
-            bool canReach = false;
-            List<Vector3> vectorList = null;
-            if (getCachePath(from, to, ref vectorList, ref canReach))
-            {
-                Utl.doCallback(finishSearchCallback, canReach, vectorList);
-                return;
-            }
+            //bool canReach = false;
+            //List<Vector3> vectorList = new List<Vector3>();
+            //if (getCachePath(from, to, ref vectorList, ref canReach))
+            //{
+            //    Utl.doCallback(finishSearchCallback, canReach, vectorList);
+            //    return;
+            //}
 
             ArrayList list = listPool.borrow();
             list.Add(from);
@@ -366,20 +366,20 @@ namespace Coolape
 
         public bool getCachePath(Vector3 from, Vector3 to, ref List<Vector3> vectorList, ref bool canReach)
         {
-            if (vectorList == null)
-            {
-                vectorList = new List<Vector3>();
-            }
-            else
-            {
-                vectorList.Clear();
-            }
             int fromIndex = grid.GetCellIndex(from);
             int toIndex = grid.GetCellIndex(to);
             string key = fromIndex + "_" + toIndex;
             List<Vector3> tmpPath = null;
             if (pathsCache.TryGetValue(key, out tmpPath))
             {
+                if (vectorList == null)
+                {
+                    vectorList = new List<Vector3>();
+                }
+                else
+                {
+                    vectorList.Clear();
+                }
                 vectorList.Add(from); //把路径的第一个点换成新的起始点
                 for (int i = 1; i < tmpPath.Count; i++)
                 {
@@ -725,7 +725,7 @@ namespace Coolape
                 bool isCachePath = (bool)(list[3]);
                 int fromIndex = (int)(list[4]);
                 int toIndex = (int)(list[5]);
-                if (!isCachePath)
+                if (!isCachePath && outPath != null && outPath.Count > 1)
                 {
                     softenPath(ref outPath);
                     if (needCachePaths)

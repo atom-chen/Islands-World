@@ -91,6 +91,12 @@ namespace Coolape
 			}
 		}
 
+        /// <summary>
+        /// Nexts the int.注意左包右不包
+        /// </summary>
+        /// <returns>The int.</returns>
+        /// <param name="min">Minimum.</param>
+        /// <param name="max">Max.</param>
 		public static int NextInt(int min, int max)
 		{
 			try {

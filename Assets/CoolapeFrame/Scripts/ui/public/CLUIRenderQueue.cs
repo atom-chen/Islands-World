@@ -117,12 +117,22 @@ namespace Coolape
 			#endif
 			setRenderQueue (true);
 		}
-		[ContextMenu ("setRenderQueue")]
-		public void setRenderQueueExe ()
-		{
-			setRenderQueue (true);
-		}
-		public void setRenderQueue (bool isForce = false)
+        /// <summary>
+        /// Ons the finish load assets.配合CLSharedAssets使用
+        /// </summary>
+        /// <param name="go">Go.</param>
+        public void onFinishLoadAssets(GameObject go)
+        {
+            setRenderQueue();
+        }
+
+        [ContextMenu("setRenderQueue")]
+        public void setRenderQueueExe()
+        {
+            setRenderQueue(true);
+        }
+
+        public void setRenderQueue (bool isForce = false)
 		{
 			int newRenderQ = currRenderQueue;
 			Material mat = null;

@@ -5,6 +5,9 @@ IDWorldMapPage = class("IDWorldMapPage")
 function IDWorldMapPage:init(pageIdx)
     self.pageIdx = pageIdx
     self.mapCells = {}
+    ---@type Coolape.GridBase
+    self.grid = IDWorldMap.grid.grid
+    self.baseData = IDDBWorldMap.getCfgByPageIdx(self.pageIdx)
 
     self:refreshTiles()
     InvokeEx.invoke(self:wrapFunction4CS(self.checkDataTimeout), IDDBWorldMap.ConstTimeOutSec)
@@ -17,6 +20,7 @@ function IDWorldMapPage:checkDataTimeout()
 end
 
 function IDWorldMapPage:refreshTiles()
+    --//TODO:还要考虑需要先加载好基础地块再加载
     self:loadBaseData()
     self:loadServerData()
     self:releaseCellWithNoData()
@@ -24,13 +28,15 @@ end
 
 -- 加载基础资源
 function IDWorldMapPage:loadBaseData()
-    --//TODO:加载地图配置的基础数据
+    if self.baseData and self.baseData.list then
+        self:loadEachCell4BaseData({i = 1, cells = self.baseData.list, pageIdx = self.pageIdx})
+    end
 end
 
 function IDWorldMapPage:loadServerData()
     local data = IDDBWorldMap.getDataByPageIdx(self.pageIdx)
     if data and data.list then
-        self:loadEachCell({i = 1, cells = data.list})
+        self:loadEachCell4ServerData({i = 1, cells = data.list, pageIdx = self.pageIdx})
     end
 end
 
@@ -45,28 +51,51 @@ function IDWorldMapPage:releaseCellWithNoData()
 end
 
 ---@public 刷新一个单元格
-function IDWorldMapPage:refreshOneCell(cellData)
+---@param cellData NetProtoIsland.ST_mapCell
+function IDWorldMapPage:refreshOneCell(cellData, isRemove)
     if bio2number(cellData.idx) == bio2number(IDDBCity.curCity.pos) then
         -- 说明是自己的城,直接跳过
     else
-        if bio2number(cellData.cidx) <= 0 then
+        if isRemove then
             -- 说明是移除
             ---@type IDWorldTile
             local cell = self.mapCells[bio2number(cellData.idx)]
             if cell then
-                CLThings4LuaPool.returnObj(cell.gameObject)
-                cell:clean()
-                SetActive(cell.gameObject, false)
-                self.mapCells[bio2number(cellData.idx)] = nil
+                if self.baseData.map[bio2number(cellData.idx)] then
+                    -- 说是在基础数据里
+                    cell:init(cell.csSelf, cell.gidx, cell.type, nil, cell.attr)
+                else
+                    CLThings4LuaPool.returnObj(cell.gameObject)
+                    cell:clean()
+                    SetActive(cell.gameObject, false)
+                    self.mapCells[bio2number(cellData.idx)] = nil
+                end
             end
         else
-            self:doLoadEachCell(cellData)
+            local index = bio2number(cellData.idx)
+            local attr = DBCfg.getDataById(DBCfg.CfgPath.MapTile, bio2number(cellData.attrid))
+            self:doLoadEachCell(index, cellData, attr)
         end
     end
 end
 
 ---@public 加载每一个单元
-function IDWorldMapPage:loadEachCell(orgs)
+function IDWorldMapPage:loadEachCell4BaseData(orgs)
+    local i = orgs.i
+    local cells = orgs.cells
+    local d = cells[i]
+    if i > #cells then
+        return
+    end
+
+    local attr = DBCfg.getDataById(DBCfg.CfgPath.MapTile, d.id)
+    orgs.i = i + 1
+    local params = orgs
+    self:doLoadEachCell(d.index, nil, attr, self:wrapFunction4CS(self.loadEachCell4BaseData), params)
+end
+
+---@public 加载每一个单元
+function IDWorldMapPage:loadEachCell4ServerData(orgs)
     local i = orgs.i
     local cells = orgs.cells
     if i > #cells then
@@ -74,40 +103,47 @@ function IDWorldMapPage:loadEachCell(orgs)
     end
     ---@type NetProtoIsland.ST_mapCell
     local d = cells[i]
-    local params = {i = i + 1, cells = cells}
-    self:doLoadEachCell(d, self:wrapFunction4CS(self.loadEachCell), params)
+    local attr = DBCfg.getDataById(DBCfg.CfgPath.MapTile, bio2Int(d.attrid))
+    orgs.i = i + 1
+    local params = orgs
+    self:doLoadEachCell(bio2number(d.idx), d, attr, self:wrapFunction4CS(self.loadEachCell4ServerData), params)
 end
 
----@param d NetProtoIsland.ST_mapCell
-function IDWorldMapPage:doLoadEachCell(d, callback, orgs)
-    local idx = bio2number(d.idx)
-    if idx == bio2number(IDDBCity.curCity.pos) then
-        -- 自己的主城， 直接跳过
+---@param serverData NetProtoIsland.ST_mapCell
+---@param attr DBCFMapTileData
+function IDWorldMapPage:doLoadEachCell(index, serverData, attr, callback, orgs)
+    if serverData then
+        local idx = bio2number(serverData.idx)
+        if idx == bio2number(IDDBCity.curCity.pos) then
+            -- 自己的主城， 直接跳过
+            Utl.doCallback(callback, orgs)
+            return
+        end
+    end
+    ---@type IDWorldTile
+    local cellLua = self.mapCells[index]
+    local type = bio2number(attr.GID)
+    if type == IDConst.WorldmapCellType.occupy then
         Utl.doCallback(callback, orgs)
         return
     end
-    ---@type IDWorldTile
-    local cellLua = self.mapCells[idx]
-    local type = bio2number(d.type)
     if (cellLua and cellLua.type ~= type) then
         -- 不是同一个类型
         cellLua:clean()
         CLThings4LuaPool.returnObj(cellLua.csSelf)
         SetActive(cellLua.gameObject, false)
-        self.mapCells[idx] = nil
+        self.mapCells[index] = nil
         cellLua = nil
     end
     if cellLua then
         -- 说明该地块正好有对象
-        cellLua:init(cellLua.csSelf, idx, type, d)
+        cellLua:init(cellLua.csSelf, index, type, serverData, attr)
         Utl.doCallback(callback, orgs)
     else
         local prefabName = ""
-        if type == 1 then
-            -- 玩家城
-            prefabName = "worldmap.mapcity"
-        end
-        local params = {data = d, callback = callback, orgs = orgs}
+        -- 玩家城
+        prefabName = attr.PrefabName
+        local params = {index = index, data = serverData, attr = attr, callback = callback, orgs = orgs}
         CLThings4LuaPool.borrowObjAsyn(prefabName, self:wrapFunction4CS(self.onLoadOneMapTile), params)
     end
 end
@@ -116,15 +152,25 @@ function IDWorldMapPage:onLoadOneMapTile(name, obj, params)
     local callback = params.callback
     local orgs = params.orgs
     ---@type NetProtoIsland.ST_mapCell
-    local d = params.data
-    local mapType = bio2number(d.type)
-    local index = bio2number(d.idx)
-
-    if GameMode.map ~= MyCfg.mode or IDWorldMap.mode ~= GameModeSub.map or self.mapCells[index] then
+    local serverData = params.data
+    ---@type DBCFMapTileData
+    local attr = params.attr
+    local mapType = bio2number(attr.GID)
+    local index = params.index
+    if
+        GameMode.map ~= MyCfg.mode or IDWorldMap.mode ~= GameModeSub.map or self.mapCells[index] or
+            self.pageIdx ~= orgs.pageIdx
+     then
         CLThings4LuaPool.returnObj(obj)
         SetActive(obj.gameObject, false)
         return
     end
+    if obj == nil then
+        printe("borrow obj is nil!==" .. name)
+        Utl.doCallback(callback, orgs)
+        return
+    end
+
     local cell = obj
     ---@type IDWorldTile
     local cellLua = cell.luaTable
@@ -136,8 +182,13 @@ function IDWorldMapPage:onLoadOneMapTile(name, obj, params)
     obj.transform.parent = IDWorldMap.transform
     obj.transform.localScale = Vector3.one
     obj.transform.localEulerAngles = Vector3.zero
-    obj.transform.position = IDWorldMap.grid.grid:GetCellCenter(index)
-    cellLua:init(obj, index, mapType, d)
+    local size = bio2number(attr.Size)
+    if size % 2 == 0 then
+        obj.transform.position = self.grid:GetCellPosition(index)
+    else
+        obj.transform.position = self.grid:GetCellCenter(index)
+    end
+    cellLua:init(obj, index, mapType, serverData, attr)
     self.mapCells[index] = cellLua
     Utl.doCallback(callback, orgs)
 end

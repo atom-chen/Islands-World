@@ -48,6 +48,7 @@ IDMainCity.fogOfWarInfluence = nil
 local cannotDeploySideCells = {}
 local needshowTileRedCells = {}
 local tilesRed = {}
+---@type UnityEngine.Transform
 local tilesRedRoot
 
 local seabed
@@ -74,7 +75,9 @@ local function _init()
     transform.localScale = Vector3.one
     IDMainCity.transform = transform
     tilesRedRoot = GameObject("tilesRedRoot").transform
-    tilesRedRoot.parent = transform
+    tilesRedRoot.parent = MyCfg.self.shadowRoot
+    tilesRedRoot.localEulerAngles = Vector3.zero
+    tilesRedRoot.localScale = Vector3.one
     tilesRedRoot.localPosition = Vector3.zero
 
     local go = GameObject("grid")
@@ -667,8 +670,8 @@ function IDMainCity.clean()
     buildings = {}
 
     for k, v in pairs(tilesRed) do
-        CLThingsPool.returnObj(v)
-        SetActive(v, false)
+        CLUIOtherObjPool.returnObj(v.gameObject)
+        SetActive(v.gameObject, false)
     end
     tilesRed = {}
     IDMainCity.isLoadedTilesRed = false
@@ -1612,6 +1615,9 @@ end
 
 ---@public 是否是不可以投兵的边缘网格
 function IDMainCity.isCannotDeploySide(index)
+    if needshowTileRedCells[index] or cannotDeploySideCells[index] then
+        return false
+    end
     if not IDMainCity.isOnTheLandOrBeach(index) then
         local idx = gridState4Building[index]
         if idx then
@@ -1692,30 +1698,36 @@ function IDMainCity.showDeployRange()
     end
     IDMainCity.isLoadedTilesRed = true
     for index, _ in pairs(needshowTileRedCells) do
-        CLThingsPool.borrowObjAsyn(
-            "Tiles.tile_red",
+        CLUIOtherObjPool.borrowObjAsyn(
+            "Tile_red",
             function(name, obj, index)
-                ---@type UnityEngine.GameObject
-                local go = obj
-                go.transform.parent = tilesRedRoot
-                go.transform.position = grid:GetCellCenter(index)
-                SetActive(go, true)
-                tilesRed[index] = go
+                ---@type Coolape.CLCellLua
+                local cell = obj:GetComponent("CLCellLua")
+                cell.transform.parent = tilesRedRoot
+                cell.transform.localEulerAngles = Vector3.zero
+                cell.transform.localScale = Vector3.one
+                cell.transform.position = grid:GetCellCenter(index)
+                SetActive(obj, true)
+                cell:init({index = index, isSide = false}, nil)
+                tilesRed[index] = cell
             end,
             index
         )
     end
 
     for index, _ in pairs(cannotDeploySideCells) do
-        CLThingsPool.borrowObjAsyn(
-            "Tiles.tile_red",
+        CLUIOtherObjPool.borrowObjAsyn(
+            "Tile_red",
             function(name, obj, index)
-                ---@type UnityEngine.GameObject
-                local go = obj
-                go.transform.parent = tilesRedRoot
-                go.transform.position = grid:GetCellCenter(index)
-                SetActive(go, true)
-                tilesRed[index] = go
+                ---@type Coolape.CLCellLua
+                local cell = obj:GetComponent("CLCellLua")
+                cell.transform.parent = tilesRedRoot
+                cell.transform.localEulerAngles = Vector3.zero
+                cell.transform.localScale = Vector3.one
+                cell.transform.position = grid:GetCellCenter(index)
+                SetActive(obj, true)
+                cell:init({index = index, isSide = true}, nil)
+                tilesRed[index] = cell
             end,
             index
         )

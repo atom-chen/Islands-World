@@ -418,7 +418,7 @@ namespace Coolape
         /// </summary>
         /// <returns>The circular cells.</returns>
         /// <param name="center">中心点index.</param>
-        /// <param name="r">半径.</param>
+        /// <param name="size">Size * Size的范围.</param>
         public List<int> getAroundCells(int center, int size)
         {
             List<int> ret = new List<int>();

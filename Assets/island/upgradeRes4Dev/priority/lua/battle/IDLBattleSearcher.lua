@@ -91,7 +91,7 @@ function IDLBattleSearcher.wrapBuildingInfor(_buildings)
 end
 
 ---@public 取得建筑离最近的海岸的信息
----@param b IDDBBuilding
+---@param b IDLBuilding
 function IDLBattleSearcher.getNearestBeach(b)
     local list
     if not IDMainCity.isOnTheLandOrBeach(b.gridIndex) then
@@ -332,7 +332,7 @@ function IDLBattleSearcher.searchTarget4Role(role)
     if role.isOffense then
         -- 取得角色的index
         -- 取得离角色最近的目标，注意要考虑优先攻击目标
-        ---@param b IDDBBuilding
+        ---@param b IDLBuilding
         for k, b in pairs(buildings) do
             if IDLBattleSearcher.isTarget(role, b) then
                 dis = IDLBattleSearcher.getDistance(roleIndex, b.gridIndex)
@@ -514,6 +514,17 @@ function IDLBattleSearcher.getTargetInRange(attacker, pos, r)
             end
         end
     end
+
+    if attacker.isOffense then
+        ---@param b IDLBuilding
+        for k, b in pairs(buildings) do
+            if IDLBattleSearcher.isTarget(attacker, b) then
+                if IDLBattleSearcher.getDistance(index, b.gridIndex) - b.size < r then
+                    return b
+                end
+            end
+        end
+    end
     return nil
 end
 
@@ -547,6 +558,18 @@ function IDLBattleSearcher.getTargetsInRange(attacker, pos, r)
             end
         end
     end
+
+    if attacker.isOffense then
+        ---@param b IDLBuilding
+        for k, b in pairs(buildings) do
+            if IDLBattleSearcher.isTarget(attacker, b) then
+                if IDLBattleSearcher.getDistance(index, b.gridIndex) - b.size < r then
+                    table.insert(ret, b)
+                end
+            end
+        end
+    end
+
     return ret
 end
 

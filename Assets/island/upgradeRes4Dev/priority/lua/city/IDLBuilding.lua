@@ -359,6 +359,9 @@ end
 
 ---@public 升级处理
 function IDLBuilding:upgrading()
+    if GameMode.map ~= MyCfg.mode or IDWorldMap.mode ~= GameModeSub.city then
+        return
+    end
     ---@type IDDBBuilding
     local serverData = self.serverData
     if serverData then

@@ -232,8 +232,9 @@ CLLNet.cacheDataFunc = {
             netSerialize.setCfg(data.netCfg)
         end
     end,
+    ---@param data NetProtoIsland.RC_onMapCellChg
     [NetProtoIsland.cmds.onMapCellChg] = function(cmd, data)
-        IDDBWorldMap.onMapCellChg(data.mapCell)
+        IDDBWorldMap.onMapCellChg(data.mapCell, data.isRemove)
     end,
     [NetProtoIsland.cmds.onMyselfCityChg] = function(cmd, data)
         if IDDBCity.curCity then

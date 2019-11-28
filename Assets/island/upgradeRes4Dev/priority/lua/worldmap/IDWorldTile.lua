@@ -22,16 +22,22 @@ function IDWorldTile:__init(csobj)
     self.gameObject = csobj.gameObject
     ---@type UnityEngine.BoxCollider
     self.boxCollider = self.csSelf:GetComponent("BoxCollider")
-    self.body = getChild(self.transform, "body").gameObject
+    self.body = getChild(self.transform, "body")
+    if self.body then
+        self.body = self.body.gameObject
+    end
     self.seabed = getChild(self.transform, "seabed").gameObject
 end
 
-function IDWorldTile:init(csobj, gidx, type, data)
+function IDWorldTile:init(csobj, gidx, type, data, attr)
     self:__init(csobj)
     self.gidx = gidx
     self.type = type
     ---@type NetProtoIsland.ST_mapCell
     self.serverData = data
+    ---@type DBCFMapTileData
+    self.attr = attr
+    self.size = bio2number(self.attr.Size)
     ---@type Bounds
     self.bounds = self.boxCollider.bounds --Bounds(self.transform.position, Vector3.one * 5)
     ---@type IDCellWorldTileHudParam
@@ -39,6 +45,7 @@ function IDWorldTile:init(csobj, gidx, type, data)
     self.hudData.target = self.transform
     self.hudData.offset = Vector3.zero
     self.hudData.data = self.serverData
+    self.hudData.attr = self.attr
 
     -- 在摄像机可视范围的处理
     if IDLCameraMgr.isInCameraView(self.bounds) then
@@ -51,6 +58,13 @@ function IDWorldTile:init(csobj, gidx, type, data)
 end
 
 function IDWorldTile:showHud()
+    local gid = bio2number(self.attr.GID)
+    if not (gid == IDConst.WorldmapCellType.user or gid == IDConst.WorldmapCellType.port) 
+    or (MyCfg.self.fogOfWar:GetVisibility(self.transform.position) ~= FogOfWarSystem.FogVisibility.Visible)
+    then
+        return
+    end
+
     ---@type Coolape.CLCellLua
     if self.hud == nil then
         CLUIOtherObjPool.borrowObjAsyn(
@@ -145,7 +159,7 @@ function IDWorldTile:clean()
 end
 
 function IDWorldTile:onNotifyLua(go)
-    IDWorldMap.onClickOcean()
+    IDWorldMap.onClickTile(self)
 end
 
 return IDWorldTile

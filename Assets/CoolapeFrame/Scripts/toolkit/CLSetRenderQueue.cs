@@ -61,7 +61,15 @@ public class CLSetRenderQueue : MonoBehaviour
 		}
 	}
 
-	public void resetRenderQueue (GameObject go)
+    /// <summary>
+    /// Ons the finish load assets.配合CLSharedAssets使用
+    /// </summary>
+    /// <param name="go">Go.</param>
+    public void onFinishLoadAssets(GameObject go)
+    {
+        resetRenderQueue(go);
+    }
+    public void resetRenderQueue (GameObject go)
 	{
 		reset ();
 	}

@@ -140,7 +140,10 @@ namespace Coolape
 
 		public void finishSetPrefab (T unit)
 		{
-			prefabMap [unit.name] = unit;
+            if (unit != null)
+            {
+                prefabMap[unit.name] = unit;
+            }
 			isSettingPrefabMap.Remove (unit.name);
 		}
 
@@ -160,7 +163,8 @@ namespace Coolape
 
 					if (asset == null) {
 						Debug.LogError("get asset is null. path =" + path);
-						Utl.doCallback (cb, null, args);
+                        finishSetPrefab(null);
+                        Utl.doCallback (cb, null, args);
 						return;
 					}
 

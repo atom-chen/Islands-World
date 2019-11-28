@@ -21,6 +21,7 @@ require("role.IDRWorker")
 require("role.IDRShip")
 require("role.IDRSoldier")
 require("role.IDRShipLandCraft")
+require("role.IDRShipBreaker")
 require("worldmap.IDWorldTile")
 
 IDUtl = {}
@@ -266,6 +267,9 @@ function IDUtl.newRoleLua(id)
         if id == 4 then
             -- 登陆船
             role = IDRShipLandCraft.new()
+        elseif id == 8 then
+            -- 毁灭者自爆炸弹
+            role = IDRShipBreaker.new()
         else
             role = IDRShip.new()
         end
@@ -292,9 +296,9 @@ function IDUtl.getRoleIcon(id)
 end
 
 function IDUtl.newMapTileLua(type)
-    if type == 1 then
+    -- if type == IDConst.WorldmapCellType.user then
         return IDWorldTile.new()
-    end
+    -- end
 end
 
 ---@public 通过建筑的配置表id取得资源类型

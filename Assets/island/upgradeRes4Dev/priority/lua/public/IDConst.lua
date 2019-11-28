@@ -51,7 +51,7 @@ IDConst.RoleGID = {
 
 IDConst.RoleID = {
     Barbarian = 3, -- 陆战兵
-    LandCraft = 4, -- 登陆船
+    LandCraft = 4 -- 登陆船
 }
 
 ---@public 游戏中各种类型
@@ -97,6 +97,13 @@ IDConst.BattleType = {
 IDConst.dressMode = {
     normal = 1,
     ice = 2
+}
+---@public 大地图地块类型
+IDConst.WorldmapCellType = {
+    port = 1, -- 港口
+    decorate = 2, -- 装饰
+    user = 3, -- 玩家
+    occupy = 99 -- 占用
 }
 
 return IDConst

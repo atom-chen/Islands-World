@@ -69,6 +69,8 @@ public class ECLSeekerByRayInspector : Editor
             instance.movingBy = (CLSeeker.MovingBy)EditorGUILayout.EnumPopup(uicontnt, instance.movingBy);
             uicontnt = new GUIContent("Moving Unscaled Time", "移动时忽略时间的缩放");
             instance.unscaledTime = EditorGUILayout.Toggle(uicontnt, instance.unscaledTime);
+            uicontnt = new GUIContent("is Moving", "正在移动");
+            EditorGUILayout.Toggle(uicontnt, instance.canMove);
             ECLEditorUtl.BeginContents();
             {
                 uicontnt = new GUIContent("Soften Path", "柔化路径");

@@ -124,7 +124,7 @@ namespace Coolape
             targetPos = toPos;
             canMove = false;
             stopMove();
-            pathList.Clear();
+            //pathList.Clear();
             mAStarPathSearch.searchPathAsyn(mTransform.position, toPos, (Callback)onSeekAsynCallback);
         }
 
@@ -222,7 +222,7 @@ namespace Coolape
             canMove = false;
             if (pathList == null || pathList.Count < 2)
             {
-                Debug.LogWarning("Path list error!");
+                Debug.LogError("Path list error!");
                 return;
             }
             if (Vector3.Distance(mTransform.position, pathList[0]) < 0.001f)
@@ -240,7 +240,7 @@ namespace Coolape
             else if (Vector3.Distance(mTransform.position, pathList[pathList.Count - 1]) <= endReachedDistance)
             {
                 //到达目标点
-                Utl.doCallback(onFinishSeekCallback);
+                Utl.doCallback(onArrivedCallback);
                 return;
             }
             else
@@ -253,7 +253,7 @@ namespace Coolape
                     dis = Vector3.Distance(pathList[i - 1], pathList[i]);
                     dis1 = Vector3.Distance(mTransform.position, pathList[i - 1]);
                     dis2 = Vector3.Distance(mTransform.position, pathList[i]);
-                    if (Mathf.Abs(dis - (dis1 + dis2)) < 0.001f)
+                    if (Mathf.Abs(dis - (dis1 + dis2)) < 0.01f)
                     {
                         movePersent = dis1 / dis;
                         finishOneSubPath = false;
@@ -265,6 +265,11 @@ namespace Coolape
                         canMove = true;
                         break;
                     }
+                }
+                if(!canMove)
+                {
+                    Debug.LogWarning("说明没有找到起点，但是还是强制设置成可以移动");
+                    canMove = true;
                 }
             }
         }

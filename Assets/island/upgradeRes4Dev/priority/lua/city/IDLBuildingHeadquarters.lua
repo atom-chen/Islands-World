@@ -17,6 +17,7 @@ function IDLBuildingHeadquarters:init(selfObj, id, star, lev, _isOffense, other)
     d.lev = IDDBPlayer.myself.lev
     d.state = IDDBCity.curCity.stat
     self.hudData4worldmap.data = d
+    self.hudData4worldmap.attr = DBCfg.getDataById(DBCfg.CfgPath.MapTile, 7)
 end
 
 function IDLBuildingHeadquarters:OnClick()
