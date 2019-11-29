@@ -377,6 +377,8 @@ do
     ShipTrail = CS.ShipTrail
     ---@type HUDText
     HUDText = CS.HUDText
+    ---@type MyBoundsPool
+    MyBoundsPool = CS.MyBoundsPool
     -------------------------------------------------------
     -- require
     require("toolkit.CLLPrintEx")

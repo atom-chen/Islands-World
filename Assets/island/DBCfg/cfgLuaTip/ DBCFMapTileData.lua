@@ -1,0 +1,6 @@
+---@class DBCFMapTileData
+---@field public ID
+---@field public GID
+---@field public Name
+---@field public PrefabName
+---@field public Size

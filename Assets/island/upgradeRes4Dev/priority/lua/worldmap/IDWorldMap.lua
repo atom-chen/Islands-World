@@ -105,6 +105,9 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
         local pageIdx = IDWorldMap.getPageIdx(gidx)
         cityGidx = gidx
         centerPageIdx = pageIdx
+        
+        -- 先设置fog，后面加载地图地块时会用到判断是否可见
+        IDWorldMap.showFogwar()
         IDWorldMap.mode = GameModeSub.map
         IDWorldMap.loadPagesData()
 
@@ -116,7 +119,6 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
             end,
             onProgress
         )
-        IDWorldMap.showFogwar()
     end
 
     if IDWorldMap.mapTileSize == nil then
@@ -569,6 +571,7 @@ function IDWorldMap.doMoveCity(cellIndex, retData)
         if IDMainCity then
             IDMainCity.onMoveCity()
         end
+        csSelf:invoke4Lua(IDWorldMap.refreshPagesData, 0.5)
     end
 end
 
@@ -666,6 +669,20 @@ function IDWorldMap.destory()
 
     GameObject.DestroyImmediate(IDWorldMap.fogOfWarInfluence.gameObject)
     IDWorldMap.fogOfWarInfluence = nil
+end
+
+---@public 是否可见
+function IDWorldMap.isVisibile(position, bounds)
+    if position and
+     MyCfg.self.fogOfWar:GetVisibility(position) ~= FogOfWarSystem.FogVisibility.Visible 
+    and MyCfg.self.fogOfWar:GetVisibility(position) ~= FogOfWarSystem.FogVisibility.Undetermined
+    then
+        return false
+    end
+    if bounds and (not IDLCameraMgr.isInCameraView(bounds)) then
+        return false
+    end
+    return true
 end
 --------------------------------------------
 return IDWorldMap

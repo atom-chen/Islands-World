@@ -17,6 +17,9 @@ function m:Start() end
 ---public Void reset(Boolean forceUpdate)
 ---@param Boolean forceUpdate
 function m:reset(forceUpdate) end
+---public Void onFinishLoadAssets(GameObject go)
+---@param optional GameObject go
+function m:onFinishLoadAssets(go) end
 ---public Void setRenderQueueExe()
 function m:setRenderQueueExe() end
 ---public Void setRenderQueue(Boolean isForce)

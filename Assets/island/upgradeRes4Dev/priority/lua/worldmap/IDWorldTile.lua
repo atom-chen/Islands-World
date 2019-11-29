@@ -47,21 +47,16 @@ function IDWorldTile:init(csobj, gidx, type, data, attr)
     self.hudData.data = self.serverData
     self.hudData.attr = self.attr
 
-    -- 在摄像机可视范围的处理
-    if IDLCameraMgr.isInCameraView(self.bounds) then
-        self.isShowingBody = true
-        self:showBody()
-    else
-        self.isShowingBody = false
-        self:hideBody()
-    end
+    self.isShowingBody = true
+    self:showBody()
 end
 
 function IDWorldTile:showHud()
     local gid = bio2number(self.attr.GID)
-    if not (gid == IDConst.WorldmapCellType.user or gid == IDConst.WorldmapCellType.port) 
-    or (MyCfg.self.fogOfWar:GetVisibility(self.transform.position) ~= FogOfWarSystem.FogVisibility.Visible)
-    then
+    if
+        not (gid == IDConst.WorldmapCellType.user or gid == IDConst.WorldmapCellType.port) or
+            not IDWorldMap.isVisibile(self.transform.position)
+     then
         return
     end
 
@@ -84,6 +79,8 @@ function IDWorldTile:showHud()
                 SetActive(self.hud.gameObject, true)
             end
         )
+    else
+        self.hud:init(self.hudData, nil)
     end
 end
 
@@ -125,19 +122,19 @@ function IDWorldTile:releaseShadow()
     end
 end
 
-function IDWorldTile:onScaleScreen(delta, offset)
-    if IDLCameraMgr.isInCameraView(self.bounds) then
-        if not self.isShowingBody then
-            self.isShowingBody = true
-            self:showBody()
-        end
-    else
-        if self.isShowingBody then
-            self.isShowingBody = false
-            self:hideBody()
-        end
-    end
-end
+-- function IDWorldTile:onScaleScreen(delta, offset)
+--     if IDLCameraMgr.isInCameraView(self.bounds) then
+--         if not self.isShowingBody then
+--             self.isShowingBody = true
+--             self:showBody()
+--         end
+--     else
+--         if self.isShowingBody then
+--             self.isShowingBody = false
+--             self:hideBody()
+--         end
+--     end
+-- end
 
 function IDWorldTile:showBody()
     SetActive(self.body, true)
