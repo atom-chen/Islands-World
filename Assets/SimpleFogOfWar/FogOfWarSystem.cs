@@ -55,6 +55,11 @@ namespace SimpleFogOfWar
 
         static readonly List<FogOfWarInfluence> influences = new List<FogOfWarInfluence>();
 
+        public List<FogOfWarInfluence> getInfluences()
+        {
+            return influences;
+        }
+
         /// <summary>
         /// The interval at which snapshots are taken that are used by <see cref="GetVisibility"/> 
         /// (higher numbers = slower updates = more inaccurate queries, but decreasing performance impact)

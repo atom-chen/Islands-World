@@ -4,18 +4,19 @@
 ---@field public serverData NetProtoIsland.ST_mapCell
 ---@field public pageIdx number
 ---@field public bounds UnityEngine.Bounds
+---@field public position UnityEngine.Vector3
 
 require("public.class")
 ---@class IDWorldMapPage
 IDWorldMapPage = class("IDWorldMapPage")
 
 function IDWorldMapPage:init(pageIdx)
-    self.pageIdx = pageIdx
     self.mapCells = {}
     ---@type Coolape.GridBase
     self.grid = IDWorldMap.grid.grid
-    self.baseData = IDDBWorldMap.getCfgByPageIdx(self.pageIdx)
 
+    self.pageIdx = pageIdx
+    self.baseData = IDDBWorldMap.getCfgByPageIdx(self.pageIdx)
     self.pageData = {} -- 一屏的数据,里面存的是IDWorldMapPage.CellData
     self:wrapPageData()
     self:refreshTiles()
@@ -25,6 +26,7 @@ end
 ---@public 检测数据是否超时
 function IDWorldMapPage:checkDataTimeout()
     IDDBWorldMap.getDataByPageIdx(self.pageIdx)
+    InvokeEx.cancelInvoke(self:wrapFunction4CS(self.checkDataTimeout))
     InvokeEx.invoke(self:wrapFunction4CS(self.checkDataTimeout), IDDBWorldMap.ConstTimeOutSec)
 end
 
@@ -47,11 +49,14 @@ function IDWorldMapPage:addPageData(index, id, serverData)
     local pos, size
     size = bio2number(pdata.attr.Size)
     if size % 2 == 0 then
-        pos = self.grid:GetCellPosition(pdata.index)
+        pos = self.grid:GetCellPosition(index)
     else
-        pos = self.grid:GetCellCenter(pdata.index)
+        pos = self.grid:GetCellCenter(index)
     end
-    pdata.bounds = MyBoundsPool.borrow(pos, Vector3.one * size)
+    local s = Vector3.one
+    s.y = 0.1
+    pdata.position = pos
+    pdata.bounds = MyBoundsPool.borrow(pos, s * size)
     self.pageData[index] = pdata
 end
 
@@ -81,14 +86,46 @@ function IDWorldMapPage:refreshTiles()
         end
     end
 
-    self:checkVisible()
+    local centerPos
+    local lastHit =
+        Utl.getRaycastHitInfor(
+        MyCfg.self.mainCamera,
+        Vector3(Screen.width / 2, Screen.height / 2, 0),
+        Utl.getLayer("Water")
+    )
+    if lastHit then
+        centerPos = lastHit.point
+    end
+    self:checkVisible(centerPos)
 end
 
 ---@public 地块的显示与隐藏
-function IDWorldMapPage:checkVisible()
+function IDWorldMapPage:checkVisible(centerPos)
+    local pos
+    ---@type UnityEngine.Vector3
+    local diff
     ---@param d IDWorldMapPage._CellData
     for index, d in pairs(self.pageData) do
-        if IDWorldMap.isVisibile(nil, d.bounds) then
+        if centerPos then
+            -- pos = d.position +
+            -- 把bounds向中心靠拢一点，让看起来更流畅一些
+            centerPos.y = 0
+            diff = (centerPos - d.position)
+            diff = diff.normalized * 4 * self.grid.CellSize
+            d.bounds.center = d.position + diff
+        else
+            d.bounds.center = d.position
+        end
+
+        -- 把位置向最近的influence靠拢一点
+        if IDWorldMap.nearestInfluence then
+            diff = (IDWorldMap.nearestInfluence.transform.position - d.position)
+            pos = d.position + diff.normalized * 5 * self.grid.CellSize
+        else
+            pos = nil
+        end
+
+        if IDWorldMap.isVisibile(pos, d.bounds) then
             self:doLoadEachCell(index, d.serverData, d.attr, d.pageIdx, nil, nil)
         else
             local cell = self.mapCells[index]
@@ -247,16 +284,11 @@ function IDWorldMapPage:onLoadOneMapTile(name, obj, params)
 end
 
 ---@public 当缩放屏幕时
-function IDWorldMapPage:onScaleScreen(delta, offset)
-    -- ---@param v IDWorldTile
-    -- for k, v in pairs(self.mapCells) do
-    --     v:onScaleScreen(delta, offset)
-    -- end
-    self:checkVisible()
-end
+-- function IDWorldMapPage:onScaleScreen(delta, offset)
+--     self:checkVisible()
+-- end
 
 function IDWorldMapPage:clean()
-    InvokeEx.cancelInvoke(self:wrapFunction4CS(self.loadEachCell))
     InvokeEx.cancelInvoke(self:wrapFunction4CS(self.checkDataTimeout))
     if self.mapCells then
         for k, v in pairs(self.mapCells) do

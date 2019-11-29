@@ -13,6 +13,8 @@ IDWorldMap.finishEnterCityCallbacks = {}
 ---@type CLGrid
 IDWorldMap.grid = nil
 IDWorldMap.mode = GameModeSub.none
+---@type SimpleFogOfWar.FogOfWarInfluence 离屏中心最近的Influence
+IDWorldMap.nearestInfluence = nil
 ---@type GridBase
 local grid = nil
 local isInited = false
@@ -59,6 +61,7 @@ function IDWorldMap.__init()
     IDWorldMap.grid.transform.localPosition = Vector3(-worldsize * cellSize / 2, 0, -worldsize * cellSize / 2)
     IDWorldMap.grid:init(false)
 
+    ---@type SimpleFogOfWar.FogOfWarInfluence
     IDWorldMap.fogOfWarInfluence = GameObject("fogOfWarInfluence"):AddComponent(typeof(FogOfWarInfluence))
     IDWorldMap.fogOfWarInfluence.transform.parent = transform
     IDWorldMap.fogOfWarInfluence.transform.localPosition = Vector3.zero
@@ -105,7 +108,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
         local pageIdx = IDWorldMap.getPageIdx(gidx)
         cityGidx = gidx
         centerPageIdx = pageIdx
-        
+
         -- 先设置fog，后面加载地图地块时会用到判断是否可见
         IDWorldMap.showFogwar()
         IDWorldMap.mode = GameModeSub.map
@@ -260,10 +263,7 @@ end
 function IDWorldMap.scaleGround(delta, offset)
     drag4World:procScaler(offset)
     IDWorldMap.setGameMode()
-    ---@param v IDWorldMapPage
-    for k, v in pairs(pages) do
-        v:onScaleScreen(delta, offset)
-    end
+    IDWorldMap.recheckCellsVisible()
     IDMainCity.onScaleScreen(delta, offset)
     if IDWorldMap.mapTileSize then
         SetActive(IDWorldMap.mapTileSize, false)
@@ -292,11 +292,46 @@ function IDWorldMap.onDragMove(delta)
             end
         end
     end
+    IDWorldMap.recheckCellsVisible()
+end
+
+function IDWorldMap.recheckCellsVisible()
+    if IDWorldMap.isRecheckingCellsVisible then
+        return
+    end
+    IDWorldMap.isRecheckingCellsVisible = true
+    InvokeEx.invokeByUpdate(IDWorldMap.doRecheckCellsVisible, 0.5)
+end
+
+function IDWorldMap.doRecheckCellsVisible()
+    local centerPos
+    local lastHit =
+        Utl.getRaycastHitInfor(
+        MyCfg.self.mainCamera,
+        Vector3(Screen.width / 2, Screen.height / 2, 0),
+        Utl.getLayer("Water")
+    )
+    if lastHit then
+        centerPos = lastHit.point
+
+        -- 取得最近的influence
+        local influences = MyCfg.self.fogOfWar:getInfluences()
+        local nearestDis = -1
+        local dis
+        IDWorldMap.nearestInfluence = nil
+        for i = 0, influences.Count - 1 do
+            dis = Vector3.Distance(influences[i].transform.position, centerPos)
+            if nearestDis < 0 or dis < nearestDis then
+                IDWorldMap.nearestInfluence = influences[i]
+            end
+        end
+    end
 
     ---@param v IDWorldMapPage
     for k, v in pairs(pages) do
-        v:onScaleScreen(delta)
+        v:checkVisible(centerPos)
     end
+    IDWorldMap.isRecheckingCellsVisible = false
 end
 
 ---@public 刷新9屏
@@ -430,6 +465,9 @@ function IDWorldMap.onPress(isPressed)
     end
     if isPressed then
     else
+        if isDragOcean then
+            IDWorldMap.doRecheckCellsVisible()
+        end
         csSelf:invoke4Lua(
             function()
                 isDragOcean = false
@@ -571,7 +609,7 @@ function IDWorldMap.doMoveCity(cellIndex, retData)
         if IDMainCity then
             IDMainCity.onMoveCity()
         end
-        csSelf:invoke4Lua(IDWorldMap.refreshPagesData, 0.5)
+        csSelf:invoke4Lua(IDWorldMap.recheckCellsVisible, 0.5)
     end
 end
 
@@ -645,6 +683,7 @@ end
 
 ---@public 离开世界后的清理
 function IDWorldMap.clean()
+    IDWorldMap.isRecheckingCellsVisible = false
     IDWorldMap.finishEnterCityCallbacks = {}
     IDWorldMap.cleanPages()
     if IDWorldMap.mapTileSize then
@@ -673,10 +712,10 @@ end
 
 ---@public 是否可见
 function IDWorldMap.isVisibile(position, bounds)
-    if position and
-     MyCfg.self.fogOfWar:GetVisibility(position) ~= FogOfWarSystem.FogVisibility.Visible 
-    and MyCfg.self.fogOfWar:GetVisibility(position) ~= FogOfWarSystem.FogVisibility.Undetermined
-    then
+    if
+        position and MyCfg.self.fogOfWar:GetVisibility(position) ~= FogOfWarSystem.FogVisibility.Visible and
+            MyCfg.self.fogOfWar:GetVisibility(position) ~= FogOfWarSystem.FogVisibility.Undetermined
+     then
         return false
     end
     if bounds and (not IDLCameraMgr.isInCameraView(bounds)) then

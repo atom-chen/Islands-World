@@ -62,15 +62,23 @@ end
 function IDOcean.onPress()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onPress(true)
-    elseif MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.mapBtwncity then
-        IDWorldMap.onPress(true)
+    elseif MyCfg.mode == GameMode.map then
+        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+            IDWorldMap.onPress(true)
+        else
+            IDMainCity.onPress(true)
+        end
     end
 end
 function IDOcean.onRelease()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onPress(false)
-    elseif MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.mapBtwncity then
-        IDWorldMap.onPress(false)
+    elseif MyCfg.mode == GameMode.map then
+        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+            IDWorldMap.onPress(false)
+        else
+            IDMainCity.onPress(false)
+        end
     end
 end
 
@@ -78,8 +86,12 @@ function IDOcean.onClick()
     -- 点击了海面
     if MyCfg.mode == GameMode.city then
         IDMainCity.onClickOcean()
-    elseif MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.mapBtwncity then
-        IDWorldMap.onClickOcean()
+    elseif MyCfg.mode == GameMode.map then
+        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+            IDWorldMap.onClickOcean()
+        else
+            IDMainCity.onClickOcean()
+        end
     elseif MyCfg.mode == GameMode.battle then
         IDLBattle.onClickOcean()
     end
@@ -88,8 +100,12 @@ end
 function IDOcean.onDrag()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onDragOcean()
-    elseif MyCfg.mode == GameMode.map or MyCfg.mode == GameMode.mapBtwncity then
-        IDWorldMap.onDragOcean()
+    elseif MyCfg.mode == GameMode.map then
+        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+            IDWorldMap.onDragOcean()
+        else
+            IDMainCity.onDragOcean()
+        end
     end
 end
 
