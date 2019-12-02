@@ -217,16 +217,6 @@ namespace Coolape
 				Utl.doCallback(onPressCallback, false);
 			}
 
-//			if (Input.GetKeyDown(KeyCode.J)) {
-//				if (lfonPressAttack != null) {
-//					lfonPressAttack.Call(null, true);
-//				}
-//			} else if (Input.GetKeyUp(KeyCode.J)) {
-//				if (lfonPressAttack != null) {
-//					lfonPressAttack.Call(null, false);
-//				}
-//			}
-
 #endif
 		}
 	}

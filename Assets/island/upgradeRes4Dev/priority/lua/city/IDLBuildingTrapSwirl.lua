@@ -6,7 +6,7 @@ IDLBuildingTrapSwirl = class("IDLBuildingTrapSwirl", IDLBuildingTrap)
 
 function IDLBuildingTrapSwirl:__init(selfObj)
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapSwirl)
+    local base = IDLBuildingTrapSwirl.super
     if base.__init(self, selfObj) then
         ---@type Coolape.MyTween
         self.tweenPos = self.gameObject:GetComponent("MyTween")
@@ -21,7 +21,7 @@ end
 
 function IDLBuildingTrapSwirl:doAttack()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapSwirl)
+    local base = IDLBuildingTrapSwirl.super
     base.doAttack(self)
 
     if self.isTrigered then
@@ -73,7 +73,7 @@ function IDLBuildingTrapSwirl:doTargetsHurt(targets)
 end
 
 function IDLBuildingTrapSwirl:clean()
-    self:getBase(IDLBuildingTrapSwirl).clean(self)
+    IDLBuildingTrapSwirl.super.clean(self)
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doTargetsHurt))
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.onDead))
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doFire))

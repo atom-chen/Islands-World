@@ -288,6 +288,9 @@ namespace Coolape
             if (pathList == null || nextPahtIndex >= pathList.Count)
             {
                 Debug.LogError("moving error");
+
+                stopMove();
+                Utl.doCallback(onArrivedCallback);
                 return;
             }
 

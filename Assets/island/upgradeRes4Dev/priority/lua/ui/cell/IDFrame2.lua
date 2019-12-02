@@ -3,14 +3,8 @@ do
     local _cell = {}
     local csSelf = nil;
     local transform = nil;
+    ---@type _FrameData
     local mData = nil;
-    --[[
-        mData.title:标题
-        mData.closeCallback:关闭回调
-        mData.panel:CLPanelLua
-        mData.hideClose:true时隐藏关闭按钮
-        mData.hideTitle:true时隐藏标题
-    --]]
     local uiobjs = {}
 
     -- 初始化，只调用一次

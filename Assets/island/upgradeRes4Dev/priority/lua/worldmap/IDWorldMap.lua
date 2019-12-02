@@ -92,6 +92,13 @@ function IDWorldMap.__init()
             callback = IDWorldMap.popupEvent.moveCity,
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
+        },
+        docked = {
+            -- 停泊
+            nameKey = "Docked",
+            callback = IDWorldMap.popupEvent.docked,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
         }
     }
 end
@@ -501,17 +508,26 @@ end
 function IDWorldMap.onClickTile(tile)
     isDragOcean = false
     local index = tile.gidx
-    local cellPos = grid:GetCellCenter(index)
+    -- local cellPos = grid:GetCellCenter(index)
     if MyCfg.mode == GameMode.map then
         if IDWorldMap.mapTileSize then
             IDWorldMap.mapTileSize.transform.position = tile.transform.position
             IDWorldMap.mapTileSize.transform.localScale = Vector3.one * tile.size
             SetActive(IDWorldMap.mapTileSize, true)
         end
-        if MyCfg.self.fogOfWar:GetVisibility(tile.transform.position) == FogOfWarSystem.FogVisibility.Visible then
+        if IDWorldMap.isVisibile(tile.transform.position) then
             -- 当可见时，才弹出菜单
             local label = joinStr("Pos:", index)
-            IDUtl.showPopupMenus(tile, cellPos, {popupMenus.attack}, label, index)
+            local buttons = {}
+            if tile.type == IDConst.WorldmapCellType.user then
+                table.insert(buttons, popupMenus.attack)
+            elseif tile.type == IDConst.WorldmapCellType.port then
+                table.insert(buttons, popupMenus.docked)
+            elseif tile.type == IDConst.WorldmapCellType.decorate then
+                label = joinStr("[ff0000]", LGet("CannotProcTile"), "[-]")
+            end
+
+            IDUtl.showPopupMenus(tile, tile.transform.position, buttons, label, index)
         end
     end
 end
@@ -532,7 +548,7 @@ function IDWorldMap.onClickOcean()
             IDWorldMap.mapTileSize.transform.localScale = Vector3.one
             SetActive(IDWorldMap.mapTileSize, true)
         end
-        if MyCfg.self.fogOfWar:GetVisibility(cellPos) == FogOfWarSystem.FogVisibility.Visible then
+        if IDWorldMap.isVisibile(cellPos) then
             -- 当可见时，才弹出菜单
             local label = joinStr("Pos:", index)
             IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
@@ -542,10 +558,17 @@ end
 
 ---@public 点击了自己的城
 function IDWorldMap.onClickSelfCity()
-    IDWorldMap.onClickOcean()
+    -- IDWorldMap.onClickOcean()
     local clickPos = MyMainCamera.lastHit.point
     local index = grid:GetCellIndex(clickPos)
     local cellPos = grid:GetCellCenter(index)
+
+    if IDWorldMap.mapTileSize then
+        IDWorldMap.mapTileSize.transform.position = cellPos
+        IDWorldMap.mapTileSize.transform.localScale = Vector3.one
+        SetActive(IDWorldMap.mapTileSize, true)
+    end
+
     local buttons = {}
     table.insert(buttons, popupMenus.enterCity)
     table.insert(buttons, popupMenus.attack)
@@ -597,6 +620,10 @@ IDWorldMap.popupEvent = {
         CLLNet.send(
             NetProtoIsland.send.moveCity(bio2number(IDDBCity.curCity.idx), cellIndex, IDWorldMap.doMoveCity, cellIndex)
         )
+    end,
+    ---@public 停靠
+    docked = function(cellIndex)
+        IDUtl.hidePopupMenus()
     end
 }
 

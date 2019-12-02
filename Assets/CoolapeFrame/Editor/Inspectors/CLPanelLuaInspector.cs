@@ -8,7 +8,7 @@ using Coolape;
 [CustomEditor(typeof(CLPanelLua), true)]
 public class CLPanelLuaInspector : CLBehaviour4LuaInspector
 {
-	CLPanelLua panel;
+	private CLPanelLua panel;
 	Object panelData;
     Object frameObj;
     bool _isFinishInit = false;

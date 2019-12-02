@@ -5,7 +5,7 @@ require("city.IDLBuildingTrap")
 IDLBuildingTrapIceStorm = class("IDLBuildingTrapIceStorm", IDLBuildingTrap)
 
 function IDLBuildingTrapIceStorm:__init(selfObj, other)
-    if self:getBase(IDLBuildingTrapIceStorm).__init(self, selfObj, other) then
+    if IDLBuildingTrapIceStorm.super.__init(self, selfObj, other) then
         ---@type Coolape.MyTween
         self.tweenPos = self.gameObject:GetComponent("MyTween")
 
@@ -18,7 +18,7 @@ end
 
 function IDLBuildingTrapIceStorm:doAttack()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapIceStorm)
+    local base = IDLBuildingTrapIceStorm.super
     base.doAttack(self)
 
     if self.isTrigered then
@@ -61,7 +61,7 @@ function IDLBuildingTrapIceStorm:doFire()
 end
 
 function IDLBuildingTrapIceStorm:clean()
-    self:getBase(IDLBuildingTrapIceStorm).clean(self)
+    IDLBuildingTrapIceStorm.super.clean(self)
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.onDead))
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doFire))
     self.spin.enabled = false

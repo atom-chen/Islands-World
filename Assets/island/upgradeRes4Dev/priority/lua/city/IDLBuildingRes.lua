@@ -6,7 +6,7 @@ IDLBuildingRes = class("IDLBuildingRes", IDLBuilding)
 
 function IDLBuildingRes:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingRes).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingRes.super.init(self, selfObj, id, star, lev, _isOffense, other)
 
     -- 设置建筑的资源类型
     self.resType = IDUtl.getResTypeByBuildingID(self.id)
@@ -84,7 +84,7 @@ function IDLBuildingRes:hideCollectHud()
 end
 
 function IDLBuildingRes:OnClick()
-    self:getBase(IDLBuildingRes).OnClick(self)
+    IDLBuildingRes.super.OnClick(self)
     if self.tipHud then
         if self:canCollect() then
             showHotWheel()
@@ -166,7 +166,7 @@ function IDLBuildingRes:canCollect()
 end
 
 function IDLBuildingRes:SetActive(active)
-    self:getBase(IDLBuildingRes).SetActive(self, active)
+    IDLBuildingRes.super.SetActive(self, active)
     if active then
         if self.serverData and bio2number(self.serverData.state) == IDConst.BuildingState.normal then
             self:showCollect()
@@ -178,7 +178,7 @@ end
 
 function IDLBuildingRes:clean()
     self.csSelf:cancelInvoke4Lua()
-    self:getBase(IDLBuildingRes).clean(self)
+    IDLBuildingRes.super.clean(self)
     self:hideCollectHud()
 end
 

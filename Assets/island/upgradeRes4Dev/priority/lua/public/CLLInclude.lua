@@ -408,7 +408,22 @@ do
     number2bio = BioUtl.number2bio
     LGet = Localization.Get
     hideTopPanel = CLPanelManager.hideTopPanel
-    getPanelAsy = CLPanelManager.getPanelAsy
+    ---@public 异步加载panel
+    function getPanelAsy(panelName, callback, paras, luaTable)
+        if luaTable then
+            CLPanelManager.getPanelAsy(
+                panelName,
+                ---@param p Coolape.CLPanelLua
+                function(p, orgs)
+                    p.luaTable = luaTable
+                    callback(p, orgs)
+                end,
+                paras
+            )
+        else
+            CLPanelManager.getPanelAsy(panelName, callback, paras)
+        end
+    end
     NetSuccess = Net.SuccessCode
     -------------------------------------------------------
 

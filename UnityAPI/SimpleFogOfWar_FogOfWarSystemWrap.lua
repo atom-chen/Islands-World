@@ -16,6 +16,9 @@ local m = { }
 ---public FogOfWarSystem .ctor()
 ---@return FogOfWarSystem
 function m.New() end
+---public List`1 getInfluences()
+---@return List`1
+function m:getInfluences() end
 ---public Void RegisterInfluence(FogOfWarInfluence influence)
 ---@param optional FogOfWarInfluence influence
 function m.RegisterInfluence(influence) end

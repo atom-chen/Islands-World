@@ -6,7 +6,7 @@ IDLBuildingTrapAirBomb = class("IDLBuildingTrapAirBomb", IDLBuildingTrap)
 
 function IDLBuildingTrapAirBomb:__init(csSelfObj, other)
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapAirBomb)
+    local base = IDLBuildingTrapAirBomb.super
     if base.__init(self, csSelfObj, other) then
         ---@type Coolape.MyTween
         self.tweenPos = self.gameObject:GetComponent("MyTween")
@@ -44,7 +44,7 @@ end
 
 function IDLBuildingTrapAirBomb:clean()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapAirBomb)
+    local base = IDLBuildingTrapAirBomb.super
     base.clean(self)
     self.tweenPos:stop()
 end

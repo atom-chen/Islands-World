@@ -5,7 +5,7 @@ require("city.IDLBuilding")
 IDLBuildingDockyard = class("IDLBuildingDockyard", IDLBuilding)
 
 function IDLBuildingDockyard:__init(selfObj, other)
-    if self:getBase(IDLBuildingDockyard).__init(self, selfObj, other) then
+    if IDLBuildingDockyard.super.__init(self, selfObj, other) then
         self.shipsInPorts = {}
         self.shipsInOcean = {}
         self.ports = {}
@@ -20,7 +20,7 @@ end
 
 function IDLBuildingDockyard:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingDockyard).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingDockyard.super.init(self, selfObj, id, star, lev, _isOffense, other)
     self:showShipsInPort()
     if MyCfg.mode ~= GameMode.battle then
         self:buildShip()
@@ -151,7 +151,7 @@ function IDLBuildingDockyard:onShipBack(ship)
 end
 
 function IDLBuildingDockyard:SetActive(active)
-    self:getBase(IDLBuildingDockyard).SetActive(self, active)
+    IDLBuildingDockyard.super.SetActive(self, active)
     if active then
         self.csSelf:invoke4Lua(self.showShipsInOcean, 5)
     else
@@ -169,7 +169,7 @@ function IDLBuildingDockyard:SetActive(active)
 end
 
 function IDLBuildingDockyard:clean()
-    self:getBase(IDLBuildingDockyard).clean(self)
+    IDLBuildingDockyard.super.clean(self)
     self.csSelf:cancelInvoke4Lua()
     for i, v in ipairs(self.ports) do
         v.isFree = true

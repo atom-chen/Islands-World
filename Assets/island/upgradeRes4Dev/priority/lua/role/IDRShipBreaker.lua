@@ -4,7 +4,7 @@ IDRShipBreaker = class("IDRShipBreaker", IDRShip)
 
 function IDRShipBreaker:__init(csSelfObj, other)
     ---@type IDRShip
-    local base = self:getBase(IDRShipBreaker)
+    local base = IDRShipBreaker.super
     if base.__init(self, csSelfObj, other) then
         ---@type Coolape.MyTween
         self.tweenPos = self.gameObject:GetComponent("MyTween")
@@ -62,7 +62,7 @@ end
 
 function IDRShipBreaker:clean()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDRShipBreaker)
+    local base = IDRShipBreaker.super
     base.clean(self)
     self.tweenPos:stop()
 end

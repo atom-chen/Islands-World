@@ -6,7 +6,7 @@ IDLBuildingTrapFrozen = class("IDLBuildingTrapFrozen", IDLBuildingTrap)
 
 function IDLBuildingTrapFrozen:fire()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapFrozen)
+    local base = IDLBuildingTrapFrozen.super
     base.fire(self)
 
     -- 冰冻//TODO:目前没有冰冻累的爆的特殊

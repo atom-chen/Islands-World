@@ -29,7 +29,7 @@ namespace Coolape
 		public  virtual void LateUpdate ()
 		{
 			if (flLateUpdate != null) {
-				flLateUpdate.Call (gameObject);
+                call(flLateUpdate, gameObject);
 			}
 		}
 
@@ -150,7 +150,7 @@ namespace Coolape
 		public virtual void FixedUpdate ()
 		{
 			if (flFixedUpdate != null) {
-				flFixedUpdate.Call (gameObject);
+                call(flFixedUpdate, gameObject);
 			}
 			if (canFixedInvoke) {
 				frameCounter++;
@@ -263,7 +263,7 @@ namespace Coolape
 		public virtual void Update ()
 		{
 			if (flUpdate != null) {
-				flUpdate.Call (gameObject);
+                call(flUpdate, gameObject);
 			}
 			if (canUpdateInvoke) {
 				if (invokeByUpdateList.Count > 0) {

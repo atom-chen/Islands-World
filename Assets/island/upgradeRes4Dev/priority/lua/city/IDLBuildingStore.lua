@@ -6,7 +6,7 @@ IDLBuildingStore = class("IDLBuildingStore", IDLBuilding)
 
 function IDLBuildingStore:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingStore).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingStore.super.init(self, selfObj, id, star, lev, _isOffense, other)
 
     -- 设置建筑的资源类型
     self.resType = IDUtl.getResTypeByBuildingID(self.id)
@@ -81,7 +81,7 @@ function IDLBuildingStore:hideFullHud()
 end
 
 function IDLBuildingStore:OnClick()
-    self:getBase(IDLBuildingStore).OnClick(self)
+    IDLBuildingStore.super.OnClick(self)
     if self.tipHud then
         CLAlert.add(LGet("MsgStoreIsFull"), Color.yellow, 1)
     end
@@ -89,7 +89,7 @@ end
 
 function IDLBuildingStore:clean()
     self.csSelf:cancelInvoke4Lua()
-    self:getBase(IDLBuildingStore).clean(self)
+    IDLBuildingStore.super.clean(self)
     self:hideFullHud()
 end
 

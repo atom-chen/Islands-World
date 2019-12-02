@@ -4,12 +4,12 @@
 IDRWorker = class("IDRWorker", IDRoleBase)
 
 function IDRWorker:__init(selfObj, other)
-    return self:getBase(IDRWorker).__init(self, selfObj, other)
+    return IDRWorker.super.__init(self, selfObj, other)
 end
 
 -- 初始化，只调用一次
 function IDRWorker:init (csObj, id, star, lev, isOffense, other)
-    self:getBase(IDRWorker).init(self, csObj, id, star, lev, isOffense, other)
+    IDRWorker.super.init(self, csObj, id, star, lev, isOffense, other)
     self.grid = IDMainCity.grid.grid
 
     -- 设置寻路
@@ -189,7 +189,7 @@ function IDRWorker:onArrivedHome()
 end
 
 function IDRWorker:clean()
-    self:getBase(IDRWorker).clean(self)
+    IDRWorker.super.clean(self)
     self:releaseShip()
     --self.seeker.mAStarPathSearch:removeGridStateChgCallback(self.onAstarChgCallback)
 end

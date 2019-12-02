@@ -5,7 +5,7 @@ require("city.IDLBuilding")
 IDLBuildingDefense = class("IDLBuildingDefense", IDLBuilding)
 local abs = math.abs
 function IDLBuildingDefense:__init(selfObj, other)
-    if self:getBase(IDLBuildingDefense).__init(self, selfObj, other) then
+    if IDLBuildingDefense.super.__init(self, selfObj, other) then
         if not self.bodyRotate then
             ---@type TweenRotation
             self.bodyRotate = getCC(self.csSelf.mbody, "pao/pao_sz", "TweenRotation")
@@ -19,7 +19,7 @@ end
 
 function IDLBuildingDefense:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingDefense).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingDefense.super.init(self, selfObj, id, star, lev, _isOffense, other)
     ---@type IDRoleBase 攻击目标
     self.target = nil
     self.csSelf.mTarget = nil
@@ -63,7 +63,7 @@ function IDLBuildingDefense:idel()
 end
 
 function IDLBuildingDefense:OnPress(go, isPress)
-    self:getBase(IDLBuildingDefense).OnPress(self, go, isPress)
+    IDLBuildingDefense.super.OnPress(self, go, isPress)
 
     self.OnPressed = isPress
     if isPress then
@@ -153,7 +153,7 @@ function IDLBuildingDefense:hideAttackRang()
 end
 
 function IDLBuildingDefense:SetActive(active)
-    self:getBase(IDLBuildingDefense).SetActive(self, active)
+    IDLBuildingDefense.super.SetActive(self, active)
     if active then
         self:idel()
     end
@@ -271,7 +271,7 @@ function IDLBuildingDefense:clean()
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doAttack))
     self:setTarget(nil)
     self.csSelf:cancelInvoke4Lua()
-    self:getBase(IDLBuildingDefense).clean(self)
+    IDLBuildingDefense.super.clean(self)
     self:hideAttackRang()
     self.target = nil
 end

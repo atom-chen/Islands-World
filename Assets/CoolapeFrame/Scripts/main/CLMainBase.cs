@@ -183,7 +183,7 @@ namespace Coolape
 			if (Input.GetKeyUp (KeyCode.Escape)) {
 				//点了返回键
 				if (lfexitGmaeConfirm != null) {
-					lfexitGmaeConfirm.Call ();
+					call (lfexitGmaeConfirm);
 				}
 			}
 			// proc net offline
@@ -208,7 +208,7 @@ namespace Coolape
 			}
 			LuaFunction f = getLuaFunction ("onOffline");
 			if (f != null) {
-				f.Call ();
+				call (f);
 			}
 		}
 	}

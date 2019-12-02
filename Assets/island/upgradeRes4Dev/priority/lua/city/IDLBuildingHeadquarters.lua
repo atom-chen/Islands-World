@@ -6,7 +6,7 @@ IDLBuildingHeadquarters = class("IDLBuildingHeadquarters", IDLBuilding)
 
 function IDLBuildingHeadquarters:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingHeadquarters).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingHeadquarters.super.init(self, selfObj, id, star, lev, _isOffense, other)
     ---@type IDCellWorldTileHudParam
     self.hudData4worldmap = {}
     self.hudData4worldmap.target = self.transform
@@ -22,7 +22,7 @@ end
 
 function IDLBuildingHeadquarters:OnClick()
     if IDWorldMap.mode == GameModeSub.city then
-        self:getBase(IDLBuildingHeadquarters).OnClick(self)
+        IDLBuildingHeadquarters.super.OnClick(self)
     elseif IDWorldMap.mode == GameModeSub.map then
         IDWorldMap.onClickSelfCity()
     end
@@ -96,7 +96,6 @@ end
 
 ---@public 显示隐藏（可能为连带做一些其它的处理）
 function IDLBuildingHeadquarters:SetActive(active)
-    -- self:getBase(IDLBuildingHeadquarters).SetActive(self, active)
     if active then
         -- self:loadFloor()
         self:upgrading()
@@ -110,7 +109,7 @@ function IDLBuildingHeadquarters:SetActive(active)
 end
 
 function IDLBuildingHeadquarters:clean()
-    self:getBase(IDLBuildingHeadquarters).clean(self)
+    IDLBuildingHeadquarters.super.clean(self)
     self:hideHud4WorldMap()
 end
 --------------------------------------------

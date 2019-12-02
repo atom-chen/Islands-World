@@ -4,14 +4,14 @@ IDRSoldier = class("IDRSoldier", IDRoleBase)
 
 ---@param selfObj MyUnit
 function IDRSoldier:__init(selfObj, other)
-    if self:getBase(IDRSoldier).__init(self, selfObj, other) then
+    if IDRSoldier.super.__init(self, selfObj, other) then
         ---@type Coolape.MyTween
         self.tween = self.gameObject:GetComponent("MyTween")
     end
     return false
 end
 function IDRSoldier:init(selfObj, id, star, lev, _isOffense, other)
-    self:getBase(IDRSoldier).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDRSoldier.super.init(self, selfObj, id, star, lev, _isOffense, other)
     self.isSeekUseRay = false
     self.seeker.endReachedDistance = self.MinAttackRange
     self.seeker.mAStarPathSearch = IDMainCity.astar4Tile
@@ -37,14 +37,14 @@ function IDRSoldier:onCannotReach4AttackTarget()
 end
 
 function IDRSoldier:onSearchPath(pathList, canReach)
-    self:getBase(IDRSoldier).onSearchPath(self, pathList, canReach)
+    IDRSoldier.super.onSearchPath(self, pathList, canReach)
     self.currIndex = self.grid:GetCellIndex(self.transform.position)
     self.oldIndex = self.currIndex
     self:runOrSwim()
 end
 
 function IDRSoldier:onMoving()
-    self:getBase(IDRSoldier).onMoving(self)
+    IDRSoldier.super.onMoving(self)
 
     self.currIndex = self.grid:GetCellIndex(self.transform.position)
     local tmpPos = self.transform.position
@@ -76,7 +76,7 @@ function IDRSoldier:runOrSwim()
 end
 
 function IDRSoldier:onArrived()
-    self:getBase(IDRSoldier).onArrived(self)
+    IDRSoldier.super.onArrived(self)
     if self.target then
         Utl.RotateTowards(self.transform, self.target.transform.position - self.transform.position)
     end

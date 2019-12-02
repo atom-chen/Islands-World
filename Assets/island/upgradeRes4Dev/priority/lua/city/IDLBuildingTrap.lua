@@ -12,7 +12,7 @@ function IDLBuildingTrap:init(selfObj, id, star, lev, _isOffense, other)
         self.bodyRotate = selfObj.mbody:GetComponent("TweenRotation")
     end
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingTrap).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingTrap.super.init(self, selfObj, id, star, lev, _isOffense, other)
     -- 是否已经触发了
     self.isTrigered = false
 
@@ -148,7 +148,7 @@ function IDLBuildingTrap:iamDie()
 end
 
 function IDLBuildingTrap:clean()
-    self:getBase(IDLBuildingTrap).clean(self)
+    IDLBuildingTrap.super.clean(self)
     self:hideAttackRang()
 end
 

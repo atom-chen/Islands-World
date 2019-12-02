@@ -31,7 +31,7 @@ IDRoleBase = class("IDRoleBase", IDLUnitBase)
 
 ---@param csSelf Coolape.CLUnit
 function IDRoleBase:ctor(csSelf)
-    self:getBase(IDRoleBase).ctor(self, csSelf)
+    IDRoleBase.super.ctor(self, csSelf)
 
     ---@type WrapBattleUnitData
     self.serverData = nil -- 服务器数据
@@ -43,7 +43,7 @@ end
 
 ---@param selfObj MyUnit
 function IDRoleBase:__init(selfObj, other)
-    if self:getBase(IDRoleBase).__init(self, selfObj, other) then
+    if IDRoleBase.super.__init(self, selfObj, other) then
         self.body = selfObj.mbody
         if self.body and (not self.body:IsNull()) then
             ---@type Coolape.CLRoleAction
@@ -70,7 +70,7 @@ function IDRoleBase:__init(selfObj, other)
 end
 
 function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
-    self:getBase(IDRoleBase).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDRoleBase.super.init(self, selfObj, id, star, lev, _isOffense, other)
     self.csSelf.isOffense = _isOffense
     self.isOffense = _isOffense
     self.id = id
@@ -251,7 +251,7 @@ end
 ---@param damage number 伤害值
 ---@param attacker IDLUnitBase 攻击方
 function IDRoleBase:onHurt(damage, attacker)
-    self:getBase(IDRoleBase).onHurt(self, damage, attacker)
+    IDRoleBase.super.onHurt(self, damage, attacker)
 end
 
 function IDRoleBase:iamDie()
@@ -305,7 +305,7 @@ function IDRoleBase:unFrozen()
 end
 
 function IDRoleBase:pause()
-    self:getBase(IDRoleBase).pause(self)
+    IDRoleBase.super.pause(self)
     if self.action then
         self.action.enabled = false
     end
@@ -315,7 +315,7 @@ function IDRoleBase:pause()
 end
 
 function IDRoleBase:regain()
-    self:getBase(IDRoleBase).regain(self)
+    IDRoleBase.super.regain(self)
     if self.action then
         self.action.enabled = true
     end
@@ -563,7 +563,7 @@ function IDRoleBase:clean()
             self.seeker.mAStarPathSearch:removeGridStateChgCallback(self.onAstarChgCallback)
         end
     end
-    self:getBase(IDRoleBase).clean(self)
+    IDRoleBase.super.clean(self)
     if self.shadow then
         CLUIOtherObjPool.returnObj(self.shadow.gameObject)
         SetActive(self.shadow.gameObject, false)

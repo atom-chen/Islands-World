@@ -21,7 +21,7 @@ function IDRShipLandCraft:onSearchPath(pathList, canReach)
     if MyCfg.mode == GameMode.battle then
         self.seeker:startMove()
     else
-        self:getBase(IDRShipLandCraft).onSearchPath(self, pathList, canReach)
+        IDRShipLandCraft.super.onSearchPath(self, pathList, canReach)
     end
 end
 

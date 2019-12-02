@@ -52,7 +52,7 @@ public class CLUIPopListPanel : CLPanelLua {
 
 	void onClickCell(params object[] orgs) {
 		CLCellLua cell = (CLCellLua)(orgs[0]);
-		object[] ret = cell.getLuaFunction("getData").Call();
+		object[] ret = call(cell.getLuaFunction("getData"));
 		if(ret != null && ret.Length > 0) {
 			selectedItem = ret[0].ToString();		
 		}

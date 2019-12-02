@@ -20,14 +20,7 @@ public class MyUnit : CLUnit
 		setLua ();
 		base.init (id, star, lev, isOffense, other);
 		if (lfinit != null) {
-            if (isClassLua)
-            {
-                lfinit.Call(luaTable, this, id, star, lev, isOffense, other);
-            }
-            else
-            {
-                lfinit.Call(this, id, star, lev, isOffense, other);
-            }
+            call(lfinit, this, id, star, lev, isOffense, other);
 		}
 	}
 	public override void doAttack ()

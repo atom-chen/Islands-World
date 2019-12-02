@@ -51,12 +51,12 @@ namespace Coolape
 					setLua ();
 					isFinishInit = true;
 					if (lfInit != null) {
-						lfInit.Call (this);
+                        call(lfInit, this);
 					}
 				}
 		
 				if (lfshow != null) {
-					lfshow.Call (gameObject, data);
+                    call(lfshow, gameObject, data);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -67,22 +67,18 @@ namespace Coolape
 		{
 			try {
 				if (lfRefresh != null) {
-					lfRefresh.Call (paras);
+                    call(lfRefresh, paras);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
 			}
 		}
 
-		public void OnClick ()
+		public override void OnClick ()
 		{
 			try {
 				if (onClickCallback != null) {
-					if (typeof(LuaFunction) == onClickCallback.GetType ()) {
-						((LuaFunction)onClickCallback).Call (this);
-					} else if (typeof(Callback) == onClickCallback.GetType ()) {
-						((Callback)onClickCallback) (this);
-					}
+                    Utl.doCallback(onClickCallback, this);
 				}
                 base.OnClick();
 			} catch (System.Exception e) {
@@ -96,7 +92,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button);
+                    call(f, button);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -108,7 +104,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button);
+                    call(f, button);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -120,7 +116,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button, isOver);
+					call (f, button, isOver);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -132,7 +128,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button, isPressed);
+					call (f, button, isPressed);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -144,7 +140,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button, delta);
+					call (f, button, delta);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -156,7 +152,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button, go);
+					call (f, button, go);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);
@@ -168,7 +164,7 @@ namespace Coolape
 			try {
 				LuaFunction f = getLuaFunction (functionName);
 				if (f != null) {
-					f.Call (button, key);
+					call (f, button, key);
 				}
 			} catch (System.Exception e) {
 				Debug.LogError (e);

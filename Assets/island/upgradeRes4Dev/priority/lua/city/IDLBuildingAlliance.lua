@@ -7,7 +7,7 @@ IDLBuildingAlliance = class("IDLBuildingAlliance", IDLBuildingDefense)
 ---@param selfObj MyUnit
 function IDLBuildingAlliance:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuildingAlliance).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuildingAlliance.super.init(self, selfObj, id, star, lev, _isOffense, other)
     -- 是否已经触发了
     self.isTrigered = false
 
@@ -70,7 +70,7 @@ function IDLBuildingAlliance:fire()
 end
 
 function IDLBuildingAlliance:clean()
-    self:getBase(IDLBuildingAlliance).clean(self)
+    IDLBuildingAlliance.super.clean(self)
     self:hideAttackRang()
 end
 

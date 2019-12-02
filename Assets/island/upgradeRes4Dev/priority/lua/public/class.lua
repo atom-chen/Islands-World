@@ -5,10 +5,6 @@ function m.new()
 end
 function m:ctor(...)
 end
----@public 取得父类的实例（在多重继承情况下，需要取得父类的实例时调用）
----@param selfClass table 注意不能传self.class，因为self可能是子类
-function m:getBase(selfClass)
-end
 
 ---@public 包装函数给c#用
 function m:wrapFunc(func)
@@ -30,7 +26,7 @@ end
     ------------------------------
     B = class("B", A) -- 创建类B,继承A
     function B:func1()   -- 重载func1，并且调用父类的func1，注意使用方式
-        self:getBase(B).func1(self)
+        B.super.func1(self)
         print("I'm B call func1")
     end
     function B:func3()
@@ -40,7 +36,7 @@ end
     ------------------------------
     C = class("C", B) -- 创建类C,继承B
     function C:func1() -- 重载func1，并且调用父类的func1，注意使用方式
-        self:getBase(C).func1(self)
+        C.super.func1(self)
         print("I'm C call func1")
     end
     ------------------------------
@@ -109,32 +105,16 @@ function class(classname, super)
             setmetatable(cls, {__index = super})
 
             cls.super = super
-            cls.__lev = super.__lev + 1
         else
             cls = {
                 ctor = function()
                 end
             }
-            cls.__lev = 1
         end
 
         cls.__cname = classname
         cls.__ctype = 2 -- lua
         cls.__index = cls
-
-        ---@public 取得父类的实例（在多重继承情况下，需要取得父类的实例时调用）
-        ---@param selfClass table 注意不能传self.class，因为self可能是子类
-        function cls:getBase(selfClass)
-            local obj = self
-
-            while (obj) do
-                if obj.__lev == selfClass.__lev then
-                    return obj.super
-                else
-                    obj = obj.super
-                end
-            end
-        end
 
         ---@public 包装函数给c#用
         function cls:wrapFunc(func)
@@ -144,6 +124,9 @@ function class(classname, super)
         function cls:wrapFunction4CS(func)
             if func == nil then
                 return nil
+            end
+            if self.__wrapFuncMap == nil then
+                self.__wrapFuncMap = {}
             end
             local infor = self.__wrapFuncMap[func]
             if infor == nil then
@@ -156,7 +139,7 @@ function class(classname, super)
         function cls.new(...)
             local instance = setmetatable({}, cls)
             instance.class = cls
-            instance.__wrapFuncMap = {} -- 包装函数缓存
+            instance.__wrapFuncMap = {}, -- 包装函数缓存
             instance:ctor(...)
             return instance
         end

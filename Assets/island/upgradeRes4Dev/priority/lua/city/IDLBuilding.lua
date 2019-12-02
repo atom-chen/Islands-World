@@ -4,13 +4,13 @@ IDLBuilding = class("IDLBuilding", IDLUnitBase)
 
 ---@param csSelf MyUnit
 function IDLBuilding:ctor(csSelf)
-    self:getBase(IDLBuilding).ctor(self, csSelf)
+    IDLBuilding.super.ctor(self, csSelf)
     ---@type UnityEngine.Transform
     self.shadow = nil
 end
 
 function IDLBuilding:__init(selfObj, other)
-    if self:getBase(IDLBuilding).__init(self, selfObj, other) then
+    if IDLBuilding.super.__init(self, selfObj, other) then
         ---@type UnityEngine.Transform
         self.body = selfObj.mbody
         ---@type TweenScale
@@ -28,7 +28,7 @@ function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
     self.isBuilding = true
 
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLBuilding).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLBuilding.super.init(self, selfObj, id, star, lev, _isOffense, other)
 
     -- 取得属性配置
     ---@type IDDBBuilding
@@ -444,7 +444,7 @@ end
 
 ---@public 显示隐藏（可能为连带做一些其它的处理）
 function IDLBuilding:SetActive(active)
-    self:getBase(IDLBuilding).SetActive(self, active)
+    IDLBuilding.super.SetActive(self, active)
     if active then
         self:upgrading()
         self:loadFloor()
@@ -482,7 +482,7 @@ end
 ---@param damage number 伤害值
 ---@param attacker IDLUnitBase 攻击方
 function IDLBuilding:onHurt(damage, attacker)
-    self:getBase(IDLBuilding).onHurt(self, damage, attacker)
+    IDLBuilding.super.onHurt(self, damage, attacker)
 end
 
 function IDLBuilding:iamDie()
@@ -492,7 +492,7 @@ function IDLBuilding:iamDie()
 end
 
 function IDLBuilding:clean()
-    self:getBase(IDLBuilding).clean(self)
+    IDLBuilding.super.clean(self)
 
     self.canClick = true
     self.isJump = false

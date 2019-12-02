@@ -7,6 +7,13 @@ do
     local uiobjs = {}
     local defaultGid = 1
     local tabsMap = {}
+    local titles = {
+        { gid = 1, name = LGet("Basic") },
+        { gid = 2, name = LGet("Resource") },
+        { gid = 3, name = LGet("Defense") },
+        { gid = 4, name = LGet("Trap") },
+        { gid = 5, name = LGet("Decoration") },
+    }
 
     -- 初始化，只会调用一次
     function IDPBuildings.init(csObj)
@@ -30,13 +37,6 @@ do
 
     -- 显示，在c#中。show为调用refresh，show和refresh的区别在于，当页面已经显示了的情况，当页面再次出现在最上层时，只会调用refresh
     function IDPBuildings.show()
-        local titles = {
-            { gid = 1, name = LGet("Basic") },
-            { gid = 2, name = LGet("Resource") },
-            { gid = 3, name = LGet("Defense") },
-            { gid = 4, name = LGet("Trap") },
-            { gid = 5, name = LGet("Decoration") },
-        }
         CLUIUtl.resetList4Lua(uiobjs.tabs, uiobjs.tabprefab, titles, IDPBuildings.initTabCell)
     end
 

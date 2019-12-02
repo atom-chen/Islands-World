@@ -106,26 +106,33 @@ function IDWorldMapPage:checkVisible(centerPos)
     local diff
     ---@param d IDWorldMapPage._CellData
     for index, d in pairs(self.pageData) do
-        if centerPos then
-            -- pos = d.position +
-            -- 把bounds向中心靠拢一点，让看起来更流畅一些
-            centerPos.y = 0
-            diff = (centerPos - d.position)
-            diff = diff.normalized * 4 * self.grid.CellSize
-            d.bounds.center = d.position + diff
-        else
-            d.bounds.center = d.position
+        d.bounds.center = d.position
+        local visibile = IDWorldMap.isVisibile(d.position, d.bounds)
+        if not visibile then
+            --[[ 当正确的位置上不可见时，加上偏移量再来判断一次是否可见。
+             为什么要这样做？因为有可能出现本身是可见的，因为加上了偏移量后反面不可见的情况，因此只有在不可见的情况下才处理偏移量
+             ]]
+            if centerPos then
+                -- 把bounds向中心靠拢一点，让看起来更流畅一些
+                centerPos.y = 0
+                diff = (centerPos - d.position)
+                diff = diff.normalized * 4 * self.grid.CellSize
+                d.bounds.center = d.position + diff
+            else
+                d.bounds.center = d.position
+            end
+
+            -- 把位置向最近的influence靠拢一点
+            if IDWorldMap.nearestInfluence then
+                diff = (IDWorldMap.nearestInfluence.transform.position - d.position)
+                pos = d.position + diff.normalized * 5 * self.grid.CellSize
+            else
+                pos = nil
+            end
+            visibile = IDWorldMap.isVisibile(pos, d.bounds)
         end
 
-        -- 把位置向最近的influence靠拢一点
-        if IDWorldMap.nearestInfluence then
-            diff = (IDWorldMap.nearestInfluence.transform.position - d.position)
-            pos = d.position + diff.normalized * 5 * self.grid.CellSize
-        else
-            pos = nil
-        end
-
-        if IDWorldMap.isVisibile(pos, d.bounds) then
+        if visibile then
             self:doLoadEachCell(index, d.serverData, d.attr, d.pageIdx, nil, nil)
         else
             local cell = self.mapCells[index]

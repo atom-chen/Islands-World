@@ -8,7 +8,7 @@ using Coolape;
 [CustomEditor (typeof(CLBaseLua), true)]
 public class CLBaseLuaInspector :Editor
 {
-	CLBaseLua instance;
+	private CLBaseLua instance;
 	Object luaAsset = null;
 
 	public override void OnInspectorGUI ()

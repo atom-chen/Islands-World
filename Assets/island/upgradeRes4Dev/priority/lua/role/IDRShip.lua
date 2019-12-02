@@ -3,7 +3,7 @@
 IDRShip = class("IDRShip", IDRoleBase)
 
 function IDRShip:__init(selfObj, other)
-    if self:getBase(IDRShip).__init(self, selfObj, other) then
+    if IDRShip.super.__init(self, selfObj, other) then
         self.tmpPos = nil
         return true
     end
@@ -13,7 +13,7 @@ end
 function IDRShip:init(selfObj, id, star, lev, _isOffense, other)
     self.searchBuildingWithBeachTimes = 0 -- 寻找离海岸最近建筑次数
     self.isLanded = false -- 是否已经登陆过了
-    self:getBase(IDRShip).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDRShip.super.init(self, selfObj, id, star, lev, _isOffense, other)
     self:chgState(RoleState.idel)
     if not self.attr.IsFlying then
         self:showTrail() --//TODO:拖尾还需要优化，因为有gc，为卡顿，后续再想办法
@@ -24,7 +24,7 @@ function IDRShip:onArrived()
     if self.state == RoleState.landing then
         self:landingSoldiers()
     else
-        self:getBase(IDRShip).onArrived(self)
+        IDRShip.super.onArrived(self)
         if self.state == RoleState.walkAround then
             self.csSelf:invoke4Lua(self.dogoAround, NumEx.NextInt(20, 60) / 10)
         elseif self.state == RoleState.backDockyard then
@@ -223,7 +223,7 @@ function IDRShip:clean()
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doLandingSoldier))
     self.csSelf:cancelInvoke4Lua()
     self.dockyard = nil
-    self:getBase(IDRShip).clean(self)
+    IDRShip.super.clean(self)
     if self.trail then
         CLThingsPool.returnObj(self.trail.gameObject)
         SetActive(self.trail.gameObject, false)

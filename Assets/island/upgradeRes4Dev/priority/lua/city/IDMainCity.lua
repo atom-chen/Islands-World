@@ -5,6 +5,10 @@ local tbInsert = table.insert
 require("public.class")
 ---@type IDLGridTileSide
 local IDLGridTileSide = require("city.IDLGridTileSide")
+---@type IDPBuildingInfor
+local IDPBuildingInfor = require("ui.panel.IDPBuildingInfor")
+---@type IDPBuildShip
+local IDPBuildShip = require("ui.panel.IDPBuildShip")
 ---@class IDMainCity
 IDMainCity = class("IDMainCity")
 ---@type Coolape.CLBaseLua
@@ -920,7 +924,8 @@ function IDMainCity.removeTile(tile)
 end
 
 function IDMainCity.showBuildingDetail(data)
-    getPanelAsy("PanelBuildingInfor", onLoadedPanelTT, data)
+    local lua = IDPBuildingInfor.new()
+    getPanelAsy("PanelBuildingInfor", onLoadedPanelTT, data, lua)
 end
 
 function IDMainCity.showBuildingUpgrade(data)
@@ -956,7 +961,8 @@ end
 
 -- 造船
 function IDMainCity.buildShip(building)
-    getPanelAsy("PanelBuildShip", onLoadedPanelTT, building)
+    local lua = IDPBuildShip.new()
+    getPanelAsy("PanelBuildShip", onLoadedPanelTT, building, lua)
 end
 
 ---@param building IDLBuilding

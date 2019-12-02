@@ -64,22 +64,14 @@ namespace Coolape
 		public virtual void OnApplicationQuit (){
 			isQuit = true;
 			if (flApplicationQuit != null) {
-				if (isClassLua) {
-					flApplicationQuit.Call (luaTable);
-				} else {
-					flApplicationQuit.Call ();
-				}
+                call(flApplicationQuit);
 			}
 		}
 
 		public virtual void clean ()
 		{
 			if (flclean != null) {
-				if (isClassLua) {
-					flclean.Call (luaTable);
-				} else {
-					flclean.Call ();
-				}
+                call(flclean);
 			}
 			if (isQuit)
 				return;
@@ -95,45 +87,23 @@ namespace Coolape
 		public  virtual void Start ()
 		{
 			if (flStart != null) {
-				if (isClassLua) {
-					flStart.Call (luaTable, gameObject);
-				} else {
-					flStart.Call (gameObject);
-				}
+                call(flStart, gameObject);
 			}
 		}
 
 		public  virtual void Awake ()
 		{
 			if (flAwake != null) {
-				if (isClassLua) {
-					flAwake.Call (luaTable, gameObject);
-				} else {
-					flAwake.Call (gameObject);
-				}
+                call(flAwake, gameObject);
 			}
 		}
-	
-		//	public LuaFunction flReset = null;
-		//
-		//	public virtual void Reset ()
-		//	{
-		//		isPause = false;
-		//		if (flReset != null) {
-		//			flReset.Call (gameObject);
-		//		}
-		//	}
 	
 		public LuaFunction flOnTriggerEnter = null;
 
 		public virtual  void OnTriggerEnter (Collider other)
 		{
 			if (flOnTriggerEnter != null) {
-				if (isClassLua) {
-					flOnTriggerEnter.Call (luaTable, other);
-				} else {
-					flOnTriggerEnter.Call (other);
-				}
+                call(flOnTriggerEnter, other);
 			}
 		}
 
@@ -142,11 +112,7 @@ namespace Coolape
 		public virtual  void OnTriggerExit (Collider other)
 		{
 			if (flOnTriggerExit != null) {
-				if (isClassLua) {
-					flOnTriggerExit.Call (luaTable, other);
-				} else {
-					flOnTriggerExit.Call (other);
-				}
+                call(flOnTriggerExit, other);
 			}
 		}
 
@@ -155,11 +121,7 @@ namespace Coolape
 		public virtual  void OnTriggerStay (Collider other)
 		{
 			if (flOnTriggerStay != null) {
-				if (isClassLua) {
-					flOnTriggerStay.Call (luaTable, other);
-				} else {
-					flOnTriggerStay.Call (other);
-				}
+                call(flOnTriggerStay, other);
 			}
 		}
 
@@ -168,11 +130,7 @@ namespace Coolape
 		public virtual  void OnCollisionEnter (Collision collision)
 		{
 			if (flOnCollisionEnter != null) {
-				if (isClassLua) {
-					flOnCollisionEnter.Call (luaTable, collision);
-				} else {
-					flOnCollisionEnter.Call (collision);
-				}
+                call(flOnCollisionEnter, collision);
 			}
 		}
 
@@ -181,11 +139,7 @@ namespace Coolape
 		public virtual  void OnCollisionExit (Collision collisionInfo)
 		{
 			if (flOnCollisionExit != null) {
-				if (isClassLua) {
-					flOnCollisionExit.Call (luaTable, collisionInfo);
-				} else {
-					flOnCollisionExit.Call (collisionInfo);
-				}
+                call(flOnCollisionExit, collisionInfo);
 			}
 		}
 
@@ -194,11 +148,7 @@ namespace Coolape
 		public virtual  void OnApplicationPause (bool pauseStatus)
 		{
 			if (flOnApplicationPause != null) {
-				if (isClassLua) {
-					flOnApplicationPause.Call (luaTable, pauseStatus);
-				} else {
-					flOnApplicationPause.Call (pauseStatus);
-				}
+                call(flOnApplicationPause, pauseStatus);
 			}
 		}
 
@@ -207,11 +157,7 @@ namespace Coolape
 		public virtual  void OnApplicationFocus (bool focusStatus)
 		{
 			if (flOnApplicationFocus != null) {
-				if (isClassLua) {
-					flOnApplicationFocus.Call (luaTable, focusStatus);
-				} else {
-					flOnApplicationFocus.Call (focusStatus);
-				}
+                call(flOnApplicationFocus, focusStatus);
 			}
 		}
 
@@ -222,11 +168,7 @@ namespace Coolape
 			if (isQuit)
 				return;
 			if (flOnBecameInvisible != null) {
-				if (isClassLua) {
-					flOnBecameInvisible.Call (luaTable, gameObject);
-				} else {
-					flOnBecameInvisible.Call (gameObject);
-				}
+                call(flOnBecameInvisible, gameObject);
 			}
 		}
 
@@ -235,11 +177,7 @@ namespace Coolape
 		public virtual  void OnBecameVisible ()
 		{
 			if (flOnBecameVisible != null) {
-				if (isClassLua) {
-					flOnBecameVisible.Call (luaTable, gameObject);
-				} else {
-					flOnBecameVisible.Call (gameObject);
-				}
+                call(flOnBecameVisible, gameObject);
 			}
 		}
 
@@ -248,11 +186,7 @@ namespace Coolape
 		public virtual  void OnControllerColliderHit (ControllerColliderHit hit)
 		{
 			if (flOnControllerColliderHit != null) {
-				if (isClassLua) {
-					flOnControllerColliderHit.Call (luaTable, hit);
-				} else {
-					flOnControllerColliderHit.Call (hit);
-				}
+                call(flOnControllerColliderHit, hit);
 			}
 		}
 
@@ -261,11 +195,7 @@ namespace Coolape
 		public override  void OnDestroy ()
 		{
 			if (flOnDestroy != null) {
-				if (isClassLua) {
-					flOnDestroy.Call (luaTable, gameObject);
-				} else {
-					flOnDestroy.Call (gameObject);
-				}
+                call(flOnDestroy, gameObject);
 			}
 			base.OnDestroy ();
 		}
@@ -275,11 +205,7 @@ namespace Coolape
 		public virtual  void OnDisable ()
 		{
 			if (flOnDisable != null) {
-				if (isClassLua) {
-					flOnDisable.Call (luaTable, gameObject);
-				} else {
-					flOnDisable.Call (gameObject);
-				}
+                call(flOnDisable, gameObject);
 			}
 		}
 
@@ -288,11 +214,7 @@ namespace Coolape
 		public virtual  void OnEnable ()
 		{
 			if (flOnEnable != null) {
-				if (isClassLua) {
-					flOnEnable.Call (luaTable, gameObject);
-				} else {
-					flOnEnable.Call (gameObject);
-				}
+                call(flOnEnable, gameObject);
 			}
 		}
 
@@ -301,11 +223,7 @@ namespace Coolape
 		public virtual  void OnWillRenderObject ()
 		{
 			if (flOnWillRenderObject != null) {
-				if (isClassLua) {
-					flOnWillRenderObject.Call (luaTable, gameObject);
-				} else {
-					flOnWillRenderObject.Call (gameObject);
-				}
+                call(flOnWillRenderObject, gameObject);
 			}
 		}
 
@@ -314,11 +232,7 @@ namespace Coolape
 		public virtual  void OnPreRender ()
 		{
 			if (flOnPreRender != null) {
-				if (isClassLua) {
-					flOnPreRender.Call (luaTable, gameObject);
-				} else {
-					flOnPreRender.Call (gameObject);
-				}
+                call(flOnPreRender, gameObject);
 			}
 		}
 
@@ -327,12 +241,8 @@ namespace Coolape
 		public virtual  void OnPostRender ()
 		{
 			if (flOnPostRender != null) {
-				if (isClassLua) {
-					flOnPostRender.Call (luaTable, gameObject);
-				} else {
-					flOnPostRender.Call (gameObject);
-				}
-			}
+                call(flOnPostRender, gameObject);
+            }
 		}
 
 		public LuaFunction flOnClick = null;
@@ -340,12 +250,8 @@ namespace Coolape
 		public virtual  void OnClick ()
 		{
 			if (flOnClick != null) {
-				if (isClassLua) {
-					flOnClick.Call (luaTable, gameObject);
-				} else {
-					flOnClick.Call (gameObject);
-				}
-			}
+                call(flOnClick, gameObject);
+            }
 		}
 
 		public LuaFunction flOnPress = null;
@@ -353,11 +259,7 @@ namespace Coolape
 		public virtual  void OnPress (bool isPressed)
 		{
 			if (flOnPress != null) {
-				if (isClassLua) {
-					flOnPress.Call (luaTable, gameObject, isPressed);
-				} else {
-					flOnPress.Call (gameObject, isPressed);
-				}
+                call(flOnPress, gameObject, isPressed);
 			}
 		}
 
@@ -366,12 +268,8 @@ namespace Coolape
 		public virtual  void OnDrag (Vector2 delta)
 		{
 			if (flOnDrag != null) {
-				if (isClassLua) {
-					flOnDrag.Call (luaTable, gameObject, delta);
-				} else {
-					flOnDrag.Call (gameObject, delta);
-				}
-			}
+                call(flOnDrag, gameObject, delta);
+            }
 		}
 
 		public LuaFunction flUIEventDelegate = null;
@@ -383,11 +281,7 @@ namespace Coolape
 		public virtual  void uiEventDelegate (GameObject go)
 		{
 			if (flUIEventDelegate != null) {
-				if (isClassLua) {
-					flUIEventDelegate.Call (luaTable, go);
-				} else {
-					flUIEventDelegate.Call (go);
-				}
+                call(flUIEventDelegate, go);
 			}
 		}
 	}

@@ -258,14 +258,22 @@ function getLuaFunc(trace)
     return func
 end
 
+---@param p coolape.Coolape.CLPanelLua
 function onLoadedPanel(p, paras)
     p:setData(paras)
     CLPanelManager.showTopPanel(p)
 end
 
+---@param p coolape.Coolape.CLPanelLua
 function onLoadedPanelTT(p, paras)
     p:setData(paras)
     CLPanelManager.showTopPanel(p, true, true)
+end
+
+---@param p coolape.Coolape.CLPanelLua
+function onLoadedPanelTF(p, paras)
+    p:setData(paras)
+    CLPanelManager.showTopPanel(p, true, false)
 end
 
 function SetActive(go, isActive)

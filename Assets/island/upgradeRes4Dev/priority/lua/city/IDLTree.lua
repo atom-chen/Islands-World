@@ -4,12 +4,12 @@ IDLTree = class("IDLTree", IDLBuilding)
 
 function IDLTree:init(selfObj, id, star, lev, _isOffense, other)
     -- 通过这种模式把self传过去，不能 self.super:init()
-    self:getBase(IDLTree).init(self, selfObj, id, star, lev, _isOffense, other)
+    IDLTree.super.init(self, selfObj, id, star, lev, _isOffense, other)
     self.isTree = true
 end
 
 function IDLTree:OnClick()
-    self:getBase(IDLTree).OnClick(self)
+    IDLTree.super.OnClick(self)
 end
 
 function IDLTree:OnPress(go, isPress )
@@ -22,7 +22,7 @@ end
 
 
 function IDLTree:clean()
-    self:getBase(IDLTree).clean(self)
+    IDLTree.super.clean(self)
 end
 
 return IDLTree

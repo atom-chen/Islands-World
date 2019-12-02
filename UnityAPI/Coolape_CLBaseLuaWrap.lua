@@ -19,6 +19,11 @@ function m:setLua() end
 ---@return table
 ---@param optional Boolean Independent
 function m:doSetLua(Independent) end
+---public Object[] call(LuaFunction func, Object[] _params)
+---@return table
+---@param optional LuaFunction func
+---@param optional Object[] _params
+function m:call(func, _params) end
 ---public Void onNotifyLua(GameObject gameObj, String funcName, Object paras)
 ---@param optional GameObject gameObj
 ---@param optional String funcName

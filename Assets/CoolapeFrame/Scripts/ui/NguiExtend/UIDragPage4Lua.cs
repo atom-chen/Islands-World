@@ -37,12 +37,12 @@ namespace Coolape
 					lfrefreshCurrent = uiLua.getLuaFunction ("refreshCurrent");
 				}
 				if (lfInit != null) {
-					lfInit.Call (uiLua);
-				}
+                    uiLua.call(lfInit, uiLua);
+                }
 			}
 		
 			if (lfrefresh != null) {
-				lfrefresh.Call (obj, index);
+                uiLua.call (lfrefresh, obj, index);
 			}
 		}
 
@@ -50,7 +50,7 @@ namespace Coolape
 		{
 			init (obj, pageIndex);
 			if (lfrefreshCurrent != null) {
-				lfrefreshCurrent.Call (pageIndex, obj);
+                uiLua.call (lfrefreshCurrent, pageIndex, obj);
 			}
 		}
 	}

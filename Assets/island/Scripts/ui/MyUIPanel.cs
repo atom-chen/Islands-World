@@ -6,5 +6,6 @@ using XLua;
 
 public class MyUIPanel : CLPanelLua
 {
-
+    [HideInInspector]
+    public string titleKeyName = "";
 }

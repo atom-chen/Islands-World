@@ -6,7 +6,7 @@ IDLBuildingTrapMonster = class("IDLBuildingTrapMonster", IDLBuildingTrap)
 
 function IDLBuildingTrapMonster:__init(selfObj)
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapMonster)
+    local base = IDLBuildingTrapMonster.super
     if base.__init(self, selfObj) then
         -- 墨汁特效
         self.inkEffect = getChild(self.transform, "effect").gameObject
@@ -17,14 +17,14 @@ end
 
 function IDLBuildingTrapMonster:show()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapMonster)
+    local base = IDLBuildingTrapMonster.super
     base.show(self)
     SetActive(self.inkEffect, true)
 end
 
 function IDLBuildingTrapMonster:hide()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapMonster)
+    local base = IDLBuildingTrapMonster.super
     base.hide(self)
     SetActive(self.inkEffect, false)
 end
@@ -76,7 +76,7 @@ end
 
 function IDLBuildingTrapMonster:clean()
     ---@type IDLBuildingTrap
-    local base = self:getBase(IDLBuildingTrapMonster)
+    local base = IDLBuildingTrapMonster.super
     base.clean(self)
     self:cleanMonsterAttackEffect()
 end

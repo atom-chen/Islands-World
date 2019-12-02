@@ -64,7 +64,8 @@ do
                 _cell.setInputValue()
             end
             if mData.onValChg then
-                mData.onValChg(_cell.getValue())
+                -- mData.onValChg(_cell.getValue())
+                Utl.doCallback(mData.onValChg, _cell.getValue())
             end
         elseif goName == "InputNum" then
             if mode == 2 then

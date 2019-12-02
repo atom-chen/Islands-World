@@ -1,11 +1,14 @@
-﻿-- 造船界面
-local IDPBuildShip = {}
+﻿---@type IDBasePanel
+local IDBasePanel = require("ui.panel.IDBasePanel")
+---@class IDPBuildShip:IDBasePanel 造船界面
+local IDPBuildShip = class("IDPBuildShip", IDBasePanel)
 
 ---@type Coolape.CLPanelLua
 local csSelf = nil
 local transform = nil
 local uiobjs = {}
 local mData
+---@type DBCFBuildingData
 local dockyardAttr
 ---@type IDDBBuilding
 local dockyardServerData
@@ -13,9 +16,10 @@ local selectedCell
 local roleAttr
 
 -- 初始化，只会调用一次
-function IDPBuildShip.init(csObj)
+function IDPBuildShip:init(csObj)
     csSelf = csObj
     transform = csObj.transform
+    IDPBuildShip.super.init(self, csSelf)
     --[[
         上的组件：getChild(transform, "offset", "Progress BarHong"):GetComponent("UISlider")
         --]]
@@ -37,12 +41,12 @@ function IDPBuildShip.init(csObj)
 end
 
 -- 设置数据
-function IDPBuildShip.setData(paras)
+function IDPBuildShip:setData(paras)
     mData = paras
 end
 
 -- 显示，在c#中。show为调用refresh，show和refresh的区别在于，当页面已经显示了的情况，当页面再次出现在最上层时，只会调用refresh
-function IDPBuildShip.show()
+function IDPBuildShip:show()
     dockyardAttr = mData.attr
     dockyardServerData = mData.serverData
 
@@ -50,12 +54,12 @@ function IDPBuildShip.show()
     SetActive(uiobjs.ButtonImm.gameObject, false)
     SetActive(uiobjs.BuildProgress.gameObject, false)
     SetActive(uiobjs.LabelDockyardBusy, false)
-    local list = IDPBuildShip.wrapShipList()
-    IDPBuildShip.showShipList(list, false)
+    local list = self:wrapShipList()
+    self:showShipList(list, false)
 end
 
 ---@public 包装舰船列表数据
-function IDPBuildShip.wrapShipList()
+function IDPBuildShip:wrapShipList()
     local shipList = DBCfg.getRolesByGID(IDConst.RoleGID.ship)
     local dockyardShips = IDDBCity.curCity:getShipsByDockyardId(bio2number(dockyardServerData.idx))
     --if dockyardShips == nil then
@@ -74,22 +78,22 @@ function IDPBuildShip.wrapShipList()
     return list
 end
 
-function IDPBuildShip.showShipList(list, refreshContentOnly)
+function IDPBuildShip:showShipList(list, refreshContentOnly)
     if refreshContentOnly then
         uiobjs.Grid:refreshContentOnly(list)
     else
-        uiobjs.Grid:setList(list, IDPBuildShip.initShipCell)
+        uiobjs.Grid:setList(list, self:wrapFunc(self.initShipCell))
     end
 end
 
-function IDPBuildShip.initShipCell(cell, data)
-    cell:init(data, IDPBuildShip.onClickShipCell)
+function IDPBuildShip:initShipCell(cell, data)
+    cell:init(data, self:wrapFunc(self.onClickShipCell))
     if selectedCell == nil or selectedCell == cell then
-        IDPBuildShip.onClickShipCell(cell)
+        self:onClickShipCell(cell)
     end
 end
 
-function IDPBuildShip.onClickShipCell(cell)
+function IDPBuildShip:onClickShipCell(cell)
     local data = cell.luaTable.getData()
     if data.isLocked then
         return
@@ -103,29 +107,29 @@ function IDPBuildShip.onClickShipCell(cell)
     end
 
     -- attr
-    IDPBuildShip.showAttr()
+    self:showAttr()
     -- number
     local dockyardState = bio2number(dockyardServerData.state)
     local buildShipId = bio2number(dockyardServerData.val)
     if dockyardState == IDConst.BuildingState.normal then
-        IDPBuildShip.loadSliderNum()
+        self:loadSliderNum()
     elseif dockyardState == IDConst.BuildingState.working then
         if buildShipId == bio2number(data.attr.ID) then
-            IDPBuildShip.working()
+            self:working()
         else
             -- 正在繁忙
-            IDPBuildShip.busy()
+            self:busy()
         end
     else
         -- 正在繁忙
-        IDPBuildShip.busy()
+        self:busy()
     end
 
     -- 显示选中数据
-    IDPBuildShip.showShip()
+    self:showShip()
 end
 
-function IDPBuildShip.working()
+function IDPBuildShip:working()
     SetActive(uiobjs.LabelDockyardBusy, false)
     SetActive(uiobjs.ButtonBuild.gameObject, false)
     SetActive(uiobjs.ButtonImm.gameObject, true)
@@ -133,11 +137,11 @@ function IDPBuildShip.working()
     if uiobjs.sliderNum then
         SetActive(uiobjs.sliderNum.gameObject, false)
     end
-    IDPBuildShip.cooldownBuild()
+    self:cooldownBuild()
 end
 
-function IDPBuildShip.cooldownBuild()
-    csSelf:cancelInvoke4Lua(IDPBuildShip.cooldownBuild)
+function IDPBuildShip:cooldownBuild()
+    csSelf:cancelInvoke4Lua(self.cooldownBuild)
     local starttime = bio2number(dockyardServerData.starttime)
     local endtime = bio2number(dockyardServerData.endtime)
     local num = bio2number(dockyardServerData.val2)
@@ -146,11 +150,11 @@ function IDPBuildShip.cooldownBuild()
     local persent = diff2 / diff
     uiobjs.BuildProgressLabel.text = joinStr(LGet("Number"), ":", num, " ", LGet("Time"), ":", DateEx.toStrCn(diff2))
     uiobjs.BuildProgress.value = persent
-    csSelf:invoke4Lua(IDPBuildShip.cooldownBuild, 0.5)
+    csSelf:invoke4Lua(self.cooldownBuild, 0.5)
 end
 
-function IDPBuildShip.busy()
-    csSelf:cancelInvoke4Lua(IDPBuildShip.cooldownBuild)
+function IDPBuildShip:busy()
+    csSelf:cancelInvoke4Lua(self.cooldownBuild)
     SetActive(uiobjs.LabelDockyardBusy, true)
     SetActive(uiobjs.ButtonBuild.gameObject, false)
     SetActive(uiobjs.ButtonImm.gameObject, false)
@@ -160,7 +164,7 @@ function IDPBuildShip.busy()
     end
 end
 
-function IDPBuildShip.showShip()
+function IDPBuildShip:showShip()
     local data = selectedCell.luaTable.getData()
     uiobjs.LabelName.text = LGet(data.attr.NameKey)
     local totalSpace =
@@ -173,17 +177,17 @@ function IDPBuildShip.showShip()
     local usedSpace = IDDBCity.curCity:getDockyardUsedSpace(bio2number(dockyardServerData.idx))
     uiobjs.LabelSpace.text = joinStr(usedSpace, "/", totalSpace)
     uiobjs.SpaceProgressBar.value = usedSpace / totalSpace
-    IDPBuildShip.loadShip(bio2number(data.attr.ID))
+    self:loadShip(bio2number(data.attr.ID))
 end
 
-function IDPBuildShip.loadShip(id)
+function IDPBuildShip:loadShip(id)
     -- 先释放之前加载的
-    IDPBuildShip.releaseShip()
+    self:releaseShip()
     local shipName = IDUtl.getRolePrefabName(id)
-    CLRolePool.borrowObjAsyn(shipName, IDPBuildShip.onLoadShip, id)
+    CLRolePool.borrowObjAsyn(shipName, self:wrapFunc(self.onLoadShip), id)
 end
 
-function IDPBuildShip.onLoadShip(name, ship, orgs)
+function IDPBuildShip:onLoadShip(name, ship, orgs)
     if not csSelf.gameObject.activeInHierarchy or uiobjs.shipGo then
         CLRolePool.returnObj(ship)
         SetActive(ship.gameObject, false)
@@ -213,7 +217,7 @@ function IDPBuildShip.onLoadShip(name, ship, orgs)
     )
 end
 
-function IDPBuildShip.showAttr(callback)
+function IDPBuildShip:showAttr(callback)
     local data = selectedCell.luaTable.getData()
     if roleAttr == nil then
         CLUIOtherObjPool.borrowObjAsyn(
@@ -240,13 +244,13 @@ function IDPBuildShip.showAttr(callback)
 end
 
 -- 当加载好通用框的回调
-function IDPBuildShip.onShowFrame(cs)
-    local title = LGet("Arsenal")
-    csSelf.frameObj:init({title = title, panel = csSelf})
-end
+-- function IDPBuildShip:onShowFrame(cs)
+--     local title = LGet("Arsenal")
+--     csSelf.frameObj:init({title = title, panel = csSelf})
+-- end
 
-function IDPBuildShip.loadSliderNum()
-    csSelf:cancelInvoke4Lua(IDPBuildShip.cooldownBuild)
+function IDPBuildShip:loadSliderNum()
+    csSelf:cancelInvoke4Lua(self.cooldownBuild)
     SetActive(uiobjs.ButtonBuild.gameObject, true)
     SetActive(uiobjs.ButtonImm.gameObject, false)
     SetActive(uiobjs.BuildProgress.gameObject, false)
@@ -265,10 +269,10 @@ function IDPBuildShip.loadSliderNum()
     local maxNum = NumEx.getIntPart(freeSpace / bio2number(cellData.attr.SpaceSize))
     local default = 1
     if maxNum < 1 then
-        IDPBuildShip.showSpaceFull()
+        self:showSpaceFull()
         return
     end
-    local data = {min = 0, max = maxNum, default = default, onValChg = IDPBuildShip.onNumChg}
+    local data = {min = 0, max = maxNum, default = default, onValChg = self:wrapFunc(self.onNumChg)}
     if uiobjs.sliderNum == nil then
         CLUIOtherObjPool.borrowObjAsyn(
             "SliderNumber",
@@ -291,7 +295,7 @@ function IDPBuildShip.loadSliderNum()
     end
 end
 
-function IDPBuildShip.hideSliderNum()
+function IDPBuildShip:hideSliderNum()
     if uiobjs.sliderNum then
         CLUIOtherObjPool.returnObj(uiobjs.sliderNum.gameObject)
         SetActive(uiobjs.sliderNum.gameObject, false)
@@ -299,7 +303,7 @@ function IDPBuildShip.hideSliderNum()
     end
 end
 
-function IDPBuildShip.onNumChg(n)
+function IDPBuildShip:onNumChg(n)
     local totalSpace =
         DBCfg.getGrowingVal(
         bio2number(dockyardAttr.ComVal1Min),
@@ -321,17 +325,17 @@ function IDPBuildShip.onNumChg(n)
 end
 
 -- 当空间满时显示
-function IDPBuildShip.showSpaceFull()
+function IDPBuildShip:showSpaceFull()
     if uiobjs.sliderNum then
         SetActive(uiobjs.sliderNum.gameObject, false)
     end
 end
 
 -- 刷新
-function IDPBuildShip.refresh()
+function IDPBuildShip:refresh()
 end
 
-function IDPBuildShip.releaseShip()
+function IDPBuildShip:releaseShip()
     if uiobjs.shipGo then
         uiobjs.shipGo:clean()
         CLRolePool.returnObj(uiobjs.shipGo)
@@ -342,15 +346,15 @@ function IDPBuildShip.releaseShip()
 end
 
 -- 关闭页面
-function IDPBuildShip.hide()
+function IDPBuildShip:hide()
     csSelf:cancelInvoke4Lua()
-    IDPBuildShip.hideSliderNum()
+    self:hideSliderNum()
     if roleAttr then
         CLUIOtherObjPool.returnObj(roleAttr.gameObject)
         SetActive(roleAttr.gameObject, false)
         roleAttr = nil
     end
-    IDPBuildShip.releaseShip()
+    self:releaseShip()
     uiobjs.roleRoot:reset()
 
     if selectedCell then
@@ -360,22 +364,22 @@ function IDPBuildShip.hide()
 end
 
 -- 网络请求的回调；cmd：指命，succ：成功失败，msg：消息；paras：服务器下行数据
-function IDPBuildShip.procNetwork(cmd, succ, msg, paras)
+function IDPBuildShip:procNetwork(cmd, succ, msg, paras)
     if succ == NetSuccess then
         if cmd == NetProtoIsland.cmds.getShipsByBuildingIdx or cmd == NetProtoIsland.cmds.onBuildingChg then
             dockyardServerData = IDDBCity.curCity.buildings[bio2number(dockyardServerData.idx)]
-            local list = IDPBuildShip.wrapShipList()
-            IDPBuildShip.showShipList(list, true)
+            local list = self:wrapShipList()
+            self:showShipList(list, true)
         elseif cmd == NetProtoIsland.cmds.buildShip then
             hideHotWheel()
             dockyardServerData = IDDBCity.curCity.buildings[bio2number(dockyardServerData.idx)]
-            local list = IDPBuildShip.wrapShipList()
-            IDPBuildShip.showShipList(list, true)
+            local list = self:wrapShipList()
+            self:showShipList(list, true)
         end
     end
 end
 
-function IDPBuildShip.dragShip(go)
+function IDPBuildShip:dragShip(go)
     local delta = UICamera.currentTouch.delta
     local angle = uiobjs.roleRoot.transform.localEulerAngles
     angle.y = angle.y - delta.x
@@ -383,7 +387,7 @@ function IDPBuildShip.dragShip(go)
 end
 
 -- 处理ui上的事件，例如点击等
-function IDPBuildShip.uiEventDelegate(go)
+function IDPBuildShip:uiEventDelegate(go)
     local goName = go.name
     if (goName == "ButtonBuild") then
         if uiobjs.sliderNum then
@@ -402,7 +406,7 @@ function IDPBuildShip.uiEventDelegate(go)
 end
 
 -- 当按了返回键时，关闭自己（返值为true时关闭）
-function IDPBuildShip.hideSelfOnKeyBack()
+function IDPBuildShip:hideSelfOnKeyBack()
     return true
 end
 
