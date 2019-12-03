@@ -15,7 +15,7 @@ end
 ---@param cs Coolape.CLPanelLua
 function IDBasePanel:onShowFrame(cs)
 	if cs.frameObj then
-		---@type _FrameData
+		---@type _ParamFrameData
 		local d = {}
 		d.title = LGet(cs.titleKeyName)
 		d.panel = cs

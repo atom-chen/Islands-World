@@ -152,6 +152,23 @@ function IDDBCity:getShipsByDockyardId(idx)
     return self.dockyardShips[idx]
 end
 
+---@public 取得所有的舰船数据
+---@return table key:id, val:num
+function IDDBCity:getAllShips()
+    local shipMap = {}
+    for bidx, map in pairs(self.dockyardShips) do
+        ---@param unit NetProtoIsland.ST_unitInfor
+        for id, unit in pairs(map) do
+            if shipMap[id] then
+                shipMap[id] = bio2number(unit.num) + shipMap[id]
+            else
+                shipMap[id] = bio2number(unit.num)
+            end
+        end
+    end
+    return shipMap
+end
+
 ---@public 取得造船厂的已经使用了的
 ---@param idx number 造船厂的idx
 function IDDBCity:getDockyardUsedSpace(idx)
@@ -167,9 +184,10 @@ function IDDBCity:getDockyardUsedSpace(idx)
     local ret = 0
     local attr
     if shipsMap then
-        for roleAttrId, num in pairs(shipsMap) do
+        ---@param unit NetProtoIsland.ST_unitInfor
+        for roleAttrId, unit in pairs(shipsMap) do
             attr = DBCfg.getRoleByID(roleAttrId)
-            ret = ret + num * (bio2number(attr.SpaceSize))
+            ret = ret + bio2number(unit.num) * (bio2number(attr.SpaceSize))
         end
     end
     -- 正在造的
@@ -188,8 +206,9 @@ end
 function IDDBCity:onGetShips4Dockyard(data)
     local bidx = bio2number(data.buildingIdx)
     local shipsMap = {}
-    for k, v in pairs(data.shipsMap or {}) do
-        shipsMap[tonumber(k)] = v
+    ---@param v NetProtoIsland.ST_unitInfor
+    for i, v in ipairs(data.ships or {}) do
+        shipsMap[bio2number(v.id)] = v
     end
     self.dockyardShips[bidx] = shipsMap
 end

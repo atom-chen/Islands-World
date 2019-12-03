@@ -408,14 +408,21 @@ do
     number2bio = BioUtl.number2bio
     LGet = Localization.Get
     hideTopPanel = CLPanelManager.hideTopPanel
+    
     ---@public 异步加载panel
-    function getPanelAsy(panelName, callback, paras, luaTable)
+    ---@param panelName string 页面名
+    ---@param callback function 取得页面的回调(panel, orgs)
+    ---@param paras object 回调的透传参数
+    ---@param luaClass ClassBase lua类可为空
+    function getPanelAsy(panelName, callback, paras, luaClass)
         if luaTable then
             CLPanelManager.getPanelAsy(
                 panelName,
                 ---@param p Coolape.CLPanelLua
                 function(p, orgs)
-                    p.luaTable = luaTable
+                    if p.luaTable == nil then
+                        p.luaTable = luaClass.new()
+                    end
                     callback(p, orgs)
                 end,
                 paras

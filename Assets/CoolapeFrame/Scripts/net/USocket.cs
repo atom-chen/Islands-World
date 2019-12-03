@@ -272,10 +272,7 @@ namespace Coolape
                     }
 
                     // 继续读取.
-                    if (client.mSocket.Connected)
-                    {
-                        client.ReceiveAsync();
-                    }
+                    client.ReceiveAsync();
                 }
                 else
                 {

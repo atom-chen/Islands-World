@@ -171,6 +171,7 @@ end
 ---@param mode  IDConst.dressMode
 function IDRoleBase:dress(mode)
     if self.avata == nil then
+        self:onFinishDress()
         return
     end
     if mode == IDConst.dressMode.ice then
@@ -553,6 +554,7 @@ end
 
 function IDRoleBase:clean()
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.doAttack))
+    InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.startFire))
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.unFrozen))
     InvokeEx.cancelInvokeByFixedUpdate(self:wrapFunc(self.refresh4Searcher))
 

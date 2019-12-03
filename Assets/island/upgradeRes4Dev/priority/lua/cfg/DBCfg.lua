@@ -124,6 +124,16 @@ function DBCfg.getDataById(path, id)
     return datas[id]
 end
 
+---@public 通用取得列表
+function DBCfg.getListByGID(path, gid)
+    local datas = DBCfg.getData(path)
+    if (datas == nil) then
+        printe("get cfg data is nil.path=" .. path)
+        return nil
+    end
+    return datas.list[gid]
+end
+
 ---@public 取得建筑配置
 function DBCfg.getBuildingByID(id)
     return DBCfg.getDataById(CfgPath.Building, id)

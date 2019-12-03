@@ -3,7 +3,7 @@ do
     local _cell = {}
     local csSelf = nil;
     local transform = nil;
-    ---@type _FrameData
+    ---@type _ParamFrameData
     local mData = nil;
     local uiobjs = {}
 

@@ -95,7 +95,10 @@ function IDLBuildingDockyard:showShipsInOcean()
     -- 取得一个舰船id及数量
     local ships = IDDBCity.curCity:getShipsByDockyardId(bio2number(self.serverData.idx))
     if ships then
-        for shipId, num in pairs(ships) do
+        local num = 0
+        ---@param unit NetProtoIsland.ST_unitInfor
+        for shipId, unit in pairs(ships) do
+            num = bio2number(unit.num)
             if num > 0 then
                 local list = self.shipsInOcean[shipId] or {}
                 local hadNum = #list

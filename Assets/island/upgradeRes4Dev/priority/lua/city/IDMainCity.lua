@@ -924,8 +924,7 @@ function IDMainCity.removeTile(tile)
 end
 
 function IDMainCity.showBuildingDetail(data)
-    local lua = IDPBuildingInfor.new()
-    getPanelAsy("PanelBuildingInfor", onLoadedPanelTT, data, lua)
+    getPanelAsy("PanelBuildingInfor", onLoadedPanelTT, data, IDPBuildingInfor)
 end
 
 function IDMainCity.showBuildingUpgrade(data)
@@ -961,8 +960,7 @@ end
 
 -- 造船
 function IDMainCity.buildShip(building)
-    local lua = IDPBuildShip.new()
-    getPanelAsy("PanelBuildShip", onLoadedPanelTT, building, lua)
+    getPanelAsy("PanelBuildShip", onLoadedPanelTT, building, IDPBuildShip)
 end
 
 ---@param building IDLBuilding

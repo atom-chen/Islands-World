@@ -4,14 +4,14 @@ do
     local csSelf = nil;
     local transform = nil;
 
-    ---@class _FrameData
+    ---@class _ParamFrameData
     ---@field public title string 标题
     ---@field public closeCallback string 标题
     ---@field public panel Coolape.CLPanelLua 
     ---@field public hideClose boolean true时隐藏关闭按钮
     ---@field public hideTitle boolean true时隐藏标题
 
-    ---@type _FrameData
+    ---@type _ParamFrameData
     local mData = nil;
     local uiobjs = {}
 

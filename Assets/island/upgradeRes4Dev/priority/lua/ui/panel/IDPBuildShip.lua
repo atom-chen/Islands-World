@@ -71,7 +71,9 @@ function IDPBuildShip:wrapShipList()
     for i, v in ipairs(shipList) do
         local d = {}
         d.attr = v
-        d.count = dockyardShips[bio2number(v.ID)] or 0
+        ---@type NetProtoIsland.ST_unitInfor
+        local unit = dockyardShips[bio2number(v.ID)]
+        d.count = unit and bio2number(unit.num) or 0
         d.isLocked = dockyardLev < bio2number(v.ArsenalLev)
         table.insert(list, d)
     end

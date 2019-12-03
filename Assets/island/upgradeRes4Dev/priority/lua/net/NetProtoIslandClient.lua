@@ -105,22 +105,28 @@ do
             return r;
         end,
     }
-    ---@class NetProtoIsland.ST_dockyardShips 造船厂的舰船信息
-    ---@field public shipsMap table key=舰船的配置id, val=舰船数量 map
-    ---@field public buildingIdx number 造船厂的idx
-    NetProtoIsland.ST_dockyardShips = {
+    ---@class NetProtoIsland.ST_unitInfor 单元(舰船、萌宠等)
+    ---@field public id number 配置数量的id int
+    ---@field public bidx number 所属建筑idx int
+    ---@field public num number 数量 int
+    ---@field public fidx number 所属舰队idx int
+    NetProtoIsland.ST_unitInfor = {
         toMap = function(m)
             local r = {}
             if m == nil then return r end
-            r[14] = m.shipsMap  -- key=舰船的配置id, val=舰船数量 map
-            r[15] = m.buildingIdx  -- 造船厂的idx int
+            r[99] = m.id  -- 配置数量的id int int
+            r[100] = m.bidx  -- 所属建筑idx int int
+            r[67] = m.num  -- 数量 int int
+            r[101] = m.fidx  -- 所属舰队idx int int
             return r;
         end,
         parse = function(m)
             local r = {}
             if m == nil then return r end
-            r.shipsMap = m[14] --  table
-            r.buildingIdx = m[15] --  int
+            r.id = m[99] --  int
+            r.bidx = m[100] --  int
+            r.num = m[67] --  int
+            r.fidx = m[101] --  int
             return r;
         end,
     }
@@ -205,14 +211,14 @@ do
     ---@field public idx number 网格index
     ---@field public pageIdx number 所在屏的index
     ---@field public val2 number 值2
-    ---@field public type number 地块类型 3：玩家，4：npc
     ---@field public lev number 等级
     ---@field public val1 number 值1
     ---@field public cidx number 主城idx
-    ---@field public attrid number 配置id
     ---@field public val3 number 值3
+    ---@field public type number 地块类型 3：玩家，4：npc
     ---@field public state number 状态  1:正常; int
     ---@field public name string 名称
+    ---@field public attrid number 配置id
     NetProtoIsland.ST_mapCell = {
         toMap = function(m)
             local r = {}
@@ -220,14 +226,14 @@ do
             r[16] = m.idx  -- 网格index int
             r[13] = m.pageIdx  -- 所在屏的index int
             r[22] = m.val2  -- 值2 int
-            r[30] = m.type  -- 地块类型 3：玩家，4：npc int
             r[24] = m.lev  -- 等级 int
             r[29] = m.val1  -- 值1 int
             r[18] = m.cidx  -- 主城idx int
-            r[17] = m.attrid  -- 配置id int
             r[21] = m.val3  -- 值3 int
+            r[30] = m.type  -- 地块类型 3：玩家，4：npc int
             r[28] = m.state  -- 状态  1:正常; int int
             r[35] = m.name  -- 名称 string
+            r[17] = m.attrid  -- 配置id int
             return r;
         end,
         parse = function(m)
@@ -236,14 +242,14 @@ do
             r.idx = m[16] --  int
             r.pageIdx = m[13] --  int
             r.val2 = m[22] --  int
-            r.type = m[30] --  int
             r.lev = m[24] --  int
             r.val1 = m[29] --  int
             r.cidx = m[18] --  int
-            r.attrid = m[17] --  int
             r.val3 = m[21] --  int
+            r.type = m[30] --  int
             r.state = m[28] --  int
             r.name = m[35] --  string
+            r.attrid = m[17] --  int
             return r;
         end,
     }
@@ -273,9 +279,9 @@ do
     ---@field public idx number 唯一标识 int
     ---@field public tiles table 地块信息 key=idx, map
     ---@field public name string 名称
+    ---@field public status number 状态 1:正常; int
     ---@field public buildings table 建筑信息 key=idx, map
     ---@field public lev number 等级 int
-    ---@field public status number 状态 1:正常; int
     ---@field public pos number 城所在世界grid的index int
     ---@field public pidx number 玩家idx int
     NetProtoIsland.ST_city = {
@@ -285,9 +291,9 @@ do
             r[16] = m.idx  -- 唯一标识 int int
             r[34] = NetProtoIsland._toMap(NetProtoIsland.ST_tile, m.tiles)  -- 地块信息 key=idx, map
             r[35] = m.name  -- 名称 string
+            r[37] = m.status  -- 状态 1:正常; int int
             r[36] = NetProtoIsland._toMap(NetProtoIsland.ST_building, m.buildings)  -- 建筑信息 key=idx, map
             r[24] = m.lev  -- 等级 int int
-            r[37] = m.status  -- 状态 1:正常; int int
             r[19] = m.pos  -- 城所在世界grid的index int int
             r[38] = m.pidx  -- 玩家idx int int
             return r;
@@ -298,9 +304,9 @@ do
             r.idx = m[16] --  int
             r.tiles = NetProtoIsland._parseMap(NetProtoIsland.ST_tile, m[34])  -- 地块信息 key=idx, map
             r.name = m[35] --  string
+            r.status = m[37] --  int
             r.buildings = NetProtoIsland._parseMap(NetProtoIsland.ST_building, m[36])  -- 建筑信息 key=idx, map
             r.lev = m[24] --  int
-            r.status = m[37] --  int
             r.pos = m[19] --  int
             r.pidx = m[38] --  int
             return r;
@@ -328,14 +334,33 @@ do
             return r;
         end,
     }
+    ---@class NetProtoIsland.ST_dockyardShips 造船厂的舰船信息
+    ---@field public ships table 舰船数据
+    ---@field public buildingIdx number 造船厂的idx
+    NetProtoIsland.ST_dockyardShips = {
+        toMap = function(m)
+            local r = {}
+            if m == nil then return r end
+            r[102] = NetProtoIsland._toList(NetProtoIsland.ST_unitInfor, m.ships)  -- 舰船数据
+            r[15] = m.buildingIdx  -- 造船厂的idx int
+            return r;
+        end,
+        parse = function(m)
+            local r = {}
+            if m == nil then return r end
+            r.ships = NetProtoIsland._parseList(NetProtoIsland.ST_unitInfor, m[102])  -- 舰船数据
+            r.buildingIdx = m[15] --  int
+            return r;
+        end,
+    }
     ---@class NetProtoIsland.ST_player 用户信息
     ---@field public idx number 唯一标识 int
     ---@field public diam number 钻石 long
     ---@field public name string 名字
-    ---@field public unionidx number 联盟id int
-    ---@field public cityidx number 城池id int
-    ---@field public lev number 等级 long
     ---@field public status number 状态 1：正常 int
+    ---@field public cityidx number 城池id int
+    ---@field public unionidx number 联盟id int
+    ---@field public lev number 等级 long
     NetProtoIsland.ST_player = {
         toMap = function(m)
             local r = {}
@@ -343,10 +368,10 @@ do
             r[16] = m.idx  -- 唯一标识 int int
             r[39] = m.diam  -- 钻石 long int
             r[35] = m.name  -- 名字 string
-            r[41] = m.unionidx  -- 联盟id int int
-            r[40] = m.cityidx  -- 城池id int int
-            r[24] = m.lev  -- 等级 long int
             r[37] = m.status  -- 状态 1：正常 int int
+            r[40] = m.cityidx  -- 城池id int int
+            r[41] = m.unionidx  -- 联盟id int int
+            r[24] = m.lev  -- 等级 long int
             return r;
         end,
         parse = function(m)
@@ -355,10 +380,10 @@ do
             r.idx = m[16] --  int
             r.diam = m[39] --  int
             r.name = m[35] --  string
-            r.unionidx = m[41] --  int
-            r.cityidx = m[40] --  int
-            r.lev = m[24] --  int
             r.status = m[37] --  int
+            r.cityidx = m[40] --  int
+            r.unionidx = m[41] --  int
+            r.lev = m[24] --  int
             return r;
         end,
     }

@@ -197,3 +197,5 @@ MsgCannotPlaceOnthePoint=不能在此投放兵力！
 Port=港口
 Docked=停靠
 Fleet=舰队
+
+Save=保存

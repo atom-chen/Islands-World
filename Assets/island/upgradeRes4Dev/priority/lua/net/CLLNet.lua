@@ -222,6 +222,10 @@ CLLNet.cacheDataFunc = {
             IDDBCity.curCity:onGetShips4Dockyard(data.dockyardShips)
         end
     end,
+    ---@param data NetProtoIsland.RC_onFinishBuildOneShip
+    [NetProtoIsland.cmds.onFinishBuildOneShip] = function(cmd, data)
+        --//TODO:当完成一个舰船时，
+    end,
     [NetProtoIsland.cmds.sendNetCfg] = function(cmd, data)
         -- 初始化时间
         local systime = bio2number(data.systime)
