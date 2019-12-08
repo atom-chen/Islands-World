@@ -106,4 +106,10 @@ IDConst.WorldmapCellType = {
     occupy = 99 -- 占用
 }
 
+---@public 舰队状态
+IDConst.FleetState = {
+    idel = 1, -- 待命状态
+    departing = 2, -- 出征中
+    docked = 3 -- 停泊
+}
 return IDConst

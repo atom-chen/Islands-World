@@ -62,10 +62,10 @@ function IDWorldMap.__init()
     IDWorldMap.grid:init(false)
 
     ---@type SimpleFogOfWar.FogOfWarInfluence
-    IDWorldMap.fogOfWarInfluence = GameObject("fogOfWarInfluence"):AddComponent(typeof(FogOfWarInfluence))
-    IDWorldMap.fogOfWarInfluence.transform.parent = transform
-    IDWorldMap.fogOfWarInfluence.transform.localPosition = Vector3.zero
-    IDWorldMap.fogOfWarInfluence.transform.localScale = Vector3.one
+    -- IDWorldMap.fogOfWarInfluence = GameObject("fogOfWarInfluence"):AddComponent(typeof(FogOfWarInfluence))
+    -- IDWorldMap.fogOfWarInfluence.transform.parent = transform
+    -- IDWorldMap.fogOfWarInfluence.transform.localPosition = Vector3.zero
+    -- IDWorldMap.fogOfWarInfluence.transform.localScale = Vector3.one
 
     for i = 1, 9 do
         freePages:enQueue(IDWorldMapPage.new())
@@ -76,7 +76,7 @@ function IDWorldMap.__init()
             --进城
             nameKey = "Enter",
             callback = IDWorldMap.popupEvent.enterCity,
-            icon = "icon_detail",
+            icon = "icon_detail", --//TODO:图标
             bg = "public_edit_circle_bt_management"
         },
         attack = {
@@ -97,6 +97,27 @@ function IDWorldMap.__init()
             -- 停泊
             nameKey = "Docked",
             callback = IDWorldMap.popupEvent.docked,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        },
+        SetBeacon = {
+            -- 设置为灯标
+            nameKey = "SetBeacon",
+            callback = IDWorldMap.popupEvent.setBeacon,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        },
+        RmBeacon = {
+            -- 移除灯标
+            nameKey = "RmBeacon",
+            callback = IDWorldMap.popupEvent.rmBeacon,
+            icon = "icon_detail",
+            bg = "public_edit_circle_bt_management"
+        },
+        MoveTo = {
+            -- 移动到指定位置
+            nameKey = "MoveTo",
+            callback = IDWorldMap.popupEvent.moveTo,
             icon = "icon_detail",
             bg = "public_edit_circle_bt_management"
         }
@@ -214,11 +235,11 @@ function IDWorldMap.setGameMode()
 
     if smoothFollow.height > IDWorldMap.scaleCityHeighMin and smoothFollow.height < IDWorldMap.scaleCityHeighMax then
         if IDWorldMap.mode ~= GameModeSub.mapBtwncity and MyCfg.mode == GameMode.map then
-            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.mapBtwncity)
             if IDWorldMap.mode == GameModeSub.map then
                 IDWorldMap.cleanPages()
             end
             IDWorldMap.mode = GameModeSub.mapBtwncity
+            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.mapBtwncity)
             IDWorldMap.grid:hideRect()
             dragSetting.viewRadius = 15000
             dragSetting.viewCenter = Vector3.zero
@@ -229,8 +250,8 @@ function IDWorldMap.setGameMode()
         end
     elseif smoothFollow.height > IDWorldMap.scaleCityHeighMax then
         if IDWorldMap.mode ~= GameModeSub.map and MyCfg.mode == GameMode.map then
-            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.map)
             IDWorldMap.mode = GameModeSub.map
+            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.map)
             IDWorldMap.refreshPagesData()
             IDWorldMap.grid:showRect()
             dragSetting.viewRadius = 15000
@@ -242,12 +263,12 @@ function IDWorldMap.setGameMode()
         end
     else
         if IDWorldMap.mode ~= GameModeSub.city then
-            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.city)
             if IDWorldMap.mode == GameModeSub.map then
                 -- 可能出现直接从map跳到city的情况
                 IDWorldMap.cleanPages()
             end
             IDWorldMap.mode = GameModeSub.city
+            IDMainCity.onChgMode(IDWorldMap.mode, GameModeSub.city)
             IDWorldMap.grid:hideRect()
             dragSetting.viewRadius = 65
             dragSetting.viewCenter = grid:GetCellCenter(bio2number(IDDBCity.curCity.pos))
@@ -367,12 +388,12 @@ function IDWorldMap.showFogwar()
     fogOfWar.Size = worldsize
     fogOfWar.transform.position = Vector3(-worldsize / 2, 0, -worldsize / 2)
     SetActive(fogOfWar.gameObject, true)
+    fogOfWar:ClearPersistenFog()
 
     -- 设置可视范围
-    IDWorldMap.fogOfWarInfluence.ViewDistance = (citysize * 2)
-    local gridIndex = bio2number(IDDBCity.curCity.pos)
-    IDWorldMap.fogOfWarInfluence.transform.position = grid:GetCellCenter(gridIndex)
-    fogOfWar:ClearPersistenFog()
+    -- IDWorldMap.fogOfWarInfluence.ViewDistance = (citysize * 2)
+    -- local gridIndex = bio2number(IDDBCity.curCity.pos)
+    -- IDWorldMap.fogOfWarInfluence.transform.position = grid:GetCellCenter(gridIndex)
 end
 
 ---@public 通过网格idx取得所以屏的index
@@ -551,7 +572,11 @@ function IDWorldMap.onClickOcean()
         if IDWorldMap.isVisibile(cellPos) then
             -- 当可见时，才弹出菜单
             local label = joinStr("Pos:", index)
-            IDUtl.showPopupMenus(nil, cellPos, {popupMenus.moveCity}, label, index)
+            local buttons = {}
+            table.insert(buttons, popupMenus.moveCity)
+            table.insert(buttons, popupMenus.SetBeacon)
+            table.insert(buttons, popupMenus.MoveTo) 
+            IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
         end
     end
 end
@@ -624,6 +649,10 @@ IDWorldMap.popupEvent = {
     ---@public 停靠
     docked = function(cellIndex)
         IDUtl.hidePopupMenus()
+    end,
+    ---@public 移动到
+    moveTo = function(cellIndex)
+        getPanelAsy("PanelFleets", onLoadedPanelTT, cellIndex)
     end
 }
 
@@ -632,7 +661,7 @@ function IDWorldMap.doMoveCity(cellIndex, retData)
     if bio2number(retData.retInfor.code) == NetSuccess then
         cityGidx = cellIndex
         -- IDWorldMap.showFogwar()
-        IDWorldMap.fogOfWarInfluence.transform.position = grid:GetCellCenter(cellIndex)
+        -- IDWorldMap.fogOfWarInfluence.transform.position = grid:GetCellCenter(cellIndex)
         if IDMainCity then
             IDMainCity.onMoveCity()
         end
@@ -733,8 +762,8 @@ function IDWorldMap.destory()
         IDWorldMap.ocean = nil
     end
 
-    GameObject.DestroyImmediate(IDWorldMap.fogOfWarInfluence.gameObject)
-    IDWorldMap.fogOfWarInfluence = nil
+    -- GameObject.DestroyImmediate(IDWorldMap.fogOfWarInfluence.gameObject)
+    -- IDWorldMap.fogOfWarInfluence = nil
 end
 
 ---@public 是否可见

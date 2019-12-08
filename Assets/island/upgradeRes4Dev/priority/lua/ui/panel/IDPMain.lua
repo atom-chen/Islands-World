@@ -117,7 +117,7 @@ function IDPMain.procNetwork(cmd, succ, msg, paras)
                 local msg = joinStr(IDUtl.getResNameByType(bio2number(paras.resType)), " +", bio2number(paras.resVal))
                 CLAlert.add(msg, Color.green, 1)
             end
-            ---@type IDDBBuilding
+            ---@type NetProtoIsland.ST_building
             local b = paras.building
             IDMainCity.onFinishCollectRes(b)
         elseif cmd == NetProtoIsland.cmds.upLevBuildingImm then

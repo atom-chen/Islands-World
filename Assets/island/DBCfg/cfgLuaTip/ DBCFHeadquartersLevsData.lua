@@ -2,9 +2,11 @@
 ---@field public ID
 ---@field public Lev
 ---@field public Range
+---@field public Beacon
 ---@field public Tiles
 ---@field public TroopHousing
 ---@field public Workers
+---@field public FleetsCount
 ---@field public Building2
 ---@field public Building6
 ---@field public Building7

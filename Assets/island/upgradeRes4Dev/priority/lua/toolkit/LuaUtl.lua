@@ -81,6 +81,7 @@ function mapToVector4(map)
     return v
 end
 
+---@return UnityEngine.Transform
 function getChild(root, ...)
     local args = {...}
     local path = ""
@@ -337,6 +338,60 @@ function getPreciseDecimal(nNum, n)
     local nTemp = math.floor(nNum * nDecimal)
     local nRet = nTemp / nDecimal
     return nRet
+end
+
+---@public 截取指定长度字符，注意：英文个数为E，汉字或韩文或其他个数为C，E*1 + C*2 <= 14
+function cutStr_utf8(str, max)
+    if not max then
+        max = 14
+    end
+    local name_len = 0
+    local start_index = 1
+    local name_substr = str
+    local isSub = false
+    while true do
+        local char = string.sub(str, start_index, start_index)
+        if char and start_index <= string.len(str) then
+            local c = string.byte(char)
+            local len = 1
+            if 0 <= c and c <= 127 then
+                len = 1
+            elseif 192 <= c and c <= 223 then
+                len = 2
+            elseif 224 <= c and c <= 239 then
+                len = 3
+            elseif 240 <= c and c <= 247 then
+                len = 4
+            elseif 248 <= c and c <= 251 then
+                len = 5
+            elseif 252 <= c and c <= 253 then
+                len = 6
+            else
+                --print(c,'error');
+            end
+            if len == 1 then
+                --英文按照一个字节来算，其他的都按两字节算
+                name_len = name_len + 1
+            else
+                name_len = name_len + 2
+            end
+            --"abc123中国人??";
+            --local unicode = kkf_get_substring_unicode(str,start_index,len);
+            --local tp = kkf_unicode_type(unicode);
+            --print(string.format("%0x",unicode),len,tp);
+
+            if name_len > max then
+                name_substr = string.sub(str, 1, start_index - 1)
+                isSub = true
+                break
+            end
+
+            start_index = start_index + len
+        else
+            break
+        end
+    end
+    return name_substr, isSub
 end
 
 ---@public 离线处理

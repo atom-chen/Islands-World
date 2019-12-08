@@ -46,6 +46,7 @@ IDMainCity.totalBuilding = 0
 IDMainCity.Headquarters = nil -- 主基地
 --IDMainCity.shadowRoot = nil
 --IDMainCity.tileShadowRoot = nil
+---@type SimpleFogOfWar.FogOfWarInfluence
 IDMainCity.fogOfWarInfluence = nil
 
 -- 不可投兵的格子的边缘格子
@@ -83,6 +84,8 @@ local function _init()
     tilesRedRoot.localEulerAngles = Vector3.zero
     tilesRedRoot.localScale = Vector3.one
     tilesRedRoot.localPosition = Vector3.zero
+
+    IDMainCity.fogOfWarInfluence = csSelf.gameObject:AddComponent(typeof(FogOfWarInfluence))
 
     local go = GameObject("grid")
     go.transform.parent = transform
@@ -261,6 +264,7 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
         SetActive(seabed, true)
     end
 
+    IDMainCity.refreshFogOfWarInfluence()
     IDMainCity.loadTiles(
         function()
             IDMainCity.loadBuildings(
@@ -275,6 +279,19 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
             )
         end
     )
+end
+
+function IDMainCity.refreshFogOfWarInfluence()
+    local dis = 0
+    if MyCfg.mode == GameMode.map and IDWorldMap.mode == GameModeSub.map then
+        local lev = bio2number(IDMainCity.cityData.headquarters.lev)
+        ---@type DBCFHeadquartersLevsData
+        local attr = DBCfg.getHeadquartersLevsDataByLev(lev)
+        dis = bio2number(attr.Range) * IDWorldMap.grid.cellSize
+    else
+        dis = 100
+    end
+    IDMainCity.fogOfWarInfluence.ViewDistance = dis
 end
 
 ---@public 当主城数据列新时处理
@@ -363,6 +380,9 @@ function IDMainCity.onChgMode(oldMode, curMode)
         IDMainCity.Headquarters:showHud4WorldMap()
         IDMainCity.grid:hideRect()
     end
+
+    IDMainCity.refreshFogOfWarInfluence()
+
     for k, v in pairs(tiles) do
         SetActive(v.gameObject, isShowTile)
     end
@@ -475,7 +495,7 @@ function IDMainCity.doLoadTile(orgs)
 end
 
 ---@param obj UnityEngine.GameObject
----@param d IDDBTile
+---@param d NetProtoIsland.ST_tile
 function IDMainCity.onLoadTile(name, obj, orgs)
     local i = orgs[1]
     local list = orgs[2]
@@ -509,7 +529,7 @@ end
 
 function IDMainCity.loadBuildings(cb)
     local bs = IDMainCity.cityData.buildings
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local dbBuilding
     local list = {}
     for idx, v in pairs(bs) do
@@ -534,18 +554,18 @@ function IDMainCity.loadbuilding(param)
     if i > #list then
         return
     end
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local dbb = list[i]
     CLThingsPool.borrowObjAsyn(joinStr("Buildings.", bio2number(dbb.attrid)), IDMainCity.onLoadBuilding, param)
 end
 
 ---@param obj UnityEngine.GameObject
----@param d IDDBBuilding
+---@param d NetProtoIsland.ST_building
 function IDMainCity.onLoadBuilding(name, obj, param)
     local list = param[1]
     local i = param[2]
     local cb = param[3]
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local d = list[i]
 
     local index = bio2number(d.pos)
@@ -971,7 +991,7 @@ end
 
 ---@param d NetProtoIsland.ST_building
 function IDMainCity.onfinsihCreateBuilding(d)
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local b = IDDBCity.curCity.buildings[bio2number(d.idx)]
     if IDMainCity.newBuildUnit.id == bio2number(b.attrid) then
         IDMainCity.newBuildUnit:init(
@@ -1012,7 +1032,7 @@ function IDMainCity.onReleaseBuilding(building, hadMoved)
         if hadMoved then
             -- 通知服务器
             local blua = building
-            ---@type IDDBBuilding
+            ---@type NetProtoIsland.ST_building
             local d = blua.serverData
             local gidx = blua.gridIndex
 
@@ -1045,7 +1065,7 @@ function IDMainCity.onReleaseTile(tile, hadMoved)
         if hadMoved then
             -- 通知服务器
             local blua = tile
-            ---@type IDDBTile
+            ---@type NetProtoIsland.ST_tile
             local d = blua.mData
             local gidx = blua.gridIndex
 
@@ -1303,7 +1323,7 @@ end
 ---@public 当建筑有变化时
 function IDMainCity.onBuildingChg(data)
     local idx = bio2number(data.idx)
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local serverData = IDDBCity.curCity.buildings[idx]
     if serverData == nil then
         printe("get building serverdata is nil")
@@ -1499,6 +1519,7 @@ end
 ---@public 当有建筑完成升级
 function IDMainCity.onFinishBuildingUpgrade(bData)
     local idx = bio2number(bData.idx)
+    ---@type IDLBuilding
     local building = buildings[idx]
     if building == nil then
         printe("get building is nil")
@@ -1586,7 +1607,7 @@ function IDMainCity.fireWorker(building)
     end
 end
 
----@param b IDDBBuilding
+---@param b NetProtoIsland.ST_building
 function IDMainCity.onFinishCollectRes(b)
     local idx = bio2number(b.idx)
     ---@type IDLBuildingRes

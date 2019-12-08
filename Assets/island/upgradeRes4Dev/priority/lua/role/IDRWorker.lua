@@ -18,7 +18,7 @@ function IDRWorker:init (csObj, id, star, lev, isOffense, other)
     self.state = IDConst.RoleState.idel
     local _building = other.building
     if _building then
-        ---@type IDDBBuilding
+        ---@type NetProtoIsland.ST_building
         local bdata = _building.serverData
         if bio2number(bdata.state) == IDConst.BuildingState.upgrade then
             if DateEx.nowMS - bio2number(bdata.starttime) > 5 * 1000 then

@@ -10,7 +10,7 @@ local uiobjs = {}
 local mData
 ---@type DBCFBuildingData
 local dockyardAttr
----@type IDDBBuilding
+---@type NetProtoIsland.ST_building
 local dockyardServerData
 local selectedCell
 local roleAttr

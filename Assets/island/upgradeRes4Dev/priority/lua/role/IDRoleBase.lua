@@ -532,7 +532,7 @@ function IDRoleBase:fire(target)
 end
 
 ---@public 取得伤害值
----@param target IDDBBuilding
+---@param target NetProtoIsland.ST_building
 function IDRoleBase:getDamage(target)
     if target == nil then
         return 0

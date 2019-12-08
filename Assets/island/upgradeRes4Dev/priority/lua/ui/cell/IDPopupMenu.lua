@@ -8,7 +8,7 @@ do
     local mData = nil
     local default_radius = 142;
     local attr
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local serverData
 
     -- 初始化，只调用一次

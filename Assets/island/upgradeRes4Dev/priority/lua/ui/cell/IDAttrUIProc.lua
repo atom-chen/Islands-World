@@ -6,7 +6,7 @@ do
     local mData = nil
     local uiobjs = {}
     local attr
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local serverData
 
     -- 初始化，只调用一次

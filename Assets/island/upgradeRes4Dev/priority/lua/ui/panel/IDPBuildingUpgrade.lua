@@ -9,7 +9,7 @@ do
     local buildingCamera
     local buildingAttrRoot
     local attr
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local serverData
 
     -- 初始化，只会调用一次

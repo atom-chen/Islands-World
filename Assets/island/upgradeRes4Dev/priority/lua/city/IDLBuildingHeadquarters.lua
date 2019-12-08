@@ -20,6 +20,13 @@ function IDLBuildingHeadquarters:init(selfObj, id, star, lev, _isOffense, other)
     self.hudData4worldmap.attr = DBCfg.getDataById(DBCfg.CfgPath.MapTile, 7)
 end
 
+function IDLBuildingHeadquarters:onFinishBuildingUpgrade()
+    IDLBuildingHeadquarters.super.onFinishBuildingUpgrade(self)
+    if IDMainCity then
+        IDMainCity.refreshFogOfWarInfluence()
+    end
+end
+
 function IDLBuildingHeadquarters:OnClick()
     if IDWorldMap.mode == GameModeSub.city then
         IDLBuildingHeadquarters.super.OnClick(self)

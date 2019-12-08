@@ -31,7 +31,7 @@ function IDLBuilding:init(selfObj, id, star, lev, _isOffense, other)
     IDLBuilding.super.init(self, selfObj, id, star, lev, _isOffense, other)
 
     -- 取得属性配置
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     self.serverData = other.serverData
     ---@type DBCFBuildingData
     self.attr = DBCfg.getBuildingByID(id)
@@ -362,7 +362,7 @@ function IDLBuilding:upgrading()
     if GameMode.map ~= MyCfg.mode or IDWorldMap.mode ~= GameModeSub.city then
         return
     end
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local serverData = self.serverData
     if serverData then
         if bio2number(serverData.state) == IDConst.BuildingState.upgrade then

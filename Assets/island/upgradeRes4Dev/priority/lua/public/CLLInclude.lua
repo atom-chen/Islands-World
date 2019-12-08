@@ -407,6 +407,10 @@ do
     bio2number = BioUtl.bio2number
     number2bio = BioUtl.number2bio
     LGet = Localization.Get
+    function LGetFmt(key, ...)
+        return string.format(LGet(key), ...)
+    end
+
     hideTopPanel = CLPanelManager.hideTopPanel
     
     ---@public 异步加载panel

@@ -4,6 +4,7 @@
 ---@field public hadNum number 拥有舰船数量
 ---@field public setNum number 选择的舰船数量
 
+---@class IDCellSetShipNum
 local _cell = {}
 ---@type Coolape.CLCellLua
 local csSelf = nil
@@ -33,29 +34,32 @@ function _cell.show(go, data)
     local attr = DBCfg.getDataById(DBCfg.CfgPath.Role, mData.id)
     uiobjs.SpriteIcon.spriteName = IDUtl.getRoleIcon(mData.id)
     uiobjs.LabelMaxNum.text = joinStr(mData.hadNum, "")
-    _cell.setSliderNum()
+    _cell.loadSliderNum()
 end
 
-function _cell.setSliderNum()
+function _cell.loadSliderNum()
     if uiobjs.sliderNumer == nil then
         CLUIOtherObjPool.borrowObjAsyn("SliderNumber", _cell.onLoadSliderNum)
     else
-        _cell.onLoadSliderNum("SliderNumber", uiobjs.sliderNumer.gameObject)
+        _cell.setSliderNum()
     end
 end
 
 ---@param go UnityEngine.GameObject
 function _cell.onLoadSliderNum(name, go, orgs)
-    if uiobjs.sliderNumer or not csSelf.gameObject.activeInHierarchy then
+    if uiobjs.sliderNumer or (not csSelf.gameObject.activeInHierarchy) then
         CLUIOtherObjPool.returnObj(go)
         SetActive(go, false)
         return
     end
-
     SetActive(go, true)
     uiobjs.sliderNumer = go:GetComponent("CLCellLua")
     uiobjs.sliderNumer.transform.parent = transform
     uiobjs.sliderNumer.transform.localScale = Vector3.one
+    _cell.setSliderNum()
+end
+
+function _cell.setSliderNum()
     ---@type _Param4SliderNumber
     local sliderNumerData = {}
     sliderNumerData.default = mData.setNum
@@ -71,10 +75,11 @@ function _cell.onLoadSliderNum(name, go, orgs)
     uiobjs.sliderNumer.transform.localPosition = Vector3(344.7, 0, 0)
 end
 
-function _cell.OnDisable()
+function _cell.hide()
     if uiobjs.sliderNumer then
         CLUIOtherObjPool.returnObj(uiobjs.sliderNumer.gameObject)
         SetActive(uiobjs.sliderNumer.gameObject, false)
+        uiobjs.sliderNumer = nil
     end
 end
 

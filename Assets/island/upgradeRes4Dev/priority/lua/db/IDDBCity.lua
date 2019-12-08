@@ -1,6 +1,4 @@
 ﻿require("public.class")
-require("db.IDDBBuilding")
-require("db.IDDBTile")
 
 ---@class IDDBCity 主城数据
 IDDBCity = class("IDDBCity")
@@ -10,16 +8,24 @@ IDDBCity.curCity = nil
 ---@param d NetProtoIsland.ST_city
 function IDDBCity:ctor(d)
     self:setBaseData(d)
-    self.tiles = {} -- 地块信息 key=idx, map
-    for k, v in pairs(d.tiles) do
-        self.tiles[k] = IDDBTile.new(v)
-    end
+    -- self.tiles = {} -- 地块信息 key=idx, map
+    -- for k, v in pairs(d.tiles) do
+    --     self.tiles[k] = NetProtoIsland.ST_tile.new(v)
+    -- end
+    ---@type NetProtoIsland.ST_building  主基地
+    self.headquarters = nil
+
     self.buildings = {} -- 建筑信息 key=idx, map
+    ---@param v NetProtoIsland.ST_building
     for k, v in pairs(d.buildings) do
-        self.buildings[k] = IDDBBuilding.new(v)
+        self.buildings[k] = v
+        if self.headquarters == nil and bio2number(v.attrid) == IDConst.BuildingID.headquartersBuildingID then
+            self.headquarters = self.buildings[k]
+        end
     end
 end
 
+---@param d NetProtoIsland.ST_city
 function IDDBCity:setBaseData(d)
     self._data = d
     self.idx = d.idx -- 唯一标识 int int
@@ -29,11 +35,12 @@ function IDDBCity:setBaseData(d)
     self.pos = d.pos -- 城所在世界grid的index int int
     self.pidx = d.pidx -- 玩家idx int int
     self.dockyardShips = {} --造船厂里的已经有的舰船数据
+    self.tiles = d.tiles
 end
 
 ---@public 初始化造船厂数据
 function IDDBCity:initDockyardShips()
-    ---@param v IDDBBuilding
+    ---@param v NetProtoIsland.ST_building
     for k, v in pairs(self.buildings) do
         if bio2number(v.attrid) == IDConst.BuildingID.dockyardBuildingID then
             -- 取得造船厂的航船数据
@@ -67,7 +74,7 @@ function IDDBCity:getRes()
     local attrfood = nil
     local attrgold = nil
     local attroil = nil
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local b
     local id
     for k, v in pairs(self.buildings) do
@@ -132,8 +139,8 @@ end
 
 ---@public 当建筑数据有变化时
 function IDDBCity:onBuildingChg(data)
-    ---@type IDDBBuilding
-    local b = IDDBBuilding.new(data)
+    ---@type NetProtoIsland.ST_building
+    local b = data
     self.buildings[bio2number(b.idx)] = b
     if bio2number(b.attrid) == IDConst.BuildingID.dockyardBuildingID then
         -- 取得造船厂的航船数据
@@ -141,9 +148,9 @@ function IDDBCity:onBuildingChg(data)
     end
 end
 
+---@type NetProtoIsland.ST_tile
 function IDDBCity:onTileChg(tile)
-    local t = IDDBTile.new(tile)
-    self.tiles[bio2number(t.idx)] = t
+    self.tiles[bio2number(tile.idx)] = tile
 end
 
 ---@public 取得造船厂的航船数据
@@ -172,7 +179,7 @@ end
 ---@public 取得造船厂的已经使用了的
 ---@param idx number 造船厂的idx
 function IDDBCity:getDockyardUsedSpace(idx)
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local b = self.buildings[idx]
     if b == nil then
         printe("get building is nil")

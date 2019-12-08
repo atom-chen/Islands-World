@@ -32,7 +32,7 @@ do
     -- 注意，c#侧不会在调用show时，调用refresh
     function _cell.show (go, data)
         mData = data;
-        ---@type IDDBBuilding
+        ---@type NetProtoIsland.ST_building
         serverData = mData.data
         local attrid = bio2number(serverData.attrid)
         attr = DBCfg.getBuildingByID(attrid)

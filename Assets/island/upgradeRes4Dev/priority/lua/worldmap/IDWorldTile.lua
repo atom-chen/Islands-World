@@ -106,7 +106,7 @@ function IDWorldTile:loadShadow()
                 self.shadow = obj.transform
                 self.shadow.parent = MyCfg.self.shadowRoot
                 self.shadow.localEulerAngles = Vector3.zero
-                self.shadow.localScale = Vector3.one * 6
+                self.shadow.localScale = Vector3.one * 6 * bio2number(self.attr.Size)
                 self.shadow.position = self.transform.position
                 SetActive(self.shadow.gameObject, true)
             end

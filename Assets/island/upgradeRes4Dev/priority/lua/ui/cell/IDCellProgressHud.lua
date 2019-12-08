@@ -30,7 +30,7 @@ end
 -- 注意，c#侧不会在调用show时，调用refresh
 function _cell.show(go, data)
     mData = data
-    ---@type IDDBBuilding
+    ---@type NetProtoIsland.ST_building
     local serverData = mData.data
     mData.starttime = bio2number(serverData.starttime)
     mData.endtime = bio2number(serverData.endtime)
