@@ -198,20 +198,11 @@ function m.getLayer(layerName) end
 ---@param optional Vector3 inPos
 ---@param optional LayerMask layer
 function m.getRaycastHitInfor(camera, inPos, layer) end
----public Object[] doCallback(Object callback)
----public Object[] doCallback(Object callback, Object paras1)
----public Object[] doCallback(Object callback, Object paras1, Object paras2)
----public Object[] doCallback(Object callback, Object paras1, Object paras2, Object paras3)
----public Object[] doCallback(Object callback, Object paras1, Object paras2, Object paras3, Object paras4)
----public Object[] doCallback(Object callback, Object paras1, Object paras2, Object paras3, Object paras4, Object paras5)
+---public Object[] doCallback(Object callback, Object[] args)
 ---@return table
----@param Object callback
----@param Object paras1
----@param Object paras2
----@param Object paras3
----@param Object paras4
----@param optional Object paras5
-function m.doCallback(callback, paras1, paras2, paras3, paras4, paras5) end
+---@param optional Object callback
+---@param optional Object[] args
+function m.doCallback(callback, args) end
 ---public Hashtable fileToMap(String path)
 ---@return Hashtable
 ---@param optional String path

@@ -289,7 +289,7 @@ function IDMainCity.refreshFogOfWarInfluence()
         local attr = DBCfg.getHeadquartersLevsDataByLev(lev)
         dis = bio2number(attr.Range) * IDWorldMap.grid.cellSize
     else
-        dis = 100
+        dis = 120
     end
     IDMainCity.fogOfWarInfluence.ViewDistance = dis
 end
@@ -1061,8 +1061,8 @@ end
 function IDMainCity.onReleaseTile(tile, hadMoved)
     if IDMainCity.newBuildUnit == tile then
     elseif IDMainCity.selectedUnit == tile then
-        IDLGridTileSide.refreshAndShow(nil, nil, true)
         if hadMoved then
+            IDLGridTileSide.refreshAndShow(nil, nil, true)
             -- 通知服务器
             local blua = tile
             ---@type NetProtoIsland.ST_tile
@@ -1134,15 +1134,18 @@ function IDMainCity.setSelected(unit, selected)
         local grid = IDMainCity.getGrid()
         local index = grid:GetCellIndex(unit.transform.position)
         local placeGround, placeSea
+        local canPlaced = false
         if isTile then
             placeGround = false
             placeSea = true
+            canPlaced = IDMainCity.canPlaceTile(index)
         else
             placeGround = cell.attr.PlaceGround
             placeSea = cell.attr.PlaceSea
+            canPlaced = IDMainCity.isSizeInFreeCell(index, cell.size, placeGround, placeSea)
         end
 
-        if (IDMainCity.isSizeInFreeCell(index, cell.size, placeGround, placeSea)) then
+        if canPlaced then
             cell.gridIndex = index
 
             if unit ~= IDMainCity.newBuildUnit then
@@ -1393,7 +1396,18 @@ function IDMainCity.canPlaceTile(...)
     else
         index = param[1]
     end
-    return IDMainCity.isSizeInFreeCell(index, 2, false, true)
+    if IDMainCity.isSizeInFreeCell(index, 2, false, true) then
+        local list = grid:getAroundCells(index, 4)
+        local count = list.Count
+        for i = 0, count - 1 do
+            if not grid:IsInBounds(list[i]) then
+                return false
+            end
+        end
+        return true
+    else
+        return false
+    end
 end
 
 ---@public 给定的中心index及size后判断是否在陆地上

@@ -69,15 +69,15 @@ function cell.OnPress(go, isPress)
             IDMainCity.grid:hide() -- 网格不显示
             local moved = false
             local index = grid:GetCellIndex(cell.transform.position)
-            if (IDMainCity.isSizeInFreeCell(index, cell.size, false, true)) then
+            if (IDMainCity.canPlaceTile(index)) then
                 moved = (cell.gridIndex ~= index)
                 cell.gridIndex = index
                 IDMainCity.setOtherUnitsColiderState(nil, true)
 
                 IDLCameraMgr.setPostProcessingProfile("normal")
                 NGUITools.SetLayer(cell.gameObject, LayerMask.NameToLayer("Tile"))
+                cell.initSides()
             end
-            cell.initSides()
             -- 通知主城有释放建筑
             IDMainCity.onReleaseTile(cell, moved)
             --cell.csSelf:invoke4Lua("setScreenCanDrag", 0.2)
@@ -111,37 +111,34 @@ function cell.OnDrag(go, delta)
         currBuildingPos = MyMainCamera.lastHit.point
     end
     local index = grid:GetCellIndex(currBuildingPos)
-
+    -- printe(index)
     local trf = cell.transform
     local newPos = Vector3.zero
     if (grid:IsInBounds(index)) then
-        if (cell.size % 2 == 0) then
-            newPos = grid:GetCellPosition(index)
-        else
-            newPos = grid:GetCellCenter(index)
-        end
-        newPos = newPos + IDMainCity.offset4Tile
-        trf.position = newPos
-        if cell.shadow then
-            cell.shadow.transform.position = trf.position - Vector3.up * 5
-        end
-
-        local isOK = IDMainCity.isSizeInFreeCell(index, cell.size, false, true)
-        newPos.y = newPos.y + 0.1
-        --IDLBuildingSize.show(cell.size, isOK and Color.green or Color.red, newPos)
-        --IDLBuildingSize.setLayer("Top")
-        if (isOK) then
-            --cell.csSelf:setMatToon()
-            SFourWayArrow.setMatToon(Color.white)
-        else
-            --csSelf:setMatOutLine()
-            SFourWayArrow.setMatToon(Color.red)
-        end
         if (index ~= cell.oldindex) then
             cell.oldindex = index
+            if (cell.size % 2 == 0) then
+                newPos = grid:GetCellPosition(index)
+            else
+                newPos = grid:GetCellCenter(index)
+            end
+            newPos = newPos + IDMainCity.offset4Tile
+            trf.position = newPos
+            if cell.shadow then
+                cell.shadow.transform.position = trf.position - Vector3.up * 5
+            end
+
+            local isOK = IDMainCity.canPlaceTile(index)
+            newPos.y = newPos.y + 0.1
+            --IDLBuildingSize.show(cell.size, isOK and Color.green or Color.red, newPos)
+            --IDLBuildingSize.setLayer("Top")
             if (isOK) then
+                --cell.csSelf:setMatToon()
+                SFourWayArrow.setMatToon(Color.white)
                 SoundEx.playSound("moving_07", 1, 1)
             else
+                --csSelf:setMatOutLine()
+                SFourWayArrow.setMatToon(Color.red)
                 SoundEx.playSound("bad_move_06", 1, 1)
             end
         end

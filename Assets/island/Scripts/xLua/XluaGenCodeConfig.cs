@@ -213,6 +213,7 @@ public static class XluaGenCodeConfig
         typeof(HUDText),
         typeof(Wave),
         typeof(MyBoundsPool),
+        typeof(MyDirectionArrow),
     };
 
 	//C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface
@@ -383,6 +384,15 @@ public static class XluaGenCodeConfig
         new List<string>() {
             "UnityEngine.QualitySettings",
             "streamingMipmapsRenderersPerFrame",
+        },
+        new List<string>() {
+            "UnityEngine.Input",
+            "location",
+        },
+        new List<string>() {
+            "UnityEngine.Input",
+            "IsJoystickPreconfigured",
+            "System.String",
         },
     };
 }

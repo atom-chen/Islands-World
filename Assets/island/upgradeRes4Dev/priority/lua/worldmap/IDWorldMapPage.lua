@@ -56,7 +56,7 @@ function IDWorldMapPage:addPageData(index, id, serverData)
     local s = Vector3.one
     s.y = 0.1
     pdata.position = pos
-    pdata.bounds = MyBoundsPool.borrow(pos, s * size)
+    pdata.bounds = MyBoundsPool.borrow(pos, s * size * IDWorldMap.grid.cellSize)
     self.pageData[index] = pdata
 end
 

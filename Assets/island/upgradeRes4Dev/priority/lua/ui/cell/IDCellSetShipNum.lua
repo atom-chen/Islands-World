@@ -52,10 +52,10 @@ function _cell.onLoadSliderNum(name, go, orgs)
         SetActive(go, false)
         return
     end
-    SetActive(go, true)
     uiobjs.sliderNumer = go:GetComponent("CLCellLua")
     uiobjs.sliderNumer.transform.parent = transform
     uiobjs.sliderNumer.transform.localScale = Vector3.one
+    SetActive(go, true)
     _cell.setSliderNum()
 end
 

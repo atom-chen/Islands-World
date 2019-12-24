@@ -133,6 +133,8 @@ function IDPMain.uiEventDelegate(go)
         getPanelAsy("PanelBuildings", onLoadedPanelTT)
     elseif goName == "ButtonSetting" then
         getPanelAsy("PanelSetting", onLoadedPanelTT)
+    elseif goName == "ButtonFleets" then
+        getPanelAsy("PanelFleets", onLoadedPanelTT, {})
     end
 end
 

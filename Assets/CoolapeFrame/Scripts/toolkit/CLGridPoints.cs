@@ -87,7 +87,7 @@ namespace Coolape
 					if (needCreateObj) {
 						points [index].localPosition = v3;
 					} else {
-						v3 += root.position;
+                        v3 += root.localPosition; // root.position;
 						vectors [index] = v3;
 					}
 				}
@@ -99,12 +99,22 @@ namespace Coolape
 		void OnDrawGizmos ()
 		{
 			Gizmos.color = Color.red;
-			for (int i = 0; i < points.Length; i++) {
-				if (points [i] == null)
-					continue;
-				Gizmos.DrawWireCube (points [i].position, Vector3.one * 0.3f);
-			}
-			Gizmos.color = Color.white;
+            if (points != null) {
+                for (int i = 0; i < points.Length; i++) {
+                    if (points[i] == null)
+                        continue;
+                    Gizmos.DrawWireCube(points[i].position, Vector3.one * 0.3f);
+                }
+            } else if(vectors != null)
+            {
+                for (int i = 0; i < vectors.Length; i++)
+                {
+                    if (vectors[i] == null)
+                        continue;
+                    Gizmos.DrawWireCube(vectors[i] + transform.position, Vector3.one * 0.3f);
+                }
+            }
+            Gizmos.color = Color.white;
 		}
 		#endif
 	}

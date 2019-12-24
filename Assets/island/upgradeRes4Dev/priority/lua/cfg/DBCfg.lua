@@ -45,6 +45,7 @@ function DBCfg.getData(path)
 end
 
 ---@public 取得常量配置
+---@return DBCFCfgData
 function DBCfg.getConstCfg(...)
     local datas = DBCfg.getData(CfgPath.Cfg)
     if (datas == nil) then

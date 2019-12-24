@@ -103,13 +103,23 @@ IDConst.WorldmapCellType = {
     port = 1, -- 港口
     decorate = 2, -- 装饰
     user = 3, -- 玩家
+    empty=4, -- 空地
     occupy = 99 -- 占用
 }
 
 ---@public 舰队状态
 IDConst.FleetState = {
+    none = 1, -- 无
+    moving = 2, -- 航行中
+    docked = 3, -- 停泊在港口
+    stay = 4, -- 停留在海面
+    fighting = 5 -- 正在战斗中
+}
+---@public 舰队任务
+IDConst.FleetTask = {
     idel = 1, -- 待命状态
-    departing = 2, -- 出征中
-    docked = 3 -- 停泊
+    voyage = 2, -- 出征
+    back = 3, -- 返航
+    attack = 4 -- 攻击
 }
 return IDConst

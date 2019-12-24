@@ -473,9 +473,10 @@ namespace Coolape
 				callbakFunc = list [0];
 				orgs = list [1];
 				sec = (float)(list [2]);
-				if (sec <= Time.unscaledTime) {
-					Utl.doCallback (callbakFunc, orgs);
-					invokeByUpdateList.RemoveAt (index);
+				if (sec <= Time.unscaledTime)
+                {
+                    invokeByUpdateList.RemoveAt(index);
+                    Utl.doCallback (callbakFunc, orgs);
 					ObjPool.listPool.returnObject (list);
 				} else {
 					index++;

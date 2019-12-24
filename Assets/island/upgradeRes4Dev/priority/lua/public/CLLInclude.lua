@@ -412,7 +412,7 @@ do
     end
 
     hideTopPanel = CLPanelManager.hideTopPanel
-    
+
     ---@public 异步加载panel
     ---@param panelName string 页面名
     ---@param callback function 取得页面的回调(panel, orgs)
@@ -450,7 +450,8 @@ do
         none = 0,
         map = 1,
         city = 2,
-        mapBtwncity = 4 -- 地图与主城之前切换
+        mapBtwncity = 4, -- 地图与主城之前切换
+        fleet = 5 -- 舰队模式
     }
 
     ---@class RoleState 角色的状态

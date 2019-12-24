@@ -246,33 +246,30 @@ function IDLBuilding:_OnDrag(delta)
     local trf = self.transform
     local newPos = Vector3.zero
     if (grid:IsInBounds(index)) then
-        if (self.size % 2 == 0) then
-            newPos = grid:GetCellPosition(index)
-        else
-            newPos = grid:GetCellCenter(index)
-        end
-        newPos = newPos
-        trf.position = newPos + posOffset
-        if self.shadow then
-            self.shadow.position = trf.position + Vector3.up * 0.02
-        end
-
-        local isOK = IDMainCity.isSizeInFreeCell(index, self.size, self.attr.PlaceGround, self.attr.PlaceSea)
-        newPos = newPos + IDMainCity.offset4Tile
-        IDLBuildingSize.show(self.size, isOK and Color.green or Color.red, newPos)
-        IDLBuildingSize.setLayer("Top")
-        if (isOK) then
-            --self.csSelf:setMatToon()
-            SFourWayArrow.setMatToon()
-        else
-            --SFourWayArrow.setMatToon()
-            --csSelf:setMatOutLine()
-        end
         if (index ~= self.oldindex) then
             self.oldindex = index
+            if (self.size % 2 == 0) then
+                newPos = grid:GetCellPosition(index)
+            else
+                newPos = grid:GetCellCenter(index)
+            end
+            newPos = newPos
+            trf.position = newPos + posOffset
+            if self.shadow then
+                self.shadow.position = trf.position + Vector3.up * 0.02
+            end
+
+            local isOK = IDMainCity.isSizeInFreeCell(index, self.size, self.attr.PlaceGround, self.attr.PlaceSea)
+            newPos = newPos + IDMainCity.offset4Tile
+            IDLBuildingSize.show(self.size, isOK and Color.green or Color.red, newPos)
+            IDLBuildingSize.setLayer("Top")
             if (isOK) then
+                --self.csSelf:setMatToon()
+                SFourWayArrow.setMatToon()
                 SoundEx.playSound("moving_07", 1, 1)
             else
+                --SFourWayArrow.setMatToon()
+                --csSelf:setMatOutLine()
                 SoundEx.playSound("bad_move_06", 1, 1)
             end
         end

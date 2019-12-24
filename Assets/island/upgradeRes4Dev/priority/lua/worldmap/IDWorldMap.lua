@@ -37,6 +37,9 @@ IDWorldMap.scaleCityHeighMin = 45
 IDWorldMap.scaleCityHeighMax = 50
 local isDragOcean = false
 local popupMenus
+local aroundPageCache = {}
+-- 舰队对象
+local fleets = {}
 
 function IDWorldMap.__init()
     if isInited then
@@ -145,6 +148,7 @@ function IDWorldMap.init(gidx, onFinishCallback, onProgress)
         IDMainCity.init(
             nil,
             function()
+                CLLNet.send(NetProtoIsland.send.setPlayerCurrLook4WorldPage(centerPageIdx))
                 onFinishCallback()
                 smoothFollow:tween(Vector2(20, 100), Vector2(10, 15), 2.5, nil, IDWorldMap.scaleGround)
             end,
@@ -316,6 +320,8 @@ function IDWorldMap.onDragMove(delta)
             if tmpPageIdx ~= centerPageIdx then
                 -- 说明已经切换屏了,重新加载数据
                 centerPageIdx = tmpPageIdx
+                -- 通知服务器，我当前所在屏改变了
+                CLLNet.send(NetProtoIsland.send.setPlayerCurrLook4WorldPage(centerPageIdx))
                 IDWorldMap.refreshPagesData()
             end
         end
@@ -377,6 +383,7 @@ function IDWorldMap.refreshPagesData()
             IDWorldMap.loadMapPageData(pageIdx)
         end
     end
+    IDWorldMap.loadFleets()
 end
 
 function IDWorldMap.showFogwar()
@@ -418,6 +425,9 @@ function IDWorldMap.getAroundPage()
     if centerPageIdx < 0 then
         return ret
     end
+    if aroundPageCache[centerPageIdx] then
+        return aroundPageCache[centerPageIdx]
+    end
     local screenSize = ConstCreenSize * IDWorldMap.grid.cellSize
     local centerPos = grid:GetCellCenter(centerPageIdx)
     -- center
@@ -455,6 +465,7 @@ function IDWorldMap.getAroundPage()
     pos = centerPos + Vector3(1, 0, -1) * screenSize
     index = grid:GetCellIndex(pos)
     ret[index] = index
+    aroundPageCache[centerPageIdx] = ret
     return ret
 end
 
@@ -464,6 +475,7 @@ function IDWorldMap.loadPagesData()
     for i, v in pairs(pageIndexs) do
         IDWorldMap.loadMapPageData(v)
     end
+    IDWorldMap.loadFleets()
 end
 
 ---@public 加载一屏
@@ -575,7 +587,7 @@ function IDWorldMap.onClickOcean()
             local buttons = {}
             table.insert(buttons, popupMenus.moveCity)
             table.insert(buttons, popupMenus.SetBeacon)
-            table.insert(buttons, popupMenus.MoveTo) 
+            table.insert(buttons, popupMenus.MoveTo)
             IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
         end
     end
@@ -652,7 +664,7 @@ IDWorldMap.popupEvent = {
     end,
     ---@public 移动到
     moveTo = function(cellIndex)
-        getPanelAsy("PanelFleets", onLoadedPanelTT, cellIndex)
+        getPanelAsy("PanelFleets", onLoadedPanelTT, {toPos = cellIndex})
     end
 }
 
@@ -686,15 +698,16 @@ function IDWorldMap.doAttack(cellIndex, retData)
         local _offShips = {}
         ---@param v NetProtoIsland.ST_dockyardShips
         for k, v in pairs(atkShips) do
-            for shipId, num in pairs(v.shipsMap or {}) do
-                if num > 0 then
-                    _offShips[shipId] = (_offShips[shipId] or 0) + num
+            ---@param unit NetProtoIsland.ST_unitInfor
+            for i, unit in pairs(v.ships or {}) do
+                if bio2number(unit.num) > 0 then
+                    _offShips[bio2number(unit.id)] = (_offShips[bio2number(unit.id)] or 0) + bio2number(unit.num)
                 end
             end
         end
         for k, v in pairs(_offShips) do
             -- 转成bio存储，避免被修改
-            offShips[tonumber(k)] = {id = tonumber(k), num = number2bio(v)}
+            offShips[k] = {id = k, num = number2bio(v)}
         end
 
         ---@type BattleData
@@ -735,6 +748,12 @@ function IDWorldMap.cleanPages()
         freePages:enQueue(page)
         pages[pageIdx] = nil
     end
+
+    ---@param v IDWorldFleet
+    for k, v in pairs(fleets) do
+        IDWorldMap.releaseFleet(bio2number(v.data.idx))
+    end
+    fleets = {}
 end
 
 ---@public 离开世界后的清理
@@ -747,6 +766,7 @@ function IDWorldMap.clean()
         SetActive(IDWorldMap.mapTileSize, false)
         IDWorldMap.mapTileSize = nil
     end
+
     IDWorldMap.grid:clean()
 end
 
@@ -778,6 +798,112 @@ function IDWorldMap.isVisibile(position, bounds)
         return false
     end
     return true
+end
+---@public 是否通过9屏
+---@param fleet NetProtoIsland.ST_fleetinfor
+function IDWorldMap.isPassThe9Screens(fleet)
+    if fleet == nil then
+        return false
+    end
+    local pos1 = grid:GetCellCenter(bio2number(fleet.frompos))
+    local pos2 = grid:GetCellCenter(bio2number(fleet.topos))
+    local dir = pos2 - pos1
+    local ray = Ray(pos1, dir)
+    local maxDis = Vector3.Distance(pos1, pos2)
+
+    local pages = IDWorldMap.getAroundPage()
+    local bounds
+    local bSize = Vector3.one * ConstCreenSize * IDWorldMap.grid.cellSize
+    for k, index in pairs(pages) do
+        if index >= 0 then
+            bounds = MyBoundsPool.borrow(grid:GetCellCenter(index), bSize)
+            if Utl.IntersectRay(bounds, ray, 0, maxDis) then
+                MyBoundsPool.returnObj(bounds)
+                return true
+            end
+            MyBoundsPool.returnObj(bounds)
+        end
+    end
+    return false
+end
+
+---@public 加载舰队
+function IDWorldMap.loadFleets()
+    local fleets = IDDBWorldMap.fleets
+    ---@param v NetProtoIsland.ST_fleetinfor
+    for k, v in pairs(fleets) do
+        IDWorldMap.refreshFleet(v, false)
+    end
+end
+
+---@param fleet NetProtoIsland.ST_fleetinfor
+function IDWorldMap.refreshFleet(fleet, isRemove)
+    if fleet == nil then
+        return
+    end
+    if IDWorldMap.mode ~= GameModeSub.map then
+        return
+    end
+    if isRemove then
+        IDWorldMap.releaseFleet(bio2number(fleet.idx))
+        return
+    end
+    local task = bio2number(fleet.task)
+    if task == IDConst.FleetTask.idel or IDConst.FleetState.docked == bio2number(fleet.status) then
+        return
+    end
+    if IDWorldMap.isPassThe9Screens(fleet) then
+        ---@type IDWorldFleet
+        local fleetObj = fleets[bio2number(fleet.idx)]
+        if fleetObj then
+            fleetObj.refreshData(fleet)
+        else
+            CLThingsPool.borrowObjAsyn("worldmap.fleet", IDWorldMap.onLoadFleet, fleet)
+        end
+    else
+        IDWorldMap.releaseFleet(bio2number(fleet.idx))
+    end
+end
+
+---@param go UnityEngine.GameObject
+function IDWorldMap.onLoadFleet(name, go, orgs)
+    ---@type NetProtoIsland.ST_fleetinfor
+    local fleet = orgs
+    local fidx = bio2number(fleet.idx)
+    if IDWorldMap.mode ~= GameModeSub.map or fleets[fidx] then
+        CLThingsPool.returnObj(go)
+        SetActive(go, false)
+        return
+    end
+    go.transform.parent = transform
+    go.transform.localScale = Vector3.one
+    ---@type Coolape.CLCellLua
+    local fleetObj = go:GetComponent("CLCellLua")
+    SetActive(go, true)
+    fleetObj:init(fleet, nil)
+    fleets[fidx] = fleetObj.luaTable
+end
+
+---@public 释放舰队
+function IDWorldMap.releaseFleet(fidx)
+    ---@type IDWorldFleet
+    local fleetObj = fleets[fidx]
+    if fleetObj then
+        fleetObj.clean()
+        CLThingsPool.returnObj(fleetObj.gameObject)
+        SetActive(fleetObj.gameObject, false)
+        fleets[fidx] = nil
+    end
+end
+
+---@param fleetObj IDWorldFleet
+function IDWorldMap.onSomeFleetArrived(fleetObj)
+end
+
+---@public 选中舰队
+---@param fidx number 舰队的idx
+function IDWorldMap.selectFleet(fidx)
+    -- //TODO:
 end
 --------------------------------------------
 return IDWorldMap

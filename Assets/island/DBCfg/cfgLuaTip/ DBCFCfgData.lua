@@ -6,3 +6,7 @@
 ---@field public TilesTotal
 ---@field public Minute2DiamRate
 ---@field public MaxTimeLen4ResYields
+---@field public DepartCostResPerCell
+---@field public FleetTimePerOnce
+---@field public FleetMoveSpeed
+---@field public FleetAtLeastSec

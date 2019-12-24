@@ -55,7 +55,7 @@ public class UILocalizeEditor : Editor
 		GUI.color = isPresent ? Color.green : Color.red;
 		GUILayout.BeginVertical(GUILayout.Width(22f));
 		GUILayout.Space(2f);
-		GUILayout.Label(isPresent? "\u2714" : "\u2718", "TL SelectionButtonNew", GUILayout.Height(20f));
+		GUILayout.Label(isPresent? "\u2714" : "\u2718", GUILayout.Height(20f));
 		GUILayout.EndVertical();
 		GUI.color = Color.white;
 		GUILayout.EndHorizontal();

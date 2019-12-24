@@ -206,3 +206,7 @@ GotoLook=过去查看
 MyFleets=我的舰队
 MsgOverLength=%s不能超过%d个汉字或%d个英数
 MsgShipCfgIsNil=请设置舰船数量！
+MsgSuccess=操作成功
+NewFleet=创建舰队
+SaveConfig=保存配置
+BackHome=返回基地

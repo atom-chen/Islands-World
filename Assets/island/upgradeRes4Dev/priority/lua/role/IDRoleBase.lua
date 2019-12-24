@@ -86,7 +86,7 @@ function IDRoleBase:init(selfObj, id, star, lev, _isOffense, other)
     self.csSelf.RandomFactor3 = self.csSelf:initRandomFactor3()
     -- 取得属性配置
     if other then
-        self.serverData = other.serverData
+        self.serverData = other.serverData or {}
     end
     self.isRole = true
     ---@type DBCFRoleData

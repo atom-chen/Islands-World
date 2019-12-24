@@ -319,10 +319,10 @@ function IDLGridTileSide.setLeftSide(index, callback, orgs, imm)
         ---@type Coolape.CLAStarNode
         local node = cache.grid.nodesMap[_index]
         local pos = grid:GetCellCenter(_index)
-        local upIsempty = IDLGridTileSide.isEmpty(node.up.index) --(grid:UpIndex(_index))
-        local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+        local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1) --(grid:UpIndex(_index))
+        local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
          --(grid:DownIndex(_index))
-        local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+        local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
          --(grid:LeftIndex(_index))
         if upIsempty and downIsempty and leftIsempty then
             sideName = IDLGridTileSide.getLeftSide(_index)
@@ -365,11 +365,11 @@ function IDLGridTileSide.setRightSide(index, callback, orgs, imm)
         ---@type Coolape.CLAStarNode
         local node = cache.grid.nodesMap[_index]
         local pos = grid:GetCellCenter(_index)
-        local upIsempty = IDLGridTileSide.isEmpty(node.up.index)
+        local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1)
          --(grid:UpIndex(_index))
-        local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+        local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
          --(grid:DownIndex(_index))
-        local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+        local rightIsempty = IDLGridTileSide.isEmpty(node.right and node.right.index or -1)
          --(grid:RightIndex(_index))
         if upIsempty and downIsempty and rightIsempty then
             sideName = IDLGridTileSide.getRightSide(_index)
@@ -412,11 +412,11 @@ function IDLGridTileSide.setUpSide(index, callback, orgs, imm)
         ---@type Coolape.CLAStarNode
         local node = cache.grid.nodesMap[_index]
         local pos = grid:GetCellCenter(_index)
-        local upIsempty = IDLGridTileSide.isEmpty(node.up.index)
+        local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1)
          --(grid:UpIndex(_index))
-        local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+        local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
          --(grid:LeftIndex(_index))
-        local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+        local rightIsempty = IDLGridTileSide.isEmpty(node.right and node.right.index or -1)
          --(grid:RightIndex(_index))
         if upIsempty and leftIsempty and rightIsempty then
             --SidesName.TileSideUp
@@ -459,11 +459,11 @@ function IDLGridTileSide.setDownSide(index, callback, orgs, imm)
         ---@type Coolape.CLAStarNode
         local node = cache.grid.nodesMap[_index]
         local pos = grid:GetCellCenter(_index)
-        local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+        local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
          --(grid:DownIndex(_index))
-        local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+        local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
          --(grid:LeftIndex(_index))
-        local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+        local rightIsempty = IDLGridTileSide.isEmpty(node.left and node.right.index or -1)
          --(grid:RightIndex(_index))
         if downIsempty and leftIsempty and rightIsempty then
             --SidesName.TileSideDown
@@ -568,22 +568,22 @@ function IDLGridTileSide.setLeftUpAngle(index, callback, orgs, imm)
     ---@type Coolape.CLAStarNode
     local node = cache.grid.nodesMap[_index]
     local pos = grid:GetCellCenter(_index)
-    local upIsempty = IDLGridTileSide.isEmpty(node.up.index)
+    local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+    local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+    local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+    local rightIsempty = IDLGridTileSide.isEmpty(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
-    local upIsFourSide = IDLGridTileSide.isFourSide(node.up.index)
+    local upIsFourSide = IDLGridTileSide.isFourSide(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsFourSide = IDLGridTileSide.isFourSide(node.down.index)
+    local downIsFourSide = IDLGridTileSide.isFourSide(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left.index)
+    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right.index)
+    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
     if upIsempty and downIsempty and leftIsempty and rightIsempty then
@@ -609,7 +609,7 @@ function IDLGridTileSide.setLeftUpAngle(index, callback, orgs, imm)
             sideName = IDLGridTileSide.getLeftSide(_index)
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
             -- local _leftUpIsEmpty = IDLGridTileSide.isEmpty(grid:LeftUpIndex(_index))
-            local _leftUpIsEmpty = IDLGridTileSide.isEmpty(node.leftUp.index)
+            local _leftUpIsEmpty = IDLGridTileSide.isEmpty(node.leftUp and node.leftUp.index or -1)
             if _leftUpIsEmpty then
                 sideName = SidesName.TileSideLeftUpAngle
             else
@@ -731,22 +731,22 @@ function IDLGridTileSide.setLeftDownAngle(index, callback, orgs, imm)
     local node = cache.grid.nodesMap[_index]
     local pos = grid:GetCellCenter(_index)
 
-    local upIsempty = IDLGridTileSide.isEmpty(node.up.index)
+    local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+    local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+    local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+    local rightIsempty = IDLGridTileSide.isEmpty(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
-    local upIsFourSide = IDLGridTileSide.isFourSide(node.up.index)
+    local upIsFourSide = IDLGridTileSide.isFourSide(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsFourSide = IDLGridTileSide.isFourSide(node.down.index)
+    local downIsFourSide = IDLGridTileSide.isFourSide(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left.index)
+    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right.index)
+    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
     if upIsempty and downIsempty and leftIsempty and rightIsempty then
@@ -770,7 +770,7 @@ function IDLGridTileSide.setLeftDownAngle(index, callback, orgs, imm)
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and rightIsFourSide then
             sideName = IDLGridTileSide.getLeftSide(_index)
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
-            local _leftDownIsempty = IDLGridTileSide.isEmpty(node.leftDown.index)
+            local _leftDownIsempty = IDLGridTileSide.isEmpty(node.leftDown and node.leftDown.index or -1)
              --(grid:LeftDownIndex(_index))
             if _leftDownIsempty then
                 sideName = SidesName.TileSideLeftDownAngle
@@ -894,22 +894,22 @@ function IDLGridTileSide.setRightUpAngle(index, callback, orgs, imm)
     local node = cache.grid.nodesMap[_index]
     local pos = grid:GetCellCenter(_index)
 
-    local upIsempty = IDLGridTileSide.isEmpty(node.up.index)
+    local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+    local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+    local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+    local rightIsempty = IDLGridTileSide.isEmpty(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
-    local upIsFourSide = IDLGridTileSide.isFourSide(node.up.index)
+    local upIsFourSide = IDLGridTileSide.isFourSide(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsFourSide = IDLGridTileSide.isFourSide(node.down.index)
+    local downIsFourSide = IDLGridTileSide.isFourSide(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left.index)
+    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right.index)
+    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
     if upIsempty and downIsempty and leftIsempty and rightIsempty then
@@ -934,7 +934,7 @@ function IDLGridTileSide.setRightUpAngle(index, callback, orgs, imm)
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and rightIsFourSide then
             sideName = SidesName.TileSideLeftUp
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
-            local _rightUpIsempty = IDLGridTileSide.isEmpty(node.rightUp.index)
+            local _rightUpIsempty = IDLGridTileSide.isEmpty(node.rightUp and node.rightUp.index or -1)
              --(grid:RightUpIndex(_index))
             if _rightUpIsempty then
                 sideName = SidesName.TileSideRightUpAngle
@@ -1057,22 +1057,22 @@ function IDLGridTileSide.setRightDownAngle(index, callback, orgs, imm)
     local node = cache.grid.nodesMap[_index]
     local pos = grid:GetCellCenter(_index)
 
-    local upIsempty = IDLGridTileSide.isEmpty(node.up.index)
+    local upIsempty = IDLGridTileSide.isEmpty(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsempty = IDLGridTileSide.isEmpty(node.down.index)
+    local downIsempty = IDLGridTileSide.isEmpty(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsempty = IDLGridTileSide.isEmpty(node.left.index)
+    local leftIsempty = IDLGridTileSide.isEmpty(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsempty = IDLGridTileSide.isEmpty(node.right.index)
+    local rightIsempty = IDLGridTileSide.isEmpty(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
-    local upIsFourSide = IDLGridTileSide.isFourSide(node.up.index)
+    local upIsFourSide = IDLGridTileSide.isFourSide(node.up and node.up.index or -1)
      --(grid:UpIndex(_index))
-    local downIsFourSide = IDLGridTileSide.isFourSide(node.down.index)
+    local downIsFourSide = IDLGridTileSide.isFourSide(node.down and node.down.index or -1)
      --(grid:DownIndex(_index))
-    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left.index)
+    local leftIsFourSide = IDLGridTileSide.isFourSide(node.left and node.left.index or -1)
      --(grid:LeftIndex(_index))
-    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right.index)
+    local rightIsFourSide = IDLGridTileSide.isFourSide(node.right and node.right.index or -1)
      --(grid:RightIndex(_index))
 
     if upIsempty and downIsempty and leftIsempty and rightIsempty then
@@ -1097,7 +1097,7 @@ function IDLGridTileSide.setRightDownAngle(index, callback, orgs, imm)
             sideName = SidesName.TileSideLeftDown
         elseif (not upIsFourSide) and (not downIsFourSide) and (not leftIsFourSide) and (not rightIsFourSide) then
             -- local _rightDownIsempty = IDLGridTileSide.isEmpty(grid:RightDownIndex(_index))
-            local _rightDownIsempty = IDLGridTileSide.isEmpty(node.rightDown.index)
+            local _rightDownIsempty = IDLGridTileSide.isEmpty(node.rightDown and node.rightDown.index or -1)
             if _rightDownIsempty then
                 sideName = SidesName.TileSideRightDownAngle
             else
@@ -1279,6 +1279,9 @@ function IDLGridTileSide.isNeedSetAngel(index)
 end
 
 function IDLGridTileSide.isEmpty(index)
+    if index < 0 then
+        return true
+    end
     if cache.grid.grid:IsInBounds(index) and (not cache.gridState4Tile[index]) and (not selectedTileState[index]) then
         return true
     end

@@ -30,6 +30,7 @@ IDDBWorldMap = {}
 
 local mapPageData = {} -- key:pageIdx, value = list
 local mapPageCacheTime = {} -- key:pageIdx, value = timeOut
+IDDBWorldMap.fleets = {}
 IDDBWorldMap.ConstTimeOutSec = 60 -- 数据超时秒
 
 --=========================================
@@ -193,9 +194,29 @@ function IDDBWorldMap.onMapCellChg(mapCell, isRemove)
     end
 end
 
+function IDDBWorldMap.onGetFleets4Page(fleets)
+    ---@param fleet ST_fleetinfor
+    for i, fleet in ipairs(fleets) do
+        IDDBWorldMap.onGetFleet(fleet, false)
+    end
+end
+
+---@param fleet NetProtoIsland.ST_fleetinfor
+function IDDBWorldMap.onGetFleet(fleet, isRemove)
+    if isRemove then
+        IDDBWorldMap.fleets[bio2number(fleet.idx)] = nil
+    else
+        IDDBWorldMap.fleets[bio2number(fleet.idx)] = fleet
+    end
+    if IDWorldMap then
+        IDWorldMap.refreshFleet(fleet, isRemove)
+    end
+end
+
 function IDDBWorldMap.clean()
     mapPageData = {} -- key:pageIdx, value = list
     mapPageCacheTime = {} -- key:pageIdx, value = timeOut
+    IDDBWorldMap.fleets = {}
 end
 --------------------------------------------
 return IDDBWorldMap

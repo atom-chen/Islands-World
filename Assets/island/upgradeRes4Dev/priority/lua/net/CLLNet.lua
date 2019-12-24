@@ -174,6 +174,26 @@ CLLNet.cacheDataFunc = {
         -- 初始化时间
         local systime = bio2number(data.systime)
         DateEx.init(systime)
+
+        -- 取得舰队列表
+        CLLNet.send(NetProtoIsland.send.getAllFleets(bio2number(city.idx)))
+    end,
+    ---@param data NetProtoIsland.RC_getAllFleets
+    [NetProtoIsland.cmds.getAllFleets] = function(cmd, data)
+        IDDBCity.curCity:setFleets(data.fleetinfors)
+    end,
+    ---@param data NetProtoIsland.RC_saveFleet
+    [NetProtoIsland.cmds.saveFleet] = function(cmd, data)
+        IDDBCity.curCity:onFleetChg(data.fleetinfor, false)
+    end,
+    ---@param data NetProtoIsland.RC_getFleet
+    [NetProtoIsland.cmds.getFleet] = function(cmd, data)
+        IDDBCity.curCity:onFleetChg(data.fleetinfor, false)
+    end,
+    ---@param data NetProtoIsland.RC_sendFleet
+    [NetProtoIsland.cmds.sendFleet] = function(cmd, data)
+        IDDBCity.curCity:onFleetChg(data.fleetinfor, data.isRemove)
+        IDDBWorldMap.onGetFleet(data.fleetinfor, data.isRemove)
     end,
     ---@param data NetProtoIsland.RC_onPlayerChg
     [NetProtoIsland.cmds.onPlayerChg] = function(cmd, data)
@@ -212,9 +232,11 @@ CLLNet.cacheDataFunc = {
             IDDBCity.curCity.buildings[idx] = nil
         end
     end,
+    ---@param data NetProtoIsland.RC_getMapDataByPageIdx
     [NetProtoIsland.cmds.getMapDataByPageIdx] = function(cmd, data)
         if IDDBWorldMap then
             IDDBWorldMap.onGetMapPageData(data.mapPage)
+            IDDBWorldMap.onGetFleets4Page(data.fleetinfors)
         end
     end,
     [NetProtoIsland.cmds.getShipsByBuildingIdx] = function(cmd, data)

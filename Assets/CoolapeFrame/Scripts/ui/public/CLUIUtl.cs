@@ -170,7 +170,7 @@ namespace Coolape
 			
 			Transform parentTf = null;
 			if (isTable) {
-				((UITable)parent).sorting = UITable.Sorting.None;
+				//((UITable)parent).sorting = UITable.Sorting.Alphabetic;
 				parentTf = ((UITable)parent).transform;
 			} else {
 				((UIGrid)parent).sorted = true;

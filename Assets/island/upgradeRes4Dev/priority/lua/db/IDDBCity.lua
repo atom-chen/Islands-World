@@ -14,7 +14,6 @@ function IDDBCity:ctor(d)
     -- end
     ---@type NetProtoIsland.ST_building  主基地
     self.headquarters = nil
-
     self.buildings = {} -- 建筑信息 key=idx, map
     ---@param v NetProtoIsland.ST_building
     for k, v in pairs(d.buildings) do
@@ -23,6 +22,8 @@ function IDDBCity:ctor(d)
             self.headquarters = self.buildings[k]
         end
     end
+    ---@type table 舰队列表[NetProtoIsland.ST_fleetinfor]
+    self.fleets = {}
 end
 
 ---@param d NetProtoIsland.ST_city
@@ -227,6 +228,24 @@ function IDDBCity:onMyselfCityChg(d)
         if IDMainCity then
             IDMainCity.refreshData(self)
         end
+    end
+end
+
+function IDDBCity:setFleets(list)
+    ---@param v NetProtoIsland.ST_fleetinfor
+    for i, v in ipairs(list) do
+        self.fleets[bio2number(v.idx)] = v
+    end
+end
+
+---@param fleet NetProtoIsland.ST_fleetinfor
+function IDDBCity:onFleetChg(fleet, isRemove)
+    if isRemove then
+        self.fleets[bio2number(fleet.idx)] = nil
+    end
+    -- 有可能收到其它玩家的舰队信息，所以需要判断下是否自己的
+    if bio2number(fleet.cidx) == bio2number(self.idx) then
+        self.fleets[bio2number(fleet.idx)] = fleet
     end
 end
 --------------------------------------------
