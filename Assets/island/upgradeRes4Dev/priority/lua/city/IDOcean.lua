@@ -63,7 +63,9 @@ function IDOcean.onPress()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onPress(true)
     elseif MyCfg.mode == GameMode.map then
-        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+        if IDWorldMap.mode == GameModeSub.map or 
+        IDWorldMap.mode == GameModeSub.mapBtwncity  or
+        IDWorldMap.mode == GameModeSub.fleet then
             IDWorldMap.onPress(true)
         else
             IDMainCity.onPress(true)
@@ -74,7 +76,9 @@ function IDOcean.onRelease()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onPress(false)
     elseif MyCfg.mode == GameMode.map then
-        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+        if IDWorldMap.mode == GameModeSub.map or 
+        IDWorldMap.mode == GameModeSub.mapBtwncity or
+        IDWorldMap.mode == GameModeSub.fleet then
             IDWorldMap.onPress(false)
         else
             IDMainCity.onPress(false)
@@ -87,7 +91,10 @@ function IDOcean.onClick()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onClickOcean()
     elseif MyCfg.mode == GameMode.map then
-        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+        if IDWorldMap.mode == GameModeSub.map or
+        IDWorldMap.mode == GameModeSub.mapBtwncity or
+        IDWorldMap.mode == GameModeSub.fleet
+         then
             IDWorldMap.onClickOcean()
         else
             IDMainCity.onClickOcean()
@@ -101,7 +108,9 @@ function IDOcean.onDrag()
     if MyCfg.mode == GameMode.city then
         IDMainCity.onDragOcean()
     elseif MyCfg.mode == GameMode.map then
-        if IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+        if IDWorldMap.mode == GameModeSub.map 
+        or IDWorldMap.mode == GameModeSub.mapBtwncity  or
+        IDWorldMap.mode == GameModeSub.fleet then
             IDWorldMap.onDragOcean()
         else
             IDMainCity.onDragOcean()

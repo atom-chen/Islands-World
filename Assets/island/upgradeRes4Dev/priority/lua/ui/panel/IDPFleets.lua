@@ -18,6 +18,7 @@ local cellList = {}
 -- 初始化，只会调用一次
 function IDPFleets.init(csObj)
     csSelf = csObj
+    IDPFleets.csSelf = csSelf
     transform = csObj.transform
     ---@type Coolape.CLCellLua
     local fleetsInfor = getCC(transform, "PanelFleetInfor", "CLCellLua")
@@ -103,7 +104,9 @@ end
 -- 网络请求的回调；cmd：指命，succ：成功失败，msg：消息；paras：服务器下行数据
 function IDPFleets.procNetwork(cmd, succ, msg, paras)
     if (succ == NetSuccess) then
-        if cmd == NetProtoIsland.cmds.sendFleet or cmd == NetProtoIsland.cmds.getFleet then
+        if cmd == NetProtoIsland.cmds.sendFleet or 
+        cmd == NetProtoIsland.cmds.getFleet or 
+        cmd == NetProtoIsland.cmds.fleetBack then
             IDPFleets.show()
         elseif cmd == NetProtoIsland.cmds.saveFleet then
             IDPFleets.show()

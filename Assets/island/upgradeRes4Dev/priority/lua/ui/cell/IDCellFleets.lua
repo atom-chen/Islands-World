@@ -22,8 +22,15 @@ end
 -- 注意，c#侧不会在调用show时，调用refresh
 function _cell.show(go, data)
     mData = data
+    local task = bio2number(mData.task)
+    local status = bio2number(mData.status)
+    local taskName = LGet(IDConst.FleetTaskName[task])
+    local statusName = LGet(IDConst.FleetStateName[status])
+    statusName = isNilOrEmpty(statusName) and "" or joinStr("(", statusName, ")")
+    local statsStr = joinStr(taskName, statusName)
+
     uiobjs.LabelName.text = mData.name
-    uiobjs.LabelState.text = bio2number(mData.status) .. ""
+    uiobjs.LabelState.text = statsStr
     local pos = bio2number(mData.curpos)
     local x = IDWorldMap.grid.grid:GetRow(pos)
     local y = IDWorldMap.grid.grid:GetColumn(pos)

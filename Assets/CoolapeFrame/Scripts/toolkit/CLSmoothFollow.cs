@@ -22,9 +22,10 @@ namespace Coolape
 		public float distance = 10.0f;
 		// the height we want the camera to be above the target
 		public float height = 5.0f;
-		// How much we
-		public float heightDamping = 2.0f;
-		public float rotationDamping = 3.0f;
+        // How much we
+        public float moveDamping = 1.0f;
+        public float heightDamping = 2.0f;
+        public float rotationDamping = 3.0f;
 //		public float moveDamping = 2.0f;
 		public Vector3 offset = Vector3.zero;
 		public bool isCanRotate = true;
@@ -37,8 +38,10 @@ namespace Coolape
 		Vector3 pos = Vector3.zero;
 		Vector3 localAngle = Vector3.zero;
 
-		//		public void Update ()
-		public void LateUpdate ()
+        Vector3 _newPos = Vector3.zero;
+        float curDistance = 0;
+        //		public void Update ()
+        public void LateUpdate ()
 		{
 			// Early out if we don't have a target
 			if (!target)
@@ -56,33 +59,31 @@ namespace Coolape
 				currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
 			}
 
-			// Damp the height
-			currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
+            // Damp the height
+            currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
 
 			// Convert the angle into a rotation
 			currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
-	
-			// Set the position of the camera on the x-z plane to:
-			// distance meters behind the target
-			if (isCanRotate) {
-				var newPos = target.position;
-				newPos -= currentRotation * Vector3.forward * distance;
-				transform.position = newPos;//Vector3.Lerp (transform.position, newPos, Time.deltaTime*moveDamping);
-			} else {
-				var newPos = target.position;
-				newPos.y -= distance;
-				newPos.z -= distance;
-				//newPos.x -= 5;
-				transform.position = newPos;
-			}
 
-			// Set the height of the camera
-			pos = transform.position;
-			pos.y = currentHeight;
-			transform.position = pos + offset;
-	
-			// Always look at the target
-			if (isCanRotate) {
+            // Set the position of the camera on the x-z plane to:
+            // distance meters behind the target
+            if (isCanRotate) {
+                _newPos = target.position;
+                _newPos -= currentRotation * Vector3.forward * distance;
+            } else {
+                _newPos = Vector3.Lerp(transform.position, target.position, Time.deltaTime * moveDamping);
+                curDistance = _newPos.z - transform.position.z;
+                curDistance = Mathf.Lerp(curDistance, distance, heightDamping * Time.deltaTime);
+                _newPos.z -= curDistance;// distance;
+            }
+
+            // Set the height of the camera
+            pos = _newPos;
+            pos.y = currentHeight;
+            transform.position = pos + offset;
+
+            // Always look at the target
+            if (isCanRotate) {
 				if (distance > -0.00001f && distance < 0.00001f) {
 					transform.LookAt (target);
 					localAngle = transform.localEulerAngles;

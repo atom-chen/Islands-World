@@ -27,20 +27,11 @@ local roleHeader
 local moveSpeed = 1
 local atleaseTime = 0 -- 至少需要多少时间
 local realFromePos
+---@type SimpleFogOfWar.FogOfWarInfluence
+local influence = nil
+local isMyFleet = false
 
-local tips = {
-    LGet("UICB168"),
-    LGet("UICB169"),
-    LGet("UICB170"),
-    LGet("UICB171"),
-    LGet("UICB172"),
-    LGet("UICB173"),
-    LGet("UICB174"),
-    LGet("UICB175"),
-    LGet("UICB176"),
-    LGet("UICB177"),
-    LGet("UICB178")
-}
+local tips = {}
 
 -- 初始化，只调用一次
 function _cell.init(csObj)
@@ -50,6 +41,8 @@ function _cell.init(csObj)
     gameObject = csSelf.gameObject
     _cell.gameObject = gameObject
     pointRoot = getCC(transform, "grid", "CLGridPoints")
+    influence = csSelf:GetComponent("FogOfWarInfluence")
+    influence.ViewDistance = 150
     moveSpeed = bio2number(DBCfg.getConstCfg().FleetMoveSpeed) * 1000
     atleaseTime = bio2number(DBCfg.getConstCfg().FleetAtLeastSec) * 1000
 end
@@ -61,6 +54,14 @@ end
 function _cell.refreshData(data)
     mData = data
     _cell.data = mData
+
+    if bio2number(mData.cidx) == bio2number(IDDBCity.curCity.idx) then
+        influence.Suspended = false
+        isMyFleet = true
+    else
+        influence.Suspended = true
+        isMyFleet = false
+    end
 
     local fromIndex = bio2number(mData.frompos)
     local toIndex = bio2number(mData.topos)
@@ -183,7 +184,8 @@ function _cell.onGetShip(name, go, orgs)
     end
 
     if
-        (not isLoadedships) or IDWorldMap == nil or IDWorldMap.mode ~= GameModeSub.map or
+        (not isLoadedships) or IDWorldMap == nil or
+            (IDWorldMap.mode ~= GameModeSub.map and IDWorldMap.mode ~= GameModeSub.fleet) or
             (not csSelf.gameObject.activeInHierarchy)
      then
         CLRolePool.returnObj(go)
@@ -252,6 +254,9 @@ end
 function _cell.doRefreshPosition()
     InvokeEx.invokeByUpdate(_cell.doRefreshPosition, 0.2)
     _cell.refreshPosition()
+    if isMyFleet then
+        IDWorldMap.onDragMove()
+    end
 end
 
 -- 刷新位置
@@ -364,7 +369,9 @@ function _cell.showingLine()
     -- invoke 目的是为了重新设置直线的mainTextureScale
     csSelf:invoke4Lua(
         function()
-            dirLine:SetPosition(fromPos, toPos)
+            if dirLine then
+                dirLine:SetPosition(fromPos, toPos)
+            end
         end,
         0.2
     )

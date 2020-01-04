@@ -238,6 +238,11 @@ function IDDBCity:setFleets(list)
     end
 end
 
+---@return NetProtoIsland.ST_fleetinfor
+function IDDBCity:getFleet(fidx)
+    return self.fleets[fidx]
+end
+
 ---@param fleet NetProtoIsland.ST_fleetinfor
 function IDDBCity:onFleetChg(fleet, isRemove)
     if isRemove then

@@ -16,6 +16,7 @@ function IDPMain.init(csObj)
     uiobjs.worldRoot = getChild(transform, "worldRoot")
     uiobjs.publicRoot = getChild(transform, "public")
     local TableRes = getChild(uiobjs.publicRoot, "AnchorTopLeft/TableRes")
+    uiobjs.LabelMode = getCC(uiobjs.publicRoot, "AnchorTopLeft/LabelMode", "UILabel")
     uiobjs.public = {}
     uiobjs.public.ProgressBarFood = getCC(TableRes, "ProgressBarFood", "UISlider")
     uiobjs.public.LabelFood = getCC(uiobjs.public.ProgressBarFood.transform, "Label", "UILabel")
@@ -64,11 +65,15 @@ end
 ---@public 当游戏模式变化（主要是从世界到主城的切换时ui的变化）
 function IDPMain.onChgMode()
     if IDWorldMap.mode == GameModeSub.city then
+        uiobjs.LabelMode.text = "主城"
         SetActive(uiobjs.worldRoot.gameObject, false)
         IDPMain.refreshCityInfor()
     elseif IDWorldMap.mode == GameModeSub.map or IDWorldMap.mode == GameModeSub.mapBtwncity then
+        uiobjs.LabelMode.text = "世界"
         SetActive(uiobjs.cityRoot.gameObject, false)
         IDPMain.refreshWorldInfor()
+    elseif IDWorldMap.mode == GameModeSub.fleet then
+        uiobjs.LabelMode.text = "舰队"
     end
 end
 

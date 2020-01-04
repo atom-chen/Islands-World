@@ -91,6 +91,7 @@ local function _init()
     go.transform.parent = transform
     IDMainCity.grid = go:AddComponent(typeof(CLGrid))
     IDMainCity.grid.gridLineHight = IDMainCity.offset4Tile.y
+    IDMainCity.grid.color4Grid = ColorEx.getColor(255, 255,255, 50)
     grid = IDMainCity.grid.grid
 
     -- 波浪的处理
@@ -222,7 +223,7 @@ function IDMainCity.init(cityData, onFinishCallback, onProgress)
     IDMainCity.grid.transform.localPosition = Vector3(-size / 2, 0, -size / 2)
     IDMainCity.grid.showGrid = false
     IDMainCity.grid.showGridRange = true
-    IDMainCity.grid:showRect()
+    -- IDMainCity.grid:showRect()
     IDMainCity.grid:init(isInitGridNodes)
     isInitGridNodes = false
 
@@ -357,7 +358,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         isShowBuilding = true
         isShowTile = true
         IDMainCity.setOtherUnitsColiderState(nil, true)
-        IDMainCity.grid:showRect()
+        -- IDMainCity.grid:showRect()
         IDMainCity.Headquarters:hideHud4WorldMap()
     elseif curMode == GameModeSub.mapBtwncity then
         preGameMode = oldMode
@@ -365,7 +366,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
         isShowTile = true
         IDMainCity.onClickOcean()
         IDMainCity.setOtherUnitsColiderState(nil, false)
-        IDMainCity.grid:hideRect()
+        -- IDMainCity.grid:hideRect()
         IDMainCity.Headquarters:showHud4WorldMap()
     elseif curMode == GameModeSub.map then
         preGameMode = oldMode
@@ -378,7 +379,7 @@ function IDMainCity.onChgMode(oldMode, curMode)
             IDMainCity.Headquarters:setCollider(true)
         end
         IDMainCity.Headquarters:showHud4WorldMap()
-        IDMainCity.grid:hideRect()
+        -- IDMainCity.grid:hideRect()
     end
 
     IDMainCity.refreshFogOfWarInfluence()
@@ -1267,10 +1268,12 @@ end
 
 function IDMainCity.hideGrid()
     IDMainCity.grid:hide()
+    IDMainCity.grid:hideRect()
 end
 
 function IDMainCity.showGrid(callback)
     IDMainCity.grid:reShow(callback) --显示网格
+    IDMainCity.grid:showRect()
 end
 
 ---@public 取得空闲的位置

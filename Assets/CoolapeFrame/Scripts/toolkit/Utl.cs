@@ -611,8 +611,10 @@ namespace Coolape
             // Draw the horizontal grid lines
             for (int i = 0; i < numRows + 1; i++)
             {
-                Vector3 startPos = origin + i * cellSize * kZAxis + Vector3.up * h;
-                Vector3 endPos = startPos + width * kXAxis + Vector3.up * h;
+                Vector3 startPos = origin + i * cellSize * kZAxis;
+                startPos.y = h;
+                Vector3 endPos = startPos + width * kXAxis;
+                endPos.y = h;
                 LineRenderer lr = drawLine(prefab, startPos, endPos, color);
                 list.Add(lr);
                 lr.transform.parent = gridRoot;
@@ -621,8 +623,10 @@ namespace Coolape
             // Draw the vertial grid lines
             for (int i = 0; i < numCols + 1; i++)
             {
-                Vector3 startPos = origin + i * cellSize * kXAxis + Vector3.up * h;
-                Vector3 endPos = startPos + height * kZAxis + Vector3.up * h;
+                Vector3 startPos = origin + i * cellSize * kXAxis;
+                startPos.y = h;
+                Vector3 endPos = startPos + height * kZAxis;
+                endPos.y = h;
                 LineRenderer lr = drawLine(prefab, startPos, endPos, color);
                 list.Add(lr);
                 lr.transform.parent = gridRoot;
@@ -648,7 +652,8 @@ namespace Coolape
         public static LineRenderer drawLine(LineRenderer prefab, Vector3 startPos, Vector3 endPos, Color color)
         {
             LineRenderer line = Object.Instantiate(prefab) as LineRenderer;
-            line.SetColors(color, color);
+            line.startColor = color;
+            line.endColor = color;
             line.SetPosition(0, startPos);
             line.SetPosition(1, endPos);
             line.gameObject.SetActive(true);

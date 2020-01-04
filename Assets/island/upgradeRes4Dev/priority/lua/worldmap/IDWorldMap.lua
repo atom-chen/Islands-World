@@ -19,7 +19,10 @@ IDWorldMap.nearestInfluence = nil
 local grid = nil
 local isInited = false
 local lookAtTarget = MyCfg.self.lookAtTarget
+---@type Coolape.MyTween
 local lookAtTargetTween = lookAtTarget:GetComponent("MyTween")
+---@type Coolape.CLSmoothFollow
+local lookAtTargetFollow = lookAtTarget:GetComponent("CLSmoothFollow")
 local mapCells = {} -- 地块，key=在块网格idx， val=luatable
 IDWorldMap.ocean = nil
 local drag4World = CLUIDrag4World.self
@@ -204,6 +207,9 @@ function IDWorldMap.onLoadOcena(name, obj, orgs)
 end
 
 function IDWorldMap.setGameMode()
+    if IDWorldMap.mode == GameModeSub.fleet then
+        return
+    end
     -- 判断当前中心点离自己的主城的距离来处理是否可以进入城里面
     if IDWorldMap.mode == GameModeSub.map then
         local lastHit =
@@ -306,7 +312,7 @@ end
 function IDWorldMap.onDragMove(delta)
     IDWorldMap.oceanTransform.position = lookAtTarget.position + IDWorldMap.offset4Ocean
 
-    if MyCfg.mode == GameMode.map then
+    if MyCfg.mode == GameMode.map and IDWorldMap.mode ~= GameModeSub.city then
         -- 取得屏幕中心点下的地块
         local lastHit =
             Utl.getRaycastHitInfor(
@@ -370,6 +376,7 @@ end
 
 ---@public 刷新9屏
 function IDWorldMap.refreshPagesData()
+    IDWorldMap.loadFleets()
     local currPages = IDWorldMap.getAroundPage()
     for pageIdx, page in pairs(pages) do
         if currPages[pageIdx] == nil then
@@ -383,7 +390,6 @@ function IDWorldMap.refreshPagesData()
             IDWorldMap.loadMapPageData(pageIdx)
         end
     end
-    IDWorldMap.loadFleets()
 end
 
 function IDWorldMap.showFogwar()
@@ -576,19 +582,26 @@ function IDWorldMap.onClickOcean()
     local index = grid:GetCellIndex(clickPos)
     local cellPos = grid:GetCellCenter(index)
     if MyCfg.mode == GameMode.map then
-        if IDWorldMap.mapTileSize then
-            IDWorldMap.mapTileSize.transform.position = cellPos
-            IDWorldMap.mapTileSize.transform.localScale = Vector3.one
-            SetActive(IDWorldMap.mapTileSize, true)
-        end
         if IDWorldMap.isVisibile(cellPos) then
-            -- 当可见时，才弹出菜单
-            local label = joinStr("Pos:", index)
-            local buttons = {}
-            table.insert(buttons, popupMenus.moveCity)
-            table.insert(buttons, popupMenus.SetBeacon)
-            table.insert(buttons, popupMenus.MoveTo)
-            IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
+            if IDWorldMap.mode == GameModeSub.fleet then
+                if IDWorldMap.selectedFleet then
+                    CLLNet.send(NetProtoIsland.send.fleetDepart(bio2number(IDWorldMap.selectedFleet.data.idx), index))
+                end
+            else
+                if IDWorldMap.mapTileSize then
+                    IDWorldMap.mapTileSize.transform.position = cellPos
+                    IDWorldMap.mapTileSize.transform.localScale = Vector3.one
+                    SetActive(IDWorldMap.mapTileSize, true)
+                end
+
+                -- 当可见时，才弹出菜单
+                local label = joinStr("Pos:", index)
+                local buttons = {}
+                table.insert(buttons, popupMenus.moveCity)
+                table.insert(buttons, popupMenus.SetBeacon)
+                table.insert(buttons, popupMenus.MoveTo)
+                IDUtl.showPopupMenus(nil, cellPos, buttons, label, index)
+            end
         end
     end
 end
@@ -634,16 +647,8 @@ end
 IDWorldMap.popupEvent = {
     ---@public 进入的城
     enterCity = function(cellIndex)
-        local cellPos = grid:GetCellCenter(cellIndex)
         IDUtl.hidePopupMenus()
-        smoothFollow:tween(
-            Vector2(smoothFollow.distance, smoothFollow.height),
-            Vector2(10, 15),
-            3,
-            IDWorldMap.finisEnterCity,
-            IDWorldMap.scaleGround
-        )
-        lookAtTargetTween:flyout(cellPos, 2, 0, 0, nil, nil, nil, true)
+        IDWorldMap.moveToView(cellIndex, GameModeSub.city)
     end,
     ---@public 攻击
     attack = function(cellIndex)
@@ -661,6 +666,13 @@ IDWorldMap.popupEvent = {
     ---@public 停靠
     docked = function(cellIndex)
         IDUtl.hidePopupMenus()
+        if IDWorldMap.mode == GameModeSub.fleet then
+            if IDWorldMap.selectedFleet then
+                CLLNet.send(NetProtoIsland.send.fleetDepart(bio2number(IDWorldMap.selectedFleet.data.idx), cellIndex))
+            end
+        else
+            getPanelAsy("PanelFleets", onLoadedPanelTT, {toPos = cellIndex})
+        end
     end,
     ---@public 移动到
     moveTo = function(cellIndex)
@@ -730,7 +742,7 @@ end
 
 ---@public 当地图块有变化时的推送
 function IDWorldMap.onMapCellChg(mapCell, isRemove)
-    if IDWorldMap.mode ~= GameModeSub.map then
+    if IDWorldMap.mode ~= GameModeSub.map and IDWorldMap.mode ~= GameModeSub.fleet then
         return
     end
     local pageIdx = bio2number(mapCell.pageIdx)
@@ -758,6 +770,7 @@ end
 
 ---@public 离开世界后的清理
 function IDWorldMap.clean()
+    IDWorldMap.selectedFleet = nil
     IDWorldMap.isRecheckingCellsVisible = false
     IDWorldMap.finishEnterCityCallbacks = {}
     IDWorldMap.cleanPages()
@@ -768,6 +781,7 @@ function IDWorldMap.clean()
     end
 
     IDWorldMap.grid:clean()
+    IDWorldMap.unselectFleet()
 end
 
 ---@public 需要销毁处理
@@ -841,7 +855,7 @@ function IDWorldMap.refreshFleet(fleet, isRemove)
     if fleet == nil then
         return
     end
-    if IDWorldMap.mode ~= GameModeSub.map then
+    if IDWorldMap.mode ~= GameModeSub.map and IDWorldMap.mode ~= GameModeSub.fleet then
         return
     end
     if isRemove then
@@ -849,7 +863,8 @@ function IDWorldMap.refreshFleet(fleet, isRemove)
         return
     end
     local task = bio2number(fleet.task)
-    if task == IDConst.FleetTask.idel or IDConst.FleetState.docked == bio2number(fleet.status) then
+    if task == IDConst.FleetTask.idel then
+        IDWorldMap.releaseFleet(bio2number(fleet.idx))
         return
     end
     if IDWorldMap.isPassThe9Screens(fleet) then
@@ -870,7 +885,7 @@ function IDWorldMap.onLoadFleet(name, go, orgs)
     ---@type NetProtoIsland.ST_fleetinfor
     local fleet = orgs
     local fidx = bio2number(fleet.idx)
-    if IDWorldMap.mode ~= GameModeSub.map or fleets[fidx] then
+    if (IDWorldMap.mode ~= GameModeSub.map and IDWorldMap.mode ~= GameModeSub.fleet) or fleets[fidx] then
         CLThingsPool.returnObj(go)
         SetActive(go, false)
         return
@@ -882,6 +897,9 @@ function IDWorldMap.onLoadFleet(name, go, orgs)
     SetActive(go, true)
     fleetObj:init(fleet, nil)
     fleets[fidx] = fleetObj.luaTable
+    if bio2number(fleet.cidx) == bio2number(IDDBCity.curCity.idx) then
+        IDWorldMap.recheckCellsVisible()
+    end
 end
 
 ---@public 释放舰队
@@ -889,6 +907,9 @@ function IDWorldMap.releaseFleet(fidx)
     ---@type IDWorldFleet
     local fleetObj = fleets[fidx]
     if fleetObj then
+        if fleetObj == IDWorldMap.selectedFleet then
+            IDWorldMap.unselectFleet(fidx)
+        end
         fleetObj.clean()
         CLThingsPool.returnObj(fleetObj.gameObject)
         SetActive(fleetObj.gameObject, false)
@@ -903,7 +924,164 @@ end
 ---@public 选中舰队
 ---@param fidx number 舰队的idx
 function IDWorldMap.selectFleet(fidx)
-    -- //TODO:
+    ---@type IDWorldFleet
+    local fleetObj = fleets[fidx]
+    if fleetObj then
+        hideHotWheel()
+        IDWorldMap.selectFleetMode(fidx)
+    else
+        local fleet = IDDBCity.curCity:getFleet(fidx)
+        if fleet then
+            CLThingsPool.borrowObjAsyn(
+                "worldmap.fleet",
+                function(name, go, orgs)
+                    hideHotWheel()
+                    IDWorldMap.onLoadFleet(name, go, orgs)
+                    IDWorldMap.selectFleetMode(fidx)
+                end,
+                fleet
+            )
+        end
+    end
+end
+
+function IDWorldMap.selectFleetMode(fidx)
+    local fleetObj = fleets[fidx]
+    if fleetObj == nil then
+        return
+    end
+    ---@type IDWorldFleet
+    IDWorldMap.selectedFleet = fleetObj
+    IDWorldMap.mode = GameModeSub.fleet
+    dragSetting.scaleMini = 7
+    dragSetting.scaleMax = 20
+    dragSetting.scaleHeightMini = 51
+    dragSetting.scaleHeightMax = 100
+    IDPMain.onChgMode()
+    drag4World.canMove = false
+    csSelf:invoke4Lua(
+        function()
+            lookAtTargetFollow.target = IDWorldMap.selectedFleet.transform
+            lookAtTargetFollow.enabled = true
+        end,
+        0.1
+    )
+    --//TODO:给舰队加一个选中的效果
+end
+
+function IDWorldMap.unselectFleet()
+    if IDWorldMap.mode ~= GameModeSub.fleet then
+        return
+    end
+    IDWorldMap.selectedFleet = nil
+    IDWorldMap.mode = GameModeSub.map
+    dragSetting.scaleMini = 7
+    dragSetting.scaleMax = 20
+    dragSetting.scaleHeightMini = 10
+    dragSetting.scaleHeightMax = 100
+    IDPMain.onChgMode()
+    lookAtTargetFollow.enabled = false
+    lookAtTargetFollow.target = nil
+    drag4World.canMove = true
+    --//TODO:去掉舰队选中的效果
+end
+
+---@public 跳转到舰队所在位置
+function IDWorldMap.gotoFleet(fidx)
+    showHotWheel()
+    local fleetData = IDDBWorldMap.getFleet(fidx)
+    if fleetData == nil then
+        fleetData = IDDBCity.curCity:getFleet(fidx)
+        if fleetData == nil then
+            CLAlert.add(LGet("MsgFleetIsNil"), Color.red, 1)
+            return
+        end
+    end
+    local curindex, curPos = IDDBWorldMap.getFleetRealCurPos(fleetData)
+
+    IDUtl.hidePopupMenus()
+    IDWorldMap.moveToView(
+        curindex,
+        GameModeSub.map,
+        function()
+            IDWorldMap.selectFleet(fidx)
+        end
+    )
+end
+
+---@public 移动到指定位置
+---@param newCenter number 新的中心点坐标
+---@param mode GameModeSub
+function IDWorldMap.moveToView(newCenter, mode, callback)
+    local lastHit =
+        Utl.getRaycastHitInfor(
+        MyCfg.self.mainCamera,
+        Vector3(Screen.width / 2, Screen.height / 2, 0),
+        Utl.getLayer("Water")
+    )
+    local curCenterPos = Vector3.zero
+    if lastHit then
+        curCenterPos = lastHit.point
+    end
+
+    local doTargetTween = function()
+        local newCenterPos = grid:GetCellCenter(newCenter)
+
+        local outofView = false
+        local toPos
+        if Vector3.Distance(newCenterPos, curCenterPos) > ConstCreenSize * cellSize then
+            ---@type UnityEngine.Vector3
+            local dir = newCenterPos - curCenterPos
+            toPos = curCenterPos + dir.normalized * ConstCreenSize * cellSize
+            outofView = true
+        else
+            toPos = newCenterPos
+        end
+        lookAtTargetTween:flyout(
+            toPos,
+            3,
+            0,
+            0,
+            IDWorldMap.onDragMove,
+            function()
+                if outofView and (GameModeSub.map == mode or GameModeSub.fleet == mode) then
+                    -- 重新加载地图数据
+                    lookAtTarget.position = newCenterPos
+                    csSelf:invoke4Lua(IDWorldMap.onDragMove, 0.2)
+                end
+                if callback then
+                    callback()
+                end
+            end,
+            nil,
+            true
+        )
+    end
+
+    if IDWorldMap.mode ~= mode then
+        local toView = nil
+        local finishCallback = nil
+        if mode == GameModeSub.city then
+            finishCallback = IDWorldMap.finisEnterCity
+            toView = Vector2(10, 15)
+        elseif mode == GameModeSub.map or mode == GameModeSub.fleet then
+            toView = Vector2(20, 80)
+        elseif mode == GameModeSub.mapBtwncity then
+            toView = Vector2(9, 50)
+        end
+        smoothFollow:tween(
+            Vector2(smoothFollow.distance, smoothFollow.height),
+            toView,
+            5,
+            function()
+                Utl.doCallback(finishCallback)
+                doTargetTween()
+            end,
+            IDWorldMap.scaleGround
+        )
+    else
+        doTargetTween()
+    end
 end
 --------------------------------------------
 return IDWorldMap

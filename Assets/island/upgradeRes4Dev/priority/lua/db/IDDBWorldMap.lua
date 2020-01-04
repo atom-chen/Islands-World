@@ -30,7 +30,7 @@ IDDBWorldMap = {}
 
 local mapPageData = {} -- key:pageIdx, value = list
 local mapPageCacheTime = {} -- key:pageIdx, value = timeOut
-IDDBWorldMap.fleets = {}
+IDDBWorldMap.fleets = {} -- key:fidx, value = fleet
 IDDBWorldMap.ConstTimeOutSec = 60 -- 数据超时秒
 
 --=========================================
@@ -171,6 +171,7 @@ function IDDBWorldMap.onMapCellChg(mapCell, isRemove)
     local pageIdx = bio2number(mapCell.pageIdx)
     local pageData = mapPageData[pageIdx]
     if pageData then
+        -- 不管三七二十一，先把旧数据移除
         local list = pageData.list
         local idx = bio2number(mapCell.idx)
         ---@param v NetProtoIsland.ST_mapCell
@@ -181,6 +182,7 @@ function IDDBWorldMap.onMapCellChg(mapCell, isRemove)
                 break
             end
         end
+        -- 如果不是移除数据，再把新数据存起来
         if not isRemove then
             table.insert(list, mapCell)
             pageData.map[idx] = mapCell
@@ -210,6 +212,56 @@ function IDDBWorldMap.onGetFleet(fleet, isRemove)
     end
     if IDWorldMap then
         IDWorldMap.refreshFleet(fleet, isRemove)
+    end
+end
+
+---@return NetProtoIsland.ST_fleetinfor
+function IDDBWorldMap.getFleet(fidx)
+    return IDDBWorldMap.fleets[fidx]
+end
+
+---@public 取得舰队当前的真实位置
+---@param fleet NetProtoIsland.ST_fleetinfor
+function IDDBWorldMap.getFleetRealCurPos(fleet)
+    if fleet == nil then
+        return -1
+    end
+
+    if bio2number(fleet.status) == IDConst.FleetState.moving then
+        -- 正在出征中
+        local moveSpeed = bio2number(DBCfg.getConstCfg().FleetMoveSpeed) * 1000
+        local atleaseTime = bio2number(DBCfg.getConstCfg().FleetAtLeastSec) * 1000
+        local fromIndex = bio2number(fleet.frompos)
+        local toIndex = bio2number(fleet.topos)
+        local fromPos
+        if fleet.fromposv3 and fleet.fromposv3.x then
+            fromPos =
+                Vector3(
+                bio2number(fleet.fromposv3.x) / 1000,
+                bio2number(fleet.fromposv3.y) / 1000,
+                bio2number(fleet.fromposv3.z) / 1000
+            )
+            fromPos = fromPos
+        else
+            fromPos = IDWorldMap.grid.grid:GetCellCenter(fromIndex)
+        end
+        local toPos = IDWorldMap.grid.grid:GetCellCenter(toIndex)
+        -- 转换成单元格的距离，而非真实的距离
+        local dis = Vector3.Distance(fromPos, toPos) / IDWorldMap.grid.cellSize
+        local timeLen = dis * moveSpeed
+        timeLen = timeLen < atleaseTime and atleaseTime or timeLen -- 至少要5秒
+        local beginTime = bio2number(fleet.arrivetime) - timeLen
+        local dir = toPos - fromPos
+
+        local percent = (DateEx.nowMS - beginTime) / timeLen
+        percent = percent > 1 and 1 or percent
+        percent = percent < 0 and 0 or percent
+        local curPos = fromPos + dir * percent
+        return IDWorldMap.grid.grid:GetCellIndex(curPos), curPos
+    else
+        local index = bio2number(fleet.curpos)
+        local curPos = IDWorldMap.grid.grid:GetCellCenter(index)
+        return index, curPos
     end
 end
 

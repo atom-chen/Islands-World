@@ -39,6 +39,9 @@ function IDWorldMapPage:wrapPageData()
 end
 
 function IDWorldMapPage:addPageData(index, id, serverData)
+    if id <= 0 then
+        return
+    end
     ---@type IDWorldMapPage._CellData
     local pdata = {
         index = index,
@@ -173,11 +176,19 @@ function IDWorldMapPage:refreshOneCell(cellData, isRemove)
                 self:rmPageDataByIndex(index)
                 return
             end
+        else
+            ---@type IDWorldMapPage._CellData
+            local pdata = self.pageData[index]
+            if pdata then
+                pdata.serverData = cellData
+            else
+                self:addPageData(index, bio2number(cellData.attrid), cellData)
+            end
         end
+
         ---@type IDWorldTile
         local cell = self.mapCells[index]
         if cell then
-            ---@type IDWorldMapPage._CellData
             local pdata = self.pageData[index]
             cell:init(cell.csSelf, cell.gidx, cell.type, pdata.serverData, cell.attr)
         else
@@ -189,6 +200,15 @@ end
 ---@param serverData NetProtoIsland.ST_mapCell
 ---@param attr DBCFMapTileData
 function IDWorldMapPage:doLoadEachCell(index, serverData, attr, pageIdx, callback, orgs)
+    if serverData == nil then
+        -- 因为是异步加载的，可能这时数据已经重新取得了，再取一次数据
+        ---@type IDLDBWorldPage
+        local data = IDDBWorldMap.getDataByPageIdx(self.pageIdx)
+        if data then
+            serverData = data.map[index]
+        end
+    end
+
     if serverData then
         local idx = bio2number(serverData.idx)
         if idx == bio2number(IDDBCity.curCity.pos) then
@@ -244,7 +264,8 @@ function IDWorldMapPage:onLoadOneMapTile(name, obj, params)
 
     -- 判断可能已经不需显示了
     if
-        GameMode.map ~= MyCfg.mode or IDWorldMap.mode ~= GameModeSub.map or self.mapCells[index] or
+        GameMode.map ~= MyCfg.mode or (IDWorldMap.mode ~= GameModeSub.map and IDWorldMap.mode ~= GameModeSub.fleet) or
+            self.mapCells[index] or
             self.pageIdx ~= params.pageIdx or
             (pData and (not IDWorldMap.isVisibile(nil, pData.bounds)))
      then

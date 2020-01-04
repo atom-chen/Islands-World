@@ -1,64 +1,176 @@
 fileFormatVersion: 2
 guid: 3dfb3078cf369ce488da88b2e17e315a
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: zjd_01
-    100004: zjd_02
-    100006: zjd_03
-    100008: zjd_04
-    100010: zjd_04_01
-    100012: zjd_04_02
-    100014: zjd_05
-    100016: zjd_06
-    100018: zjd_07
-    100020: zjd_08
-    100022: zjd_09
-    400000: //RootNode
-    400002: zjd_01
-    400004: zjd_02
-    400006: zjd_03
-    400008: zjd_04
-    400010: zjd_04_01
-    400012: zjd_04_02
-    400014: zjd_05
-    400016: zjd_06
-    400018: zjd_07
-    400020: zjd_08
-    400022: zjd_09
-    2300000: zjd_01
-    2300002: zjd_02
-    2300004: zjd_03
-    2300006: zjd_04_01
-    2300008: zjd_04_02
-    2300010: zjd_05
-    2300012: zjd_06
-    2300014: zjd_07
-    2300016: zjd_08
-    2300018: zjd_09
-    3300000: zjd_01
-    3300002: zjd_02
-    3300004: zjd_03
-    3300006: zjd_04_01
-    3300008: zjd_04_02
-    3300010: zjd_05
-    3300012: zjd_06
-    3300014: zjd_07
-    3300016: zjd_08
-    3300018: zjd_09
-    4300000: zjd_01
-    4300002: zjd_02
-    4300004: zjd_07
-    4300006: zjd_05
-    4300008: zjd_06
-    4300010: zjd_03
-    4300012: zjd_08
-    4300014: zjd_09
-    4300016: zjd_04_01
-    4300018: zjd_04_02
-    9500000: //RootNode
-    2186277476908879412: ImportLogs
+  serializedVersion: 26
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: zjd_01
+  - first:
+      1: 100004
+    second: zjd_02
+  - first:
+      1: 100006
+    second: zjd_03
+  - first:
+      1: 100008
+    second: zjd_04
+  - first:
+      1: 100010
+    second: zjd_04_01
+  - first:
+      1: 100012
+    second: zjd_04_02
+  - first:
+      1: 100014
+    second: zjd_05
+  - first:
+      1: 100016
+    second: zjd_06
+  - first:
+      1: 100018
+    second: zjd_07
+  - first:
+      1: 100020
+    second: zjd_08
+  - first:
+      1: 100022
+    second: zjd_09
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: zjd_01
+  - first:
+      4: 400004
+    second: zjd_02
+  - first:
+      4: 400006
+    second: zjd_03
+  - first:
+      4: 400008
+    second: zjd_04
+  - first:
+      4: 400010
+    second: zjd_04_01
+  - first:
+      4: 400012
+    second: zjd_04_02
+  - first:
+      4: 400014
+    second: zjd_05
+  - first:
+      4: 400016
+    second: zjd_06
+  - first:
+      4: 400018
+    second: zjd_07
+  - first:
+      4: 400020
+    second: zjd_08
+  - first:
+      4: 400022
+    second: zjd_09
+  - first:
+      23: 2300000
+    second: zjd_01
+  - first:
+      23: 2300002
+    second: zjd_02
+  - first:
+      23: 2300004
+    second: zjd_03
+  - first:
+      23: 2300006
+    second: zjd_04_01
+  - first:
+      23: 2300008
+    second: zjd_04_02
+  - first:
+      23: 2300010
+    second: zjd_05
+  - first:
+      23: 2300012
+    second: zjd_06
+  - first:
+      23: 2300014
+    second: zjd_07
+  - first:
+      23: 2300016
+    second: zjd_08
+  - first:
+      23: 2300018
+    second: zjd_09
+  - first:
+      33: 3300000
+    second: zjd_01
+  - first:
+      33: 3300002
+    second: zjd_02
+  - first:
+      33: 3300004
+    second: zjd_03
+  - first:
+      33: 3300006
+    second: zjd_04_01
+  - first:
+      33: 3300008
+    second: zjd_04_02
+  - first:
+      33: 3300010
+    second: zjd_05
+  - first:
+      33: 3300012
+    second: zjd_06
+  - first:
+      33: 3300014
+    second: zjd_07
+  - first:
+      33: 3300016
+    second: zjd_08
+  - first:
+      33: 3300018
+    second: zjd_09
+  - first:
+      43: 4300000
+    second: zjd_01
+  - first:
+      43: 4300002
+    second: zjd_02
+  - first:
+      43: 4300004
+    second: zjd_07
+  - first:
+      43: 4300006
+    second: zjd_05
+  - first:
+      43: 4300008
+    second: zjd_06
+  - first:
+      43: 4300010
+    second: zjd_03
+  - first:
+      43: 4300012
+    second: zjd_08
+  - first:
+      43: 4300014
+    second: zjd_09
+  - first:
+      43: 4300016
+    second: zjd_04_01
+  - first:
+      43: 4300018
+    second: zjd_04_02
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -98,6 +210,8 @@ ModelImporter:
     globalScale: 0.01
     meshCompression: 2
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 0
     importBlendShapes: 0
     importCameras: 0
@@ -105,27 +219,32 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 0
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
-    normalImportMode: 0
+    normalImportMode: 2
     tangentImportMode: 2
     normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 2
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -135,8 +254,8 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.01
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 0

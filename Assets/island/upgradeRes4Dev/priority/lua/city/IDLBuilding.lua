@@ -174,7 +174,7 @@ function IDLBuilding:_OnPress(go, isPress)
 
             self:jump()
             local grid = IDMainCity.getGrid()
-            IDMainCity.grid:hide() -- 网格不显示
+            IDMainCity.hideGrid() -- 网格不显示
             local moved = false
             local index = grid:GetCellIndex(self.transform.position)
             if (IDMainCity.isSizeInFreeCell(index, self.size, self.attr.PlaceGround, self.attr.PlaceSea)) then
@@ -189,7 +189,8 @@ function IDLBuilding:_OnPress(go, isPress)
             end
             -- 通知主城有释放建筑
             IDMainCity.onReleaseBuilding(self, moved)
-            self.csSelf:invoke4Lua("setScreenCanDrag", 0.2)
+            -- self.csSelf:invoke4Lua("setScreenCanDrag", 0.2)
+            CLUIDrag4World.self.enabled = true --可托动屏幕
         end
     end
 end
@@ -215,7 +216,7 @@ function IDLBuilding:_OnDrag(delta)
         return
     end
     if not self.isDraged then
-        IDMainCity.grid:reShow(self.onShowingGrid) --显示网格
+        IDMainCity.showGrid(self.onShowingGrid) --显示网格
         IDLCameraMgr.setPostProcessingProfile("gray")
         NGUITools.SetLayer(self.body.gameObject, LayerMask.NameToLayer("Top"))
 

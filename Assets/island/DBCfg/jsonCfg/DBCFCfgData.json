@@ -1,1 +1,1 @@
-[["ID","LimitPhone","GridCity","GridWorld","TilesTotal","Minute2DiamRate","MaxTimeLen4ResYields","DepartCostResPerCell","FleetTimePerOnce","FleetMoveSpeed","FleetAtLeastSec"],[1,-1,60,1000,400,100,480,50,20,1,50]]
+[["ID","LimitPhone","GridCity","GridWorld","TilesTotal","Minute2DiamRate","MaxTimeLen4ResYields","DepartCostResPerCell","FleetTimePerOnce","FleetMoveSpeed","FleetAtLeastSec"],[1,-1,60,1000,400,100,480,50,20,1,10]]

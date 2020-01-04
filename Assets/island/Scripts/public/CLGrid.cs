@@ -22,6 +22,8 @@ public class CLGrid : UIEventListener
     public const float OffsetZ = 1;
     //0.84f;
     public float gridLineHight = 0;
+    public Color color4Rect = Color.red;
+    public Color color4Grid = Color.white;
     public bool showGrid = true;
     public bool showGridRange = true;
     public GridBase grid = new GridBase();
@@ -99,7 +101,6 @@ public class CLGrid : UIEventListener
     {
         if (isShowingGrid)
         {
-            //			reShow ();
             return;
         }
         isShowingGrid = true;
@@ -112,7 +113,7 @@ public class CLGrid : UIEventListener
         linePrefab = go.GetComponent<LineRenderer>();
 
         lineList4Grid = Utl.drawGrid(linePrefab, transform.position, numRows, numCols, cellSize,
-            ColorEx.getColor(255, 255, 255, 20), transform, gridLineHight);
+            color4Grid, transform, gridLineHight);
         linePrefab.gameObject.SetActive(false);
     }
 
@@ -122,27 +123,37 @@ public class CLGrid : UIEventListener
         {
             for (int i = 0; i < lineList4Rect.Count; i++)
             {
+                CLThingsPool.returnObj(((LineRenderer)(lineList4Rect[i])).gameObject);
                 NGUITools.SetActive(((LineRenderer)(lineList4Rect[i])).gameObject, true);
             }
-            return;
+            //return;
+            lineList4Rect.Clear();
         }
         float width = (numGroundCols * cellSize);
         float height = (numGroundRows * cellSize);
         Vector3 origin = originPos - new Vector3((numGroundRows - numRows), 0, (numGroundCols - numCols));
 
-        Vector3 startPos = origin + 0 * cellSize * Utl.kZAxis + Vector3.up * gridLineHight;
+        Vector3 startPos = origin + 0 * cellSize * Utl.kZAxis;
+        startPos.y = gridLineHight;
         Vector3 endPos = startPos + width * Utl.kXAxis + Vector3.up * gridLineHight;
-        drawLine(startPos, endPos, Color.red);
+        endPos.y = gridLineHight;
+        drawLine(startPos, endPos, color4Rect);
         startPos = origin + numGroundRows * cellSize * Utl.kZAxis + Vector3.up * gridLineHight;
+        endPos.y = gridLineHight;
         endPos = startPos + width * Utl.kXAxis + Vector3.up * gridLineHight;
-        drawLine(startPos, endPos, Color.red);
+        endPos.y = gridLineHight;
+        drawLine(startPos, endPos, color4Rect);
 
         startPos = origin + 0 * cellSize * Utl.kXAxis + Vector3.up * gridLineHight;
+        endPos.y = gridLineHight;
         endPos = startPos + height * Utl.kZAxis + Vector3.up * gridLineHight;
-        drawLine(startPos, endPos, Color.red);
+        endPos.y = gridLineHight;
+        drawLine(startPos, endPos, color4Rect);
         startPos = origin + numGroundCols * cellSize * Utl.kXAxis + Vector3.up * gridLineHight;
+        endPos.y = gridLineHight;
         endPos = startPos + height * Utl.kZAxis + Vector3.up * gridLineHight;
-        drawLine(startPos, endPos, Color.red);
+        endPos.y = gridLineHight;
+        drawLine(startPos, endPos, color4Rect);
     }
 
     public void hideRect()
@@ -175,7 +186,8 @@ public class CLGrid : UIEventListener
         lr.transform.parent = transform;
         lr.SetPosition(0, startPos);
         lr.SetPosition(1, endPos);
-        lr.SetColors(Color.red, Color.red);
+        lr.startColor = color;
+        lr.endColor = color;
         NGUITools.SetActive(lr.gameObject, true);
         lineList4Rect.Add(lr);
 
@@ -202,14 +214,15 @@ public class CLGrid : UIEventListener
         {
             for (int i = 0; i < lineList4Grid.Count; i++)
             {
-                GameObject.DestroyImmediate(((LineRenderer)(lineList4Grid[i])).gameObject, true);
+                DestroyImmediate(((LineRenderer)(lineList4Grid[i])).gameObject, true);
             }
         }
         lineList4Grid = null;
 
         for (int i = 0; i < lineList4Rect.Count; i++)
         {
-            GameObject.DestroyImmediate(((LineRenderer)(lineList4Rect[i])).gameObject, true);
+            CLThingsPool.returnObj(((LineRenderer)(lineList4Rect[i])).gameObject);
+            NGUITools.SetActive(((LineRenderer)(lineList4Rect[i])).gameObject, false);
         }
         lineList4Rect.Clear();
         Transform tr = null;

@@ -23,21 +23,34 @@ function _cell.init(csObj)
     ---@type UIFollowTarget
     uiobjs.followTarget = csSelf:GetComponent("UIFollowTarget")
     uiobjs.followTarget:setCamera(MyCfg.self.mainCamera, MyCfg.self.uiCamera)
-	uiobjs.LabelName = getCC(transform, "LabelName", "UILabel")
+    uiobjs.LabelName = getCC(transform, "LabelName", "UILabel")
 end
 
 -- 显示，
 -- 注意，c#侧不会在调用show时，调用refresh
 ---@param data IDCellWorldTileHudParam
 function _cell.show(go, data)
-	mData = data
-	uiobjs.followTarget:setTarget(mData.target, mData.offset or Vector3.zero)
-	local gid = bio2Int(mData.attr.GID)
-	if gid == IDConst.WorldmapCellType.user then
-		uiobjs.LabelName.text = mData.data.name
+    mData = data
+    uiobjs.followTarget:setTarget(mData.target, mData.offset or Vector3.zero)
+    local gid = bio2Int(mData.attr.GID)
+    if gid == IDConst.WorldmapCellType.user then
+        uiobjs.LabelName.text = mData.data.name
 	else
-		uiobjs.LabelName.text = LGet(mData.attr.Name)
-	end
+        if mData.data then
+			local cidx = bio2number(mData.data.cidx)
+            if cidx > 0 then
+                if cidx == bio2number(IDDBCity.curCity.idx) then
+                    uiobjs.LabelName.text = joinStr(LGet(mData.attr.Name), "\n", "[00ff00]", mData.data.name, "[-]")
+                else
+                    uiobjs.LabelName.text = joinStr(LGet(mData.attr.Name), "\n", "[ffff00]", mData.data.name, "[-]")
+                end
+			else
+				uiobjs.LabelName.text = LGet(mData.attr.Name)
+            end
+        else
+            uiobjs.LabelName.text = LGet(mData.attr.Name)
+        end
+    end
 end
 
 -- 取得数据

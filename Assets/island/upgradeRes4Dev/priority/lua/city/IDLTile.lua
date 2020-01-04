@@ -66,7 +66,7 @@ function cell.OnPress(go, isPress)
 
             cell.jump()
             local grid = IDMainCity.getGrid()
-            IDMainCity.grid:hide() -- 网格不显示
+            IDMainCity.hideGrid() -- 网格不显示
             local moved = false
             local index = grid:GetCellIndex(cell.transform.position)
             if (IDMainCity.canPlaceTile(index)) then
@@ -75,15 +75,20 @@ function cell.OnPress(go, isPress)
                 IDMainCity.setOtherUnitsColiderState(nil, true)
 
                 IDLCameraMgr.setPostProcessingProfile("normal")
-                NGUITools.SetLayer(cell.gameObject, LayerMask.NameToLayer("Tile"))
                 cell.initSides()
             end
+            --//TODO: 本来是当拖放的位置正好可以放下时才改变成tile layer，但是如果不改的话就没有办法触发onpress方法了，所以暂时这样处理吧
+            NGUITools.SetLayer(cell.gameObject, LayerMask.NameToLayer("Tile"))
             -- 通知主城有释放建筑
             IDMainCity.onReleaseTile(cell, moved)
-            --cell.csSelf:invoke4Lua("setScreenCanDrag", 0.2)
-            CLUIDrag4World.self.enabled = true --可托动屏幕
+            cell.csSelf:invoke4Lua(cell.setScreenCanDrag, 0.2)
+            -- CLUIDrag4World.self.enabled = true --可托动屏幕
         end
     end
+end
+
+function cell.setScreenCanDrag()
+    CLUIDrag4World.self.enabled = true --可托动屏幕
 end
 
 function cell.OnDrag(go, delta)
@@ -91,7 +96,7 @@ function cell.OnDrag(go, delta)
         return
     end
     if not cell.isDraged then
-        IDMainCity.grid:reShow(cell.onShowingGrid) --显示网格
+        IDMainCity.showGrid(cell.onShowingGrid) --显示网格
         IDLCameraMgr.setPostProcessingProfile("gray")
         NGUITools.SetLayer(cell.csSelf.gameObject, LayerMask.NameToLayer("Top"))
         IDMainCity.gridTileSidePorc.clean()

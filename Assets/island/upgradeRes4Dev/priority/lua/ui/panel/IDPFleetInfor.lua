@@ -66,13 +66,25 @@ function IDPFleetInfor.refresh()
         else
             SetActive(uiobjs.ButtonDepart, false)
         end
-        SetActive(uiobjs.ButtonGoto, false)
+
+        if fleetInfor and bio2number(fleetInfor.task) == IDConst.FleetTask.voyage then
+            SetActive(uiobjs.ButtonBack, true)
+            SetActive(uiobjs.ButtonGoto, true)
+        else
+            SetActive(uiobjs.ButtonBack, false)
+            SetActive(uiobjs.ButtonGoto, false)
+        end
     else
         SetActive(uiobjs.ButtonDepart, false)
         if mData.fleetidx and mData.fleetidx > 0 then
             -- 说明是在已有舰队上修改
-            SetActive(uiobjs.ButtonGoto, true)
-            SetActive(uiobjs.ButtonBack, true)
+            if fleetInfor and bio2number(fleetInfor.task) == IDConst.FleetTask.voyage then
+                SetActive(uiobjs.ButtonBack, true)
+                SetActive(uiobjs.ButtonGoto, true)
+            else
+                SetActive(uiobjs.ButtonBack, false)
+                SetActive(uiobjs.ButtonGoto, false)
+            end
             uiobjs.ButtonSaveLb.text = LGet("SaveConfig")
         else
             SetActive(uiobjs.ButtonGoto, false)
@@ -232,6 +244,8 @@ function IDPFleetInfor.uiEventDelegate(go)
             )
         )
     elseif goName == "ButtonGoto" then
+        hideTopPanel(mData.parent.csSelf)
+        IDWorldMap.gotoFleet(bio2number(fleetInfor.idx))
     elseif goName == "PanelFleetInfor" then
         IDPFleetInfor.csSelf:invoke4Lua(
             function()
@@ -242,6 +256,9 @@ function IDPFleetInfor.uiEventDelegate(go)
             end,
             0.1
         )
+    elseif goName == "ButtonBack" then
+        showHotWheel()
+        CLLNet.send(NetProtoIsland.send.fleetBack(bio2number(fleetInfor.idx), hideHotWheel))
     end
 end
 
